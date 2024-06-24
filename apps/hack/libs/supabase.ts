@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from '../types/supabase';
+import { Database, Tables } from '../types/supabase';
 
 const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
 
@@ -10,25 +10,33 @@ type InsertItem = Database['public']['Tables']['items']['Insert'];
 type insertCategory = Database['public']['Tables']['categories']['Insert'];
 
 export function upsertCategory(category: insertCategory | insertCategory[]) {
-  return supabase.from('categories').upsert(category as any, { ignoreDuplicates: true });
+  return supabase
+    .from('categories')
+    .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
 }
 
 export async function upsertItem(item: InsertItem | InsertItem[]) {
-  const { data, error } = await supabase
+  const response = await supabase
     .from('items')
-    .upsert(item as any, { ignoreDuplicates: true })
+    .upsert(item as any, { ignoreDuplicates: true, onConflict: 'itemId' })
     .select();
 
-  return data;
+  if (response.error) {
+    console.error(response.error);
+  }
+  return response.data;
 }
 
 export async function upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
-  const { data, error } = await supabase
+  const response = await supabase
     .from('discounts')
-    .upsert(discount as any, { ignoreDuplicates: true })
+    .upsert(discount as any)
     .select();
 
-  return data;
+  if (response.error) {
+    console.error(response.error);
+  }
+  return response.data;
 }
 
 export async function fetchAllItems() {
@@ -46,4 +54,12 @@ export async function updateItem(
   id: number,
 ) {
   const { error } = await supabase.from('items').update(item).eq('id', id);
+}
+
+export async function fetchData<T extends keyof Database['public']['Tables']>(
+  search: { value: string; column: string },
+  tableName: T,
+) {
+  const response = await supabase.from(tableName).select('*').eq(search.column, search.value);
+  return response;
 }

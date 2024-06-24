@@ -110,9 +110,10 @@ async function updateDiscounts() {
 
   console.log(getDateString(), discounts.length);
 
+  console.log(discounts[0].productcode);
   const newlyAddedItems = await upsertItem(
     discounts.map(discount => ({
-      itemId: discount.itemId as string,
+      itemId: discount.productcode as string,
       itemName: discount.productname,
     })),
   );
@@ -121,13 +122,13 @@ async function updateDiscounts() {
 
   const newlyAddedDiscounts = await upsertDiscount(
     discounts.map(discount => ({
-      itemId: discount.itemId as string,
+      itemId: discount.productcode as string,
       startDate: getISOTimeStringWithTimezone(discount.startdate),
       endDate: addDays(getDateWithTimezone(discount.enddate), 1),
       price: discount.price,
       discount: discount.discount,
       discountPrice: discount.discountprice,
-      discountHash: `${discount.itemId}_${discount.startdate}_${discount.enddate}`,
+      discountHash: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
     })),
   );
 
@@ -144,16 +145,10 @@ async function updateDiscounts() {
 
 (async () => {
   // await createCategories();
-
   // const itemSize = await crawlAllItems();
-
   // await crawlAllDiscounts();
-
   // await downloadAllImages();
-
   // await updateAllItemCategory();
-
   // await changeItemCategory();
-
-  await updateDiscounts();
+  // await updateDiscounts();
 })();
