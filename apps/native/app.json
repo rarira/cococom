@@ -14,14 +14,16 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rariradev.cococom"
+      "bundleIdentifier": "com.rariradev.cococom",
+      "googleServicesFile": "./assets/firebase/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rariradev.cococom"
+      "package": "com.rariradev.cococom",
+      "googleServicesFile": "./assets/firebase/google-services.json"
     },
     "web": {
       "bundler": "metro",

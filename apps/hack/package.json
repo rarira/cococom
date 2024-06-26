@@ -1,5 +1,5 @@
 {
-  "name": "coco-hack",
+  "name": "@cococoom/data",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,20 +11,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@eslint/js": "^9.1.1",
+    "@cococom/eslint-config": "workspace:*",
+    "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.12.7",
     "eslint": "^9.1.1",
-    "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.0.0",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5",
     "prisma": "^5.13.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.7.1"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@prisma/client": "^5.13.0",

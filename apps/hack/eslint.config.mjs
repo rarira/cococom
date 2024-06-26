@@ -1,10 +1,3 @@
-import pluginJs from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import nodeConfig from '@cococom/eslint-config/node.mjs';
 
-export default [
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  { extends: ['prettier'] },
-];
+export default nodeConfig;

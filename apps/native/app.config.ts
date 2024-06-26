@@ -6,6 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "cococom",
   plugins: [
     "expo-router",
+    "@react-native-firebase/app",
     [
       "@sentry/react-native/expo",
       {
@@ -13,5 +14,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         project: process.env.EXPO_PUBLIC_SENTRY_PROJECT,
       },
     ],
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "useFrameworks": "static"
+        }
+      }
+    ]
   ],
 });
