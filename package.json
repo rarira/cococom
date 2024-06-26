@@ -1,5 +1,5 @@
 {
-  "name": "cococom",
+  "name": "@cococom/monorepo",
   "private": true,
   "scripts": {
     "build": "turbo build",

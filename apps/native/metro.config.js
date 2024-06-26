@@ -1,11 +1,10 @@
+/* eslint-env node */
+
 // https://github.com/byCedric/expo-monorepo-example/blob/main/apps/mobile/metro.config.js
 
-// This replaces `const { getDefaultConfig } = require('expo/metro-config');`
 const { getSentryExpoConfig } = require("@sentry/react-native/metro");
 const path = require("path");
 const { FileStore } = require("metro-cache");
-
-// This replaces `const config = getDefaultConfig(__dirname);`
 
 // Find the project and workspace directories
 const projectRoot = __dirname;
