@@ -35,21 +35,11 @@ async function updateLaunchScheme(config) {
     },
   };
 
-  const debugModeCLArgument2 = {
-    CommandLineArgument: {
-      $: {
-        argument: '-FIRDebugEnabled',
-        isEnabled: 'YES',
-      },
-    },
-  };
-
   if (!launchActionEntry.CommandLineArguments) {
     launchActionEntry.CommandLineArguments = [];
   }
 
   launchActionEntry.CommandLineArguments.push(debugModeCLArgument1);
-  launchActionEntry.CommandLineArguments.push(debugModeCLArgument2);
 
   await writeSchemeAsync(config.modRequest.projectRoot, 'cococom', schemeXML);
 }
