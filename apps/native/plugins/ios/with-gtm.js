@@ -41,7 +41,6 @@ async function updateLaunchScheme(config) {
 }
 
 module.exports.withIosGtm = config => {
-  // for preview : https://developers.google.com/tag-platform/tag-manager/ios/v5#preview_container
   if (isNotProdBuild(config)) {
     config = withDangerousMod(config, [
       'ios',

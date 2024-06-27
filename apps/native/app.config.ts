@@ -1,5 +1,4 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
-import './plugins';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
