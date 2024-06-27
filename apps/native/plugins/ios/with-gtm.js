@@ -29,7 +29,7 @@ async function updateLaunchScheme(config) {
   const debugModeCLArgument1 = {
     CommandLineArgument: {
       $: {
-        argument: '-FIRDebugEnabled',
+        argument: '-FIRAnalyticsDebugEnabled',
         isEnabled: 'YES',
       },
     },
@@ -38,7 +38,7 @@ async function updateLaunchScheme(config) {
   const debugModeCLArgument2 = {
     CommandLineArgument: {
       $: {
-        argument: '-FIRAnalyticsDebugEnabled',
+        argument: '-FIRDebugEnabled',
         isEnabled: 'YES',
       },
     },
