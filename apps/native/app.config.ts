@@ -1,11 +1,11 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
+import './plugins';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
   slug: 'cococom',
   plugins: [
-    './plugins',
     'expo-router',
     '@react-native-firebase/app',
     [
@@ -23,5 +23,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    './plugins',
   ],
 });
