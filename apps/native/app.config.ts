@@ -26,12 +26,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   ios: {
     ...config.ios,
-    googleServicesFile:
-      process.env.GOOGLE_SERVICES_INFO ?? './assets/firebase/GoogleService-Info.plist',
+    googleServicesFile: './assets/firebase/GoogleService-Info.plist',
   },
   android: {
     ...config.android,
-    googleServicesFile:
-      process.env.GOOGLE_SERVICES_JSON ?? './assets/firebase/google-services.json',
+    googleServicesFile: './assets/firebase/google-services.json',
   },
 });
