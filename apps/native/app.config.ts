@@ -5,6 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'cococom',
   slug: 'cococom',
   plugins: [
+    './plugins',
     'expo-router',
     '@react-native-firebase/app',
     [
