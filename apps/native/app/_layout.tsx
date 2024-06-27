@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/react-native';
 import { isRunningInExpoGo } from 'expo';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -28,7 +29,9 @@ Sentry.init({
 });
 
 function RootLayout() {
-  const ref = useNavigationContainerRef();
+  const navigationRef = useNavigationContainerRef();
+
+  useReactNavigationDevTools(navigationRef);
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -36,10 +39,10 @@ function RootLayout() {
   });
 
   useEffect(() => {
-    if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref);
+    if (navigationRef) {
+      routingInstrumentation.registerNavigationContainer(navigationRef);
     }
-  }, [ref]);
+  }, [navigationRef]);
 
   useEffect(() => {
     if (loaded) {

@@ -16,6 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@dev-plugins/react-navigation": "^0.0.6",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-firebase/analytics": "^20.1.0",
     "@react-native-firebase/app": "^20.1.0",
@@ -44,9 +45,9 @@
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.0",
     "@cococom/eslint-config": "workspace:*",
     "@cococom/prettier-config": "workspace:*",
-    "@babel/core": "^7.20.0",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.2.79",
     "@types/react-test-renderer": "^18.0.7",
