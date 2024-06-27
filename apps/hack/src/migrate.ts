@@ -1,14 +1,8 @@
-import dotenv from 'dotenv';
-import path from 'path';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { loadEnv } from '../libs/util';
 
-(() => {
-  const result = dotenv.config({ path: path.join(__dirname, '..', '.env') }); // .env 파일의 경로를 dotenv.config에 넘겨주고 성공여부를 저장함
-  if (result.parsed == undefined)
-    // .env 파일 parsing 성공 여부 확인
-    throw new Error('Cannot loaded environment variables file.'); // parsing 실패 시 Throwing
-})();
+loadEnv();
 
-// import {
 //   createDiscount,
 //   getAllDiscounts,
 //   getAllItems,

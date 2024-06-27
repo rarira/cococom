@@ -16,20 +16,21 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <Button
-        title="Add To Basket"
-        onPress={async () =>
-          await analytics().logEvent('basket', {
-            id: 3745092,
-            item: 'mens grey t-shirt',
-            description: ['round neck', 'long sleeved'],
-            size: 'L',
-          })
-        }
-      />
+          title="Add To Basket"
+          onPress={async () =>
+            await analytics().logEvent('basket', {
+              id: 3745092,
+              item: 'mens grey t-shirt',
+              description: ['round neck', 'long sleeved'],
+              size: 'L',
+            })
+          }
+        />
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
