@@ -44,7 +44,11 @@ async function updateLaunchScheme(config) {
     },
   };
 
-  launchActionEntry.CommandLineArguments = [debugModeCLArgument1, debugModeCLArgument2];
+  if (!launchActionEntry.CommandLineArguments) {
+    launchActionEntry.CommandLineArguments = [];
+  }
+
+  launchActionEntry.CommandLineArguments.push = [debugModeCLArgument1, debugModeCLArgument2];
 
   await writeSchemeAsync(config.modRequest.projectRoot, 'cococom', schemeXML);
 }
