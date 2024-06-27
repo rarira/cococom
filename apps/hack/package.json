@@ -13,6 +13,7 @@
   "devDependencies": {
     "@cococom/eslint-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
+    "@cococom/prettier-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.12.7",
     "eslint": "^9.1.1",

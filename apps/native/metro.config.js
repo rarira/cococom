@@ -2,14 +2,14 @@
 
 // https://github.com/byCedric/expo-monorepo-example/blob/main/apps/mobile/metro.config.js
 
-const { getSentryExpoConfig } = require("@sentry/react-native/metro");
-const path = require("path");
-const { FileStore } = require("metro-cache");
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
+const path = require('path');
+const { FileStore } = require('metro-cache');
 
 // Find the project and workspace directories
 const projectRoot = __dirname;
 // This can be replaced with `find-yarn-workspace-root`
-const monorepoRoot = path.resolve(projectRoot, "../..");
+const monorepoRoot = path.resolve(projectRoot, '../..');
 
 const config = getSentryExpoConfig(projectRoot);
 
@@ -31,14 +31,14 @@ config.resolver.disableHierarchicalLookup = true;
 
 // 2. Let Metro know where to resolve packages and in what order
 config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, "node_modules"),
-  path.resolve(monorepoRoot, "node_modules"),
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(monorepoRoot, 'node_modules'),
 ];
 
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
   new FileStore({
-    root: path.join(projectRoot, "node_modules", ".cache", "metro"),
+    root: path.join(projectRoot, 'node_modules', '.cache', 'metro'),
   }),
 ];
 

@@ -39,6 +39,9 @@ importers:
       '@cococom/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@cococom/prettier-config':
+        specifier: workspace:*
+        version: link:../../packages/prettier-config
       '@cococom/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -151,6 +154,9 @@ importers:
       '@cococom/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@cococom/prettier-config':
+        specifier: workspace:*
+        version: link:../../packages/prettier-config
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -208,15 +214,23 @@ importers:
       eslint-plugin-only-warn:
         specifier: ^1.1.0
         version: 1.1.0
+      eslint-plugin-prettier:
+        specifier: ^5.1.3
+        version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.2.5)
       globals:
         specifier: ^15.0.0
         version: 15.6.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
       typescript-eslint:
         specifier: ^7.7.1
         version: 7.13.1(eslint@8.57.0)(typescript@5.3.3)
+
+  packages/prettier-config: {}
 
   packages/typescript-config: {}
 
