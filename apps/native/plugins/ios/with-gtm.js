@@ -26,7 +26,7 @@ async function writeSchemeAsync(projectRoot, scheme, xml) {
 async function updateLaunchScheme(config) {
   const schemeXML = await readSchemeAsync(config.modRequest.projectRoot, 'cococom');
   const launchActionEntry = schemeXML.Scheme?.LaunchAction[0];
-  const debugModeCLArgument = {
+  const debugModeCLArgument1 = {
     CommandLineArgument: {
       $: {
         argument: '-FIRDebugEnabled',
@@ -35,7 +35,16 @@ async function updateLaunchScheme(config) {
     },
   };
 
-  launchActionEntry.CommandLineArguments = [debugModeCLArgument];
+  const debugModeCLArgument2 = {
+    CommandLineArgument: {
+      $: {
+        argument: '-FIRAnalyticsDebugEnabled',
+        isEnabled: 'YES',
+      },
+    },
+  };
+
+  launchActionEntry.CommandLineArguments = [debugModeCLArgument1, debugModeCLArgument2];
 
   await writeSchemeAsync(config.modRequest.projectRoot, 'cococom', schemeXML);
 }

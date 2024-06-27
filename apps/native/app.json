@@ -16,7 +16,10 @@
       "buildNumber": "1",
       "supportsTablet": true,
       "bundleIdentifier": "com.rariradev.cococom",
-      "googleServicesFile": "./assets/firebase/GoogleService-Info.plist"
+      "googleServicesFile": "./assets/firebase/GoogleService-Info.plist",
+      "infoPlist": {
+        "FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED": false
+      }
     },
     "android": {
       "versionCode": 1,
