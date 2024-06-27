@@ -30,7 +30,7 @@ export async function upsertItem(item: InsertItem | InsertItem[]) {
 export async function upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
   const response = await supabase
     .from('discounts')
-    .upsert(discount as any)
+    .upsert(discount as any, { ignoreDuplicates: true, onConflict: 'discountHash' })
     .select();
 
   if (response.error) {
