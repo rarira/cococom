@@ -11,6 +11,9 @@ npm-debug.*
 .envrc
 web-build/
 
+ios/
+android/
+
 # macOS
 .DS_Store
 

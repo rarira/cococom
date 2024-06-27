@@ -40,7 +40,7 @@ async function updateLaunchScheme(config) {
   await writeSchemeAsync(config.modRequest.projectRoot, 'cococom', schemeXML);
 }
 
-exports.withIosGtm = config => {
+module.exports.withIosGtm = config => {
   // for preview : https://developers.google.com/tag-platform/tag-manager/ios/v5#preview_container
   if (isNotProdBuild(config)) {
     config = withDangerousMod(config, [
