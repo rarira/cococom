@@ -1,7 +1,7 @@
 {
   "name": "@cococom/mobile",
   "main": "index.ts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build:local:ios": "eas build --platform ios --profile development-simulator --local"
+    "build:local:ios": "eas build --platform ios --profile development-simulator --local --non-interactive"
   },
   "jest": {
     "preset": "jest-expo"
@@ -28,7 +28,7 @@
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.18",
     "expo-font": "~12.0.7",
-    "expo-image": "~1.12.12",
+    "expo-image": "^1.12.12",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.16",
     "expo-splash-screen": "~0.27.5",
