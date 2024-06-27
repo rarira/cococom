@@ -11,6 +11,6 @@ export function readJsonFile(filePath) {
 }
 
 export function loadEnv() {
-  dotenv.config({ path: path.join(__dirname, '..', '.env') });
-  throw new Error('Cannot loaded environment variables file.');
+  const result = dotenv.config({ path: path.join(__dirname, '..', '.env') });
+  if (result.parsed == undefined) throw new Error('Cannot loaded environment variables file.');
 }

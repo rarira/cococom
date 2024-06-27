@@ -99,10 +99,10 @@ async function createCategories() {
   }
 }
 
-async function updateDiscounts() {
-  const discounts = await getAllDatas(getDateString());
+async function updateDiscounts(date?: string) {
+  const discounts = await getAllDatas(date || getDateString());
 
-  console.log(getDateString(), discounts.length);
+  console.log(date || getDateString(), discounts.length);
 
   console.log(discounts[0].productcode);
   const newlyAddedItems = await upsertItem(
@@ -138,11 +138,27 @@ async function updateDiscounts() {
 }
 
 (async () => {
+  // const dates = [
+  //   '2024-05-03',
+  //   '2024-04-30',
+  //   '2024-04-26',
+  //   '2024-04-23',
+  //   '2024-04-19',
+  //   '2024-04-16',
+  //   '2024-04-12',
+  //   '2024-04-09',
+  //   '2024-04-05',
+  //   '2024-04-02',
+  // ];
   // await createCategories();
   // const itemSize = await crawlAllItems();
   // await crawlAllDiscounts();
   // await downloadAllImages();
   // await updateAllItemCategory();
   // await changeItemCategory();
-  // await updateDiscounts();
+
+  // for (const date of dates) {
+  //   await updateDiscounts(date);
+  // }
+  await updateDiscounts();
 })();
