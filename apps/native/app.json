@@ -15,8 +15,7 @@
     "ios": {
       "buildNumber": "1",
       "supportsTablet": true,
-      "bundleIdentifier": "com.rariradev.cococom",
-      "googleServicesFile": "./assets/firebase/GoogleService-Info.plist"
+      "bundleIdentifier": "com.rariradev.cococom"
     },
     "android": {
       "versionCode": 1,
@@ -24,8 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rariradev.cococom",
-      "googleServicesFile": "./assets/firebase/google-services.json"
+      "package": "com.rariradev.cococom"
     },
     "web": {
       "bundler": "metro",

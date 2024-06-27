@@ -10,8 +10,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@sentry/react-native/expo',
       {
-        organization: process.env.EXPO_PUBLIC_SENTRY_ORG,
-        project: process.env.EXPO_PUBLIC_SENTRY_PROJECT,
+        organization: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
       },
     ],
     [
@@ -24,4 +24,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     './plugins',
   ],
+  ios: {
+    ...config.ios,
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_INFO ?? './assets/firebase/GoogleService-Info.plist',
+  },
+  android: {
+    ...config.android,
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_JSON ?? './assets/firebase/google-services.json',
+  },
 });
