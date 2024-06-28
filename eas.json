@@ -5,9 +5,11 @@
   "build": {
     "development-simulator": {
       "developmentClient": true,
-      "distribution": "internal",
       "ios": {
         "simulator": true
+      },
+      "cache": {
+        "key": "expo:51:1719554338"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
@@ -18,6 +20,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
@@ -26,6 +31,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
@@ -33,6 +41,9 @@
       }
     },
     "production": {
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
