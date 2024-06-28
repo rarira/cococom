@@ -29,7 +29,7 @@ async function updateLaunchScheme(config) {
   const debugModeCLArgument1 = {
     CommandLineArgument: {
       $: {
-        argument: '-FIRAnalyticsDebugEnabled',
+        argument: '-FIRDebugEnabled',
         isEnabled: 'YES',
       },
     },
