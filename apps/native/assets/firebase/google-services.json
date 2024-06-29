@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "786330080407",
+    "project_id": "cococom-e0af9",
+    "storage_bucket": "cococom-e0af9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786330080407:android:3a5410f734bb14e31045d2",
+        "android_client_info": {
+          "package_name": "com.rariradev.cococom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtiHC4sUJKjpipjjv_vbaqZurKVzzsOl8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

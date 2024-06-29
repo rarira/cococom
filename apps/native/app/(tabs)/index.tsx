@@ -1,9 +1,11 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Button, StyleSheet, Platform } from 'react-native';
+import { Image } from 'expo-image';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import analytics from '@react-native-firebase/analytics';
 
 export default function HomeScreen() {
   return (
@@ -14,9 +16,21 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
+        <Button
+          title="Add To Basket"
+          onPress={async () =>
+            await analytics().logEvent('basket', {
+              id: 3745092,
+              item: 'mens grey t-shirt',
+              description: ['round neck', 'long sleeved'],
+              size: 'L',
+            })
+          }
+        />
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>

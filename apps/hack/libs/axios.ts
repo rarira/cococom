@@ -12,7 +12,7 @@ Api.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 export async function downloadImage(itemId: string) {
   const downloadPath = path.resolve(__dirname, '../downloads/images', `${itemId}.jpg`);
   try {
-    const result = await access(downloadPath);
+    await access(downloadPath);
   } catch (e) {
     // axios image download with response type "stream"
     const response = await Api.get(`/costpictures/${itemId}.jpg`, { responseType: 'stream' });

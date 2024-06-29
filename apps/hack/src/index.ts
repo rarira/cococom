@@ -1,12 +1,7 @@
-import dotenv from 'dotenv';
-import path from 'path';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util';
 
-(() => {
-  const result = dotenv.config({ path: path.join(__dirname, '..', '.env') }); // .env 파일의 경로를 dotenv.config에 넘겨주고 성공여부를 저장함
-  if (result.parsed == undefined)
-    // .env 파일 parsing 성공 여부 확인
-    throw new Error('Cannot loaded environment variables file.'); // parsing 실패 시 Throwing
-})();
+loadEnv();
 
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api';
 import { downloadImage } from '../libs/axios';
@@ -17,7 +12,6 @@ import {
   getISOTimeStringWithTimezone,
 } from '../libs/date';
 
-import { readJsonFile, writeJsonFile } from '../libs/util';
 import {
   fetchAllItems,
   updateItem,
@@ -105,14 +99,15 @@ async function createCategories() {
   }
 }
 
-async function updateDiscounts() {
-  const discounts = await getAllDatas(getDateString());
+async function updateDiscounts(date?: string) {
+  const discounts = await getAllDatas(date || getDateString());
 
-  console.log(getDateString(), discounts.length);
+  console.log(date || getDateString(), discounts.length);
 
+  console.log(discounts[0].productcode);
   const newlyAddedItems = await upsertItem(
     discounts.map(discount => ({
-      itemId: discount.itemId as string,
+      itemId: discount.productcode as string,
       itemName: discount.productname,
     })),
   );
@@ -121,13 +116,13 @@ async function updateDiscounts() {
 
   const newlyAddedDiscounts = await upsertDiscount(
     discounts.map(discount => ({
-      itemId: discount.itemId as string,
+      itemId: discount.productcode as string,
       startDate: getISOTimeStringWithTimezone(discount.startdate),
       endDate: addDays(getDateWithTimezone(discount.enddate), 1),
       price: discount.price,
       discount: discount.discount,
       discountPrice: discount.discountprice,
-      discountHash: `${discount.itemId}_${discount.startdate}_${discount.enddate}`,
+      discountHash: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
     })),
   );
 
@@ -143,17 +138,27 @@ async function updateDiscounts() {
 }
 
 (async () => {
+  // const dates = [
+  //   '2024-05-03',
+  //   '2024-04-30',
+  //   '2024-04-26',
+  //   '2024-04-23',
+  //   '2024-04-19',
+  //   '2024-04-16',
+  //   '2024-04-12',
+  //   '2024-04-09',
+  //   '2024-04-05',
+  //   '2024-04-02',
+  // ];
   // await createCategories();
-
   // const itemSize = await crawlAllItems();
-
   // await crawlAllDiscounts();
-
   // await downloadAllImages();
-
   // await updateAllItemCategory();
-
   // await changeItemCategory();
 
+  // for (const date of dates) {
+  //   await updateDiscounts(date);
+  // }
   await updateDiscounts();
 })();
