@@ -1,0 +1,57 @@
+{
+  "cli": {
+    "version": ">= 10.0.2"
+  },
+  "build": {
+    "development-simulator": {
+      "developmentClient": true,
+      "ios": {
+        "simulator": true
+      },
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://c937c455f0dc9127a08e043ef6200246@o4507487324864512.ingest.us.sentry.io/4507487327223808"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://c937c455f0dc9127a08e043ef6200246@o4507487324864512.ingest.us.sentry.io/4507487327223808"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://c937c455f0dc9127a08e043ef6200246@o4507487324864512.ingest.us.sentry.io/4507487327223808"
+      }
+    },
+    "production": {
+      "cache": {
+        "key": "expo:51:1719554338"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://c937c455f0dc9127a08e043ef6200246@o4507487324864512.ingest.us.sentry.io/4507487327223808"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
