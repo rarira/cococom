@@ -1,11 +1,14 @@
-import { loadEnv } from '../libs/util';
+
+import { fetchData } from '@cococom/supabase/libs';
+
+import data from '../data/discounts.js';
+import { loadEnv } from '../libs/util.js';
+
 
 loadEnv();
 
-import { fetchData } from '../libs/supabase';
-import data from '../data/discounts';
-
 const errors = [];
+
 
 async function confirmDiscounts() {
   console.log(data.discounts.length);

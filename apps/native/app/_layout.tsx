@@ -1,14 +1,14 @@
+import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack, useNavigationContainerRef } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
 import * as Sentry from '@sentry/react-native';
 import { isRunningInExpoGo } from 'expo';
+import { useFonts } from 'expo-font';
+import { Stack, useNavigationContainerRef } from 'expo-router';
+import 'react-native-reanimated';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
