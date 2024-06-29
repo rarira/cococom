@@ -1,16 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util';
+// eslint-disable-next-line import/order
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
-import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api';
-import { downloadImage } from '../libs/axios';
-import {
-  addDays,
-  getDateString,
-  getDateWithTimezone,
-  getISOTimeStringWithTimezone,
-} from '../libs/date';
 
 import {
   fetchAllItems,
@@ -18,7 +12,17 @@ import {
   upsertCategory,
   upsertDiscount,
   upsertItem,
-} from '../libs/supabase';
+} from '@cococom/supabase/libs';
+
+import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
+import { downloadImage } from '../libs/axios.js';
+import {
+  addDays,
+  getDateString,
+  getDateWithTimezone,
+  getISOTimeStringWithTimezone,
+} from '../libs/date.js';
+
 
 const newItems = [];
 
@@ -138,6 +142,7 @@ async function updateDiscounts(date?: string) {
 }
 
 (async () => {
+  console.log('yahoo');
   // const dates = [
   //   '2024-05-03',
   //   '2024-04-30',
@@ -156,9 +161,8 @@ async function updateDiscounts(date?: string) {
   // await downloadAllImages();
   // await updateAllItemCategory();
   // await changeItemCategory();
-
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
-  await updateDiscounts();
+  // await updateDiscounts();
 })();
