@@ -1,9 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from '../types/supabase';
+
+import { Database } from './types.js';
+import { loadEnv } from './util.js';
+
+loadEnv();
 
 const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient<Database>(SUPABASE_URL!, SUPABASE_ANON_KEY!);
 
 type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
 type InsertItem = Database['public']['Tables']['items']['Insert'];
@@ -30,7 +34,10 @@ export async function upsertItem(item: InsertItem | InsertItem[]) {
 export async function upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
   const response = await supabase
     .from('discounts')
-    .upsert(discount as any, { ignoreDuplicates: true, onConflict: 'discountHash' })
+    .upsert(discount as any, {
+      ignoreDuplicates: true,
+      onConflict: 'discountHash',
+    })
     .select();
 
   if (response.error) {

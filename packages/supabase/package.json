@@ -1,0 +1,29 @@
+{
+  "name": "@cococom/supabase",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./libs": {
+      "types": "./dist/lib.d.ts",
+      "default": "./dist/lib.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.5",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@cococom/eslint-config": "workspace:*",
+    "@cococom/prettier-config": "workspace:*",
+    "@cococom/typescript-config": "workspace:*",
+    "typescript": "latest",
+    "@types/dotenv": "^8.2.0"
+  }
+}
