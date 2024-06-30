@@ -4,113 +4,113 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
   public: {
     Tables: {
       categories: {
         Row: {
-          categoryName: string;
-          id: number;
-        };
+          categoryName: string
+          id: number
+        }
         Insert: {
-          categoryName: string;
-          id: number;
-        };
+          categoryName: string
+          id: number
+        }
         Update: {
-          categoryName?: string;
-          id?: number;
-        };
-        Relationships: [];
-      };
+          categoryName?: string
+          id?: number
+        }
+        Relationships: []
+      }
       discounts: {
         Row: {
-          discount: number;
-          discountHash: string;
-          discountPrice: number;
-          endDate: string;
-          id: number;
-          itemId: string;
-          price: number;
-          startDate: string;
-        };
+          discount: number
+          discountHash: string
+          discountPrice: number
+          endDate: string
+          id: number
+          itemId: string
+          price: number
+          startDate: string
+        }
         Insert: {
-          discount: number;
-          discountHash: string;
-          discountPrice: number;
-          endDate: string;
-          id?: number;
-          itemId: string;
-          price: number;
-          startDate: string;
-        };
+          discount: number
+          discountHash: string
+          discountPrice: number
+          endDate: string
+          id?: number
+          itemId: string
+          price: number
+          startDate: string
+        }
         Update: {
-          discount?: number;
-          discountHash?: string;
-          discountPrice?: number;
-          endDate?: string;
-          id?: number;
-          itemId?: string;
-          price?: number;
-          startDate?: string;
-        };
+          discount?: number
+          discountHash?: string
+          discountPrice?: number
+          endDate?: string
+          id?: number
+          itemId?: string
+          price?: number
+          startDate?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "discounts_itemId_fkey";
-            columns: ["itemId"];
-            isOneToOne: false;
-            referencedRelation: "items";
-            referencedColumns: ["itemId"];
+            foreignKeyName: "discounts_itemId_fkey"
+            columns: ["itemId"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["itemId"]
           },
-        ];
-      };
+        ]
+      }
       items: {
         Row: {
-          categoryId: number | null;
-          id: number;
-          itemId: string;
-          itemName: string | null;
-        };
+          categoryId: number | null
+          id: number
+          itemId: string
+          itemName: string | null
+        }
         Insert: {
-          categoryId?: number | null;
-          id?: number;
-          itemId: string;
-          itemName?: string | null;
-        };
+          categoryId?: number | null
+          id?: number
+          itemId: string
+          itemName?: string | null
+        }
         Update: {
-          categoryId?: number | null;
-          id?: number;
-          itemId?: string;
-          itemName?: string | null;
-        };
+          categoryId?: number | null
+          id?: number
+          itemId?: string
+          itemName?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "items_categoryId_fkey";
-            columns: ["categoryId"];
-            isOneToOne: false;
-            referencedRelation: "categories";
-            referencedColumns: ["id"];
+            foreignKeyName: "items_categoryId_fkey"
+            columns: ["categoryId"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
           },
-        ];
-      };
-    };
+        ]
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type PublicSchema = Database[Extract<keyof Database, "public">];
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -123,7 +123,7 @@ export type Tables<
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
@@ -131,11 +131,11 @@ export type Tables<
         PublicSchema["Views"])
     ? (PublicSchema["Tables"] &
         PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R;
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -146,17 +146,17 @@ export type TablesInsert<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -167,17 +167,17 @@ export type TablesUpdate<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -190,4 +190,4 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never;
+    : never
