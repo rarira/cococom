@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts && pnpm build"
   },
   "exports": {
     "./libs": {
@@ -23,7 +24,8 @@
     "@cococom/eslint-config": "workspace:*",
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
-    "typescript": "latest",
-    "@types/dotenv": "^8.2.0"
+    "@types/dotenv": "^8.2.0",
+    "supabase": "^1.178.2",
+    "typescript": "latest"
   }
 }
