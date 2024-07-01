@@ -1,12 +1,23 @@
+import type { AppStateStatus } from 'react-native';
+
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
+import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import NetInfo from '@react-native-community/netinfo';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
+import {
+  QueryClient,
+  QueryClientProvider,
+  focusManager,
+  onlineManager,
+} from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
 import { useFonts } from 'expo-font';
 import { Stack, useNavigationContainerRef } from 'expo-router';
-import 'react-native-reanimated';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { AppState, Platform } from 'react-native';
+import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -14,6 +25,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 SplashScreen.preventAutoHideAsync();
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+const queryClient = new QueryClient();
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
@@ -28,10 +41,23 @@ Sentry.init({
   ],
 });
 
+onlineManager.setEventListener(setOnline => {
+  return NetInfo.addEventListener(state => {
+    setOnline(!!state.isConnected);
+  });
+});
+
+function onAppStateChange(status: AppStateStatus) {
+  if (Platform.OS !== 'web') {
+    focusManager.setFocused(status === 'active');
+  }
+}
+
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
 
   useReactNavigationDevTools(navigationRef);
+  useReactQueryDevTools(queryClient);
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -50,16 +76,24 @@ function RootLayout() {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange);
+
+    return () => subscription.remove();
+  }, []);
+
   if (!loaded) {
     return null;
   }
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <QueryClientProvider client={queryClient}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
