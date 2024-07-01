@@ -140,7 +140,6 @@ async function updateDiscounts(date?: string) {
 }
 
 (async () => {
-  console.log('yahoo');
   // const dates = [
   //   '2024-05-03',
   //   '2024-04-30',
