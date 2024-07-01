@@ -1,19 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// eslint-disable-next-line import/order
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
-
-loadEnv();
-
-
-import {
-  fetchAllItems,
-  updateItem,
-  upsertCategory,
-  upsertDiscount,
-  upsertItem,
-} from '@cococom/supabase/libs';
-
+/* eslint-disable no-unused-vars */
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
@@ -22,6 +8,22 @@ import {
   getDateWithTimezone,
   getISOTimeStringWithTimezone,
 } from '../libs/date.js';
+import { supabase } from '../libs/supabase.js';
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
+
+loadEnv();
+
+
+
+const {
+  fetchAllItems,
+  updateItem,
+  upsertCategory,
+  upsertDiscount,
+  upsertItem,
+} = supabase
+
+
 
 
 const newItems = [];
