@@ -2,8 +2,9 @@
 
 // https://github.com/byCedric/expo-monorepo-example/blob/main/apps/mobile/metro.config.js
 
-const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const path = require('path');
+
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { FileStore } = require('metro-cache');
 
 // Find the project and workspace directories
@@ -14,8 +15,10 @@ const monorepoRoot = path.resolve(projectRoot, '../..');
 const config = getSentryExpoConfig(projectRoot);
 
 const monorepoPackages = {
-  //   "@acme/api": path.resolve(monorepoRoot, "packages/api"),
-  //   "@acme/components": path.resolve(monorepoRoot, "packages/components"),
+  '@cococom/supabase': path.resolve(monorepoRoot, 'packages/supabase'),
+  '@cococom/eslint-config': path.resolve(monorepoRoot, 'packages/eslint-config'),
+  '@cococom/prettier-config': path.resolve(monorepoRoot, 'packages/prettier-config'),
+  '@cococom/typescript-config': path.resolve(monorepoRoot, 'packages/typescript-config'),
 };
 
 // 1. Watch the local app folder, and only the shared packages (limiting the scope and speeding it up)
@@ -34,6 +37,9 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(monorepoRoot, 'node_modules'),
 ];
+
+config.resolver.unstable_enableSymlinks = true;
+config.resolver.unstable_enablePackageExports = true;
 
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
