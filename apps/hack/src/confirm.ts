@@ -1,8 +1,8 @@
 
-import { fetchData } from '@cococom/supabase/libs';
-
 import data from '../data/discounts.js';
+import { supabase } from '../libs/supabase.js';
 import { loadEnv } from '../libs/util.js';
+
 
 
 loadEnv();
@@ -14,7 +14,7 @@ async function confirmDiscounts() {
   console.log(data.discounts.length);
   for (const [index, discount] of data.discounts.entries()) {
     const hashKey = `${discount.productcode}_${discount.startdate}_${discount.enddate}`;
-    const response = await fetchData(
+    const response = await supabase.fetchData(
       {
         value: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
         column: 'discountHash',
