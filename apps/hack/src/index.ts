@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
+
+// eslint-disable-next-line import/order
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
+
+loadEnv();
+
+
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
@@ -9,19 +16,10 @@ import {
   getISOTimeStringWithTimezone,
 } from '../libs/date.js';
 import { supabase } from '../libs/supabase.js';
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
-
-loadEnv();
 
 
 
-const {
-  fetchAllItems,
-  updateItem,
-  upsertCategory,
-  upsertDiscount,
-  upsertItem,
-} = supabase
+
 
 
 
@@ -35,7 +33,7 @@ async function crawlAllItems() {
 
   for (const digit of digitsArray) {
     const items = await getSearchResults(digit, itemSet);
-    const result = await upsertItem(
+    const result = await supabase.upsertItem(
       items.map(item => {
         return {
           itemId: item.productcode,
@@ -52,12 +50,12 @@ async function crawlAllItems() {
 }
 
 async function crawlAllDiscounts() {
-  const items = await fetchAllItems();
+  const items = await supabase.fetchAllItems();
 
   for (const item of items) {
     const today = getDateString();
     const discounts = await getSearchResults2(item.itemId, today);
-    await upsertDiscount(
+    await supabase.upsertDiscount(
       discounts.map(discount => ({
         itemId: item.itemId,
         startDate: getISOTimeStringWithTimezone(discount.startdate),
@@ -72,7 +70,7 @@ async function crawlAllDiscounts() {
 }
 
 async function downloadAllImages() {
-  const items = await fetchAllItems();
+  const items = await supabase.fetchAllItems();
   const errors: { itemId: string; statusText: string }[] = [];
 
   for (const item of items) {
@@ -90,28 +88,26 @@ async function downloadAllImages() {
 }
 
 async function updateAllItemCategory() {
-  const items = await fetchAllItems();
+  const items = await supabase.fetchAllItems();
 
   for (const item of items) {
     const data = await getItem(item.itemId);
-    await updateItem({ categoryId: Number(data.category) }, item.id);
+    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
   }
 }
 
 async function createCategories() {
   const jsonData = readJsonFile('./data/category.json');
   for (const category of jsonData) {
-    await upsertCategory(category);
+    await supabase.upsertCategory(category);
   }
 }
 
 async function updateDiscounts(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
 
-  console.log(date || getDateString(), discounts.length);
 
-  console.log(discounts[0].productcode);
-  const newlyAddedItems = await upsertItem(
+  const newlyAddedItems = await supabase.upsertItem(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
       itemName: discount.productname,
@@ -120,7 +116,7 @@ async function updateDiscounts(date?: string) {
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
 
-  const newlyAddedDiscounts = await upsertDiscount(
+  const newlyAddedDiscounts = await supabase.upsertDiscount(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
       startDate: getISOTimeStringWithTimezone(discount.startdate),
@@ -139,7 +135,7 @@ async function updateDiscounts(date?: string) {
   for (const item of newlyAddedItems) {
     await downloadImage(item.itemId as string);
     const data = await getItem(item.itemId);
-    await updateItem({ categoryId: Number(data.category) }, item.id);
+    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
   }
 }
 
@@ -166,5 +162,5 @@ async function updateDiscounts(date?: string) {
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
-  // await updateDiscounts();
+  await updateDiscounts();
 })();
