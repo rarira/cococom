@@ -13,7 +13,9 @@
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
-        "SENTRY_PROJECT": "cococom-app"
+        "SENTRY_PROJECT": "cococom-app",
+        "ENV": "development-simulator",
+
       }
     },
     "development": {
