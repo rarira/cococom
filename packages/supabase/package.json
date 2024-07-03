@@ -3,7 +3,10 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts && pnpm build"
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts && pnpm build",
+    "sync": "supabase db dump --data-only -f supabase/seed.sql && supabase db reset"
   },
   "exports": {
     "./libs": {
