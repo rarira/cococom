@@ -11,7 +11,7 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "build:local:ios": "eas build --platform ios --profile development-simulator --local --non-interactive",
-    "eas-build-pre-install": "echo $GOOGLE_SERVICES_JSON | base64 --decode > ./assets/firebase/google-services.json && echo $GOOGLE_SERVICES_INFO | base64 --decode > ./assets/firebase/GoogleService-Info.plist",
+    "eas-build-pre-install": "node scripts/pre-install.js",
     "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled"
   },
   "jest": {
@@ -29,7 +29,7 @@
     "@sentry/react-native": "~5.22.0",
     "@shopify/flash-list": "1.6.4",
     "@tanstack/react-query": "^5.49.2",
-    "expo": "~51.0.16",
+    "expo": "~51.0.17",
     "expo-build-properties": "~0.12.3",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.19",
