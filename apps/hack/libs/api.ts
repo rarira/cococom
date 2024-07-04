@@ -1,4 +1,4 @@
-import { Api } from './axios';
+import { Api } from './axios.js';
 
 export type PostSearchApiResult = {
   productcode: string;

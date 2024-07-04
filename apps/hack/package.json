@@ -1,30 +1,31 @@
 {
+  "type": "module",
   "name": "@cococoom/data",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "migrate": "nodemon src/migrate.ts"
+    "start": "tsx watch src/index.ts",
+    "migrate": "tsx watch src/migrate.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@cococom/eslint-config": "workspace:*",
-    "@cococom/typescript-config": "workspace:*",
     "@cococom/prettier-config": "workspace:*",
+    "@cococom/typescript-config": "workspace:*",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.6.0",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.12.7",
-    "eslint": "^9.1.1",
-    "nodemon": "^3.1.0",
     "prisma": "^5.13.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.16.0",
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@cococom/supabase": "workspace:*",
     "@prisma/client": "^5.13.0",
-    "@supabase/supabase-js": "^2.43.5",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5"
