@@ -17,13 +17,6 @@ import {
 } from '../libs/date.js';
 import { supabase } from '../libs/supabase.js';
 
-
-
-
-
-
-
-
 const newItems = [];
 
 async function crawlAllItems() {
