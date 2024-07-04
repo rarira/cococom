@@ -1,6 +1,6 @@
 import { Supabase } from '@cococom/supabase/libs';
+import Constants from 'expo-constants';
 
-export const supabase = new Supabase(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!,
-);
+const { url, anonKey } = Constants.expoConfig?.extra?.supabase || {};
+
+export const supabase = new Supabase(url, anonKey);
