@@ -1,11 +1,11 @@
-import { Button, StyleSheet, Platform } from 'react-native';
+import analytics from '@react-native-firebase/analytics';
 import { Image } from 'expo-image';
+import { Button, StyleSheet, Platform } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import analytics from '@react-native-firebase/analytics';
 
 export default function HomeScreen() {
   return (
