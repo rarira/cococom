@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { loadEnv } from '../libs/util';
+import { loadEnv } from '../libs/util.js';
 
 loadEnv();
 
@@ -11,7 +11,7 @@ loadEnv();
 //   updateItemWithCategory,
 //   upsertItem,
 // } from '../libs/prisma';
-import { upsertCategory, upsertDiscount, upsertItem } from '../libs/supabase';
+// import { upsertCategory, upsertDiscount, upsertItem } from '../libs/supabase';
 
 (async () => {
   // const categories = await getAllCategories();
