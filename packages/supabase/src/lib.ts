@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 
 import { Database } from './types.js';
+
 // import { loadEnv } from './util.js';
 
 // loadEnv();
@@ -14,9 +16,8 @@ type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
 type InsertItem = Database['public']['Tables']['items']['Insert'];
 type insertCategory = Database['public']['Tables']['categories']['Insert'];
 
-
 export class Supabase {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database>;
 
   constructor(supabaseUrl: string, supabaseAnonKey: string) {
     this.supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
@@ -55,33 +56,47 @@ export class Supabase {
     return response.data;
   }
 
- async fetchAllItems() {
+  async fetchAllItems() {
     const { data, error } = await this.supabaseClient.from('items').select('*');
     return data;
   }
 
- async fetchAllDiscounts() {
+  async fetchAllDiscounts() {
     const { data, error } = await this.supabaseClient.from('discounts').select('*');
     return data;
   }
 
- async updateItem(
-    item: Database['public']['Tables']['items']['Update'],
-    id: number,
-  ) {
+  async fetchCurrentDiscounts() {
+    const currentTimestamp = new Date().toISOString().split('T')[0];
+
+    const { data, error } = await this.supabaseClient
+      .from('discounts')
+      .select(`*, items(*)`)
+      .filter('startDate', 'lte', currentTimestamp)
+      .filter('endDate', 'gte', currentTimestamp);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
+  async updateItem(item: Database['public']['Tables']['items']['Update'], id: number) {
     const { error } = await this.supabaseClient.from('items').update(item).eq('id', id);
   }
 
- async fetchData<T extends keyof Database['public']['Tables']>(
+  async fetchData<T extends keyof Database['public']['Tables']>(
     search: { value: string; column: string },
     tableName: T,
   ) {
-    const response = await this.supabaseClient.from(tableName).select('*').eq(search.column, search.value);
+    const response = await this.supabaseClient
+      .from(tableName)
+      .select('*')
+      .eq(search.column, search.value);
     return response;
   }
-
 }
-
 
 // export function upsertCategory(category: insertCategory | insertCategory[]) {
 //   return supabase

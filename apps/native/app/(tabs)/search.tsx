@@ -13,7 +13,6 @@ export default function TabTwoScreen() {
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.supabaseClient.from('categories').select('*');
-      console.log({ data });
     })();
   }, []);
 

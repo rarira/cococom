@@ -1,14 +1,10 @@
-
 import data from '../data/discounts.js';
 import { supabase } from '../libs/supabase.js';
 import { loadEnv } from '../libs/util.js';
 
-
-
 loadEnv();
 
 const errors = [];
-
 
 async function confirmDiscounts() {
   console.log(data.discounts.length);
