@@ -1,42 +1,31 @@
-import analytics from '@react-native-firebase/analytics';
-import { Image } from 'expo-image';
-import { Button } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+import { useQuery } from '@tanstack/react-query';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { supabase } from '@/libs/supabase';
 
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['discounts'],
+    queryFn: () => supabase.fetchCurrentDiscounts(),
+  });
+
+  console.log({ data });
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <Button
-          title="Add To Basket"
-          onPress={async () =>
-            await analytics().logEvent('basket', {
-              id: 3745092,
-              item: 'mens grey t-shirt',
-              description: ['round neck', 'long sleeved'],
-              size: 'L',
-            })
-          }
-        />
-        <HelloWave />
-      </ThemedView>
-    </ParallaxScrollView>
+    <FlashList
+      data={data}
+      renderItem={({ item }) => (
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText>{item.id}</ThemedText>
+          <ThemedText>{item.itemId}</ThemedText>
+        </ThemedView>
+      )}
+      estimatedItemSize={44}
+    />
   );
 }
 
@@ -47,7 +36,8 @@ const stylesheet = createStyleSheet(theme => ({
     gap: 8,
   },
   stepContainer: {
-    gap: 8,
+    flex: 1,
+    border: `1px solid black`,
     marginBottom: 8,
   },
   reactLogo: {
