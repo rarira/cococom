@@ -1,25 +1,32 @@
+const commonTheme = {
+  spacing: {
+    sm: 4,
+    md: 6,
+    lg: 12,
+    xl: 16,
+  },
+  borderRadius: {
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+  },
+} as const;
+
 export const lightTheme = {
   colors: {
     typography: '#000000',
     background: '#ffffff',
+    shadow: '#AAAAAA',
   },
-  margins: {
-    sm: 2,
-    md: 4,
-    lg: 8,
-    xl: 12,
-  },
+  ...commonTheme,
 } as const;
 
 export const darkTheme = {
   colors: {
     typography: '#ffffff',
     background: '#000000',
+    shadow: '#333333',
   },
-  margins: {
-    sm: 2,
-    md: 4,
-    lg: 8,
-    xl: 12,
-  },
+  ...commonTheme,
 } as const;
