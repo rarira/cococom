@@ -29,6 +29,7 @@ export type Database = {
           discount: number
           discountHash: string
           discountPrice: number
+          discountRate: number | null
           endDate: string
           id: number
           itemId: string
@@ -39,6 +40,7 @@ export type Database = {
           discount: number
           discountHash: string
           discountPrice: number
+          discountRate?: number | null
           endDate: string
           id?: number
           itemId: string
@@ -49,6 +51,7 @@ export type Database = {
           discount?: number
           discountHash?: string
           discountPrice?: number
+          discountRate?: number | null
           endDate?: string
           id?: number
           itemId?: string
@@ -67,22 +70,28 @@ export type Database = {
       }
       items: {
         Row: {
+          bestDiscountRate: number | null
           categoryId: number | null
           id: number
           itemId: string
           itemName: string | null
+          lowestPrice: number | null
         }
         Insert: {
+          bestDiscountRate?: number | null
           categoryId?: number | null
           id?: number
           itemId: string
           itemName?: string | null
+          lowestPrice?: number | null
         }
         Update: {
+          bestDiscountRate?: number | null
           categoryId?: number | null
           id?: number
           itemId?: string
           itemName?: string | null
+          lowestPrice?: number | null
         }
         Relationships: [
           {
@@ -96,7 +105,50 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      discount_rate_view: {
+        Row: {
+          discount: number | null
+          discount_rate: number | null
+          discountHash: string | null
+          discountPrice: number | null
+          endDate: string | null
+          id: number | null
+          itemId: string | null
+          price: number | null
+          startDate: string | null
+        }
+        Insert: {
+          discount?: number | null
+          discount_rate?: never
+          discountHash?: string | null
+          discountPrice?: number | null
+          endDate?: string | null
+          id?: number | null
+          itemId?: string | null
+          price?: number | null
+          startDate?: string | null
+        }
+        Update: {
+          discount?: number | null
+          discount_rate?: never
+          discountHash?: string | null
+          discountPrice?: number | null
+          endDate?: string | null
+          id?: number | null
+          itemId?: string | null
+          price?: number | null
+          startDate?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discounts_itemId_fkey"
+            columns: ["itemId"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["itemId"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
