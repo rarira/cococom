@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 
-import { Database } from './merged-types';
+import { Database } from './types';
 
 // import { loadEnv } from './util.js';
 
@@ -72,7 +72,7 @@ export class Supabase {
     const { data, error } = await this.supabaseClient
       .from('discounts')
       // eslint-disable-next-line prettier/prettier
-      .select(`*,items(*, categories(*), discount_rate_view(*))`)
+      .select(`*,items(*, categories(*), discounts(*))`)
       .filter('startDate', 'lte', currentTimestamp)
       .filter('endDate', 'gte', currentTimestamp);
 
@@ -94,7 +94,8 @@ export class Supabase {
     const response = await this.supabaseClient
       .from(tableName)
       .select('*')
-      .eq(search.column, search.value);
+      .eq(search.column, search.value)
+      .single();
     return response;
   }
 }
