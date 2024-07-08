@@ -2,10 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 // eslint-disable-next-line import/order
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
-
-loadEnv();
-
+import { Tables } from '@cococom/supabase/types';
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
@@ -15,8 +12,9 @@ import {
   getISOTimeStringWithTimezone,
 } from '../libs/date.js';
 import { supabase } from '../libs/supabase.js';
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
-import { Tables } from '@cococom/supabase/types';
+loadEnv();
 
 const newItems = [];
 
@@ -124,6 +122,20 @@ async function updateDiscounts(date?: string) {
 
   console.log(`${newlyAddedDiscounts?.length ?? 0} new discounts added`);
 
+  if (newlyAddedItems?.length) {
+    const noImages = [];
+    for (const item of newlyAddedItems) {
+      try {
+        await downloadImage(item.itemId as string);
+      } catch (e) {
+        console.log('error downloading image', item.itemId);
+        noImages.push(item.itemId);
+      }
+      const data = await getItem(item.itemId);
+      await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+    }
+  }
+
   if (newlyAddedDiscounts?.length) {
     for (const newlyAddedDiscount of newlyAddedDiscounts) {
       const response = await supabase.fetchData(
@@ -154,14 +166,6 @@ async function updateDiscounts(date?: string) {
 
       await supabase.updateItem(update, response.data.id);
     }
-  }
-
-  if (!newlyAddedItems?.length) return;
-
-  for (const item of newlyAddedItems) {
-    await downloadImage(item.itemId as string);
-    const data = await getItem(item.itemId);
-    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
   }
 }
 

@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx watch src/index.ts",
-    "migrate": "tsx watch src/migrate.ts"
+    "start": "tsx src/index.ts",
+    "migrate": "tsx src/migrate.ts"
   },
   "keywords": [],
   "author": "",

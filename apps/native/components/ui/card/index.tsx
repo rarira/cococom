@@ -14,15 +14,6 @@ const stylesheets = createStyleSheet(theme => ({
     border: `1px solid ${theme.colors.typography}`,
     backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.lg,
-    shadowColor: theme.colors.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
 }));
 
