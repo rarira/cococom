@@ -1,37 +1,44 @@
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ThemedText } from '@/components/_old/ThemedText';
-import { ThemedView } from '@/components/_old/ThemedView';
-import Card from '@/components/ui/card';
+import ListItemCard from '@/components/ui/card/list-item';
 import { supabase } from '@/libs/supabase';
+
+function fetchCurrentDiscounts() {
+  return supabase.fetchCurrentDiscounts();
+}
+
+export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['discounts'],
-    queryFn: () => supabase.fetchCurrentDiscounts(),
+    queryFn: () => fetchCurrentDiscounts(),
   });
+
+  const renderItem = useCallback(
+    ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
+      return <ListItemCard item={item} index={index} numColumns={3} />;
+    },
+    [],
+  );
+
+  if (!data || error || isLoading) return null;
 
   return (
     // <View style={{ flex: 1 }}>
     //   <Text>Adaptive themes are {UnistylesRuntime.hasAdaptiveThemes ? 'enabled' : 'disabled'}</Text>
     <FlashList
       data={data}
-      renderItem={({ item, index }) => (
-        <Card style={styles.cardStyle(index % 2 === 0)}>
-          <ThemedView style={styles.stepContainer}>
-            <ThemedText>{item.id}</ThemedText>
-            <ThemedText>{item.itemId}</ThemedText>
-          </ThemedView>
-        </Card>
-      )}
-      keyExtractor={item => item.id + ''}
+      renderItem={renderItem}
       estimatedItemSize={600}
-      numColumns={2}
+      keyExtractor={item => item.id.toString()}
+      numColumns={3}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
       contentContainerStyle={styles.flashListContainer}
     />
@@ -40,17 +47,14 @@ export default function HomeScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  stepContainer: {
-    padding: theme.spacing.lg,
-  },
   flashListContainer: {
     padding: theme.spacing.xl,
   },
   seperatorStyle: {
     height: theme.spacing.md * 2,
   },
-  cardStyle: (isEven: boolean) => ({
-    marginRight: isEven ? theme.spacing.md : 0,
-    marginLeft: isEven ? 0 : theme.spacing.md,
-  }),
+  // cardStyle: (isEven: boolean) => ({
+  //   marginRight: isEven ? theme.spacing.md : 0,
+  //   marginLeft: isEven ? 0 : theme.spacing.md,
+  // }),
 }));
