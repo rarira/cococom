@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@cococoom/data",
-  "version": "2.0.0-alpha.coc-3",
+  "version": "2.0.1-beta",
   "description": "",
   "main": "index.js",
   "scripts": {
