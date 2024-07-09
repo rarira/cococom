@@ -12,7 +12,7 @@ function ProductCardThumbnailImage({ product }: { product: Tables<'items'> }) {
         source="https://picsum.photos/80/80"
         contentFit="cover"
         alt={`${product.itemName} thumbnail image`}
-        style={{ flex: 1 }}
+        style={{ flex: 1, aspectRatio: 1 / 1 }}
       />
     </View>
   );
@@ -20,10 +20,9 @@ function ProductCardThumbnailImage({ product }: { product: Tables<'items'> }) {
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
-    width: 80,
-    height: 80,
-    borderRadius: theme.borderRadius.md,
+    width: '100%',
     overflow: 'hidden',
+    aspectRatio: 1 / 1,
   },
 }));
 
