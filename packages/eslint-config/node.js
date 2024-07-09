@@ -10,7 +10,7 @@ module.exports = {
     "eslint:recommended",
     "turbo",
   ],
-  plugins: ["import"],
+  plugins: ["import", "prettier"],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: "module",
@@ -27,6 +27,7 @@ module.exports = {
     },
   },
   rules: {
+    "prettier/prettier": "error",
     "import/order": [
       "error",
       {
