@@ -2,11 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 // eslint-disable-next-line import/order
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
-
-loadEnv();
-
-
+import { Tables } from '@cococom/supabase/types';
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
@@ -16,13 +12,9 @@ import {
   getISOTimeStringWithTimezone,
 } from '../libs/date.js';
 import { supabase } from '../libs/supabase.js';
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
-
-
-
-
-
-
+loadEnv();
 
 const newItems = [];
 
@@ -106,7 +98,6 @@ async function createCategories() {
 async function updateDiscounts(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
 
-
   const newlyAddedItems = await supabase.upsertItem(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
@@ -125,17 +116,56 @@ async function updateDiscounts(date?: string) {
       discount: discount.discount,
       discountPrice: discount.discountprice,
       discountHash: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
+      discountRate: discount.price ? discount.discount / discount.price : null,
     })),
   );
 
   console.log(`${newlyAddedDiscounts?.length ?? 0} new discounts added`);
 
-  if (!newlyAddedItems?.length) return;
+  if (newlyAddedItems?.length) {
+    const noImages = [];
+    for (const item of newlyAddedItems) {
+      try {
+        await downloadImage(item.itemId as string);
+      } catch (e) {
+        console.log('error downloading image', item.itemId);
+        noImages.push(item.itemId);
+      }
+      const data = await getItem(item.itemId);
+      await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+    }
+  }
 
-  for (const item of newlyAddedItems) {
-    await downloadImage(item.itemId as string);
-    const data = await getItem(item.itemId);
-    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+  if (newlyAddedDiscounts?.length) {
+    for (const newlyAddedDiscount of newlyAddedDiscounts) {
+      const response = await supabase.fetchData(
+        { value: newlyAddedDiscount.itemId, column: 'itemId' },
+        'items',
+      );
+
+      if (!response?.data) throw new Error('Item not found');
+
+      const update: Partial<Tables<'items'>> = {};
+
+      if (
+        newlyAddedDiscount.discountRate &&
+        response.data.bestDiscountRate &&
+        newlyAddedDiscount.discountRate > response.data.bestDiscountRate
+      ) {
+        update.bestDiscountRate = newlyAddedDiscount.discountRate;
+      }
+
+      if (
+        !response.data.lowestPrice ||
+        newlyAddedDiscount.discountPrice < response.data.lowestPrice
+      ) {
+        update.lowestPrice = newlyAddedDiscount.discountPrice;
+      }
+
+      if (Object.keys(update).length === 0) continue;
+
+      await supabase.updateItem(update, response.data.id);
+    }
   }
 }
 
