@@ -13,6 +13,8 @@ function fetchCurrentDiscounts() {
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
+const NumberOfColumns = 3;
+
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
@@ -23,7 +25,7 @@ export default function HomeScreen() {
 
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <ListItemCard item={item} index={index} numColumns={3} />;
+      return <ListItemCard item={item} numColumns={NumberOfColumns} />;
     },
     [],
   );
@@ -38,23 +40,19 @@ export default function HomeScreen() {
       renderItem={renderItem}
       estimatedItemSize={600}
       keyExtractor={item => item.id.toString()}
-      numColumns={3}
+      numColumns={NumberOfColumns}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-      contentContainerStyle={styles.flashListContainer}
+      contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1)}
     />
     // </View>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  flashListContainer: {
-    padding: theme.spacing.xl,
-  },
+  flashListContainer: (isMultiColumn: boolean) => ({
+    padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
+  }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
   },
-  // cardStyle: (isEven: boolean) => ({
-  //   marginRight: isEven ? theme.spacing.md : 0,
-  //   marginLeft: isEven ? 0 : theme.spacing.md,
-  // }),
 }));
