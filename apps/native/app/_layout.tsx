@@ -1,9 +1,9 @@
 import type { AppStateStatus } from 'react-native';
 
+import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import NetInfo from '@react-native-community/netinfo';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {
   QueryClient,
@@ -18,8 +18,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { AppState, Platform } from 'react-native';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,8 +27,6 @@ SplashScreen.preventAutoHideAsync();
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
 const queryClient = new QueryClient();
-
-console.log({ env: process.env });
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
@@ -61,10 +59,11 @@ function RootLayout() {
   useReactNavigationDevTools(navigationRef);
   useReactQueryDevTools(queryClient);
 
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  const { styles } = useStyles(stylesheet);
 
   useEffect(() => {
     if (navigationRef) {
@@ -89,15 +88,26 @@ function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <QueryClientProvider client={queryClient}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }
+
+const stylesheet = createStyleSheet(theme => {
+  return {
+    safeAreaContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+  };
+});
 
 export default Sentry.wrap(RootLayout);
