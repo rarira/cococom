@@ -1,36 +1,32 @@
-import { View } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { CurrentDiscounts } from '@/app/(tabs)';
-import { ThemedText } from '@/components/_old/ThemedText';
 
 import Card from '..';
 import ProductCardThumbnailImage from '../../image/product-card-thumbnail';
+import Text from '../../text';
 
 function ListItemCard({
   item,
-  index,
   numColumns = 1,
+  containerStyle,
 }: {
   item: Awaited<CurrentDiscounts>[number];
-  index: number;
   numColumns?: number;
+  containerStyle?: StyleProp<ViewStyle>;
 }) {
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Card
-      style={styles.cardContainer({
-        needMargin: numColumns > 1,
-        first: index % numColumns === 0,
-        last: index % numColumns === numColumns - 1,
-      })}
-    >
+    <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
       <View style={styles.itemContainer(numColumns === 1)}>
         <ProductCardThumbnailImage product={item.items!} />
         <View>
-          <ThemedText>{item.items?.itemName}</ThemedText>
-          <ThemedText>{item.discountPrice}</ThemedText>
+          <Text style={styles.itemNameText} numberOfLines={3}>
+            {item.items?.itemName}
+          </Text>
+          <Text>{item.discountPrice}</Text>
         </View>
       </View>
     </Card>
@@ -38,17 +34,9 @@ function ListItemCard({
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  cardContainer: ({
-    first,
-    last,
-    needMargin,
-  }: {
-    first: boolean;
-    last: boolean;
-    needMargin: boolean;
-  }) => ({
-    marginRight: last ? 0 : theme.spacing.md,
-    marginLeft: first ? 0 : theme.spacing.md,
+  cardContainer: (needMargin: boolean) => ({
+    height: 200,
+    marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
     overflow: 'hidden',
     shadowColor: theme.colors.shadow,
@@ -66,8 +54,11 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: row ? 'space-between' : 'flex-start',
     alignItems: 'center',
     gap: theme.spacing.md,
-    padding: theme.spacing.lg,
   }),
+  itemNameText: {
+    fontSize: theme.fontSize.sm,
+    lineHeight: 15,
+  },
 }));
 
 export default ListItemCard;
