@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SupabaseClient, createClient } from '@supabase/supabase-js';
+import { SupabaseClient, SupabaseClientOptions, createClient } from '@supabase/supabase-js';
 
 import { Database } from './types';
 
@@ -19,8 +19,12 @@ type insertCategory = Database['public']['Tables']['categories']['Insert'];
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
 
-  constructor(supabaseUrl: string, supabaseAnonKey: string) {
-    this.supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
+  constructor(
+    supabaseUrl: string,
+    supabaseAnonKey: string,
+    options?: SupabaseClientOptions<'public'>,
+  ) {
+    this.supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, options);
   }
 
   async upsertCategory(category: insertCategory | insertCategory[]) {

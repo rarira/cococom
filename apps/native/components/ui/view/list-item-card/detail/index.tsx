@@ -1,14 +1,13 @@
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { ListItemCardProps } from '@/components/ui/card/list-item';
+import Text from '@/components/ui/text';
+import DiscountPeriodText from '@/components/ui/text/discount-period';
+import DiscountRateText from '@/components/ui/text/discount-rate';
+import SuperscriptWonText from '@/components/ui/text/superscript-won';
+import ListItemCardChipsView from '@/components/ui/view/list-item-card/chips';
 import Util from '@/libs/util';
-
-import { ListItemCardProps } from '../../../card/list-item';
-import Text from '../../../text';
-import DiscountPeriodText from '../../../text/discount-period';
-import DiscountRateText from '../../../text/discount-rate';
-import SuperscriptWonText from '../../../text/superscript-won';
-import ListItemCardChipsView from '../chips';
 
 interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
 
