@@ -4,30 +4,28 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { CurrentDiscounts } from '@/app/(tabs)';
 
 import Card from '..';
-import ProductCardThumbnailImage from '../../image/product-card-thumbnail';
-import Text from '../../text';
+import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
+import ListItemCardDetailView from '../../view/list-item-card/detail';
 
-function ListItemCard({
-  item,
-  numColumns = 1,
-  containerStyle,
-}: {
-  item: Awaited<CurrentDiscounts>[number];
+export interface ListItemCardProps {
+  discount: Awaited<CurrentDiscounts>[number];
   numColumns?: number;
   containerStyle?: StyleProp<ViewStyle>;
-}) {
+}
+
+function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCardProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
     <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
       <View style={styles.itemContainer(numColumns === 1)}>
-        <ProductCardThumbnailImage product={item.items!} />
-        <View>
-          <Text style={styles.itemNameText} numberOfLines={3}>
-            {item.items?.itemName}
-          </Text>
-          <Text>{item.discountPrice}</Text>
-        </View>
+        <ProductCardThumbnailImage
+          product={discount.items!}
+          width={110}
+          height={110}
+          // style={styles.thumbnail}
+        />
+        <ListItemCardDetailView discount={discount} />
       </View>
     </Card>
   );
@@ -35,9 +33,8 @@ function ListItemCard({
 
 const stylesheet = createStyleSheet(theme => ({
   cardContainer: (needMargin: boolean) => ({
-    height: 200,
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.borderRadius.sm,
     overflow: 'hidden',
     shadowColor: theme.colors.shadow,
     shadowOffset: {
@@ -55,10 +52,6 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     gap: theme.spacing.md,
   }),
-  itemNameText: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: 15,
-  },
 }));
 
 export default ListItemCard;
