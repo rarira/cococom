@@ -1,8 +1,14 @@
 import { ReactNode } from 'react';
-import { View, ViewStyle } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-function Card({ children, style }: { children: ReactNode; style?: ViewStyle }): JSX.Element {
+function Card({
+  children,
+  style,
+}: {
+  children: ReactNode;
+  style?: StyleProp<ViewStyle>;
+}): JSX.Element {
   const { styles } = useStyles(stylesheets);
 
   return <View style={[styles.container, style]}>{children}</View>;
