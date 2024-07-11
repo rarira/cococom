@@ -8,6 +8,7 @@ export default function useSession() {
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      console.log('hook', { session });
       setSession(session);
     });
 
