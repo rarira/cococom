@@ -1,7 +1,7 @@
 {
   "name": "@cococom/mobile",
   "main": "index.ts",
-  "version": "1.1.2-alpha.coc-4",
+  "version": "1.1.2-beta",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
