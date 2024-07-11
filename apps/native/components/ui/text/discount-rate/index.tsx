@@ -1,8 +1,7 @@
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/ui/text';
 import Util from '@/libs/util';
-
-import Text from '..';
 
 interface DiscountRateTextProps {
   discountRate: number;
