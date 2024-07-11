@@ -26,6 +26,8 @@ export const supabase = new Supabase(url, anonKey, {
   },
 });
 
+export const supabaseClient = supabase.supabaseClient;
+
 // Tells Supabase Auth to continuously refresh the session automatically
 // if the app is in the foreground. When this is added, you will continue
 // to receive `onAuthStateChange` events with the `TOKEN_REFRESHED` or
@@ -33,8 +35,8 @@ export const supabase = new Supabase(url, anonKey, {
 // only be registered once.
 AppState.addEventListener('change', state => {
   if (state === 'active') {
-    supabase.supabaseClient.auth.startAutoRefresh();
+    supabaseClient.auth.startAutoRefresh();
   } else {
-    supabase.supabaseClient.auth.stopAutoRefresh();
+    supabaseClient.auth.stopAutoRefresh();
   }
 });
