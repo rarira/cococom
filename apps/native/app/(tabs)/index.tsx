@@ -13,7 +13,7 @@ function fetchCurrentDiscounts() {
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
-const NumberOfColumns = 3;
+const NumberOfColumns = 1;
 
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
@@ -25,7 +25,7 @@ export default function HomeScreen() {
 
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <ListItemCard item={item} numColumns={NumberOfColumns} />;
+      return <ListItemCard discount={item} numColumns={NumberOfColumns} />;
     },
     [],
   );
