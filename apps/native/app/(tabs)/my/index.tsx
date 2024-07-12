@@ -10,6 +10,7 @@ export default function MyScreen() {
 
   const session = useSession();
 
+  console.log({ session });
   return (
     <View style={styles.container}>
       {!session && (
