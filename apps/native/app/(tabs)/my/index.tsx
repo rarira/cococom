@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,10 +10,14 @@ export default function MyScreen() {
 
   const session = useSession();
 
-  console.log({ session });
   return (
     <View style={styles.container}>
-      <Text>{typeof session}</Text>
+      {!session && (
+        <View>
+          <Text>Not logged in</Text>
+          <Link href="/auth-modal/signin">Sign In</Link>
+        </View>
+      )}
     </View>
   );
 }
