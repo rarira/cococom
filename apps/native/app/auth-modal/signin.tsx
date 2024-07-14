@@ -44,7 +44,8 @@ export default function SignInScreen() {
   }
 
   async function signInWithKakao() {
-    login();
+    const result = await login();
+    console.log({ result });
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'kakao',
     });
