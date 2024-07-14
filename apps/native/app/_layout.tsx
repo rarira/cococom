@@ -1,5 +1,7 @@
 import type { AppStateStatus } from 'react-native';
 
+import Constants from 'expo-constants';
+
 import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
@@ -24,7 +26,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export { ErrorBoundary } from 'expo-router';
 
-initializeKakaoSDK('{{ native app key }}');
+initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
