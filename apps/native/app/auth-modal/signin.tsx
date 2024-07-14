@@ -42,6 +42,14 @@ export default function SignInScreen() {
     setLoading(false);
   }
 
+  async function signInWithKakao() {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'kakao',
+    });
+
+    console.log({ data });
+  }
+
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
@@ -71,6 +79,9 @@ export default function SignInScreen() {
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
+      </View>
+      <View style={styles.verticallySpaced}>
+        <Button title="Sign in with kakao" disabled={loading} onPress={signInWithKakao} />
       </View>
       <View style={styles.verticallySpaced}>
         <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
