@@ -1,3 +1,4 @@
+import { login } from '@react-native-kakao/user';
 import React, { useState } from 'react';
 import { Alert, Button, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -43,6 +44,7 @@ export default function SignInScreen() {
   }
 
   async function signInWithKakao() {
+    login();
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'kakao',
     });
