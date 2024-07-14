@@ -1,9 +1,10 @@
 import { Link } from 'expo-router';
-import { View } from 'react-native';
+import { Button, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
 import useSession from '@/hooks/useSession';
+import { supabaseClient } from '@/libs/supabase';
 
 export default function MyScreen() {
   const { styles } = useStyles(stylesheet);
@@ -11,12 +12,19 @@ export default function MyScreen() {
   const session = useSession();
 
   console.log({ session });
+
   return (
     <View style={styles.container}>
-      {!session && (
+      {!session ? (
         <View>
           <Text>Not logged in</Text>
           <Link href="/auth-modal/signin">Sign In</Link>
+        </View>
+      ) : (
+        <View>
+          <Text>Logged in</Text>
+          <Text>{session.user.user_metadata.nickname}</Text>
+          <Button title="Sign out" onPress={() => supabaseClient.auth.signOut()} />
         </View>
       )}
     </View>

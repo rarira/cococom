@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Alert, Button, TextInput, View } from 'react-native';
+import { Alert, Button, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import TextInput from '@/components/ui/text-input';
 import { supabaseClient } from '@/libs/supabase';
 
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
@@ -30,6 +32,9 @@ export default function SignInScreen() {
     } = await supabaseClient.auth.signUp({
       email: email,
       password: password,
+      options: {
+        data: { nickname },
+      },
     });
 
     if (error) Alert.alert(error.message);
@@ -53,6 +58,14 @@ export default function SignInScreen() {
           value={password}
           secureTextEntry={true}
           placeholder="Password"
+          autoCapitalize={'none'}
+        />
+      </View>
+      <View style={styles.verticallySpaced}>
+        <TextInput
+          onChangeText={text => setNickname(text)}
+          value={nickname}
+          placeholder="Nickname"
           autoCapitalize={'none'}
         />
       </View>
