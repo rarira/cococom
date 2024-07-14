@@ -31,6 +31,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ios: {
           useFrameworks: 'static',
         },
+        android: {
+          extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
+        },
+      },
+    ],
+    [
+      '@react-native-kakao/core',
+      {
+        nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
+        android: {
+          authCodeHandlerActivity: true,
+        },
+        ios: {
+          handleKakaoOpenUrl: true,
+        },
       },
     ],
     './plugins',
@@ -54,6 +69,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         variant === 'LOCAL'
           ? process.env.SUPABASE_ANON_KEY
           : process.env[`SUPABASE_${variant}_ANON_KEY`],
+    },
+    kakao: {
+      nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
     },
   },
 });
