@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.5",
+    "@supabase/supabase-js": "^2.44.3",
     "dotenv": "^16.4.5",
     "type-fest": "^4.21.0"
   },
@@ -28,7 +28,7 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
-    "supabase": "^1.178.2",
+    "supabase": "^1.183.5",
     "typescript": "latest"
   }
 }
