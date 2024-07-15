@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SupabaseClient, SupabaseClientOptions, createClient } from '@supabase/supabase-js';
+import {
+  PostgrestSingleResponse,
+  SignInWithIdTokenCredentials,
+  SignInWithPasswordCredentials,
+  SignUpWithPasswordCredentials,
+  SupabaseClient,
+  SupabaseClientOptions,
+  createClient,
+} from '@supabase/supabase-js';
 
 import { Database } from './types';
 
@@ -27,6 +35,7 @@ export class Supabase {
     this.supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, options);
   }
 
+  // Query Methods
   async upsertCategory(category: insertCategory | insertCategory[]) {
     return this.supabaseClient
       .from('categories')
@@ -89,75 +98,34 @@ export class Supabase {
 
   async updateItem(item: Database['public']['Tables']['items']['Update'], id: number) {
     const { error } = await this.supabaseClient.from('items').update(item).eq('id', id);
+    return error;
   }
 
   async fetchData<T extends keyof Database['public']['Tables']>(
     search: { value: string; column: string },
     tableName: T,
-  ) {
-    const response = await this.supabaseClient
+  ): Promise<PostgrestSingleResponse<Database['public']['Tables'][T]['Row']>> {
+    return await this.supabaseClient
       .from(tableName)
       .select('*')
       .eq(search.column, search.value)
       .single();
-    return response;
+  }
+
+  // Auth Methods
+  async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
+    return await this.supabaseClient.auth.signUp(credentials);
+  }
+
+  async signInWithEmail(credentials: SignInWithPasswordCredentials) {
+    return await this.supabaseClient.auth.signInWithPassword(credentials);
+  }
+
+  async signInWithIdToken(credentials: SignInWithIdTokenCredentials) {
+    return await this.supabaseClient.auth.signInWithIdToken(credentials);
+  }
+
+  async signOut() {
+    return await this.supabaseClient.auth.signOut();
   }
 }
-
-// export function upsertCategory(category: insertCategory | insertCategory[]) {
-//   return supabase
-//     .from('categories')
-//     .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
-// }
-
-// export async function upsertItem(item: InsertItem | InsertItem[]) {
-//   const response = await supabase
-//     .from('items')
-//     .upsert(item as any, { ignoreDuplicates: true, onConflict: 'itemId' })
-//     .select();
-
-//   if (response.error) {
-//     console.error(response.error);
-//   }
-//   return response.data;
-// }
-
-// export async function upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
-//   const response = await supabase
-//     .from('discounts')
-//     .upsert(discount as any, {
-//       ignoreDuplicates: true,
-//       onConflict: 'discountHash',
-//     })
-//     .select();
-
-//   if (response.error) {
-//     console.error(response.error);
-//   }
-//   return response.data;
-// }
-
-// export async function fetchAllItems() {
-//   const { data, error } = await supabase.from('items').select('*');
-//   return data;
-// }
-
-// export async function fetchAllDiscounts() {
-//   const { data, error } = await supabase.from('discounts').select('*');
-//   return data;
-// }
-
-// export async function updateItem(
-//   item: Database['public']['Tables']['items']['Update'],
-//   id: number,
-// ) {
-//   const { error } = await supabase.from('items').update(item).eq('id', id);
-// }
-
-// export async function fetchData<T extends keyof Database['public']['Tables']>(
-//   search: { value: string; column: string },
-//   tableName: T,
-// ) {
-//   const response = await supabase.from(tableName).select('*').eq(search.column, search.value);
-//   return response;
-// }
