@@ -4,7 +4,7 @@ import { Alert, Button, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TextInput from '@/components/ui/text-input';
-import { supabaseClient } from '@/libs/supabase';
+import { supabase } from '@/libs/supabase';
 
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
@@ -16,10 +16,7 @@ export default function SignInScreen() {
 
   async function signInWithEmail() {
     setLoading(true);
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    const { error } = await supabase.signInWithEmail({ email, password });
 
     if (error) Alert.alert(error.message);
     setLoading(false);
@@ -30,7 +27,7 @@ export default function SignInScreen() {
     const {
       data: { session },
       error,
-    } = await supabaseClient.auth.signUp({
+    } = await supabase.signUpWithEmail({
       email: email,
       password: password,
       options: {
@@ -45,12 +42,11 @@ export default function SignInScreen() {
 
   async function signInWithKakao() {
     const result = await login();
-    console.log({ result });
-    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+    const { data, error } = await supabase.signInWithIdToken({
       provider: 'kakao',
+      token: result.idToken!, // OpenID Connect 활성화 필요
+      access_token: result.accessToken,
     });
-
-    console.log({ data });
   }
 
   return (
