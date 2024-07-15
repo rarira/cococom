@@ -4,7 +4,7 @@ import { loadEnv } from '../libs/util.js';
 
 loadEnv();
 
-const errors = [];
+const errors: unknown[] = [];
 
 async function confirmDiscounts() {
   console.log(data.discounts.length);
@@ -17,10 +17,10 @@ async function confirmDiscounts() {
       },
       'discounts',
     );
-    if (response.error || response.data.length === 0) {
+    if (response.error) {
       errors.push(discount);
     }
-    console.log({ index, hashKey, response: response.data.length });
+    console.log({ index, hashKey, response: response.data });
   }
 }
 
