@@ -9,7 +9,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database } from './types';
+import { Database } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -82,12 +82,28 @@ export class Supabase {
   async fetchCurrentDiscounts() {
     const currentTimestamp = new Date().toISOString().split('T')[0];
 
+    console.log({ currentTimestamp });
     const { data, error } = await this.supabaseClient
       .from('discounts')
       // eslint-disable-next-line prettier/prettier
-      .select(`*,items(*, categories(*), discounts(*))`)
+      .select(`*,items(*, categories(*), discounts(*), wishlists(count))`)
       .filter('startDate', 'lte', currentTimestamp)
       .filter('endDate', 'gte', currentTimestamp);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fetchCurrentDiscountsWithWishlistCount(userId?: string) {
+    const currentTimestamp = new Date().toISOString().split('T')[0];
+
+    const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
+      _current_time_stamp: currentTimestamp!,
+      _user_id: userId,
+    });
 
     if (error) {
       throw error;

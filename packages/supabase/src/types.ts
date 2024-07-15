@@ -103,55 +103,108 @@ export type Database = {
           },
         ]
       }
-    }
-    Views: {
-      discount_rate_view: {
+      profiles: {
         Row: {
-          discount: number | null
-          discount_rate: number | null
-          discountHash: string | null
-          discountPrice: number | null
-          endDate: string | null
-          id: number | null
-          itemId: string | null
-          price: number | null
-          startDate: string | null
+          id: string
+          nickname: string | null
         }
         Insert: {
-          discount?: number | null
-          discount_rate?: never
-          discountHash?: string | null
-          discountPrice?: number | null
-          endDate?: string | null
-          id?: number | null
-          itemId?: string | null
-          price?: number | null
-          startDate?: string | null
+          id: string
+          nickname?: string | null
         }
         Update: {
-          discount?: number | null
-          discount_rate?: never
-          discountHash?: string | null
-          discountPrice?: number | null
-          endDate?: string | null
-          id?: number | null
-          itemId?: string | null
-          price?: number | null
-          startDate?: string | null
+          id?: string
+          nickname?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "discounts_itemId_fkey"
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          id: string
+          itemId: number | null
+          userId: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          itemId?: number | null
+          userId?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          itemId?: number | null
+          userId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_wishlists_itemId_fkey"
             columns: ["itemId"]
             isOneToOne: false
             referencedRelation: "items"
-            referencedColumns: ["itemId"]
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_wishlists_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
     }
-    Functions: {
+    Views: {
       [_ in never]: never
+    }
+    Functions: {
+      get_discounts_with_wishlist_counts:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: {
+              id: number
+              itemId: string
+              startDate: string
+              endDate: string
+              price: number
+              discount: number
+              discountPrice: number
+              discountHash: string
+              discountRate: number
+              items: Json
+              totalWishlistCount: number
+              userWishlistCount: number
+            }[]
+          }
+        | {
+            Args: {
+              _current_time_stamp: string
+              _user_id: string
+            }
+            Returns: {
+              id: number
+              itemId: string
+              startDate: string
+              endDate: string
+              price: number
+              discount: number
+              discountPrice: number
+              discountHash: string
+              discountRate: number
+              items: Json
+              totalWishlistCount: number
+              userWishlistCount: number
+            }[]
+          }
     }
     Enums: {
       [_ in never]: never
@@ -243,3 +296,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+
