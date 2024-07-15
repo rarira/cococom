@@ -27,6 +27,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 export { ErrorBoundary } from 'expo-router';
 
 initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
