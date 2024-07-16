@@ -3,6 +3,7 @@ import type { AppStateStatus } from 'react-native';
 import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import * as Sentry from '@sentry/react-native';
@@ -22,6 +23,9 @@ import { AppState, Platform } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import ModalBackgroundView from '@/components/ui/view/modal-background';
+import { useUIStore } from '@/store/ui';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -70,6 +74,7 @@ function RootLayout() {
   });
 
   const { styles } = useStyles(stylesheet);
+  const { modalOpened } = useUIStore();
 
   useEffect(() => {
     if (navigationRef) {
@@ -97,17 +102,20 @@ function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen
-              name="auth-modal"
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-              }}
-            />
-          </Stack>
+          <PortalProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen
+                name="auth-modal"
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+              />
+            </Stack>
+            {modalOpened && <ModalBackgroundView />}
+          </PortalProvider>
         </SafeAreaView>
       </SafeAreaProvider>
     </QueryClientProvider>
