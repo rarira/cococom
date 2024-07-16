@@ -23,7 +23,7 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
     const isWishlistedByUser = !!discount.userWishlistCount;
     return {
       name: isWishlistedByUser ? 'star' : ('star-border' as any),
-      color: isWishlistedByUser ? theme.colors.alert : undefined,
+      color: isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
     };
   }, [discount.userWishlistCount, theme]);
 
