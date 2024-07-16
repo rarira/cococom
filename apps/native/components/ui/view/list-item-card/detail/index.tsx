@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/ui/button/icon';
 import { ListItemCardProps } from '@/components/ui/card/list-item';
 import Text from '@/components/ui/text';
 import DiscountPeriodText from '@/components/ui/text/discount-period';
@@ -12,7 +14,16 @@ import Util from '@/libs/util';
 interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
-  const { styles } = useStyles(stylesheets);
+  const { styles, theme } = useStyles(stylesheets);
+
+  const iconProps = useMemo(() => {
+    const isWishlistedByUser = !!discount.userWishlistCount;
+    return {
+      name: isWishlistedByUser ? 'star' : ('star-border' as any),
+      color: isWishlistedByUser ? theme.colors.alert : undefined,
+    };
+  }, [discount.userWishlistCount, theme]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
@@ -29,8 +40,13 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
           <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
         </View>
         <View style={styles.actionButtonContainer}>
-          <Text style={styles.textStyle}>리뷰: 1000개</Text>
-          <Text style={styles.textStyle}>좋아요: 100개</Text>
+          {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
+          <IconButton
+            text={discount.totalWishlistCount.toString()}
+            textStyle={styles.actionText}
+            iconProps={iconProps}
+            onPress={() => console.log('Wishlist button pressed')}
+          />
         </View>
       </View>
     </View>
@@ -58,7 +74,7 @@ const stylesheets = createStyleSheet(theme => ({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    marginTop: theme.spacing.md,
+    marginVertical: theme.spacing.md,
   },
   regularPriceText: {
     fontSize: theme.fontSize.xs,
@@ -78,7 +94,7 @@ const stylesheets = createStyleSheet(theme => ({
     justifyContent: 'flex-end',
     gap: theme.spacing.sm,
   },
-  textStyle: {
+  actionText: {
     fontSize: theme.fontSize.sm,
     lineHeight: theme.fontSize.sm,
     opacity: 0.8,

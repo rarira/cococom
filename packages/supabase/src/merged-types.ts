@@ -1,9 +1,13 @@
 import { MergeDeep } from 'type-fest';
 
-import { Database as DatabaseGenerated, Json } from './types';
+import { Database as DatabaseGenerated, Tables } from './types';
 
 export { type Json } from './types';
 
+export type JoinedItems = Tables<'items'> & {
+  categories: Tables<'categories'>;
+  discounts: Array<Tables<'discounts'>>;
+};
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
   DatabaseGenerated,
@@ -23,7 +27,7 @@ export type Database = MergeDeep<
                 discountPrice: number;
                 discountHash: string;
                 discountRate: number;
-                items: Json;
+                items: JoinedItems;
                 totalWishlistCount: number;
                 userWishlistCount: number;
               }[];
@@ -43,7 +47,7 @@ export type Database = MergeDeep<
                 discountPrice: number;
                 discountHash: string;
                 discountRate: number;
-                items: Json;
+                items: JoinedItems;
                 totalWishlistCount: number;
                 userWishlistCount: number;
               }[];
