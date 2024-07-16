@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
-import { ListItemCardProps } from '@/components/ui/card/list-item';
+import { ListItemCardProps } from '@/components/custom/card/list-item';
 import Chip from '@/components/ui/chip';
 import { 할인마감임박잔여일수 } from '@/constants/numbers';
 
