@@ -35,7 +35,7 @@ export type Database = MergeDeep<
           | {
               Args: {
                 _current_time_stamp: string;
-                _user_id?: string;
+                _user_id: string | null;
               };
               Returns: {
                 id: number;
