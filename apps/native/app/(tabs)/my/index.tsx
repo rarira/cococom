@@ -12,7 +12,6 @@ export default function MyScreen() {
 
   const session = useSession();
 
-  console.log({ session });
   const signOut = useCallback(async () => {
     await supabase.signOut();
   }, []);
