@@ -14,8 +14,7 @@ interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
-
-
+  return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
         {discount.items?.itemName}
@@ -80,7 +79,6 @@ const stylesheets = createStyleSheet(theme => ({
     justifyContent: 'flex-end',
     gap: theme.spacing.sm,
   },
-
 }));
 
 export default ListItemCardDetailView;
