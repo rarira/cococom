@@ -1,7 +1,5 @@
 import type { AppStateStatus } from 'react-native';
 
-import Constants from 'expo-constants';
-
 import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
@@ -15,6 +13,7 @@ import {
   onlineManager,
 } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
+import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';

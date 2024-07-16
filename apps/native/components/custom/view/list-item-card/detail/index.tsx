@@ -1,14 +1,13 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton from '@/components/ui/button/icon';
-import { ListItemCardProps } from '@/components/ui/card/list-item';
+import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import { ListItemCardProps } from '@/components/custom/card/list-item';
+import DiscountPeriodText from '@/components/custom/text/discount-period';
+import DiscountRateText from '@/components/custom/text/discount-rate';
+import SuperscriptWonText from '@/components/custom/text/superscript-won';
+import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
-import DiscountPeriodText from '@/components/ui/text/discount-period';
-import DiscountRateText from '@/components/ui/text/discount-rate';
-import SuperscriptWonText from '@/components/ui/text/superscript-won';
-import ListItemCardChipsView from '@/components/ui/view/list-item-card/chips';
 import Util from '@/libs/util';
 
 interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
@@ -16,15 +15,7 @@ interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
-  const iconProps = useMemo(() => {
-    const isWishlistedByUser = !!discount.userWishlistCount;
-    return {
-      name: isWishlistedByUser ? 'star' : ('star-border' as any),
-      color: isWishlistedByUser ? theme.colors.alert : undefined,
-    };
-  }, [discount.userWishlistCount, theme]);
 
-  return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
         {discount.items?.itemName}
@@ -41,12 +32,7 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
         </View>
         <View style={styles.actionButtonContainer}>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <IconButton
-            text={discount.totalWishlistCount.toString()}
-            textStyle={styles.actionText}
-            iconProps={iconProps}
-            onPress={() => console.log('Wishlist button pressed')}
-          />
+          <ListItemWishlistIconButton discount={discount} />
         </View>
       </View>
     </View>
@@ -94,11 +80,7 @@ const stylesheets = createStyleSheet(theme => ({
     justifyContent: 'flex-end',
     gap: theme.spacing.sm,
   },
-  actionText: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm,
-    opacity: 0.8,
-  },
+
 }));
 
 export default ListItemCardDetailView;
