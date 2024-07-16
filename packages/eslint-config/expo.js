@@ -17,9 +17,13 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: "react*",
-            group: "external",
-            position: "before",
+            pattern: '@(react|react-native)',
+            group: 'external',
+            position: 'before',
+          },
+          {
+            pattern: '@/**/**',
+            group: 'internal',
           },
         ],
         "newlines-between": "always",

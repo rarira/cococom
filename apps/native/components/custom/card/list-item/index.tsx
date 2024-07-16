@@ -3,8 +3,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { CurrentDiscounts } from '@/app/(tabs)';
 
-import Card from '..';
-import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
+import Card from '../../../ui/card';
+import ProductCardThumbnailImage from '../../list-item-card-thumbnail';
 import ListItemCardDetailView from '../../view/list-item-card/detail';
 
 export interface ListItemCardProps {
