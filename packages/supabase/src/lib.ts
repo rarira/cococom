@@ -102,10 +102,11 @@ export class Supabase {
 
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
-      _user_id: userId,
+      _user_id: userId ?? null,
     });
 
     if (error) {
+      console.log({ error });
       throw error;
     }
 
