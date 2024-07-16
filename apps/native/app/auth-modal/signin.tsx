@@ -1,4 +1,5 @@
 import { login } from '@react-native-kakao/user';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Button, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -7,6 +8,8 @@ import TextInput from '@/components/ui/text-input';
 import { supabase } from '@/libs/supabase';
 
 export default function SignInScreen() {
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
@@ -38,6 +41,7 @@ export default function SignInScreen() {
     if (error) Alert.alert(error.message);
     if (!session) Alert.alert('Please check your inbox for email verification!');
     setLoading(false);
+    router.dismiss();
   }
 
   async function signInWithKakao() {
@@ -47,6 +51,10 @@ export default function SignInScreen() {
       token: result.idToken!, // OpenID Connect 활성화 필요
       access_token: result.accessToken,
     });
+    if (!error) {
+      console.log('signInWithKakao will dismiss');
+      router.dismiss();
+    }
   }
 
   return (
