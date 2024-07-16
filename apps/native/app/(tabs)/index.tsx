@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ListItemCard from '@/components/ui/card/list-item';
+import ListItemCard from '@/components/custom/card/list-item';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 
