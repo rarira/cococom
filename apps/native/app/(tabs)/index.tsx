@@ -4,11 +4,12 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ListItemCard from '@/components/ui/card/list-item';
+import ListItemCard from '@/components/custom/card/list-item';
+import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 
-function fetchCurrentDiscounts() {
-  return supabase.fetchCurrentDiscounts();
+function fetchCurrentDiscounts(userId?: string) {
+  return supabase.fetchCurrentDiscountsWithWishlistCount(userId);
 }
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
@@ -18,11 +19,14 @@ const NumberOfColumns = 1;
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
+  const session = useSession();
+
   const { data, error, isLoading } = useQuery({
     queryKey: ['discounts'],
-    queryFn: () => fetchCurrentDiscounts(),
+    queryFn: () => fetchCurrentDiscounts(session?.user?.id),
   });
 
+  console.log('fetchDiscount', { data });
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
       return <ListItemCard discount={item} numColumns={NumberOfColumns} />;

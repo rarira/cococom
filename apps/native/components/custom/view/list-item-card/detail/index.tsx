@@ -1,19 +1,19 @@
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import { ListItemCardProps } from '@/components/custom/card/list-item';
+import DiscountPeriodText from '@/components/custom/text/discount-period';
+import DiscountRateText from '@/components/custom/text/discount-rate';
+import SuperscriptWonText from '@/components/custom/text/superscript-won';
+import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
+import Text from '@/components/ui/text';
 import Util from '@/libs/util';
-
-import { ListItemCardProps } from '../../../card/list-item';
-import Text from '../../../text';
-import DiscountPeriodText from '../../../text/discount-period';
-import DiscountRateText from '../../../text/discount-rate';
-import SuperscriptWonText from '../../../text/superscript-won';
-import ListItemCardChipsView from '../chips';
 
 interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
-  const { styles } = useStyles(stylesheets);
+  const { styles, theme } = useStyles(stylesheets);
   return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
@@ -30,8 +30,8 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
           <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
         </View>
         <View style={styles.actionButtonContainer}>
-          <Text style={styles.textStyle}>리뷰: 1000개</Text>
-          <Text style={styles.textStyle}>좋아요: 100개</Text>
+          {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
+          <ListItemWishlistIconButton discount={discount} />
         </View>
       </View>
     </View>
@@ -59,7 +59,7 @@ const stylesheets = createStyleSheet(theme => ({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    marginTop: theme.spacing.md,
+    marginVertical: theme.spacing.md,
   },
   regularPriceText: {
     fontSize: theme.fontSize.xs,
@@ -78,11 +78,6 @@ const stylesheets = createStyleSheet(theme => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     gap: theme.spacing.sm,
-  },
-  textStyle: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm,
-    opacity: 0.8,
   },
 }));
 
