@@ -21,8 +21,6 @@ export default function HomeScreen() {
 
   const session = useSession();
 
-  console.log({ session });
-
   const { data, error, isLoading } = useQuery({
     queryKey: ['discounts'],
     queryFn: () => fetchCurrentDiscounts(session?.user?.id),
