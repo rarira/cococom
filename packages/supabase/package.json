@@ -5,8 +5,10 @@
     "build": "tsc",
     "start": "supabase start",
     "stop": "supabase stop",
-    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts && pnpm build",
-    "sync": "supabase db dump --data-only -f supabase/seed.sql && supabase db reset"
+    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types --lang=typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts",
+    "update-types:local": "supabase gen types --lang=typescript --local --schema public > src/types.ts",
+    "sync:data": "supabase db dump --data-only -f supabase/seed.sql && supabase db reset",
+    "sync:schema": "supabase db diff -f local_schema && supabase db push"
   },
   "exports": {
     "./libs": {
@@ -14,12 +16,12 @@
       "default": "./dist/lib.js"
     },
     "./types": {
-      "types": "./src/types.ts",
-      "default": "./dist/types.js"
+      "types": "./src/merged-types.ts",
+      "default": "./dist/merged-types.js"
     }
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.5",
+    "@supabase/supabase-js": "^2.44.3",
     "dotenv": "^16.4.5",
     "type-fest": "^4.21.0"
   },
@@ -28,7 +30,7 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
-    "supabase": "^1.178.2",
+    "supabase": "^1.183.5",
     "typescript": "latest"
   }
 }
