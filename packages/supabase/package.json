@@ -15,8 +15,8 @@
       "default": "./dist/lib.js"
     },
     "./types": {
-      "types": "./src/types.ts",
-      "default": "./dist/types.js"
+      "types": "./src/merged-types.ts",
+      "default": "./dist/merged-types.js"
     }
   },
   "dependencies": {
