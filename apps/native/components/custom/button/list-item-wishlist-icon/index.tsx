@@ -1,13 +1,23 @@
-import { useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
+import { PortalHostNames } from '@/constants';
+import { useUIStore } from '@/store/ui';
+
+import NeedAuthDialog from '../../dialog/need-auth';
 
 interface ListItemWishlistIconButtonProps extends Pick<ListItemCardProps, 'discount'> {}
 
 function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
+  const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
+  const { toggleModalOpened } = useUIStore();
+
+  useLayoutEffect(() => {
+    toggleModalOpened();
+  }, [needAuthDialogVisible, toggleModalOpened]);
 
   const iconProps = useMemo(() => {
     const isWishlistedByUser = !!discount.userWishlistCount;
@@ -17,13 +27,26 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
     };
   }, [discount.userWishlistCount, theme]);
 
+  const handlePress = useCallback(() => {
+    setNeedAuthDialogVisible(true);
+  }, []);
+
   return (
-    <IconButton
-      text={discount.totalWishlistCount.toString()}
-      textStyle={styles.text}
-      iconProps={iconProps}
-      onPress={() => console.log('Wishlist button pressed')}
-    />
+    <>
+      <IconButton
+        text={discount.totalWishlistCount.toString()}
+        textStyle={styles.text}
+        iconProps={iconProps}
+        onPress={handlePress}
+      />
+      {needAuthDialogVisible && (
+        <NeedAuthDialog
+          portalHostName={PortalHostNames.HOME}
+          visible={needAuthDialogVisible}
+          setVisible={setNeedAuthDialogVisible}
+        />
+      )}
+    </>
   );
 }
 
