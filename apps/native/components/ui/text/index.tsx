@@ -28,7 +28,7 @@ const stylesheet = createStyleSheet(theme => {
     color: theme.colors.typography,
     fontSize: theme.fontSize.md,
     fontWeight: 'normal' as const,
-    lineHeight: theme.fontSize.md * 2,
+    lineHeight: theme.fontSize.md * 1.5,
   };
 
   return {

@@ -4,6 +4,7 @@ import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import NetInfo from '@react-native-community/netinfo';
+import { initializeKakaoSDK } from '@react-native-kakao/core';
 import * as Sentry from '@sentry/react-native';
 import {
   QueryClient,
@@ -12,6 +13,7 @@ import {
   onlineManager,
 } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
+import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -20,6 +22,10 @@ import { AppState, Platform } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+export { ErrorBoundary } from 'expo-router';
+
+initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -94,6 +100,13 @@ function RootLayout() {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen
+              name="auth-modal"
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
           </Stack>
         </SafeAreaView>
       </SafeAreaProvider>
