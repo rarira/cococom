@@ -1,3 +1,4 @@
+import { PortalHost } from '@gorhom/portal';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -5,6 +6,7 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemCard from '@/components/custom/card/list-item';
+import { PortalHostNames } from '@/constants';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 
@@ -26,7 +28,6 @@ export default function HomeScreen() {
     queryFn: () => fetchCurrentDiscounts(session?.user?.id),
   });
 
-  console.log('fetchDiscount', { data });
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
       return <ListItemCard discount={item} numColumns={NumberOfColumns} />;
@@ -37,22 +38,27 @@ export default function HomeScreen() {
   if (!data || error || isLoading) return null;
 
   return (
-    // <View style={{ flex: 1 }}>
-    //   <Text>Adaptive themes are {UnistylesRuntime.hasAdaptiveThemes ? 'enabled' : 'disabled'}</Text>
-    <FlashList
-      data={data}
-      renderItem={renderItem}
-      estimatedItemSize={600}
-      keyExtractor={item => item.id.toString()}
-      numColumns={NumberOfColumns}
-      ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-      contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1)}
-    />
-    // </View>
+    <>
+      <View style={styles.container}>
+        <FlashList
+          data={data}
+          renderItem={renderItem}
+          estimatedItemSize={600}
+          keyExtractor={item => item.id.toString()}
+          numColumns={NumberOfColumns}
+          ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
+          contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1)}
+        />
+      </View>
+      <PortalHost name={PortalHostNames.HOME} />
+    </>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    flex: 1,
+  },
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
   }),

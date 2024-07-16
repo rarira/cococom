@@ -40,6 +40,7 @@ config.resolver.nodeModulesPaths = [
 
 config.resolver.unstable_enableSymlinks = true;
 config.resolver.unstable_enablePackageExports = true;
+config.resolver.unstable_conditionNames = ['browser', 'require', 'react-native'];
 
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
