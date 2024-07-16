@@ -35,6 +35,7 @@ export const lightTheme = {
     tint: '#402E7A',
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
+    modalBackground: 'rgba(0, 0, 0, 0.5)',
   },
 } as const;
 
@@ -48,6 +49,7 @@ export const darkTheme = {
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
+    modalBackground: 'rgba(255, 255, 255, 0.5)',
   },
 } as const;
 
