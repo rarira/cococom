@@ -24,8 +24,6 @@ import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ModalBackgroundView from '@/components/ui/view/modal-background';
-import { useUIStore } from '@/store/ui';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -74,7 +72,6 @@ function RootLayout() {
   });
 
   const { styles } = useStyles(stylesheet);
-  const { modalOpened } = useUIStore();
 
   useEffect(() => {
     if (navigationRef) {
@@ -114,7 +111,6 @@ function RootLayout() {
                 }}
               />
             </Stack>
-            {modalOpened && <ModalBackgroundView />}
           </PortalProvider>
         </SafeAreaView>
       </SafeAreaProvider>

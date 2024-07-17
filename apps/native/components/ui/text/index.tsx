@@ -49,6 +49,7 @@ const stylesheet = createStyleSheet(theme => {
     subtitle: {
       ...commonStyles,
       fontSize: theme.fontSize.lg,
+      lineHeight: theme.fontSize.lg * 1.5,
       fontWeight: 'bold',
     },
     link: {
