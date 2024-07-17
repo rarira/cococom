@@ -1,9 +1,7 @@
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-interface ModalBackgroundViewProps {}
-
-function ModalBackgroundView({}: ModalBackgroundViewProps) {
+function ModalBackgroundView() {
   const { styles } = useStyles(stylesheet);
 
   return <View style={styles.container} />;
