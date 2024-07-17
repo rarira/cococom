@@ -21,7 +21,6 @@ const commonTheme = {
   colors: {
     link: '#0a7ea4',
     alert: '#ff0000',
-    shadow: '#333333',
   },
 } as const;
 
@@ -31,10 +30,12 @@ export const lightTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#11181C',
-    background: '#ffffff',
+    background: '#FFFFFF',
+    cardBackground: '#FAFAFA',
     tint: '#402E7A',
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
+    shadow: '#888888',
     modalBackground: 'rgba(0, 0, 0, 0.5)',
   },
 } as const;
@@ -45,11 +46,13 @@ export const darkTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#ECEDEE',
-    background: '#121212',
+    background: '#000000',
+    cardBackground: '#121212',
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
-    modalBackground: 'rgba(255, 255, 255, 0.5)',
+    shadow: '#111111',
+    modalBackground: 'rgba(0, 0, 0, 0.9)',
   },
 } as const;
 
