@@ -8,7 +8,7 @@ import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 
-interface DialogProps extends ModalProps {
+export interface DialogProps extends ModalProps {
   portalHostName: PortalHostNames;
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
