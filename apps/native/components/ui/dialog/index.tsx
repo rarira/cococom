@@ -17,7 +17,7 @@ interface DialogProps extends ModalProps {
   title: string;
   body: string;
   dismissButtonText?: string;
-  renderButtonGroup?: () => JSX.Element;
+  renderButtons?: () => JSX.Element;
 }
 
 function Dialog({
@@ -29,18 +29,25 @@ function Dialog({
   title,
   body,
   dismissButtonText = 'OK',
-  renderButtonGroup,
+  renderButtons,
   ...restProps
 }: DialogProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   const handleDismiss = useCallback(() => setVisible(false), [setVisible]);
 
-  const needToShowCloseButton = showCloseButton || !(renderButtonGroup || backdropDismiss);
+  const needToShowCloseButton = showCloseButton || !(renderButtons || backdropDismiss);
 
   return (
     <Portal hostName={portalHostName}>
-      <Modal visible={visible} animationType="fade" transparent hardwareAccelerated {...restProps}>
+      <Modal
+        visible={visible}
+        animationType="fade"
+        transparent
+        hardwareAccelerated
+        onRequestClose={handleDismiss}
+        {...restProps}
+      >
         <View style={styles.scrim}>
           {backdropDismiss && <Button onPress={handleDismiss} style={styles.backdropButton} />}
           <View style={styles.modal}>
@@ -48,9 +55,7 @@ function Dialog({
               {title}
             </Text>
             <Text style={styles.bodyText}>{body}</Text>
-            {!!renderButtonGroup && (
-              <View style={styles.modalButtonGroup}>{renderButtonGroup()}</View>
-            )}
+            {!!renderButtons && <View style={styles.modalButtonGroup}>{renderButtons()}</View>}
             {needToShowCloseButton && (
               <View style={styles.closeButtonContainer}>
                 <Button onPress={handleDismiss}>
@@ -98,13 +103,14 @@ const stylesheet = createStyleSheet(theme => ({
     color: theme.colors.tint,
   },
   bodyText: {
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.xl,
   },
   modalButtonGroup: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginBottom: theme.spacing.lg,
   },
   dismissButtonText: {
     color: theme.colors.link,
