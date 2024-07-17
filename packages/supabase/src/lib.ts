@@ -97,9 +97,7 @@ export class Supabase {
     return data;
   }
 
-  async fetchCurrentDiscountsWithWishlistCount(userId?: string) {
-    const currentTimestamp = new Date().toISOString().split('T')[0];
-
+  async fetchCurrentDiscountsWithWishlistCount(currentTimestamp: string, userId?: string) {
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
       _user_id: userId ?? null,
