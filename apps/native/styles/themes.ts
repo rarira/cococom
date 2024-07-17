@@ -16,7 +16,8 @@ const commonTheme = {
     sm: 12,
     md: 16,
     lg: 20,
-    xl: 32,
+    xl: 24,
+    xxl: 32,
   },
   colors: {
     link: '#0a7ea4',
@@ -32,11 +33,12 @@ export const lightTheme = {
     typography: '#11181C',
     background: '#FFFFFF',
     cardBackground: '#FAFAFA',
+    dialogBackground: '#FFFFFF',
     tint: '#402E7A',
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
     shadow: '#888888',
-    modalBackground: 'rgba(0, 0, 0, 0.5)',
+    scrim: 'rgba(0, 0, 0, 0.5)',
   },
 } as const;
 
@@ -48,11 +50,12 @@ export const darkTheme = {
     typography: '#ECEDEE',
     background: '#000000',
     cardBackground: '#121212',
+    dialogBackground: '#AAAAAA',
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
     shadow: '#111111',
-    modalBackground: 'rgba(0, 0, 0, 0.9)',
+    scrim: 'rgba(26,26,26, 0.6)',
   },
 } as const;
 
