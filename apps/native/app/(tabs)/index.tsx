@@ -1,4 +1,5 @@
 import { PortalHost } from '@gorhom/portal';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -25,6 +26,8 @@ export default function HomeScreen() {
 
   const session = useSession();
 
+  const tabBarHeight = useBottomTabBarHeight();
+
   const { data, error, isLoading } = useQuery({
     queryKey: ['discounts', { userId: session?.user?.id, currentTimestamp }],
     queryFn: () => fetchCurrentDiscounts(currentTimestamp, session?.user?.id),
@@ -37,11 +40,11 @@ export default function HomeScreen() {
     [],
   );
 
-  if (!data || error || isLoading) return null;
+  if (error || !data || isLoading) return null;
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.container(tabBarHeight)}>
         <FlashList
           data={data}
           renderItem={renderItem}
@@ -58,13 +61,13 @@ export default function HomeScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  container: (tabBarHeight: number) => ({
     flex: 1,
     backgroundColor: theme.colors.background,
-  },
+    paddingBottom: tabBarHeight + theme.spacing.lg,
+  }),
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
-    backgroundColor: theme.colors.background,
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
