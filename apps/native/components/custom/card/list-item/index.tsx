@@ -4,7 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { CurrentDiscounts } from '@/app/(tabs)';
 
 import Card from '../../../ui/card';
-import ProductCardThumbnailImage from '../../list-item-card-thumbnail';
+import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
 import ListItemCardDetailView from '../../view/list-item-card/detail';
 
 export interface ListItemCardProps {
@@ -21,8 +21,9 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
       <View style={styles.itemContainer(numColumns === 1)}>
         <ProductCardThumbnailImage
           product={discount.items!}
-          width={110}
-          height={110}
+          width={120}
+          height={120}
+          style={styles.thumbnail}
           // style={styles.thumbnail}
         />
         <ListItemCardDetailView discount={discount} />
@@ -34,14 +35,13 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
 const stylesheet = createStyleSheet(theme => ({
   cardContainer: (needMargin: boolean) => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
-    borderRadius: theme.borderRadius.sm,
-    overflow: 'hidden',
+    borderRadius: theme.borderRadius.md,
     shadowColor: theme.colors.shadow,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: theme.spacing.sm / 2,
+      height: theme.spacing.sm / 2,
     },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.3,
     shadowRadius: 3.84,
     elevation: 5,
   }),
@@ -52,6 +52,9 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     gap: theme.spacing.md,
   }),
+  thumbnail: {
+    borderRadius: theme.borderRadius.md,
+  },
 }));
 
 export default ListItemCard;

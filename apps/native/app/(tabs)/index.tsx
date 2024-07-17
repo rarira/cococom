@@ -58,6 +58,7 @@ export default function HomeScreen() {
 const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
