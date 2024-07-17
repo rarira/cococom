@@ -20,7 +20,6 @@ function Button({ style, ...restProps }: ButtonProps) {
 
 const stylesheet = createStyleSheet(theme => ({
   container: (pressed: boolean) => ({
-    backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.sm,
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,

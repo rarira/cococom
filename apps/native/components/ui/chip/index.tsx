@@ -31,7 +31,7 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: theme.spacing.md,
   },
   text: {
-    color: 'white',
+    color: theme.colors.background,
     fontSize: theme.fontSize.xs,
     lineHeight: theme.fontSize.xs,
     fontWeight: 'bold',

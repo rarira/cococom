@@ -3,6 +3,7 @@ import type { AppStateStatus } from 'react-native';
 import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import * as Sentry from '@sentry/react-native';
@@ -97,17 +98,19 @@ function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen
-              name="auth-modal"
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-              }}
-            />
-          </Stack>
+          <PortalProvider>
+            <Stack screenOptions={{ contentStyle: styles.contentStyle }}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen
+                name="auth"
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+              />
+            </Stack>
+          </PortalProvider>
         </SafeAreaView>
       </SafeAreaProvider>
     </QueryClientProvider>
@@ -118,6 +121,9 @@ const stylesheet = createStyleSheet(theme => {
   return {
     safeAreaContainer: {
       flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    contentStyle: {
       backgroundColor: theme.colors.background,
     },
   };

@@ -18,7 +18,7 @@ const stylesheets = createStyleSheet(theme => ({
   container: {
     flex: 1,
     border: `1px solid ${theme.colors.typography}`,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.cardBackground,
     borderRadius: theme.borderRadius.md,
   },
 }));

@@ -1,15 +1,14 @@
 import { login } from '@react-native-kakao/user';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, Button, View } from 'react-native';
+import { Alert, Button, Platform, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TextInput from '@/components/ui/text-input';
 import { supabase } from '@/libs/supabase';
 
 export default function SignInScreen() {
-  const router = useRouter();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
@@ -52,13 +51,15 @@ export default function SignInScreen() {
       access_token: result.accessToken,
     });
     if (!error) {
-      console.log('signInWithKakao will dismiss');
       router.dismiss();
     }
   }
 
   return (
     <View style={styles.container}>
+      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <Button title="Go back" onPress={() => router.dismiss()} />
+
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
           onChangeText={text => setEmail(text)}
@@ -97,10 +98,12 @@ export default function SignInScreen() {
   );
 }
 
-const stylesheet = createStyleSheet({
+const stylesheet = createStyleSheet(theme => ({
   container: {
+    flex: 1,
     marginTop: 40,
     padding: 12,
+    backgroundColor: theme.colors.background,
   },
   verticallySpaced: {
     paddingTop: 4,
@@ -110,4 +113,4 @@ const stylesheet = createStyleSheet({
   mt20: {
     marginTop: 20,
   },
-});
+}));
