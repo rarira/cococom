@@ -21,7 +21,9 @@ export default function MyScreen() {
       {!session ? (
         <View>
           <Text>Not logged in</Text>
-          <Link href="/auth-modal/signin">Sign In</Link>
+          <Link href="/auth/signin">
+            <Text>Sign In</Text>
+          </Link>
         </View>
       ) : (
         <View>
@@ -38,5 +40,6 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
     paddingHorizontal: theme.spacing.xl,
+    backgroundColor: theme.colors.background,
   },
 }));
