@@ -10,13 +10,15 @@ import { PortalHostNames } from '@/constants';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 
-function fetchCurrentDiscounts(userId?: string) {
-  return supabase.fetchCurrentDiscountsWithWishlistCount(userId);
+function fetchCurrentDiscounts(currentTimestamp: string, userId?: string) {
+  return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId);
 }
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
 const NumberOfColumns = 1;
+
+const currentTimestamp = new Date().toISOString().split('T')[0];
 
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
@@ -24,8 +26,8 @@ export default function HomeScreen() {
   const session = useSession();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['discounts'],
-    queryFn: () => fetchCurrentDiscounts(session?.user?.id),
+    queryKey: ['discounts', { userId: session?.user?.id, currentTimestamp }],
+    queryFn: () => fetchCurrentDiscounts(currentTimestamp, session?.user?.id),
   });
 
   const renderItem = useCallback(
