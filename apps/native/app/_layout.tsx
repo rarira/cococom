@@ -24,7 +24,6 @@ import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-
 export { ErrorBoundary } from 'expo-router';
 
 initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
@@ -100,11 +99,11 @@ function RootLayout() {
       <SafeAreaProvider>
         <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
           <PortalProvider>
-            <Stack>
+            <Stack screenOptions={{ contentStyle: styles.contentStyle }}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
               <Stack.Screen
-                name="auth-modal"
+                name="auth"
                 options={{
                   presentation: 'modal',
                   headerShown: false,
@@ -122,6 +121,9 @@ const stylesheet = createStyleSheet(theme => {
   return {
     safeAreaContainer: {
       flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    contentStyle: {
       backgroundColor: theme.colors.background,
     },
   };

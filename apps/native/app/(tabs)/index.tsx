@@ -62,6 +62,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
+    backgroundColor: theme.colors.background,
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
