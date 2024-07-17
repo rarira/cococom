@@ -6,23 +6,23 @@ import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {
-  QueryClient,
-  QueryClientProvider,
   focusManager,
   onlineManager,
+  QueryClient,
+  QueryClientProvider,
 } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
 import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
-import { Stack, useNavigationContainerRef } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
+import { useEffect, useMemo } from 'react';
 import { AppState, Platform } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -72,6 +72,8 @@ function RootLayout() {
 
   const { styles } = useStyles(stylesheet);
 
+  const themeName = useMemo(() => UnistylesRuntime.themeName, []);
+
   useEffect(() => {
     if (navigationRef) {
       routingInstrumentation.registerNavigationContainer(navigationRef);
@@ -97,19 +99,32 @@ function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
+        <SafeAreaView style={styles.safeAreaContainer}>
           <PortalProvider>
-            <Stack screenOptions={{ contentStyle: styles.contentStyle }}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-              <Stack.Screen
-                name="auth"
-                options={{
-                  presentation: 'modal',
-                  headerShown: false,
+            <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
+              <Stack
+                screenOptions={{
+                  contentStyle: {
+                    backgroundColor: 'transparent',
+                  },
                 }}
-              />
-            </Stack>
+              >
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+                <Stack.Screen
+                  name="auth"
+                  options={{
+                    presentation: 'modal',
+                    headerShown: false,
+                  }}
+                />
+              </Stack>
+            </ThemeProvider>
           </PortalProvider>
         </SafeAreaView>
       </SafeAreaProvider>
@@ -121,10 +136,6 @@ const stylesheet = createStyleSheet(theme => {
   return {
     safeAreaContainer: {
       flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    contentStyle: {
-      backgroundColor: theme.colors.background,
     },
   };
 });
