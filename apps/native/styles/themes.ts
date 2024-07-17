@@ -16,12 +16,12 @@ const commonTheme = {
     sm: 12,
     md: 16,
     lg: 20,
-    xl: 32,
+    xl: 24,
+    xxl: 32,
   },
   colors: {
     link: '#0a7ea4',
     alert: '#ff0000',
-    shadow: '#333333',
   },
 } as const;
 
@@ -31,10 +31,14 @@ export const lightTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#11181C',
-    background: '#ffffff',
+    background: '#FFFFFF',
+    cardBackground: '#FAFAFA',
+    dialogBackground: '#FFFFFF',
     tint: '#402E7A',
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
+    shadow: '#888888',
+    scrim: 'rgba(0, 0, 0, 0.5)',
   },
 } as const;
 
@@ -44,10 +48,14 @@ export const darkTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#ECEDEE',
-    background: '#121212',
+    background: '#000000',
+    cardBackground: '#121212',
+    dialogBackground: '#AAAAAA',
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
+    shadow: '#111111',
+    scrim: 'rgba(26,26,26, 0.6)',
   },
 } as const;
 
