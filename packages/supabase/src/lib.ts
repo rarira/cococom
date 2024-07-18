@@ -80,24 +80,6 @@ export class Supabase {
     return data;
   }
 
-  async fetchCurrentDiscounts() {
-    const currentTimestamp = new Date().toISOString().split('T')[0];
-
-    console.log({ currentTimestamp });
-    const { data, error } = await this.supabaseClient
-      .from('discounts')
-      // eslint-disable-next-line prettier/prettier
-      .select(`*,items(*, categories(*), discounts(*), wishlists(count))`)
-      .filter('startDate', 'lte', currentTimestamp)
-      .filter('endDate', 'gte', currentTimestamp);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
   async fetchCurrentDiscountsWithWishlistCount(currentTimestamp: string, userId?: string) {
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
@@ -105,7 +87,6 @@ export class Supabase {
     });
 
     if (error) {
-      console.log({ error });
       throw error;
     }
 
