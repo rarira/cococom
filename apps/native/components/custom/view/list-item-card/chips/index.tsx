@@ -12,21 +12,23 @@ interface ListItemCardChipsViewProps extends Pick<ListItemCardProps, 'discount'>
 
 const chips = [
   {
+    text: '첫할인',
+    checkFn: (discount: ListItemCardProps['discount']) => discount.items?.discounts.length === 1,
+    color: (theme: UnistylesTheme) => theme.colors.tint3,
+  },
+  {
     text: '최저가',
     checkFn: (discount: ListItemCardProps['discount']) =>
+      discount.items?.discounts.length > 1 &&
       discount.discountPrice === discount.items?.lowestPrice,
     color: (theme: UnistylesTheme) => theme.colors.tint,
   },
   {
     text: '최대할인',
     checkFn: (discount: ListItemCardProps['discount']) =>
+      discount.items?.discounts.length > 1 &&
       discount.discountRate === discount.items?.bestDiscountRate,
     color: (theme: UnistylesTheme) => theme.colors.tint2,
-  },
-  {
-    text: '첫할인',
-    checkFn: (discount: ListItemCardProps['discount']) => discount.items?.discounts.length === 1,
-    color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
     text: '곧마감',
@@ -44,9 +46,14 @@ function ListItemCardChipsView({ discount }: ListItemCardChipsViewProps) {
       chips
         .filter(chip => chip.checkFn(discount))
         .map(chip => (
-          <Chip key={chip.text} text={chip.text} style={{ backgroundColor: chip.color(theme) }} />
+          <Chip
+            key={chip.text}
+            text={chip.text}
+            style={{ backgroundColor: chip.color(theme) }}
+            textProps={{ style: chip.text === '곧마감' ? styles.alertText : undefined }}
+          />
         )),
-    [discount, theme],
+    [discount, styles.alertText, theme],
   );
 
   return <View style={styles.container}>{chipsToRender}</View>;
@@ -59,6 +66,9 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: theme.spacing.sm,
+  },
+  alertText: {
+    color: 'white',
   },
 }));
 

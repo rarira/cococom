@@ -28,11 +28,11 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.tint,
     borderRadius: theme.borderRadius.sm,
     paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
+    paddingHorizontal: theme.spacing.sm,
   },
   text: {
     color: theme.colors.background,
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.xxs,
     lineHeight: theme.fontSize.xs,
     fontWeight: 'bold',
   },
