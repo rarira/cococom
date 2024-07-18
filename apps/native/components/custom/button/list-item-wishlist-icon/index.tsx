@@ -1,51 +1,104 @@
+import { InsertWishlist } from '@cococom/supabase/libs';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
-import useSession from '@/hooks/useSession';
+import { queryKeys } from '@/libs/react-query';
+import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
 
-interface ListItemWishlistIconButtonProps extends Pick<ListItemCardProps, 'discount'> {}
+interface ListItemWishlistIconButtonProps {
+  item: ListItemCardProps['discount']['items'];
+}
 
-function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProps) {
+function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
-  const session = useSession();
+  const { user } = useUserStore();
+
+  const queryClient = useQueryClient();
 
   const idToBeWishlistedRef = useRef<number | null>(null);
 
-  useLayoutEffect(() => {
-    if (session && needAuthDialogVisible) {
-      setNeedAuthDialogVisible(false);
-      if (idToBeWishlistedRef.current) {
-        console.log('idToBeWishlistedRef.current is', idToBeWishlistedRef.current);
+  const wishlistMutation = useMutation({
+    mutationFn: (newWishlist: InsertWishlist) => {
+      if (item.isWishlistedByUser) {
+        return supabase.deleteWishlist(newWishlist);
       }
+      return supabase.createWishlist(newWishlist);
+    },
+    onMutate: async newWishlist => {
+      const queryKey = queryKeys.discounts.currentList(user?.id);
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(
+        queryKey,
+      ) as unknown as ListItemCardProps['discount'][];
+
+      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (discountIndex === -1) return old;
+        const updatedDiscount = {
+          ...old[discountIndex],
+          items: {
+            ...old[discountIndex].items,
+            totalWishlistCount: item.isWishlistedByUser
+              ? item.totalWishlistCount - 1
+              : item.totalWishlistCount + 1,
+            isWishlistedByUser: !item.isWishlistedByUser,
+          },
+        };
+
+        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
+      });
+
+      return { previousData };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKeys.discounts.currentList(user?.id), context?.previousData);
+    },
+  });
+
+  useLayoutEffect(() => {
+    if (user && needAuthDialogVisible) {
+      if (idToBeWishlistedRef.current) {
+        wishlistMutation.mutate({
+          itemId: idToBeWishlistedRef.current,
+          userId: user.id,
+        });
+        idToBeWishlistedRef.current = null;
+      }
+      setNeedAuthDialogVisible(false);
     }
-  }, [needAuthDialogVisible, session]);
+  }, [needAuthDialogVisible, user, wishlistMutation]);
 
   const iconProps = useMemo(() => {
-    const isWishlistedByUser = !!discount.userWishlistCount;
     return {
-      name: isWishlistedByUser ? 'star' : ('star-border' as any),
-      color: isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
+      name: item.isWishlistedByUser ? 'star' : ('star-border' as any),
+      color: item.isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
     };
-  }, [discount.userWishlistCount, theme]);
+  }, [item.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
 
   const handlePress = useCallback(() => {
-    if (!session) {
-      idToBeWishlistedRef.current = discount.items.id;
+    if (!user) {
+      idToBeWishlistedRef.current = item.id;
       setNeedAuthDialogVisible(true);
       return;
     }
-  }, [discount.items.id, session]);
+    wishlistMutation.mutate({
+      itemId: item.id,
+      userId: user.id,
+    });
+  }, [item.id, user, wishlistMutation]);
 
   return (
     <>
       <IconButton
-        text={discount.totalWishlistCount.toString()}
+        text={item.totalWishlistCount.toString()}
         textStyle={styles.text}
         iconProps={iconProps}
         onPress={handlePress}

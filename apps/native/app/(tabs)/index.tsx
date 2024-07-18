@@ -1,4 +1,5 @@
 import { PortalHost } from '@gorhom/portal';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -7,39 +8,46 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemCard from '@/components/custom/card/list-item';
 import { PortalHostNames } from '@/constants';
-import useSession from '@/hooks/useSession';
+import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
-function fetchCurrentDiscounts(userId?: string) {
-  return supabase.fetchCurrentDiscountsWithWishlistCount(userId);
+function fetchCurrentDiscounts(currentTimestamp: string, userId?: string) {
+  return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId);
 }
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
 const NumberOfColumns = 1;
 
+const currentTimestamp = new Date().toISOString().split('T')[0];
+
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
-  const session = useSession();
+  const { user } = useUserStore();
+
+  const tabBarHeight = useBottomTabBarHeight();
+
+  const queryKey = queryKeys.discounts.currentList(user?.id);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['discounts'],
-    queryFn: () => fetchCurrentDiscounts(session?.user?.id),
+    queryKey,
+    queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id),
   });
 
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <ListItemCard discount={item} numColumns={NumberOfColumns} />;
+      return <ListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
     },
     [],
   );
 
-  if (!data || error || isLoading) return null;
+  if (error || !data || isLoading) return null;
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.container(tabBarHeight)}>
         <FlashList
           data={data}
           renderItem={renderItem}
@@ -56,13 +64,13 @@ export default function HomeScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  container: (tabBarHeight: number) => ({
     flex: 1,
     backgroundColor: theme.colors.background,
-  },
+    paddingBottom: tabBarHeight + theme.spacing.lg,
+  }),
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
-    backgroundColor: theme.colors.background,
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,

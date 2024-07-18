@@ -21,8 +21,8 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
       <View style={styles.itemContainer(numColumns === 1)}>
         <ProductCardThumbnailImage
           product={discount.items!}
-          width={120}
-          height={120}
+          width={115}
+          height={115}
           style={styles.thumbnail}
           // style={styles.thumbnail}
         />
