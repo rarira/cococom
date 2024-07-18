@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemCard from '@/components/custom/card/list-item';
 import { PortalHostNames } from '@/constants';
+import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -28,14 +29,16 @@ export default function HomeScreen() {
 
   const tabBarHeight = useBottomTabBarHeight();
 
+  const queryKey = queryKeys.discounts.currentList(user?.id);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ['discounts', { userId: user?.id, currentTimestamp }],
+    queryKey,
     queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id),
   });
 
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <ListItemCard discount={item} numColumns={NumberOfColumns} />;
+      return <ListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
     },
     [],
   );
