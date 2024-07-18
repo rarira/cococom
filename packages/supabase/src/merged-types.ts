@@ -23,16 +23,14 @@ export type Database = MergeDeep<
           Args: {
             _current_time_stamp: string;
             _user_id: string | null;
+            _category_sector: Database['public']['Enums']['CategorySectors'] | null;
           };
           Returns: {
             id: number;
-            itemId: string;
             startDate: string;
             endDate: string;
             price: number;
-            discount: number;
             discountPrice: number;
-            discountHash: string;
             discountRate: number;
             items: JoinedItems;
           }[];
