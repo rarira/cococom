@@ -183,10 +183,24 @@ export type Database = {
           discountHash: string
           discountRate: number
           items: Json
-          totalWishlistCount: number
-          isWishlistedByUser: boolean
         }[]
       }
+      get_items_with_wishlist_counts:
+        | {
+            Args: {
+              item_id: string
+              user_id: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              item_id: string
+              user_id: string
+              need_discounts: boolean
+            }
+            Returns: Json
+          }
     }
     Enums: {
       [_ in never]: never

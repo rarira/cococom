@@ -13,20 +13,19 @@ interface ListItemCardChipsViewProps extends Pick<ListItemCardProps, 'discount'>
 const chips = [
   {
     text: '첫할인',
-    checkFn: (discount: ListItemCardProps['discount']) => discount.items?.discounts.length === 1,
+    checkFn: (discount: ListItemCardProps['discount']) => discount.items.discountsLength === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
     text: '최저가',
     checkFn: (discount: ListItemCardProps['discount']) =>
-      discount.items?.discounts.length > 1 &&
-      discount.discountPrice === discount.items?.lowestPrice,
+      discount.items.discountsLength > 1 && discount.discountPrice === discount.items?.lowestPrice,
     color: (theme: UnistylesTheme) => theme.colors.tint,
   },
   {
     text: '최대할인',
     checkFn: (discount: ListItemCardProps['discount']) =>
-      discount.items?.discounts.length > 1 &&
+      discount.items.discountsLength > 1 &&
       discount.discountRate === discount.items?.bestDiscountRate,
     color: (theme: UnistylesTheme) => theme.colors.tint2,
   },
