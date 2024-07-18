@@ -16,44 +16,26 @@ export type Database = MergeDeep<
   {
     public: {
       Functions: {
-        get_discounts_with_wishlist_counts:
-          | {
-              Args: Record<PropertyKey, never>;
-              Returns: {
-                id: number;
-                itemId: string;
-                startDate: string;
-                endDate: string;
-                price: number;
-                discount: number;
-                discountPrice: number;
-                discountHash: string;
-                discountRate: number;
-                items: JoinedItems;
-                totalWishlistCount: number;
-                userWishlistCount: number;
-              }[];
-            }
-          | {
-              Args: {
-                _current_time_stamp: string;
-                _user_id: string | null;
-              };
-              Returns: {
-                id: number;
-                itemId: string;
-                startDate: string;
-                endDate: string;
-                price: number;
-                discount: number;
-                discountPrice: number;
-                discountHash: string;
-                discountRate: number;
-                items: JoinedItems;
-                totalWishlistCount: number;
-                userWishlistCount: number;
-              }[];
-            };
+        get_discounts_with_wishlist_counts: {
+          Args: {
+            _current_time_stamp: string;
+            _user_id: string | null;
+          };
+          Returns: {
+            id: number;
+            itemId: string;
+            startDate: string;
+            endDate: string;
+            price: number;
+            discount: number;
+            discountPrice: number;
+            discountHash: string;
+            discountRate: number;
+            items: JoinedItems;
+            totalWishlistCount: number;
+            isWishlistedByUser: boolean;
+          }[];
+        };
       };
     };
   }

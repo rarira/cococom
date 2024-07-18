@@ -1,20 +1,13 @@
-create or replace function get_discounts_with_wishlist_counts(_current_time_stamp timestamp, _user_id uuid)
-returns TABLE(
-    id int,
-    "itemId" text,
-    "startDate" timestamp without time zone,
-    "endDate" timestamp without time zone,
-    price numeric(65, 30),
-    discount numeric(65, 30),
-    "discountPrice" numeric(65, 30),
-    "discountHash" text,
-    "discountRate" numeric,
-    items jsonb,
-    "totalWishlistCount" numeric,
-    "isWishlistedByUser" boolean
-)
-language sql
-as $$
+drop function if exists "public"."get_discounts_with_wishlist_counts"();
+
+drop function if exists "public"."get_discounts_with_wishlist_counts"(_current_time_stamp timestamp without time zone, _user_id uuid);
+
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_discounts_with_wishlist_counts(_current_time_stamp timestamp without time zone, _user_id uuid)
+ RETURNS TABLE(id integer, "itemId" text, "startDate" timestamp without time zone, "endDate" timestamp without time zone, price numeric, discount numeric, "discountPrice" numeric, "discountHash" text, "discountRate" numeric, items jsonb, "totalWishlistCount" numeric, "userWishlistCount" boolean)
+ LANGUAGE sql
+AS $function$
   SELECT
       d.*,
       to_json(
@@ -43,7 +36,7 @@ as $$
             (SELECT EXISTS (SELECT 1 FROM wishlists w WHERE w."itemId" = i.id AND w."userId" = _user_id))
         ELSE
             NULL
-      END AS "isWishlistedByUser"
+      END AS "userWishlistCount"
   FROM
       discounts d
   LEFT JOIN items i ON d."itemId" = i."itemId"
@@ -51,4 +44,15 @@ as $$
   WHERE
       d."startDate" <= _current_time_stamp
       AND d."endDate" >= _current_time_stamp
-$$
+$function$
+;
+
+create policy "Enable read access for all users"
+on "public"."wishlists"
+as permissive
+for select
+to public
+using (true);
+
+
+
