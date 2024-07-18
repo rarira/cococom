@@ -1,20 +1,11 @@
-create or replace function get_discounts_with_wishlist_counts(_current_time_stamp timestamp, _user_id uuid)
-returns TABLE(
-    id int,
-    "itemId" text,
-    "startDate" timestamp without time zone,
-    "endDate" timestamp without time zone,
-    price numeric(65, 30),
-    discount numeric(65, 30),
-    "discountPrice" numeric(65, 30),
-    "discountHash" text,
-    "discountRate" numeric,
-    items jsonb,
-    "totalWishlistCount" numeric,
-    "isWishlistedByUser" boolean
-)
-language sql
-as $$
+drop function if exists "public"."get_discounts_with_wishlist_counts"(_current_time_stamp timestamp without time zone, _user_id uuid);
+
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_discounts_with_wishlist_counts(_current_time_stamp timestamp without time zone, _user_id uuid)
+ RETURNS TABLE(id integer, "itemId" text, "startDate" timestamp without time zone, "endDate" timestamp without time zone, price numeric, discount numeric, "discountPrice" numeric, "discountHash" text, "discountRate" numeric, items jsonb, "totalWishlistCount" numeric, "isWishlistedByUser" boolean)
+ LANGUAGE sql
+AS $function$
   SELECT
       d.*,
       to_json(
@@ -51,4 +42,7 @@ as $$
   WHERE
       d."startDate" <= _current_time_stamp
       AND d."endDate" >= _current_time_stamp
-$$
+$function$
+;
+
+
