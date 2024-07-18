@@ -12,9 +12,11 @@ import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
 
-interface ListItemWishlistIconButtonProps extends Pick<ListItemCardProps, 'discount'> {}
+interface ListItemWishlistIconButtonProps {
+  item: ListItemCardProps['discount']['items'];
+}
 
-function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProps) {
+function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user } = useUserStore();
@@ -25,7 +27,7 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
 
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
-      if (discount.isWishlistedByUser) {
+      if (item.isWishlistedByUser) {
         return supabase.deleteWishlist(newWishlist);
       }
       return supabase.createWishlist(newWishlist);
@@ -33,17 +35,22 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
     onMutate: async newWishlist => {
       const queryKey = queryKeys.discounts.currentList(user?.id);
       await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(queryKey) as unknown as (typeof discount)[];
+      const previousData = queryClient.getQueryData(
+        queryKey,
+      ) as unknown as ListItemCardProps['discount'][];
 
       const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
       queryClient.setQueryData(queryKey, (old: any) => {
         if (discountIndex === -1) return old;
         const updatedDiscount = {
           ...old[discountIndex],
-          totalWishlistCount: discount.isWishlistedByUser
-            ? discount.totalWishlistCount - 1
-            : discount.totalWishlistCount + 1,
-          isWishlistedByUser: !discount.isWishlistedByUser,
+          items: {
+            ...old[discountIndex].items,
+            totalWishlistCount: item.isWishlistedByUser
+              ? item.totalWishlistCount - 1
+              : item.totalWishlistCount + 1,
+            isWishlistedByUser: !item.isWishlistedByUser,
+          },
         };
 
         return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
@@ -71,27 +78,27 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
 
   const iconProps = useMemo(() => {
     return {
-      name: discount.isWishlistedByUser ? 'star' : ('star-border' as any),
-      color: discount.isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
+      name: item.isWishlistedByUser ? 'star' : ('star-border' as any),
+      color: item.isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
     };
-  }, [discount.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
+  }, [item.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
 
   const handlePress = useCallback(() => {
     if (!user) {
-      idToBeWishlistedRef.current = discount.items.id;
+      idToBeWishlistedRef.current = item.id;
       setNeedAuthDialogVisible(true);
       return;
     }
     wishlistMutation.mutate({
-      itemId: discount.items.id,
+      itemId: item.id,
       userId: user.id,
     });
-  }, [discount.items.id, user, wishlistMutation]);
+  }, [item.id, user, wishlistMutation]);
 
   return (
     <>
       <IconButton
-        text={discount.totalWishlistCount.toString()}
+        text={item.totalWishlistCount.toString()}
         textStyle={styles.text}
         iconProps={iconProps}
         onPress={handlePress}
