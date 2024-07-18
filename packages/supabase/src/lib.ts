@@ -20,10 +20,10 @@ import { Database } from './merged-types';
 
 // export const supabase = createClient<Database>(SUPABASE_ANON_KEY!, SUPABASE_ANON_KEY!);
 
-type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
-type InsertItem = Database['public']['Tables']['items']['Insert'];
-type InsertCategory = Database['public']['Tables']['categories']['Insert'];
-type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
+export type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
+export type InsertItem = Database['public']['Tables']['items']['Insert'];
+export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
+export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
@@ -132,12 +132,12 @@ export class Supabase {
     return await this.supabaseClient.from('wishlists').insert(newWishlist);
   }
 
-  async deleteWishlist(itemId: number, userId: string) {
+  async deleteWishlist(deleteWishlist: Required<Pick<InsertWishlist, 'itemId' | 'userId'>>) {
     return await this.supabaseClient
       .from('wishlists')
       .delete()
-      .eq('itemId', itemId)
-      .eq('userId', userId);
+      .eq('itemId', deleteWishlist.itemId)
+      .eq('userId', deleteWishlist.userId);
   }
 
   // Auth Methods

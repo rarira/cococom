@@ -1,9 +1,12 @@
+import { InsertWishlist } from '@cococom/supabase/libs';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
+import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
@@ -13,24 +16,33 @@ interface ListItemWishlistIconButtonProps extends Pick<ListItemCardProps, 'disco
 function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
-  const user = useUserStore();
+  const { user } = useUserStore();
+
+  const isWishlistedByUser = !!discount.userWishlistCount;
 
   const idToBeWishlistedRef = useRef<number | null>(null);
 
-  // const createWishlistMutation = useMutation({
-  //   mutationFn: newTodo => {
-  //     return axios.post('/todos', newTodo);
-  //   },
-  // });
+  console.log(discount.items.itemName, { isWishlistedByUser });
+  const wishlistMutation = useMutation({
+    mutationFn: (newWishlist: InsertWishlist) => {
+      if (isWishlistedByUser) {
+        return supabase.deleteWishlist(newWishlist);
+      }
+      return supabase.createWishlist(newWishlist);
+    },
+  });
 
   useLayoutEffect(() => {
     if (user && needAuthDialogVisible) {
       setNeedAuthDialogVisible(false);
       if (idToBeWishlistedRef.current) {
-        console.log('idToBeWishlistedRef.current is', idToBeWishlistedRef.current);
+        wishlistMutation.mutate({
+          itemId: idToBeWishlistedRef.current,
+          userId: user.id,
+        });
       }
     }
-  }, [needAuthDialogVisible, user]);
+  }, [needAuthDialogVisible, user, wishlistMutation]);
 
   const iconProps = useMemo(() => {
     const isWishlistedByUser = !!discount.userWishlistCount;
@@ -41,12 +53,16 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
   }, [discount.userWishlistCount, theme]);
 
   const handlePress = useCallback(() => {
-    if (!session) {
+    if (!user) {
       idToBeWishlistedRef.current = discount.items.id;
       setNeedAuthDialogVisible(true);
       return;
     }
-  }, [discount.items.id, session]);
+    wishlistMutation.mutate({
+      itemId: discount.items.id,
+      userId: user.id,
+    });
+  }, [discount.items.id, user, wishlistMutation]);
 
   return (
     <>
