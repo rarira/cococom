@@ -24,6 +24,8 @@ import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
+import { useLoadUser } from '@/hooks/useLoadUser';
+
 export { ErrorBoundary } from 'expo-router';
 
 initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
@@ -71,6 +73,8 @@ function RootLayout() {
   });
 
   const { styles } = useStyles(stylesheet);
+
+  useLoadUser();
 
   const themeName = useMemo(() => UnistylesRuntime.themeName, []);
 

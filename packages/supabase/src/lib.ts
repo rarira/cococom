@@ -22,7 +22,8 @@ import { Database } from './merged-types';
 
 type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
 type InsertItem = Database['public']['Tables']['items']['Insert'];
-type insertCategory = Database['public']['Tables']['categories']['Insert'];
+type InsertCategory = Database['public']['Tables']['categories']['Insert'];
+type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
@@ -36,7 +37,7 @@ export class Supabase {
   }
 
   // Query Methods
-  async upsertCategory(category: insertCategory | insertCategory[]) {
+  async upsertCategory(category: InsertCategory | InsertCategory[]) {
     return this.supabaseClient
       .from('categories')
       .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
@@ -125,6 +126,18 @@ export class Supabase {
       .select('*')
       .eq(search.column, search.value)
       .single();
+  }
+
+  async createWishlist(newWishlist: InsertWishlist) {
+    return await this.supabaseClient.from('wishlists').insert(newWishlist);
+  }
+
+  async deleteWishlist(itemId: number, userId: string) {
+    return await this.supabaseClient
+      .from('wishlists')
+      .delete()
+      .eq('itemId', itemId)
+      .eq('userId', userId);
   }
 
   // Auth Methods
