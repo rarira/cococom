@@ -4,7 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
-import useSession from '@/hooks/useSession';
+import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
 
@@ -13,18 +13,24 @@ interface ListItemWishlistIconButtonProps extends Pick<ListItemCardProps, 'disco
 function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
-  const session = useSession();
+  const user = useUserStore();
 
   const idToBeWishlistedRef = useRef<number | null>(null);
 
+  // const createWishlistMutation = useMutation({
+  //   mutationFn: newTodo => {
+  //     return axios.post('/todos', newTodo);
+  //   },
+  // });
+
   useLayoutEffect(() => {
-    if (session && needAuthDialogVisible) {
+    if (user && needAuthDialogVisible) {
       setNeedAuthDialogVisible(false);
       if (idToBeWishlistedRef.current) {
         console.log('idToBeWishlistedRef.current is', idToBeWishlistedRef.current);
       }
     }
-  }, [needAuthDialogVisible, session]);
+  }, [needAuthDialogVisible, user]);
 
   const iconProps = useMemo(() => {
     const isWishlistedByUser = !!discount.userWishlistCount;

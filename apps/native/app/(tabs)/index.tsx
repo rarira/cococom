@@ -8,8 +8,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemCard from '@/components/custom/card/list-item';
 import { PortalHostNames } from '@/constants';
-import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 function fetchCurrentDiscounts(currentTimestamp: string, userId?: string) {
   return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId);
@@ -24,13 +24,13 @@ const currentTimestamp = new Date().toISOString().split('T')[0];
 export default function HomeScreen() {
   const { styles } = useStyles(stylesheet);
 
-  const session = useSession();
+  const { user } = useUserStore();
 
   const tabBarHeight = useBottomTabBarHeight();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['discounts', { userId: session?.user?.id, currentTimestamp }],
-    queryFn: () => fetchCurrentDiscounts(currentTimestamp, session?.user?.id),
+    queryKey: ['discounts', { userId: user?.id, currentTimestamp }],
+    queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id),
   });
 
   const renderItem = useCallback(

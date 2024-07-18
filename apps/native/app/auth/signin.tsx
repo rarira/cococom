@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TextInput from '@/components/ui/text-input';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
@@ -15,19 +16,25 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
+  const { setUser } = useUserStore();
 
   async function signInWithEmail() {
     setLoading(true);
-    const { error } = await supabase.signInWithEmail({ email, password });
+    const {
+      data: { user },
+      error,
+    } = await supabase.signInWithEmail({ email, password });
 
     if (error) Alert.alert(error.message);
+    if (user) setUser(user);
+
     setLoading(false);
   }
 
   async function signUpWithEmail() {
     setLoading(true);
     const {
-      data: { session },
+      data: { session, user },
       error,
     } = await supabase.signUpWithEmail({
       email: email,
@@ -39,18 +46,23 @@ export default function SignInScreen() {
 
     if (error) Alert.alert(error.message);
     if (!session) Alert.alert('Please check your inbox for email verification!');
+    if (user) setUser(user);
     setLoading(false);
     router.dismiss();
   }
 
   async function signInWithKakao() {
     const result = await login();
-    const { data, error } = await supabase.signInWithIdToken({
+    const {
+      data: { user },
+      error,
+    } = await supabase.signInWithIdToken({
       provider: 'kakao',
       token: result.idToken!, // OpenID Connect 활성화 필요
       access_token: result.accessToken,
     });
     if (!error) {
+      if (user) setUser(user);
       router.dismiss();
     }
   }

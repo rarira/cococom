@@ -2,6 +2,8 @@ import { MergeDeep } from 'type-fest';
 
 import { Database as DatabaseGenerated, Tables } from './types';
 
+export type { Session, User } from '@supabase/supabase-js';
+
 export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 
 export type JoinedItems = Tables<'items'> & {
