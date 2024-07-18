@@ -8,7 +8,10 @@ export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
-  discounts: Array<Tables<'discounts'>>;
+  discounts: Array<Tables<'discounts'>> | null;
+  discountsLength: number;
+  totalWishlistCount: number;
+  isWishlistedByUser: boolean;
 };
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
@@ -32,8 +35,6 @@ export type Database = MergeDeep<
             discountHash: string;
             discountRate: number;
             items: JoinedItems;
-            totalWishlistCount: number;
-            isWishlistedByUser: boolean;
           }[];
         };
       };
