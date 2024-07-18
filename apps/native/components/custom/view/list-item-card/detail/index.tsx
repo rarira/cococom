@@ -13,7 +13,7 @@ import Util from '@/libs/util';
 interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
-  const { styles, theme } = useStyles(stylesheets);
+  const { styles } = useStyles(stylesheets);
   return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
@@ -31,7 +31,7 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
         </View>
         <View style={styles.actionButtonContainer}>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <ListItemWishlistIconButton discount={discount} />
+          <ListItemWishlistIconButton item={discount.items} />
         </View>
       </View>
     </View>

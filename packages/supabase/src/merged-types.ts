@@ -2,11 +2,16 @@ import { MergeDeep } from 'type-fest';
 
 import { Database as DatabaseGenerated, Tables } from './types';
 
+export type { Session, User } from '@supabase/supabase-js';
+
 export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
-  discounts: Array<Tables<'discounts'>>;
+  discounts: Array<Tables<'discounts'>> | null;
+  discountsLength: number;
+  totalWishlistCount: number;
+  isWishlistedByUser: boolean;
 };
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
@@ -14,44 +19,24 @@ export type Database = MergeDeep<
   {
     public: {
       Functions: {
-        get_discounts_with_wishlist_counts:
-          | {
-              Args: Record<PropertyKey, never>;
-              Returns: {
-                id: number;
-                itemId: string;
-                startDate: string;
-                endDate: string;
-                price: number;
-                discount: number;
-                discountPrice: number;
-                discountHash: string;
-                discountRate: number;
-                items: JoinedItems;
-                totalWishlistCount: number;
-                userWishlistCount: number;
-              }[];
-            }
-          | {
-              Args: {
-                _current_time_stamp: string;
-                _user_id: string | null;
-              };
-              Returns: {
-                id: number;
-                itemId: string;
-                startDate: string;
-                endDate: string;
-                price: number;
-                discount: number;
-                discountPrice: number;
-                discountHash: string;
-                discountRate: number;
-                items: JoinedItems;
-                totalWishlistCount: number;
-                userWishlistCount: number;
-              }[];
-            };
+        get_discounts_with_wishlist_counts: {
+          Args: {
+            _current_time_stamp: string;
+            _user_id: string | null;
+          };
+          Returns: {
+            id: number;
+            itemId: string;
+            startDate: string;
+            endDate: string;
+            price: number;
+            discount: number;
+            discountPrice: number;
+            discountHash: string;
+            discountRate: number;
+            items: JoinedItems;
+          }[];
+        };
       };
     };
   }

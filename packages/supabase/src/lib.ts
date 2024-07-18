@@ -20,9 +20,10 @@ import { Database } from './merged-types';
 
 // export const supabase = createClient<Database>(SUPABASE_ANON_KEY!, SUPABASE_ANON_KEY!);
 
-type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
-type InsertItem = Database['public']['Tables']['items']['Insert'];
-type insertCategory = Database['public']['Tables']['categories']['Insert'];
+export type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
+export type InsertItem = Database['public']['Tables']['items']['Insert'];
+export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
+export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
@@ -36,7 +37,7 @@ export class Supabase {
   }
 
   // Query Methods
-  async upsertCategory(category: insertCategory | insertCategory[]) {
+  async upsertCategory(category: InsertCategory | InsertCategory[]) {
     return this.supabaseClient
       .from('categories')
       .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
@@ -79,34 +80,13 @@ export class Supabase {
     return data;
   }
 
-  async fetchCurrentDiscounts() {
-    const currentTimestamp = new Date().toISOString().split('T')[0];
-
-    console.log({ currentTimestamp });
-    const { data, error } = await this.supabaseClient
-      .from('discounts')
-      // eslint-disable-next-line prettier/prettier
-      .select(`*,items(*, categories(*), discounts(*), wishlists(count))`)
-      .filter('startDate', 'lte', currentTimestamp)
-      .filter('endDate', 'gte', currentTimestamp);
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  async fetchCurrentDiscountsWithWishlistCount(userId?: string) {
-    const currentTimestamp = new Date().toISOString().split('T')[0];
-
+  async fetchCurrentDiscountsWithWishlistCount(currentTimestamp: string, userId?: string) {
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
       _user_id: userId ?? null,
     });
 
     if (error) {
-      console.log({ error });
       throw error;
     }
 
@@ -127,6 +107,30 @@ export class Supabase {
       .select('*')
       .eq(search.column, search.value)
       .single();
+  }
+
+  async createWishlist(newWishlist: InsertWishlist) {
+    const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
+  }
+
+  async deleteWishlist(deleteWishlist: Required<Pick<InsertWishlist, 'itemId' | 'userId'>>) {
+    const { error } = await this.supabaseClient
+      .from('wishlists')
+      .delete()
+      .eq('itemId', deleteWishlist.itemId)
+      .eq('userId', deleteWishlist.userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
   }
 
   // Auth Methods
