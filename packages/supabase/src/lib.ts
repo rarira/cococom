@@ -129,15 +129,27 @@ export class Supabase {
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
-    return await this.supabaseClient.from('wishlists').insert(newWishlist);
+    const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
   }
 
   async deleteWishlist(deleteWishlist: Required<Pick<InsertWishlist, 'itemId' | 'userId'>>) {
-    return await this.supabaseClient
+    const { error } = await this.supabaseClient
       .from('wishlists')
       .delete()
       .eq('itemId', deleteWishlist.itemId)
       .eq('userId', deleteWishlist.userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
   }
 
   // Auth Methods

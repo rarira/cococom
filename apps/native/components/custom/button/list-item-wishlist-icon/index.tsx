@@ -18,6 +18,7 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user } = useUserStore();
+
   const queryClient = useQueryClient();
 
   const idToBeWishlistedRef = useRef<number | null>(null);
@@ -33,6 +34,7 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
       const queryKey = queryKeys.discounts.currentList(user?.id);
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData(queryKey) as unknown as (typeof discount)[];
+
       const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
       queryClient.setQueryData(queryKey, (old: any) => {
         if (discountIndex === -1) return old;
@@ -43,7 +45,7 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
             : discount.totalWishlistCount + 1,
           isWishlistedByUser: !discount.isWishlistedByUser,
         };
-        console.log({ updatedDiscount });
+
         return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
       });
 
@@ -56,13 +58,14 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
 
   useLayoutEffect(() => {
     if (user && needAuthDialogVisible) {
-      setNeedAuthDialogVisible(false);
       if (idToBeWishlistedRef.current) {
         wishlistMutation.mutate({
           itemId: idToBeWishlistedRef.current,
           userId: user.id,
         });
+        idToBeWishlistedRef.current = null;
       }
+      setNeedAuthDialogVisible(false);
     }
   }, [needAuthDialogVisible, user, wishlistMutation]);
 
