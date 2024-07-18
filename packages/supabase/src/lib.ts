@@ -80,10 +80,15 @@ export class Supabase {
     return data;
   }
 
-  async fetchCurrentDiscountsWithWishlistCount(currentTimestamp: string, userId?: string) {
+  async fetchCurrentDiscountsWithWishlistCount(
+    currentTimestamp: string,
+    userId?: string,
+    categorySector?: Database['public']['Enums']['CategorySectors'],
+  ) {
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
       _user_id: userId ?? null,
+      _category_sector: categorySector ?? null,
     });
 
     if (error) {
