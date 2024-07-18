@@ -11,7 +11,7 @@ returns TABLE(
     "discountRate" numeric,
     items jsonb,
     "totalWishlistCount" numeric,
-    "userWishlistCount" numeric
+    "isWishlistedByUser" boolean
 )
 language sql
 as $$
@@ -40,10 +40,10 @@ as $$
       ) AS "totalWishlistCount",
       CASE 
         WHEN _user_id IS NOT NULL THEN
-            (SELECT COUNT(*) FROM wishlists w WHERE w."itemId" = i.id AND w."userId" = _user_id)
+            (SELECT EXISTS (SELECT 1 FROM wishlists w WHERE w."itemId" = i.id AND w."userId" = _user_id))
         ELSE
             NULL
-      END AS "userWishlistCount"
+      END AS "isWishlistedByUser"
   FROM
       discounts d
   LEFT JOIN items i ON d."itemId" = i."itemId"

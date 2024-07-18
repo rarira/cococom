@@ -1,11 +1,12 @@
 import { InsertWishlist } from '@cococom/supabase/libs';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
+import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -17,18 +18,39 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user } = useUserStore();
-
-  const isWishlistedByUser = !!discount.userWishlistCount;
+  const queryClient = useQueryClient();
 
   const idToBeWishlistedRef = useRef<number | null>(null);
 
-  console.log(discount.items.itemName, { isWishlistedByUser });
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
-      if (isWishlistedByUser) {
+      if (discount.isWishlistedByUser) {
         return supabase.deleteWishlist(newWishlist);
       }
       return supabase.createWishlist(newWishlist);
+    },
+    onMutate: async newWishlist => {
+      const queryKey = queryKeys.discounts.currentList(user?.id);
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey) as unknown as (typeof discount)[];
+      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (discountIndex === -1) return old;
+        const updatedDiscount = {
+          ...old[discountIndex],
+          totalWishlistCount: discount.isWishlistedByUser
+            ? discount.totalWishlistCount - 1
+            : discount.totalWishlistCount + 1,
+          isWishlistedByUser: !discount.isWishlistedByUser,
+        };
+        console.log({ updatedDiscount });
+        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
+      });
+
+      return { previousData };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKeys.discounts.currentList(user?.id), context?.previousData);
     },
   });
 
@@ -45,12 +67,11 @@ function ListItemWishlistIconButton({ discount }: ListItemWishlistIconButtonProp
   }, [needAuthDialogVisible, user, wishlistMutation]);
 
   const iconProps = useMemo(() => {
-    const isWishlistedByUser = !!discount.userWishlistCount;
     return {
-      name: isWishlistedByUser ? 'star' : ('star-border' as any),
-      color: isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
+      name: discount.isWishlistedByUser ? 'star' : ('star-border' as any),
+      color: discount.isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
     };
-  }, [discount.userWishlistCount, theme]);
+  }, [discount.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
 
   const handlePress = useCallback(() => {
     if (!user) {
