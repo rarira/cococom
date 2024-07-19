@@ -170,54 +170,41 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_discounts_with_wishlist_counts:
-        | {
-            Args: {
-              _current_time_stamp: string
-              _user_id: string
-            }
-            Returns: {
-              id: number
-              startDate: string
-              endDate: string
-              price: number
-              discountPrice: number
-              discountRate: number
-              items: Json
-            }[]
-          }
-        | {
-            Args: {
-              _current_time_stamp: string
-              _user_id: string
-              _category_sector: Database["public"]["Enums"]["CategorySectors"]
-            }
-            Returns: {
-              id: number
-              startDate: string
-              endDate: string
-              price: number
-              discountPrice: number
-              discountRate: number
-              items: Json
-            }[]
-          }
-      get_items_with_wishlist_counts:
-        | {
-            Args: {
-              item_id: string
-              user_id: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              item_id: string
-              user_id: string
-              need_discounts: boolean
-            }
-            Returns: Json
-          }
+      get_current_discounts_by_category_sector: {
+        Args: {
+          _current_time_stamp: string
+        }
+        Returns: {
+          id: number
+          itemId: string
+          categorySector: Database["public"]["Enums"]["CategorySectors"]
+          discountsCount: number
+        }[]
+      }
+      get_discounts_with_wishlist_counts: {
+        Args: {
+          _current_time_stamp: string
+          _user_id: string
+          _category_sector: Database["public"]["Enums"]["CategorySectors"]
+        }
+        Returns: {
+          id: number
+          startDate: string
+          endDate: string
+          price: number
+          discountPrice: number
+          discountRate: number
+          items: Json
+        }[]
+      }
+      get_items_with_wishlist_counts: {
+        Args: {
+          item_id: string
+          user_id: string
+          need_discounts: boolean
+        }
+        Returns: Json
+      }
     }
     Enums: {
       CategorySectors:

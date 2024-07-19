@@ -1,8 +1,14 @@
+import { CategorySectors } from '@cococom/supabase/libs';
+
 export const queryKeys = {
   discounts: {
-    currentList: (userId?: string | null) => [
+    currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
-      { userId, currentTimestamp: new Date().toISOString().split('T')[0] },
+      { userId, categorySector, currentTimestamp: new Date().toISOString().split('T')[0] },
+    ],
+    currentListByCategorySector: () => [
+      'discounts',
+      { currentTimestamp: new Date().toISOString().split('T')[0] },
     ],
   },
 };
