@@ -37,7 +37,7 @@ export default function DiscountList({ categorySector }: DiscountListProps) {
   });
 
   const renderItem = useCallback(
-    ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
+    ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
       return <ListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
     },
     [],

@@ -6,9 +6,12 @@ export const unstable_settings = {
 
 export default function HomeLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
-      <Stack.Screen name="index" />
-      <Stack.Screen name="sales" />
+    <Stack
+      screenOptions={{ headerShown: false, headerStyle: { backgroundColor: 'black' } }}
+      initialRouteName="index"
+    >
+      <Stack.Screen name="index" options={{ title: '홈' }} />
+      <Stack.Screen name="sales" options={{ headerShown: true }} />
     </Stack>
   );
 }
