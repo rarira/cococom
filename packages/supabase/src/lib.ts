@@ -80,6 +80,21 @@ export class Supabase {
     return data;
   }
 
+  async fetchCurrentDiscountsByCategorySector(currentTimestamp: string) {
+    const { data, error } = await this.supabaseClient.rpc(
+      'get_current_discounts_by_category_sector',
+      {
+        _current_time_stamp: currentTimestamp,
+      },
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
   async fetchCurrentDiscountsWithWishlistCount(
     currentTimestamp: string,
     userId?: string,

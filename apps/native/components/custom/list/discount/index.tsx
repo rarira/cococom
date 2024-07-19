@@ -16,11 +16,9 @@ interface DiscountListProps {
   categorySector: CategorySectors;
 }
 
-function fetchCurrentDiscounts(
-  currentTimestamp: string,
-  userId?: string,
-  categorySector?: CategorySectors,
-) {
+function fetchCurrentDiscounts(userId?: string, categorySector?: CategorySectors) {
+  const currentTimestamp = new Date().toISOString().split('T')[0];
+
   return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId, categorySector);
 }
 
@@ -28,18 +26,14 @@ export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscoun
 
 const NumberOfColumns = 1;
 
-const currentTimestamp = new Date().toISOString().split('T')[0];
-
 export default function DiscountList({ categorySector }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
   const { user } = useUserStore();
 
-  const queryKey = queryKeys.discounts.currentList(user?.id);
-
   const { data, error, isLoading } = useQuery({
-    queryKey,
-    queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id, categorySector),
+    queryKey: queryKeys.discounts.currentList(user?.id, categorySector),
+    queryFn: () => fetchCurrentDiscounts(user?.id, categorySector),
   });
 
   const renderItem = useCallback(

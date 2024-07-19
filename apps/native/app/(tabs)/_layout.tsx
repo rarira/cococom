@@ -45,7 +45,6 @@ export default function TabLayout() {
         tabBarStyle: styles.container,
         freezeOnBlur: true,
         tabBarIcon: ({ color, focused }) => {
-          console.log(route.name);
           return (
             <TabBarIcon
               name={focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon}
