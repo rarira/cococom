@@ -3,11 +3,15 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountList from '@/components/custom/list/discount';
+import { useHideTabBar } from '@/hooks/useHideTabBar';
 
 export default function SalesScreen() {
   const { styles } = useStyles(stylesheet);
+  // const navigation = useNavigation();
 
   const tabBarHeight = useBottomTabBarHeight();
+
+  useHideTabBar();
 
   return (
     <View style={styles.container(tabBarHeight)}>
