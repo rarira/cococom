@@ -1,5 +1,5 @@
+import { CategorySectors } from '@cococom/supabase/libs';
 import { PortalHost } from '@gorhom/portal';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -12,8 +12,16 @@ import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-function fetchCurrentDiscounts(currentTimestamp: string, userId?: string) {
-  return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId);
+interface DiscountListProps {
+  categorySector: CategorySectors;
+}
+
+function fetchCurrentDiscounts(
+  currentTimestamp: string,
+  userId?: string,
+  categorySector?: CategorySectors,
+) {
+  return supabase.fetchCurrentDiscountsWithWishlistCount(currentTimestamp, userId, categorySector);
 }
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
@@ -22,18 +30,16 @@ const NumberOfColumns = 1;
 
 const currentTimestamp = new Date().toISOString().split('T')[0];
 
-export default function HomeScreen() {
+export default function DiscountList({ categorySector }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
   const { user } = useUserStore();
-
-  const tabBarHeight = useBottomTabBarHeight();
 
   const queryKey = queryKeys.discounts.currentList(user?.id);
 
   const { data, error, isLoading } = useQuery({
     queryKey,
-    queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id),
+    queryFn: () => fetchCurrentDiscounts(currentTimestamp, user?.id, categorySector),
   });
 
   const renderItem = useCallback(
@@ -47,28 +53,21 @@ export default function HomeScreen() {
 
   return (
     <>
-      <View style={styles.container(tabBarHeight)}>
-        <FlashList
-          data={data}
-          renderItem={renderItem}
-          estimatedItemSize={600}
-          keyExtractor={item => item.id.toString()}
-          numColumns={NumberOfColumns}
-          ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-          contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1)}
-        />
-      </View>
+      <FlashList
+        data={data}
+        renderItem={renderItem}
+        estimatedItemSize={600}
+        keyExtractor={item => item.id.toString()}
+        numColumns={NumberOfColumns}
+        ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
+        contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1)}
+      />
       <PortalHost name={PortalHostNames.HOME} />
     </>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (tabBarHeight: number) => ({
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    paddingBottom: tabBarHeight + theme.spacing.lg,
-  }),
   flashListContainer: (isMultiColumn: boolean) => ({
     padding: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
   }),

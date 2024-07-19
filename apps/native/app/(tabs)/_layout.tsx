@@ -5,6 +5,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
 
+export const unstable_settings = {
+  initialRouteName: 'home',
+};
+
 const TabIcons: Record<
   string,
   {
@@ -12,7 +16,7 @@ const TabIcons: Record<
     unfocusedIcon: ComponentProps<typeof Ionicons>['name'];
   }
 > = {
-  index: {
+  '(home)': {
     focusedIcon: 'home',
     unfocusedIcon: 'home-outline',
   },
@@ -41,6 +45,7 @@ export default function TabLayout() {
         tabBarStyle: styles.container,
         freezeOnBlur: true,
         tabBarIcon: ({ color, focused }) => {
+          console.log(route.name);
           return (
             <TabBarIcon
               name={focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon}
@@ -52,7 +57,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: 'Home',
         }}

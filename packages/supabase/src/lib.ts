@@ -24,7 +24,7 @@ export type InsertDiscount = Database['public']['Tables']['discounts']['Insert']
 export type InsertItem = Database['public']['Tables']['items']['Insert'];
 export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
-
+export type CategorySectors = Database['public']['Enums']['CategorySectors'];
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
 
@@ -83,7 +83,7 @@ export class Supabase {
   async fetchCurrentDiscountsWithWishlistCount(
     currentTimestamp: string,
     userId?: string,
-    categorySector?: Database['public']['Enums']['CategorySectors'],
+    categorySector?: CategorySectors,
   ) {
     const { data, error } = await this.supabaseClient.rpc('get_discounts_with_wishlist_counts', {
       _current_time_stamp: currentTimestamp!,
