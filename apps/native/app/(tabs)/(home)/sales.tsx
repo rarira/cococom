@@ -4,7 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountList from '@/components/custom/list/discount';
 
-export default function CategorySectorScreen() {
+export default function SalesScreen() {
   const { styles } = useStyles(stylesheet);
 
   const tabBarHeight = useBottomTabBarHeight();
