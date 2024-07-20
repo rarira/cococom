@@ -1,34 +1,74 @@
 import { CategorySectors } from '@cococom/supabase/libs';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { ComponentType, useMemo, useState } from 'react';
+import { useWindowDimensions } from 'react-native';
+import { SceneMap, TabView } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountList from '@/components/custom/list/discount';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
+import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
+  const { categorySectorsArray } = useCategorySectorsStore();
+  const { categorySector: categorySectorParam } = useLocalSearchParams<{
+    categorySector: CategorySectors;
+  }>();
+
+  const [index, setIndex] = useState(() =>
+    !categorySectorsArray || !categorySectorParam
+      ? 0
+      : categorySectorsArray.indexOf(categorySectorParam),
+  );
+  const [routes] = useState(() =>
+    !categorySectorsArray
+      ? []
+      : categorySectorsArray.map(categorySector => ({
+          key: categorySector,
+          title: categorySector,
+        })),
+  );
+
   const { styles } = useStyles(stylesheet);
-  // const navigation = useNavigation();
 
-  const { categorySector } = useLocalSearchParams<{ categorySector: CategorySectors }>();
+  const layout = useWindowDimensions();
 
-  console.log({ categorySector });
-  const tabBarHeight = useBottomTabBarHeight();
+  const renderScene = useMemo(() => {
+    if (!categorySectorsArray) return SceneMap({});
+    const routeComponentArray = categorySectorsArray.map(categorySector => {
+      const Component = () => <DiscountList key={categorySector} categorySector={categorySector} />;
+      Component.displayName = `DiscountList${categorySector}`;
+      return Component;
+    });
+
+    const sceneMap = categorySectorsArray.reduce(
+      (acc, categorySector, index) => {
+        acc[categorySector] = routeComponentArray[index] as unknown as ComponentType<unknown>;
+        return acc;
+      },
+      {} as Record<CategorySectors, ComponentType<unknown>>,
+    );
+    return SceneMap(sceneMap);
+  }, [categorySectorsArray]);
 
   useHideTabBar();
 
   return (
-    <View style={styles.container(tabBarHeight)}>
-      <DiscountList categorySector={categorySector} />
-    </View>
+    <TabView
+      lazy
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+      style={styles.container}
+    />
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (tabBarHeight: number) => ({
+  container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    paddingBottom: tabBarHeight + theme.spacing.lg,
-  }),
+    paddingBottom: theme.spacing.lg,
+  },
 }));
