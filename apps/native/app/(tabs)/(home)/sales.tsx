@@ -1,4 +1,6 @@
+import { CategorySectors } from '@cococom/supabase/libs';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,13 +11,16 @@ export default function SalesScreen() {
   const { styles } = useStyles(stylesheet);
   // const navigation = useNavigation();
 
+  const { categorySector } = useLocalSearchParams<{ categorySector: CategorySectors }>();
+
+  console.log({ categorySector });
   const tabBarHeight = useBottomTabBarHeight();
 
   useHideTabBar();
 
   return (
     <View style={styles.container(tabBarHeight)}>
-      <DiscountList categorySector="디지털/가전" />
+      <DiscountList categorySector={categorySector} />
     </View>
   );
 }
