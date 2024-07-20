@@ -1,11 +1,12 @@
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useCategorySectorsStore } from '@/store/category-sector';
 
 import CategorySectorCard from '../../card/category-sector';
 
@@ -29,7 +30,13 @@ function CategorySectorList() {
     queryFn: () => fetchCurrentDiscountsByCategorySector(),
   });
 
+  const { setCategorySectorsArray } = useCategorySectorsStore();
   console.log('current data', { data, error });
+
+  useEffect(() => {
+    const categorySectors = data?.map(item => item.categorySector) ?? [];
+    setCategorySectorsArray(categorySectors);
+  }, [data, setCategorySectorsArray]);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<typeof data>[number] }) => {
     return <CategorySectorCard discountInfo={item} key={item.id} />;
