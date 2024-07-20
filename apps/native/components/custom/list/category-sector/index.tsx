@@ -32,7 +32,7 @@ function CategorySectorList() {
   console.log('current data', { data, error });
 
   const renderItem = useCallback(({ item }: { item: NonNullable<typeof data>[number] }) => {
-    return <CategorySectorCard categorySector={item} key={item.id} />;
+    return <CategorySectorCard discountInfo={item} key={item.id} />;
   }, []);
 
   if (error || !data || isLoading) return null;

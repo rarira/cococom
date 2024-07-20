@@ -36,7 +36,8 @@ BEGIN
             ' AND c."categorySector" = $3'
         ELSE
             ''
-    END
+    END ||
+    ' ORDER BY d."discountRate" DESC'
     USING _user_id, _current_time_stamp, _category_sector;
 END;
 $$;
