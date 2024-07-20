@@ -13,7 +13,7 @@ import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 interface DiscountListProps {
-  categorySector: CategorySectors;
+  categorySector?: CategorySectors;
 }
 
 function fetchCurrentDiscounts(userId?: string, categorySector?: CategorySectors) {

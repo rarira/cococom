@@ -6,15 +6,15 @@ import Text from '@/components/ui/text';
 import { DiscountsByCategorySector } from '../../list/category-sector';
 
 interface CategorySectorCardProps {
-  categorySector: Awaited<DiscountsByCategorySector>[number];
+  discountInfo: Awaited<DiscountsByCategorySector>[number];
 }
 
-function CategorySectorCard({ categorySector }: CategorySectorCardProps) {
+function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Link href={`/sales?categorySector=${categorySector}`}>
-      <Text>{categorySector.categorySector}</Text>
+    <Link href={`/sales?categorySector=${discountInfo.categorySector}`}>
+      <Text>{discountInfo.categorySector}</Text>
     </Link>
   );
 }
