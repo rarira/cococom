@@ -31,7 +31,6 @@ function CategorySectorList() {
   });
 
   const { setCategorySectorsArray } = useCategorySectorsStore();
-  console.log('current data', { data, error });
 
   useEffect(() => {
     const categorySectors = data?.map(item => item.categorySector) ?? [];
