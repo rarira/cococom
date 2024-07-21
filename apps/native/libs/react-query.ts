@@ -4,7 +4,7 @@ export const queryKeys = {
   discounts: {
     currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
-      { userId, categorySector, currentTimestamp: new Date().toISOString().split('T')[0] },
+      { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
     ],
     currentListByCategorySector: () => [
       'discounts',
