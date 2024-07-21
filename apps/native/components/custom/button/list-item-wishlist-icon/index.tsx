@@ -1,5 +1,6 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
+import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -23,8 +24,13 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
 
   const queryClient = useQueryClient();
 
+  const { categorySector: categorySectorParam } = useLocalSearchParams<{
+    categorySector: CategorySectors;
+  }>();
+
   const idToBeWishlistedRef = useRef<number | null>(null);
 
+  const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
@@ -33,7 +39,6 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       return supabase.createWishlist(newWishlist);
     },
     onMutate: async newWishlist => {
-      const queryKey = queryKeys.discounts.currentList(user?.id);
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData(
         queryKey,
@@ -59,7 +64,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       return { previousData };
     },
     onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKeys.discounts.currentList(user?.id), context?.previousData);
+      queryClient.setQueryData(queryKey, context?.previousData);
     },
   });
 
