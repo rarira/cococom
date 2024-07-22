@@ -2,10 +2,11 @@ import { CategorySectors } from '@cococom/supabase/libs';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import { SceneMap, TabView } from 'react-native-tab-view';
+import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountList from '@/components/custom/list/discount';
+import Chip from '@/components/ui/chip';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
@@ -32,7 +33,7 @@ export default function SalesScreen() {
         })),
   );
 
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   const layout = useWindowDimensions();
 
@@ -54,6 +55,33 @@ export default function SalesScreen() {
     return SceneMap(sceneMap);
   }, [categorySectorsArray]);
 
+  const renderTabBar = useCallback<NonNullable<TabViewProps<Route>['renderTabBar']>>(
+    props => {
+      return (
+        <TabBar
+          {...props}
+          indicatorContainerStyle={styles.tabBarIndicatorContainer}
+          renderLabel={({ route, focused }) => (
+            <Chip
+              text={route.title!}
+              style={styles.tabBarLabelContainer(focused)}
+              textProps={{ style: styles.tabBarLabelText(focused) }}
+            />
+          )}
+          scrollEnabled
+          style={styles.tabBarContainer}
+          tabStyle={styles.tabContainer}
+          pressOpacity={0.5}
+          bounces
+          gap={theme.spacing.md}
+          // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset 전에 setTimeout 설정 필요
+          contentContainerStyle={{ width: undefined }}
+        />
+      );
+    },
+    [styles, theme],
+  );
+
   const handleIndexChange = useCallback(
     (index: number) => {
       setIndex(index);
@@ -70,6 +98,7 @@ export default function SalesScreen() {
       onIndexChange={handleIndexChange}
       initialLayout={{ width: layout.width }}
       style={styles.container}
+      renderTabBar={renderTabBar}
     />
   );
 }
@@ -80,4 +109,23 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
     paddingBottom: theme.spacing.lg,
   },
+  tabContainer: { width: 'auto', padding: 0 },
+  tabBarContainer: {
+    backgroundColor: theme.colors.background,
+  },
+  tabBarIndicatorContainer: {
+    display: 'none',
+  },
+  tabBarLabelContainer: (focused: boolean) => ({
+    backgroundColor: focused ? theme.colors.tint : theme.colors.background,
+    borderWidth: 0.5,
+    borderColor: focused ? theme.colors.tint : theme.colors.typography,
+    opacity: focused ? 1 : 0.5,
+  }),
+  tabBarLabelText: (focused: boolean) => ({
+    color: focused ? theme.colors.background : theme.colors.typography,
+    fontWeight: focused ? 'bold' : 'normal',
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.md,
+  }),
 }));
