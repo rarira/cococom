@@ -1,11 +1,13 @@
 import { CategorySectors } from '@cococom/supabase/libs';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import SalesSortBottomSheet from '@/components/custom/bottom-sheet/sales-sort';
 import DiscountList from '@/components/custom/list/discount';
 import Button from '@/components/ui/button';
 import Chip from '@/components/ui/chip';
@@ -42,11 +44,9 @@ export default function SalesScreen() {
 
   const navigation = useNavigation();
 
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const { bottom: bottomInset } = useSafeAreaInsets();
 
-  // const handlePresentModalPress = useCallback(() => {
-  //   bottomSheetModalRef.current?.present();
-  // }, []);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     navigation.setOptions({
@@ -111,45 +111,28 @@ export default function SalesScreen() {
     [routes],
   );
 
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
-
-  // callbacks
-
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-
   return (
-    <BottomSheetModalProvider>
-      <View style={styles.container}>
-        <TabView
-          lazy
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={handleIndexChange}
-          initialLayout={{ width: layout.width }}
-          style={styles.tabViewContainer}
-          renderTabBar={renderTabBar}
-        />
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-        >
-          <BottomSheetView style={styles.contentContainer}>
-            <Text>Awesome 🎉</Text>
-          </BottomSheetView>
-        </BottomSheetModal>
-      </View>
-    </BottomSheetModalProvider>
+    <View style={styles.container(bottomInset)}>
+      <TabView
+        lazy
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={handleIndexChange}
+        initialLayout={{ width: layout.width }}
+        style={styles.tabViewContainer}
+        renderTabBar={renderTabBar}
+      />
+      <SalesSortBottomSheet ref={bottomSheetModalRef} />
+    </View>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  container: (bottomInset: number) => ({
     flex: 1,
-  },
+    paddingBottom: bottomInset,
+    backgroundColor: theme.colors.background,
+  }),
   contentContainer: {
     flex: 1,
     alignItems: 'center',

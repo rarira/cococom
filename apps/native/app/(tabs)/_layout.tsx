@@ -42,7 +42,7 @@ export default function TabLayout() {
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: theme.colors.tint,
         headerShown: false,
-        tabBarStyle: styles.container,
+        tabBarStyle: styles.tabBar,
         freezeOnBlur: true,
         tabBarIcon: ({ color, focused }) => {
           return (
@@ -84,7 +84,7 @@ export default function TabLayout() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  tabBar: {
     position: 'absolute',
     backgroundColor: theme.colors.background,
   },
