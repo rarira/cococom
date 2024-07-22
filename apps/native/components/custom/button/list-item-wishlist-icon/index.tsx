@@ -1,7 +1,7 @@
 import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
@@ -20,7 +20,7 @@ interface ListItemWishlistIconButtonProps {
 function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
-  const { user } = useUserStore();
+  const { user, setCallbackAfterSignIn } = useUserStore();
 
   const queryClient = useQueryClient();
 
@@ -28,7 +28,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
     categorySector: CategorySectors;
   }>();
 
-  const idToBeWishlistedRef = useRef<number | null>(null);
+  // const idToBeWishlistedRef = useRef<number | null>(null);
 
   const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
@@ -68,19 +68,6 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
     },
   });
 
-  useLayoutEffect(() => {
-    if (user && needAuthDialogVisible) {
-      if (idToBeWishlistedRef.current) {
-        wishlistMutation.mutate({
-          itemId: idToBeWishlistedRef.current,
-          userId: user.id,
-        });
-        idToBeWishlistedRef.current = null;
-      }
-      setNeedAuthDialogVisible(false);
-    }
-  }, [needAuthDialogVisible, user, wishlistMutation]);
-
   const iconProps = useMemo(() => {
     return {
       name: item.isWishlistedByUser ? 'star' : ('star-border' as any),
@@ -90,7 +77,13 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
 
   const handlePress = useCallback(() => {
     if (!user) {
-      idToBeWishlistedRef.current = item.id;
+      setCallbackAfterSignIn(user => {
+        wishlistMutation.mutate({
+          itemId: item.id,
+          userId: user.id,
+        });
+        setNeedAuthDialogVisible(false);
+      });
       setNeedAuthDialogVisible(true);
       return;
     }
@@ -98,7 +91,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       itemId: item.id,
       userId: user.id,
     });
-  }, [item.id, user, wishlistMutation]);
+  }, [item.id, setCallbackAfterSignIn, user, wishlistMutation]);
 
   return (
     <>
