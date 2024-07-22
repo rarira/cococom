@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { useCallback } from 'react';
 import { Button, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
@@ -12,13 +13,15 @@ export default function MyScreen() {
 
   const { user, setUser } = useUserStore();
 
+  const { top } = useSafeAreaInsets();
+
   const signOut = useCallback(async () => {
     await supabase.signOut();
     setUser(null);
   }, [setUser]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container(top)}>
       {!user ? (
         <View>
           <Text>Not logged in</Text>
@@ -38,9 +41,10 @@ export default function MyScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  container: (topInset: number) => ({
     flex: 1,
     paddingHorizontal: theme.spacing.xl,
     backgroundColor: theme.colors.background,
-  },
+    paddingTop: topInset,
+  }),
 }));
