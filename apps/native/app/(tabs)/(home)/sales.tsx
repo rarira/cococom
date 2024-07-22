@@ -74,7 +74,7 @@ export default function SalesScreen() {
           pressOpacity={0.5}
           bounces
           gap={theme.spacing.md}
-          // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset 전에 setTimeout 설정 필요
+          // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset을 requestAnimationFrame적용 필요
           contentContainerStyle={{ width: undefined }}
         />
       );
