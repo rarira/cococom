@@ -20,6 +20,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { AppState, Platform } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
@@ -102,36 +103,38 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.safeAreaContainer}>
-          <PortalProvider>
-            <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
-              <Stack
-                screenOptions={{
-                  contentStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                }}
-              >
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false,
+      <GestureHandlerRootView>
+        <SafeAreaProvider>
+          <SafeAreaView style={styles.safeAreaContainer}>
+            <PortalProvider>
+              <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
+                <Stack
+                  screenOptions={{
+                    contentStyle: {
+                      backgroundColor: 'transparent',
+                    },
                   }}
-                />
-                <Stack.Screen name="+not-found" />
-                <Stack.Screen
-                  name="auth"
-                  options={{
-                    presentation: 'modal',
-                    headerShown: false,
-                  }}
-                />
-              </Stack>
-            </ThemeProvider>
-          </PortalProvider>
-        </SafeAreaView>
-      </SafeAreaProvider>
+                >
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                  <Stack.Screen
+                    name="auth"
+                    options={{
+                      presentation: 'modal',
+                      headerShown: false,
+                    }}
+                  />
+                </Stack>
+              </ThemeProvider>
+            </PortalProvider>
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </QueryClientProvider>
   );
 }
