@@ -28,8 +28,6 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
     categorySector: CategorySectors;
   }>();
 
-  // const idToBeWishlistedRef = useRef<number | null>(null);
-
   const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
