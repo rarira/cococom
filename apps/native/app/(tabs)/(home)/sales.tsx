@@ -1,12 +1,15 @@
 import { CategorySectors } from '@cococom/supabase/libs';
-import { router, useLocalSearchParams } from 'expo-router';
-import { ComponentType, useCallback, useMemo, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import React, { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountList from '@/components/custom/list/discount';
+import Button from '@/components/ui/button';
 import Chip from '@/components/ui/chip';
+import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
@@ -36,6 +39,24 @@ export default function SalesScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const layout = useWindowDimensions();
+
+  const navigation = useNavigation();
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // const handlePresentModalPress = useCallback(() => {
+  //   bottomSheetModalRef.current?.present();
+  // }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => bottomSheetModalRef.current?.present()}>
+          <Text>sort</Text>
+        </Button>
+      ),
+    });
+  }, [navigation]);
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
@@ -90,21 +111,50 @@ export default function SalesScreen() {
     [routes],
   );
 
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
+
+  // callbacks
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
   return (
-    <TabView
-      lazy
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={handleIndexChange}
-      initialLayout={{ width: layout.width }}
-      style={styles.container}
-      renderTabBar={renderTabBar}
-    />
+    <BottomSheetModalProvider>
+      <View style={styles.container}>
+        <TabView
+          lazy
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={handleIndexChange}
+          initialLayout={{ width: layout.width }}
+          style={styles.tabViewContainer}
+          renderTabBar={renderTabBar}
+        />
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <Text>Awesome 🎉</Text>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </View>
+    </BottomSheetModalProvider>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  tabViewContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
     paddingBottom: theme.spacing.lg,
