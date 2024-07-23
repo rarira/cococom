@@ -183,7 +183,7 @@ async function updateDiscounts(date?: string) {
   //   '2024-04-02',
   // ];
   // await createCategories();
-  // const itemSize = await crawlAllItems();
+  const itemSize = await crawlAllItems();
   // await crawlAllDiscounts();
   // await downloadAllImages();
   // await updateAllItemCategory();
@@ -191,5 +191,5 @@ async function updateDiscounts(date?: string) {
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
-  await updateDiscounts();
+  // await updateDiscounts();
 })();

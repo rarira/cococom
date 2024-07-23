@@ -44,15 +44,10 @@ export default memo(
 
     const handleComponent = useCallback(
       (props: BottomSheetHandleProps) => (
-        <>
-          {/* <BottomSheetHandle {...props} />
-           */}
-          <View style={styles.titleContainer}>
-            {/* <BottomSheetHandle {...props} style={styles.handleContainer} /> */}
-            <Text style={styles.title}>{title}</Text>
-            <ModalCloseButton onPress={() => ref.current?.dismiss()} show={showCloseButton} />
-          </View>
-        </>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <ModalCloseButton onPress={() => ref.current?.dismiss()} show={showCloseButton} />
+        </View>
       ),
       [ref, showCloseButton, styles.title, styles.titleContainer, title],
     );
@@ -67,7 +62,6 @@ export default memo(
         enableDynamicSizing
         topInset={headerHeight}
         backdropComponent={backdropComponent}
-        // handleIndicatorStyle={styles.handleIndicator}
         handleComponent={handleComponent}
         {...restProps}
       >
@@ -88,13 +82,7 @@ const stylesheet = createStyleSheet(theme => ({
   background: {
     backgroundColor: theme.colors.modalBackground,
   },
-  // handleContainer: {
-  //   padding: 0,
-  //   marginBottom: theme.spacing.md,
-  // },
-  // handleIndicator: {
-  //   backgroundColor: theme.colors.tint,
-  // },
+
   titleContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -104,5 +92,6 @@ const stylesheet = createStyleSheet(theme => ({
   title: {
     fontSize: theme.fontSize.md,
     fontWeight: 'bold',
+    color: theme.colors.tint,
   },
 }));
