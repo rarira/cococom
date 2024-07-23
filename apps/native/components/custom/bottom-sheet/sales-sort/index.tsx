@@ -7,20 +7,26 @@ import BottomSheet from '@/components/ui/bottom-sheet';
 import Text from '@/components/ui/text';
 import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
 
-interface SalesSortBottomSheetProps {}
+interface SalesSortBottomSheetProps {
+  currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
+}
 
 const SalesSortBottomSheet = memo(
   forwardRef<BottomSheetModal, SalesSortBottomSheetProps>(function SalesSortBottomSheet(
-    {}: SalesSortBottomSheetProps,
+    { currentSort }: SalesSortBottomSheetProps,
     ref,
   ) {
     const { styles } = useStyles(stylesheet);
 
-    const sortOptions = useMemo(() => {
-      return Object.entries(DISCOUNT_SORT_OPTIONS).map(([key, sortOption], index) => {
-        return <Text key={key}>{sortOption.text}</Text>;
-      });
-    }, []);
+    const sortOptions = useMemo(
+      () =>
+        Object.entries(DISCOUNT_SORT_OPTIONS).map(([key, sortOption]) => (
+          <Text key={key} style={styles.text(currentSort === key)}>
+            {sortOption.text}
+          </Text>
+        )),
+      [currentSort, styles],
+    );
 
     return (
       <BottomSheet ref={ref} index={1} title="정렬 방법 변경">
@@ -31,7 +37,11 @@ const SalesSortBottomSheet = memo(
 );
 
 const stylesheet = createStyleSheet(theme => ({
-  container: { flexDirection: 'column' },
+  container: { flexDirection: 'column', gap: theme.spacing.sm, alignItems: 'center' },
+  text: (isCurrent: boolean) => ({
+    fontSize: (theme.fontSize.md + theme.fontSize.sm) / 2,
+    opacity: isCurrent ? 1 : 0.7,
+  }),
 }));
 
 export default SalesSortBottomSheet;
