@@ -9,6 +9,16 @@ type DiscountSortOption = {
 };
 
 export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
+  biggest: {
+    field: 'discountRate',
+    orderBy: 'desc',
+    text: '할인율 높은 순',
+  },
+  smallest: {
+    field: 'discountRate',
+    orderBy: 'asc',
+    text: '할인율 낮은 순',
+  },
   cheapset: {
     field: 'discountPrice',
     orderBy: 'asc',
@@ -28,16 +38,6 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     field: 'startDate',
     orderBy: 'desc',
     text: '최신순',
-  },
-  biggest: {
-    field: 'discountRate',
-    orderBy: 'desc',
-    text: '할인율 높은 순',
-  },
-  smallest: {
-    field: 'discountRate',
-    orderBy: 'asc',
-    text: '할인율 낮은 순',
   },
   popular: {
     field: 'items.totalWishlistCount',
