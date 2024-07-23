@@ -1,9 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Portal } from '@gorhom/portal';
 import { Dispatch, SetStateAction, useCallback } from 'react';
 import { Modal, ModalProps, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import ModalCloseButton from '@/components/custom/button/modal-close';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
@@ -32,7 +32,7 @@ function Dialog({
   renderButtons,
   ...restProps
 }: DialogProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const handleDismiss = useCallback(() => setVisible(false), [setVisible]);
 
@@ -56,17 +56,7 @@ function Dialog({
             </Text>
             <Text style={styles.bodyText}>{body}</Text>
             {!!renderButtons && <View style={styles.modalButtonGroup}>{renderButtons()}</View>}
-            {needToShowCloseButton && (
-              <View style={styles.closeButtonContainer}>
-                <Button onPress={handleDismiss}>
-                  <MaterialIcons
-                    name="close"
-                    size={theme.fontSize.lg}
-                    color={theme.colors.typography}
-                  />
-                </Button>
-              </View>
-            )}
+            <ModalCloseButton onPress={handleDismiss} show={needToShowCloseButton} />
           </View>
         </View>
       </Modal>
@@ -114,12 +104,6 @@ const stylesheet = createStyleSheet(theme => ({
   },
   dismissButtonText: {
     color: theme.colors.link,
-  },
-  closeButtonContainer: {
-    position: 'absolute',
-    top: theme.spacing.lg,
-    right: theme.spacing.lg,
-    elevation: 25,
   },
 }));
 
