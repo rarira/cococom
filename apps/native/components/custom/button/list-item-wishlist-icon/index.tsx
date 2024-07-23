@@ -43,6 +43,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       ) as unknown as ListItemCardProps['discount'][];
 
       const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+
       queryClient.setQueryData(queryKey, (old: any) => {
         if (discountIndex === -1) return old;
         const updatedDiscount = {

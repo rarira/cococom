@@ -1,4 +1,9 @@
+import { CategorySectors } from '@cococom/supabase/libs';
 import { Database, JoinedItems } from '@cococom/supabase/types';
+
+import { ListItemCardProps } from '@/components/custom/card/list-item';
+
+import { queryKeys } from './react-query';
 
 type DiscountSortOption = {
   field:
@@ -55,3 +60,44 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     text: '할인 빈도 적은 순',
   },
 };
+
+export function sortDiscountsByCategorySector(
+  sortKey: keyof typeof DISCOUNT_SORT_OPTIONS,
+  data: ListItemCardProps['discount'][],
+) {
+  return [...data].sort((a: ListItemCardProps['discount'], b: ListItemCardProps['discount']) => {
+    const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
+    const [prop1, prop2] = sortOption.field.split('.');
+
+    const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
+    const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
+
+    if (aValue === bValue) {
+      return 0;
+    }
+
+    if (sortOption.orderBy === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    }
+
+    return aValue < bValue ? 1 : -1;
+  });
+}
+
+export function updateDiscountsByCategorySectorCache({
+  userId,
+  sortKey,
+  queryClient,
+  categorySector,
+}: {
+  userId?: string;
+  sortKey: keyof typeof DISCOUNT_SORT_OPTIONS;
+  queryClient: any;
+  categorySector?: CategorySectors;
+}) {
+  const queryKey = queryKeys.discounts.currentList(userId, categorySector);
+
+  queryClient.setQueryData(queryKey, (prevData: ListItemCardProps['discount'][]) => {
+    return sortDiscountsByCategorySector(sortKey, prevData);
+  });
+}
