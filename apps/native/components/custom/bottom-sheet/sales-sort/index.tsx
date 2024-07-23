@@ -4,16 +4,18 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import BottomSheet from '@/components/ui/bottom-sheet';
+import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
 
 interface SalesSortBottomSheetProps {
   currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
+  onSortChange: (sort: keyof typeof DISCOUNT_SORT_OPTIONS) => void;
 }
 
 const SalesSortBottomSheet = memo(
   forwardRef<BottomSheetModal, SalesSortBottomSheetProps>(function SalesSortBottomSheet(
-    { currentSort }: SalesSortBottomSheetProps,
+    { currentSort, onSortChange }: SalesSortBottomSheetProps,
     ref,
   ) {
     const { styles } = useStyles(stylesheet);
@@ -21,11 +23,15 @@ const SalesSortBottomSheet = memo(
     const sortOptions = useMemo(
       () =>
         Object.entries(DISCOUNT_SORT_OPTIONS).map(([key, sortOption]) => (
-          <Text key={key} style={styles.text(currentSort === key)}>
-            {sortOption.text}
-          </Text>
+          <Button
+            key={key}
+            onPress={() => onSortChange(key)}
+            style={({ pressed }) => styles.button({ selected: currentSort === key, pressed })}
+          >
+            <Text style={styles.text(currentSort === key)}>{sortOption.text}</Text>
+          </Button>
         )),
-      [currentSort, styles],
+      [currentSort, onSortChange, styles],
     );
 
     return (
@@ -41,6 +47,15 @@ const stylesheet = createStyleSheet(theme => ({
   text: (isCurrent: boolean) => ({
     fontSize: (theme.fontSize.md + theme.fontSize.sm) / 2,
     opacity: isCurrent ? 1 : 0.7,
+    color: isCurrent ? theme.colors.background : theme.colors.typography,
+    fontWeight: isCurrent ? 'bold' : 'normal',
+  }),
+  button: ({ selected, pressed }: { selected: boolean; pressed: boolean }) => ({
+    backgroundColor: selected ? theme.colors.tint2 : 'transparent',
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xl,
+    borderRadius: theme.borderRadius.xl,
+    opacity: pressed ? 0.5 : 1,
   }),
 }));
 
