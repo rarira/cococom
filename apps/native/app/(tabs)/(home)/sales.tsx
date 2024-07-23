@@ -13,6 +13,7 @@ import Button from '@/components/ui/button';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
+import { useSalesSort } from '@/hooks/useSalesSort';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
@@ -48,6 +49,8 @@ export default function SalesScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  const { sort, handleSortChange } = useSalesSort(sort => bottomSheetModalRef.current?.dismiss());
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -61,7 +64,9 @@ export default function SalesScreen() {
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
     const routeComponentArray = categorySectorsArray.map(categorySector => {
-      const Component = () => <DiscountList key={categorySector} categorySector={categorySector} />;
+      const Component = () => (
+        <DiscountList key={categorySector} categorySector={categorySector} currentSort={sort} />
+      );
       Component.displayName = `DiscountList${categorySector}`;
       return Component;
     });
@@ -74,7 +79,7 @@ export default function SalesScreen() {
       {} as Record<CategorySectors, ComponentType<unknown>>,
     );
     return SceneMap(sceneMap);
-  }, [categorySectorsArray]);
+  }, [categorySectorsArray, sort]);
 
   const renderTabBar = useCallback<NonNullable<TabViewProps<Route>['renderTabBar']>>(
     props => {
@@ -122,7 +127,11 @@ export default function SalesScreen() {
         style={styles.tabViewContainer}
         renderTabBar={renderTabBar}
       />
-      <SalesSortBottomSheet ref={bottomSheetModalRef} />
+      <SalesSortBottomSheet
+        ref={bottomSheetModalRef}
+        currentSort={sort}
+        onSortChange={handleSortChange}
+      />
     </View>
   );
 }

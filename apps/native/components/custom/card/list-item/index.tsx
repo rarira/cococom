@@ -1,7 +1,7 @@
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { CurrentDiscounts } from '@/app/(tabs)';
+import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
 
 import Card from '../../../ui/card';
 import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
