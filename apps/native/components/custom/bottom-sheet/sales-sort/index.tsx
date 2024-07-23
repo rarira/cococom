@@ -23,7 +23,7 @@ const SalesSortBottomSheet = memo(
     }, []);
 
     return (
-      <BottomSheet ref={ref} index={1}>
+      <BottomSheet ref={ref} index={1} title="정렬 방법 변경">
         <View style={styles.container}>{sortOptions}</View>
       </BottomSheet>
     );
