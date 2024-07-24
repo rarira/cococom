@@ -55,20 +55,23 @@ export default function SalesScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { sort, handleSortChange } = useSalesSort(sort => bottomSheetModalRef.current?.dismiss());
+  const { sort, handleSortChange } = useSalesSort(_sort => bottomSheetModalRef.current?.dismiss());
 
-  const showSortBottomSheet = useCallback(() => {
-    console.log('showSortBottomSheet');
-    bottomSheetModalRef.current?.present();
-  }, []);
+  const renderHeaderRightButton = useCallback(
+    () => (
+      <HeaderRightButton
+        iconProps={{ name: 'sort' }}
+        onPress={() => bottomSheetModalRef.current?.present()}
+      />
+    ),
+    [],
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <HeaderRightButton iconProps={{ name: 'sort' }} onPress={showSortBottomSheet} />
-      ),
+      headerRight: renderHeaderRightButton,
     });
-  }, [navigation, showSortBottomSheet]);
+  }, [navigation, renderHeaderRightButton]);
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
