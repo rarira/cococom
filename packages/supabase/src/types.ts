@@ -12,14 +12,17 @@ export type Database = {
       categories: {
         Row: {
           categoryName: string
+          categorySector: Database["public"]["Enums"]["CategorySectors"]
           id: number
         }
         Insert: {
           categoryName: string
+          categorySector?: Database["public"]["Enums"]["CategorySectors"]
           id: number
         }
         Update: {
           categoryName?: string
+          categorySector?: Database["public"]["Enums"]["CategorySectors"]
           id?: number
         }
         Relationships: []
@@ -167,43 +170,58 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_discounts_with_wishlist_counts: {
+      get_current_discounts_by_category_sector: {
         Args: {
           _current_time_stamp: string
-          _user_id: string
         }
         Returns: {
           id: number
           itemId: string
+          categorySector: Database["public"]["Enums"]["CategorySectors"]
+          discountsCount: number
+        }[]
+      }
+      get_discounts_with_wishlist_counts: {
+        Args: {
+          _current_time_stamp: string
+          _user_id: string
+          _category_sector: Database["public"]["Enums"]["CategorySectors"]
+        }
+        Returns: {
+          id: number
           startDate: string
           endDate: string
           price: number
-          discount: number
           discountPrice: number
-          discountHash: string
           discountRate: number
+          discount: number
           items: Json
         }[]
       }
-      get_items_with_wishlist_counts:
-        | {
-            Args: {
-              item_id: string
-              user_id: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              item_id: string
-              user_id: string
-              need_discounts: boolean
-            }
-            Returns: Json
-          }
+      get_items_with_wishlist_counts: {
+        Args: {
+          item_id: string
+          user_id: string
+          need_discounts: boolean
+        }
+        Returns: Json
+      }
     }
     Enums: {
-      [_ in never]: never
+      CategorySectors:
+        | "홈 데코"
+        | "생활용품"
+        | "디지털/가전"
+        | "기타"
+        | "건강/미용"
+        | "의류/잡화"
+        | "자동차/취미"
+        | "신선식품"
+        | "주류/음료"
+        | "즉석식품/간식"
+        | "식자재"
+        | "냉장/냉동/가공식품"
+        | "문구/사무/아동/반려"
     }
     CompositeTypes: {
       [_ in never]: never

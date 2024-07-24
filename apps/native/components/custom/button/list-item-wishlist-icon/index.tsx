@@ -1,6 +1,7 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
+import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
@@ -19,12 +20,15 @@ interface ListItemWishlistIconButtonProps {
 function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
-  const { user } = useUserStore();
+  const { user, setCallbackAfterSignIn } = useUserStore();
 
   const queryClient = useQueryClient();
 
-  const idToBeWishlistedRef = useRef<number | null>(null);
+  const { categorySector: categorySectorParam } = useLocalSearchParams<{
+    categorySector: CategorySectors;
+  }>();
 
+  const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
@@ -33,13 +37,13 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       return supabase.createWishlist(newWishlist);
     },
     onMutate: async newWishlist => {
-      const queryKey = queryKeys.discounts.currentList(user?.id);
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData(
         queryKey,
       ) as unknown as ListItemCardProps['discount'][];
 
       const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+
       queryClient.setQueryData(queryKey, (old: any) => {
         if (discountIndex === -1) return old;
         const updatedDiscount = {
@@ -59,22 +63,9 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       return { previousData };
     },
     onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKeys.discounts.currentList(user?.id), context?.previousData);
+      queryClient.setQueryData(queryKey, context?.previousData);
     },
   });
-
-  useLayoutEffect(() => {
-    if (user && needAuthDialogVisible) {
-      if (idToBeWishlistedRef.current) {
-        wishlistMutation.mutate({
-          itemId: idToBeWishlistedRef.current,
-          userId: user.id,
-        });
-        idToBeWishlistedRef.current = null;
-      }
-      setNeedAuthDialogVisible(false);
-    }
-  }, [needAuthDialogVisible, user, wishlistMutation]);
 
   const iconProps = useMemo(() => {
     return {
@@ -85,7 +76,15 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
 
   const handlePress = useCallback(() => {
     if (!user) {
-      idToBeWishlistedRef.current = item.id;
+      setCallbackAfterSignIn(user => {
+        requestAnimationFrame(() => {
+          wishlistMutation.mutate({
+            itemId: item.id,
+            userId: user.id,
+          });
+        });
+        setNeedAuthDialogVisible(false);
+      });
       setNeedAuthDialogVisible(true);
       return;
     }
@@ -93,7 +92,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       itemId: item.id,
       userId: user.id,
     });
-  }, [item.id, user, wishlistMutation]);
+  }, [item.id, setCallbackAfterSignIn, user, wishlistMutation]);
 
   return (
     <>
