@@ -1,17 +1,23 @@
 import { CategorySectors } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
-import React, { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ComponentType,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SalesSortBottomSheet from '@/components/custom/bottom-sheet/sales-sort';
+import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
-import Button from '@/components/ui/button';
 import Chip from '@/components/ui/chip';
-import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useSalesSort } from '@/hooks/useSalesSort';
 import { useCategorySectorsStore } from '@/store/category-sector';
@@ -51,22 +57,23 @@ export default function SalesScreen() {
 
   const { sort, handleSortChange } = useSalesSort(sort => bottomSheetModalRef.current?.dismiss());
 
-  useEffect(() => {
+  const showSortBottomSheet = useCallback(() => {
+    console.log('showSortBottomSheet');
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => bottomSheetModalRef.current?.present()}>
-          <Text>sort</Text>
-        </Button>
+        <HeaderRightButton iconProps={{ name: 'sort' }} onPress={showSortBottomSheet} />
       ),
     });
-  }, [navigation]);
+  }, [navigation, showSortBottomSheet]);
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
     const routeComponentArray = categorySectorsArray.map(categorySector => {
-      const Component = () => (
-        <DiscountList key={categorySector} categorySector={categorySector} currentSort={sort} />
-      );
+      const Component = () => <DiscountList key={categorySector} currentSort={sort} />;
       Component.displayName = `DiscountList${categorySector}`;
       return Component;
     });

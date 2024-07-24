@@ -24,7 +24,6 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
           width={115}
           height={115}
           style={styles.thumbnail}
-          // style={styles.thumbnail}
         />
         <ListItemCardDetailView discount={discount} />
       </View>
