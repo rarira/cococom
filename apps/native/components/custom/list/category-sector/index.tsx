@@ -1,6 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -8,7 +8,7 @@ import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
-import CategorySectorCard from '../../card/category-sector';
+import CategorySectorGroupView from '../../view/category-sector-group';
 
 interface CategorySectorListProps {}
 
@@ -21,7 +21,7 @@ export type DiscountsByCategorySector = NonNullable<
   ReturnType<typeof fetchCurrentDiscountsByCategorySector>
 >;
 
-const NumberOfColumns = 3;
+const NumberOfColumns = 4;
 
 function CategorySectorList() {
   const { styles, theme } = useStyles(stylesheet);
@@ -38,35 +38,43 @@ function CategorySectorList() {
   const itemWidth =
     (width - horizontalGap * 2 - theme.screenHorizontalPadding * 2) / NumberOfColumns;
 
-  console.log('itemWidth', itemWidth);
   useEffect(() => {
     const categorySectors = data?.map(item => item.categorySector) ?? [];
     setCategorySectorsArray(categorySectors);
   }, [data, setCategorySectorsArray]);
 
   const renderItem = useCallback(
-    ({ item, index }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return (
-        <CategorySectorCard
-          discountInfo={item}
-          key={item.id}
-          width={itemWidth}
-          gap={index % NumberOfColumns === 2 ? 0 : horizontalGap}
-        />
-      );
+    ({ item, index }: { item: NonNullable<typeof data>[number][]; index: number }) => {
+      return <CategorySectorGroupView group={item} key={index} />;
     },
-    [horizontalGap, itemWidth],
+    [],
+  );
+
+  const chunkedData = useMemo(
+    () =>
+      data?.reduce(
+        (acc, item, index) => {
+          const chunkIndex = Math.floor(index / NumberOfColumns);
+          if (!acc[chunkIndex]) {
+            acc[chunkIndex] = [];
+          }
+          acc[chunkIndex].push(item);
+          return acc;
+        },
+        [] as (typeof data)[number][][],
+      ) ?? [],
+    [data],
   );
 
   if (error || !data || isLoading) return null;
 
   return (
     <FlashList
-      data={data}
+      data={chunkedData}
       renderItem={renderItem}
       estimatedItemSize={itemWidth}
-      keyExtractor={item => item.id.toString()}
-      numColumns={NumberOfColumns}
+      keyExtractor={item => item[0].itemId.toString()}
+      numColumns={1}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
       contentContainerStyle={styles.container}
     />
@@ -76,7 +84,7 @@ function CategorySectorList() {
 const stylesheet = createStyleSheet(theme => ({
   container: { padding: theme.screenHorizontalPadding },
   seperatorStyle: {
-    height: theme.spacing.md * 2,
+    height: theme.spacing.lg,
   },
 }));
 

@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { View } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
@@ -11,20 +12,33 @@ import { DiscountsByCategorySector } from '../../list/category-sector';
 
 interface CategorySectorCardProps {
   discountInfo: Awaited<DiscountsByCategorySector>[number];
-  width: number;
-  gap: number;
 }
 
-function CategorySectorCard({ discountInfo, width, gap }: CategorySectorCardProps) {
+function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  console.log(width, { discountInfo });
+  console.log(discountInfo);
   return (
-    <Link href={`/sales?categorySector=${discountInfo.categorySector}`}>
-      <Shadow {...shadowPresets.card(theme)} style={styles.container}>
-        <Card style={styles.cardContainer(width, gap)}>
-          <View style={{ flex: 1, flexDirection: 'column' }}>
-            <Text>{discountInfo.categorySector}</Text>
+    <Link
+      href={`/sales?categorySector=${discountInfo.categorySector}`}
+      style={{ flex: 1, width: '100%', height: '100%' }}
+    >
+      <Shadow {...shadowPresets.card(theme)}>
+        <Card style={styles.cardContainer}>
+          <View style={styles.imageContainer}>
+            <Image
+              // TODO: 상품별 이미지로 변경
+              source={`https://picsum.photos/150/150`}
+              contentFit="cover"
+              alt={`${discountInfo.categorySector} thumbnail image`}
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.infoContaier}>
+            <Text style={styles.categoryName} numberOfLines={1}>
+              {discountInfo.categorySector}
+            </Text>
+            <Text style={styles.count}>{discountInfo.discountsCount}개의 할인</Text>
           </View>
         </Card>
       </Shadow>
@@ -33,16 +47,37 @@ function CategorySectorCard({ discountInfo, width, gap }: CategorySectorCardProp
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
+  cardContainer: {
     flex: 1,
     width: '100%',
-  },
-  cardContainer: (width: number, paddingRight: number) => ({
-    flex: 1,
-    width,
-    paddingRight,
+    height: '100%',
     borderRadius: theme.borderRadius.md,
-  }),
+    overflow: 'hidden',
+  },
+  imageContainer: {
+    width: '100%',
+    aspectRatio: 1 / 1,
+  },
+  image: {
+    flex: 1,
+  },
+  infoContaier: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing.md,
+  },
+  categoryName: {
+    fontSize: (theme.fontSize.md + theme.fontSize.sm) / 2,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  count: {
+    fontSize: theme.fontSize.xs,
+    textAlign: 'center',
+    opacity: 0.8,
+    color: theme.colors.tint3,
+  },
 }));
 
 export default CategorySectorCard;
