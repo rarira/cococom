@@ -24,6 +24,7 @@ const commonTheme = {
     link: '#0a7ea4',
     alert: '#ff0000',
   },
+  screenHorizontalPadding: 16,
 } as const;
 
 // https://colorhunt.co/palette/402e7a4c3bcf4b70f53dc2ec
