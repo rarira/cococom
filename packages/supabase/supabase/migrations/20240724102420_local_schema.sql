@@ -1,20 +1,11 @@
-CREATE OR REPLACE FUNCTION get_discounts_with_wishlist_counts(
-    _current_time_stamp timestamp, 
-    _user_id uuid,
-    _category_sector public."CategorySectors"
-)
-RETURNS TABLE(
-    id int,
-    "startDate" timestamp without time zone,
-    "endDate" timestamp without time zone,
-    price numeric(65, 30),
-    "discountPrice" numeric(65, 30),
-    "discountRate" numeric,
-    "discount" numeric,
-    items jsonb
-)
-LANGUAGE plpgsql
-AS $$
+drop function if exists "public"."get_discounts_with_wishlist_counts"(_current_time_stamp timestamp without time zone, _user_id uuid, _category_sector "CategorySectors");
+
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_discounts_with_wishlist_counts(_current_time_stamp timestamp without time zone, _user_id uuid, _category_sector "CategorySectors")
+ RETURNS TABLE(id integer, "startDate" timestamp without time zone, "endDate" timestamp without time zone, price numeric, "discountPrice" numeric, "discountRate" numeric, discout numeric, items jsonb)
+ LANGUAGE plpgsql
+AS $function$
 BEGIN
     RETURN QUERY EXECUTE
     'SELECT
@@ -42,4 +33,7 @@ BEGIN
     ' ORDER BY d."discountRate" DESC'
     USING _user_id, _current_time_stamp, _category_sector;
 END;
-$$;
+$function$
+;
+
+
