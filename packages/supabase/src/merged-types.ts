@@ -32,6 +32,7 @@ export type Database = MergeDeep<
             price: number;
             discountPrice: number;
             discountRate: number;
+            discount: number;
             items: JoinedItems;
           }[];
         };
