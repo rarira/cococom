@@ -74,7 +74,7 @@ export default memo(
 const stylesheet = createStyleSheet(theme => ({
   container: (bottomInset: number) => ({
     flexDirection: 'column',
-    paddingHorizontal: theme.spacing.xl,
+    paddingHorizontal: theme.screenHorizontalPadding,
     justifyContent: 'center',
     backgroundColor: theme.colors.modalBackground,
     paddingBottom: bottomInset,
