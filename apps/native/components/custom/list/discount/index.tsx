@@ -47,7 +47,7 @@ export default function DiscountList({ currentSort }: DiscountListProps) {
 
 const stylesheet = createStyleSheet(theme => ({
   flashListContainer: (isMultiColumn: boolean) => ({
-    paddingHorizontal: isMultiColumn ? theme.spacing.xl : theme.spacing.lg,
+    paddingHorizontal: isMultiColumn ? theme.screenHorizontalPadding : theme.spacing.lg,
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
