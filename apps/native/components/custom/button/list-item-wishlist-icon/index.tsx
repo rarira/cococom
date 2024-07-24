@@ -77,9 +77,11 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
   const handlePress = useCallback(() => {
     if (!user) {
       setCallbackAfterSignIn(user => {
-        wishlistMutation.mutate({
-          itemId: item.id,
-          userId: user.id,
+        requestAnimationFrame(() => {
+          wishlistMutation.mutate({
+            itemId: item.id,
+            userId: user.id,
+          });
         });
         setNeedAuthDialogVisible(false);
       });
