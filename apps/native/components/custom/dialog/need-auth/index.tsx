@@ -34,13 +34,13 @@ function NeedAuthDialog(props: NeedAuthDialogProps) {
 
 const stylesheet = createStyleSheet(theme => ({
   loginButton: {
-    backgroundColor: theme.colors.link,
+    backgroundColor: theme.colors.tint,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loginText: {
-    color: theme.colors.tint3,
+    color: theme.colors.background,
     fontWeight: 'bold',
   },
 }));

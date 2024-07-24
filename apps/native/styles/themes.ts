@@ -32,8 +32,8 @@ export const lightTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#11181C',
-    background: '#FFFFFF',
-    cardBackground: '#FAFAFA',
+    background: '#FAFAFA',
+    cardBackground: '#FFFFFF',
     modalBackground: '#FFFFFF',
     tint: '#402E7A',
     tint2: '#4C3BCF',
@@ -55,7 +55,7 @@ export const darkTheme = {
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
-    shadow: '#111111',
+    shadow: '#333333',
     scrim: 'rgba(26,26,26, 0.6)',
   },
 } as const;
