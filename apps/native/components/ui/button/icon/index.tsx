@@ -6,9 +6,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Button, { ButtonProps } from '@/components/ui/button';
 import Text, { TextProps } from '@/components/ui/text';
 
-interface IconButtonProps extends Omit<ButtonProps, 'children'> {
-  iconProps: IconProps<keyof typeof MaterialIcons.glyphMap>;
-  text: string;
+export interface IconButtonProps<T = keyof typeof MaterialIcons.glyphMap>
+  extends Omit<ButtonProps, 'children'> {
+  iconProps: IconProps<T>;
+  text?: string;
   textStyle?: TextProps['style'];
 }
 
@@ -21,11 +22,13 @@ function IconButton({ style, text, iconProps, textStyle, ...restProps }: IconBut
       {...restProps}
     >
       <MaterialIcons color={theme.colors.typography} size={theme.fontSize.md} {...iconProps} />
-      <View style={styles.textContainer}>
-        <Text type="defaultSemiBold" style={[styles.text, textStyle]}>
-          {text}
-        </Text>
-      </View>
+      {text && (
+        <View style={styles.textContainer}>
+          <Text type="defaultSemiBold" style={[styles.text, textStyle]}>
+            {text}
+          </Text>
+        </View>
+      )}
     </Button>
   );
 }
