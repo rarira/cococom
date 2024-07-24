@@ -194,6 +194,7 @@ export type Database = {
           price: number
           discountPrice: number
           discountRate: number
+          discount: number
           items: Json
         }[]
       }
