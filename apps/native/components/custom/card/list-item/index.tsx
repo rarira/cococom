@@ -3,6 +3,7 @@ import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
+import { shadowPresets } from '@/libs/shadow';
 
 import Card from '../../../ui/card';
 import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
@@ -18,15 +19,7 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Shadow
-      style={{ flex: 1, width: '100%' }}
-      offset={[theme.spacing.sm / 2, theme.spacing.sm / 2]}
-      startColor={`${theme.colors.shadow}22`}
-      distance={theme.spacing.sm}
-      sides={{ start: false, top: false, bottom: true, end: true }}
-      corners={{ topStart: false, topEnd: true, bottomStart: true, bottomEnd: true }}
-      // containerStyle={{ borderRadius: theme.borderRadius.md }}
-    >
+    <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
       <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
         <View style={styles.itemContainer(numColumns === 1)}>
           <ProductCardThumbnailImage
@@ -47,6 +40,7 @@ const stylesheet = createStyleSheet(theme => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
   }),
+  shadowContainer: { flex: 1, width: '100%' },
   itemContainer: (row: boolean) => ({
     flex: 1,
     flexDirection: row ? 'row' : 'column',

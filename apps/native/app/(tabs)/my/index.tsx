@@ -43,7 +43,7 @@ export default function MyScreen() {
 const stylesheet = createStyleSheet(theme => ({
   container: (topInset: number) => ({
     flex: 1,
-    paddingHorizontal: theme.spacing.xl,
+    paddingHorizontal: theme.screenHorizontalPadding,
     backgroundColor: theme.colors.background,
     paddingTop: topInset,
   }),
