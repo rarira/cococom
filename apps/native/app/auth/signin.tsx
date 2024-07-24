@@ -16,7 +16,7 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser } = useUserStore();
+  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -26,7 +26,13 @@ export default function SignInScreen() {
     } = await supabase.signInWithEmail({ email, password });
 
     if (error) Alert.alert(error.message);
-    if (user) setUser(user);
+    if (user) {
+      setUser(user);
+      if (callbackAfterSignIn) {
+        callbackAfterSignIn(user);
+        setCallbackAfterSignIn(null);
+      }
+    }
 
     setLoading(false);
   }
@@ -46,7 +52,13 @@ export default function SignInScreen() {
 
     if (error) Alert.alert(error.message);
     if (!session) Alert.alert('Please check your inbox for email verification!');
-    if (user) setUser(user);
+    if (user) {
+      setUser(user);
+      if (callbackAfterSignIn) {
+        callbackAfterSignIn(user);
+        setCallbackAfterSignIn(null);
+      }
+    }
     setLoading(false);
     router.dismiss();
   }
@@ -62,7 +74,13 @@ export default function SignInScreen() {
       access_token: result.accessToken,
     });
     if (!error) {
-      if (user) setUser(user);
+      if (user) {
+        setUser(user);
+        if (callbackAfterSignIn) {
+          callbackAfterSignIn(user);
+          setCallbackAfterSignIn(null);
+        }
+      }
       router.dismiss();
     }
   }

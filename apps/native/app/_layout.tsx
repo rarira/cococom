@@ -3,6 +3,7 @@ import type { AppStateStatus } from 'react-native';
 import '@/styles/unistyles';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
@@ -20,9 +21,10 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { AppState, Platform } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createStyleSheet, UnistylesRuntime } from 'react-native-unistyles';
 
 import { useLoadUser } from '@/hooks/useLoadUser';
 
@@ -72,8 +74,6 @@ function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const { styles } = useStyles(stylesheet);
-
   useLoadUser();
 
   const themeName = useMemo(() => UnistylesRuntime.themeName, []);
@@ -102,45 +102,53 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.safeAreaContainer}>
+      <GestureHandlerRootView>
+        <SafeAreaProvider>
           <PortalProvider>
             <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
-              <Stack
-                screenOptions={{
-                  contentStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                }}
-              >
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false,
+              <BottomSheetModalProvider>
+                <Stack
+                  screenOptions={{
+                    contentStyle: {
+                      backgroundColor: 'transparent',
+                    },
                   }}
-                />
-                <Stack.Screen name="+not-found" />
-                <Stack.Screen
-                  name="auth"
-                  options={{
-                    presentation: 'modal',
-                    headerShown: false,
-                  }}
-                />
-              </Stack>
+                >
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                  <Stack.Screen
+                    name="auth"
+                    options={{
+                      presentation: 'modal',
+                      headerShown: false,
+                    }}
+                  />
+                </Stack>
+              </BottomSheetModalProvider>
             </ThemeProvider>
           </PortalProvider>
-        </SafeAreaView>
-      </SafeAreaProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </QueryClientProvider>
   );
 }
 
 const stylesheet = createStyleSheet(theme => {
   return {
-    safeAreaContainer: {
+    topSafeArea: (safeAreaBackgroundColor: UIState['safeAreaBackgroundColor']) => ({
+      flex: 0,
+      backgroundColor: safeAreaBackgroundColor.top || theme.colors.background,
+    }),
+    bottomSafeArea: (safeAreaBackgroundColor: UIState['safeAreaBackgroundColor']) => ({
       flex: 1,
-    },
+      backgroundColor: safeAreaBackgroundColor.bottom || theme.colors.background,
+      position: 'relative',
+    }),
   };
 });
 
