@@ -1,7 +1,9 @@
 import { StyleProp, View, ViewStyle } from 'react-native';
+import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { CurrentDiscounts } from '@/app/(tabs)';
+import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
+import { shadowPresets } from '@/libs/shadow';
 
 import Card from '../../../ui/card';
 import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
@@ -14,21 +16,22 @@ export interface ListItemCardProps {
 }
 
 function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCardProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
-      <View style={styles.itemContainer(numColumns === 1)}>
-        <ProductCardThumbnailImage
-          product={discount.items!}
-          width={115}
-          height={115}
-          style={styles.thumbnail}
-          // style={styles.thumbnail}
-        />
-        <ListItemCardDetailView discount={discount} />
-      </View>
-    </Card>
+    <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
+      <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
+        <View style={styles.itemContainer(numColumns === 1)}>
+          <ProductCardThumbnailImage
+            product={discount.items!}
+            width={115}
+            height={115}
+            style={styles.thumbnail}
+          />
+          <ListItemCardDetailView discount={discount} />
+        </View>
+      </Card>
+    </Shadow>
   );
 }
 
@@ -36,15 +39,8 @@ const stylesheet = createStyleSheet(theme => ({
   cardContainer: (needMargin: boolean) => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
-    shadowColor: theme.colors.shadow,
-    shadowOffset: {
-      width: theme.spacing.sm / 2,
-      height: theme.spacing.sm / 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 3.84,
-    elevation: 5,
   }),
+  shadowContainer: { flex: 1, width: '100%' },
   itemContainer: (row: boolean) => ({
     flex: 1,
     flexDirection: row ? 'row' : 'column',

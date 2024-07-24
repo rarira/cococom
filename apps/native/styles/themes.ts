@@ -24,6 +24,7 @@ const commonTheme = {
     link: '#0a7ea4',
     alert: '#ff0000',
   },
+  screenHorizontalPadding: 16,
 } as const;
 
 // https://colorhunt.co/palette/402e7a4c3bcf4b70f53dc2ec
@@ -32,9 +33,9 @@ export const lightTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#11181C',
-    background: '#FFFFFF',
-    cardBackground: '#FAFAFA',
-    dialogBackground: '#FFFFFF',
+    background: '#FAFAFA',
+    cardBackground: '#FFFFFF',
+    modalBackground: '#FFFFFF',
     tint: '#402E7A',
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
@@ -51,11 +52,11 @@ export const darkTheme = {
     typography: '#ECEDEE',
     background: '#000000',
     cardBackground: '#121212',
-    dialogBackground: '#AAAAAA',
+    modalBackground: '#232323',
     tint: '#FFE9D0',
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
-    shadow: '#111111',
+    shadow: '#333333',
     scrim: 'rgba(26,26,26, 0.6)',
   },
 } as const;

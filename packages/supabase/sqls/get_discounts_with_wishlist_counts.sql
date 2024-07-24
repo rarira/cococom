@@ -1,24 +1,45 @@
-CREATE OR REPLACE FUNCTION get_discounts_with_wishlist_counts(_current_time_stamp timestamp, _user_id uuid)
+CREATE OR REPLACE FUNCTION get_discounts_with_wishlist_counts(
+    _current_time_stamp timestamp, 
+    _user_id uuid,
+    _category_sector public."CategorySectors"
+)
 RETURNS TABLE(
     id int,
-    "itemId" text,
     "startDate" timestamp without time zone,
     "endDate" timestamp without time zone,
     price numeric(65, 30),
-    discount numeric(65, 30),
     "discountPrice" numeric(65, 30),
-    "discountHash" text,
     "discountRate" numeric,
+    "discount" numeric,
     items jsonb
 )
-LANGUAGE sql
+LANGUAGE plpgsql
 AS $$
-  SELECT
-      d.*,
-      get_items_with_wishlist_counts(d."itemId", _user_id, false) AS items
-  FROM
-      discounts d
-  WHERE
-      d."startDate" <= _current_time_stamp
-      AND d."endDate" >= _current_time_stamp;
+BEGIN
+    RETURN QUERY EXECUTE
+    'SELECT
+        d.id,
+        d."startDate",
+        d."endDate",
+        d.price,
+        d."discountPrice",
+        d."discountRate",
+        d."discount",
+        get_items_with_wishlist_counts(d."itemId", $1, false) AS items
+    FROM
+        discounts d
+    LEFT JOIN items i ON d."itemId" = i."itemId"
+    LEFT JOIN categories c ON i."categoryId" = c.id
+    WHERE
+        d."startDate" <= $2
+        AND d."endDate" >= $2' ||
+    CASE
+        WHEN _category_sector IS NOT NULL THEN
+            ' AND c."categorySector" = $3'
+        ELSE
+            ''
+    END ||
+    ' ORDER BY d."discountRate" DESC'
+    USING _user_id, _current_time_stamp, _category_sector;
+END;
 $$;
