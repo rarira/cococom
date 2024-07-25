@@ -11,4 +11,7 @@ export const queryKeys = {
       { currentTimestamp: new Date().toISOString().split('T')[0] },
     ],
   },
+  histories: {
+    latest: ['histories', 'latest'],
+  },
 };

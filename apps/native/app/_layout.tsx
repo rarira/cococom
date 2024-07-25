@@ -15,6 +15,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { setDefaultOptions } from 'date-fns';
+import { ko } from 'date-fns/locale';
 import { isRunningInExpoGo } from 'expo';
 import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
@@ -27,6 +29,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime } from 'react-native-unistyles';
 
 import { useLoadUser } from '@/hooks/useLoadUser';
+
+setDefaultOptions({ locale: ko });
 
 export { ErrorBoundary } from 'expo-router';
 
