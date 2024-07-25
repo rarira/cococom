@@ -73,6 +73,7 @@ export type Database = {
       }
       items: {
         Row: {
+          bestDiscount: number | null
           bestDiscountRate: number | null
           categoryId: number | null
           id: number
@@ -81,6 +82,7 @@ export type Database = {
           lowestPrice: number | null
         }
         Insert: {
+          bestDiscount?: number | null
           bestDiscountRate?: number | null
           categoryId?: number | null
           id?: number
@@ -89,6 +91,7 @@ export type Database = {
           lowestPrice?: number | null
         }
         Update: {
+          bestDiscount?: number | null
           bestDiscountRate?: number | null
           categoryId?: number | null
           id?: number

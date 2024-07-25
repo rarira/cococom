@@ -162,6 +162,14 @@ async function updateDiscounts(date?: string) {
         update.lowestPrice = newlyAddedDiscount.discountPrice;
       }
 
+      if (
+        newlyAddedDiscount.discount &&
+        response.data.bestDiscount &&
+        response.data.bestDiscount < newlyAddedDiscount.discount
+      ) {
+        update.bestDiscount = newlyAddedDiscount.discount;
+      }
+
       if (Object.keys(update).length === 0) continue;
 
       await supabase.updateItem(update, response.data.id);
