@@ -29,6 +29,7 @@ export type Database = {
       }
       discounts: {
         Row: {
+          created_at: string | null
           discount: number
           discountHash: string
           discountPrice: number
@@ -40,6 +41,7 @@ export type Database = {
           startDate: string
         }
         Insert: {
+          created_at?: string | null
           discount: number
           discountHash: string
           discountPrice: number
@@ -51,6 +53,7 @@ export type Database = {
           startDate: string
         }
         Update: {
+          created_at?: string | null
           discount?: number
           discountHash?: string
           discountPrice?: number
@@ -71,26 +74,56 @@ export type Database = {
           },
         ]
       }
+      histories: {
+        Row: {
+          added_discount_count: number | null
+          created_at: string
+          id: number
+          new_item_count: number | null
+          no_images: string[] | null
+        }
+        Insert: {
+          added_discount_count?: number | null
+          created_at?: string
+          id?: number
+          new_item_count?: number | null
+          no_images?: string[] | null
+        }
+        Update: {
+          added_discount_count?: number | null
+          created_at?: string
+          id?: number
+          new_item_count?: number | null
+          no_images?: string[] | null
+        }
+        Relationships: []
+      }
       items: {
         Row: {
+          bestDiscount: number | null
           bestDiscountRate: number | null
           categoryId: number | null
+          created_at: string | null
           id: number
           itemId: string
           itemName: string | null
           lowestPrice: number | null
         }
         Insert: {
+          bestDiscount?: number | null
           bestDiscountRate?: number | null
           categoryId?: number | null
+          created_at?: string | null
           id?: number
           itemId: string
           itemName?: string | null
           lowestPrice?: number | null
         }
         Update: {
+          bestDiscount?: number | null
           bestDiscountRate?: number | null
           categoryId?: number | null
+          created_at?: string | null
           id?: number
           itemId?: string
           itemName?: string | null
@@ -108,14 +141,17 @@ export type Database = {
       }
       profiles: {
         Row: {
+          created_at: string | null
           id: string
           nickname: string | null
         }
         Insert: {
+          created_at?: string | null
           id: string
           nickname?: string | null
         }
         Update: {
+          created_at?: string | null
           id?: string
           nickname?: string | null
         }
