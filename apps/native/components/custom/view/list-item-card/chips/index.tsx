@@ -19,14 +19,18 @@ const chips = [
   {
     text: '최저가',
     checkFn: (discount: ListItemCardProps['discount']) =>
-      discount.items.discountsLength > 1 && discount.discountPrice === discount.items?.lowestPrice,
+      discount.discountPrice !== 0 &&
+      discount.items.discountsLength > 1 &&
+      discount.discountPrice === discount.items?.lowestPrice,
     color: (theme: UnistylesTheme) => theme.colors.tint,
   },
   {
     text: '최대할인',
     checkFn: (discount: ListItemCardProps['discount']) =>
       discount.items.discountsLength > 1 &&
-      discount.discountRate === discount.items?.bestDiscountRate,
+      (discount.discountPrice === 0
+        ? discount.discount === discount.items?.bestDiscount
+        : discount.discountRate === discount.items?.bestDiscountRate),
     color: (theme: UnistylesTheme) => theme.colors.tint2,
   },
   {
