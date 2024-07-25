@@ -24,6 +24,7 @@ export type InsertDiscount = Database['public']['Tables']['discounts']['Insert']
 export type InsertItem = Database['public']['Tables']['items']['Insert'];
 export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
+export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
@@ -70,8 +71,15 @@ export class Supabase {
     return response.data;
   }
 
-  async fetchAllItems() {
-    const { data, error } = await this.supabaseClient.from('items').select('*');
+  async fetchAllItems(noLowsetPrice?: boolean) {
+    const call = this.supabaseClient.from('items').select('*');
+
+    if (noLowsetPrice) {
+      call.is('lowestPrice', null);
+    }
+
+    const { data, error } = await call;
+
     return data;
   }
 
@@ -155,6 +163,16 @@ export class Supabase {
     }
 
     return;
+  }
+
+  async insertHistory(newHistory: InsertHistory) {
+    const { error } = await this.supabaseClient.from('histories').insert(newHistory);
+
+    if (error) {
+      console.log({ error });
+      throw error;
+    }
+    console.log('inserted history');
   }
 
   // Auth Methods
