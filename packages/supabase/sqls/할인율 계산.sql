@@ -3,7 +3,8 @@ WITH discount_stats AS (
     SELECT
         "itemId",
         MIN("discountPrice") AS lowestPrice,
-        MAX("discountRate") AS bestDiscountRate
+        MAX("discountRate") AS bestDiscountRate,
+        MAX("discount") AS bestDiscount    
     FROM
         public.discounts
     GROUP BY
@@ -14,7 +15,8 @@ UPDATE
     public.items i
 SET
     "lowestPrice" = ds.lowestPrice,
-    "bestDiscountRate" = ds.bestDiscountRate
+    "bestDiscountRate" = ds.bestDiscountRate,
+    "bestDiscount" = ds.bestDiscount
 FROM
     discount_stats ds
 WHERE
