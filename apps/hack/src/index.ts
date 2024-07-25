@@ -16,7 +16,9 @@ import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
-const newItems = [];
+const newItems: string[] = [];
+const newItemsWithNoImage: string[] = [];
+let newDiscountsCount = 0;
 
 async function crawlAllItems() {
   const digitsArray = Array.from({ length: 10 }, (_, i) => i.toString());
@@ -41,12 +43,14 @@ async function crawlAllItems() {
   return itemSet.size;
 }
 
-async function crawlAllDiscounts() {
-  const items = await supabase.fetchAllItems();
+async function crawlAllDiscounts(noLowsetPrice = false) {
+  const items = await supabase.fetchAllItems(noLowsetPrice);
+  console.log('will  update discounts for', items?.length, 'items');
 
   for (const item of items) {
     const today = getDateString();
     const discounts = await getSearchResults2(item.itemId, today);
+    console.log('discounts for', item.itemId, discounts.length);
     await supabase.upsertDiscount(
       discounts.map(discount => ({
         itemId: item.itemId,
@@ -123,13 +127,13 @@ async function updateDiscounts(date?: string) {
   console.log(`${newlyAddedDiscounts?.length ?? 0} new discounts added`);
 
   if (newlyAddedItems?.length) {
-    const noImages = [];
     for (const item of newlyAddedItems) {
+      newItems.push(item.itemId as string);
       try {
         await downloadImage(item.itemId as string);
       } catch (e) {
         console.log('error downloading image', item.itemId);
-        noImages.push(item.itemId);
+        newItemsWithNoImage.push(item.itemId);
       }
       const data = await getItem(item.itemId);
       await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
@@ -137,6 +141,7 @@ async function updateDiscounts(date?: string) {
   }
 
   if (newlyAddedDiscounts?.length) {
+    newDiscountsCount += newlyAddedDiscounts.length;
     for (const newlyAddedDiscount of newlyAddedDiscounts) {
       const response = await supabase.fetchData(
         { value: newlyAddedDiscount.itemId, column: 'itemId' },
@@ -177,6 +182,16 @@ async function updateDiscounts(date?: string) {
   }
 }
 
+async function createHistory() {
+  const result = await supabase.insertHistory({
+    new_item_count: newItems.length,
+    added_discount_count: newDiscountsCount,
+    no_images: newItemsWithNoImage,
+  });
+
+  console.log(result);
+}
+
 (async () => {
   // const dates = [
   //   '2024-05-03',
@@ -191,13 +206,15 @@ async function updateDiscounts(date?: string) {
   //   '2024-04-02',
   // ];
   // await createCategories();
-  const itemSize = await crawlAllItems();
-  // await crawlAllDiscounts();
+  // const itemSize = await crawlAllItems();
+  // await crawlAllDiscounts(true);
   // await downloadAllImages();
   // await updateAllItemCategory();
   // await changeItemCategory();
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
+  // NOTE: 루틴
   // await updateDiscounts();
+  // await createHistory();
 })();
