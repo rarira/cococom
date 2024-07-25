@@ -9,6 +9,7 @@ interface SuperscriptWonTextProps {
   superscript?: string;
   fontSize?: number;
   style?: StyleProp<ViewStyle>;
+  isMinus?: boolean;
 }
 
 function SuperscriptWonText({
@@ -16,12 +17,14 @@ function SuperscriptWonText({
   superscript = '\u20A9',
   fontSize,
   style,
+  isMinus,
 }: SuperscriptWonTextProps) {
   const { styles } = useStyles(stylesheets);
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.superscriptText(fontSize)}>{superscript}</Text>
-      <Text style={styles.normalText(fontSize)}>{Util.toWonString(price)}</Text>
+      <Text style={styles.superscriptText(fontSize, isMinus)}>{superscript}</Text>
+      <Text style={styles.normalText(fontSize, isMinus)}>{Util.toWonString(price)}</Text>
+      {isMinus && <Text style={styles.normalText(fontSize, isMinus)}> 할인</Text>}
     </View>
   );
 }
@@ -31,14 +34,16 @@ const stylesheets = createStyleSheet(theme => ({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
-  normalText: (fontSize?: number) => ({
+  normalText: (fontSize?: number, isMinus?: boolean) => ({
     fontSize: fontSize || theme.fontSize.md,
     lineHeight: fontSize || theme.fontSize.md,
     fontWeight: 'bold',
+    color: isMinus ? theme.colors.alert : theme.colors.typography,
   }),
-  superscriptText: (fontSize?: number) => ({
+  superscriptText: (fontSize?: number, isMinus?: boolean) => ({
     fontSize: ((fontSize || theme.fontSize.md) * 2) / 3,
     lineHeight: ((fontSize || theme.fontSize.md) * 2) / 3,
+    color: isMinus ? theme.colors.alert : theme.colors.typography,
   }),
 }));
 
