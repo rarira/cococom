@@ -230,7 +230,7 @@ export type Database = {
           price: number
           discountPrice: number
           discountRate: number
-          discout: number
+          discount: number
           items: Json
         }[]
       }
