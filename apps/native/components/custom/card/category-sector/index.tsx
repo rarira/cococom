@@ -35,9 +35,11 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
             />
           </View>
           <View style={styles.infoContaier}>
-            <Text style={styles.categoryName} numberOfLines={1}>
-              {discountInfo.categorySector}
-            </Text>
+            <View style={styles.categoryNameContainer}>
+              <Text style={styles.categoryName} numberOfLines={2}>
+                {discountInfo.categorySector}
+              </Text>
+            </View>
             <Text style={styles.count}>{discountInfo.discountsCount}개의 할인</Text>
           </View>
         </Card>
@@ -67,13 +69,20 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     padding: theme.spacing.md,
   },
+  categoryNameContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 35,
+  },
   categoryName: {
-    fontSize: (theme.fontSize.md + theme.fontSize.sm) / 2,
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.md,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   count: {
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.sm,
     textAlign: 'center',
     opacity: 0.8,
     color: theme.colors.tint3,

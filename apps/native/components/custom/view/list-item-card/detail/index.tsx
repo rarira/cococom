@@ -14,9 +14,9 @@ interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
-  if (discount.discountPrice === 0) {
-    console.log('0', { discount });
-  }
+
+  const isWholeProduct = discount.discountPrice === 0;
+
   return (
     <View style={styles.container}>
       <Text style={styles.itemNameText} numberOfLines={3}>
@@ -24,9 +24,18 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
       </Text>
       <View>
         <View style={styles.priceContainer}>
-          <Text style={styles.regularPriceText}>{`\u20A9${Util.toWonString(discount.price)}`}</Text>
-          <DiscountRateText discountRate={discount.discountRate!} />
-          <SuperscriptWonText price={discount.discountPrice} />
+          {isWholeProduct ? null : (
+            <>
+              <Text
+                style={styles.regularPriceText}
+              >{`\u20A9${Util.toWonString(discount.price)}`}</Text>
+              <DiscountRateText discountRate={discount.discountRate!} />
+            </>
+          )}
+          <SuperscriptWonText
+            price={discount[isWholeProduct ? 'discount' : 'discountPrice']}
+            isMinus={isWholeProduct}
+          />
         </View>
         <View style={styles.miscInfoContainer}>
           <ListItemCardChipsView discount={discount} />
@@ -68,7 +77,7 @@ const stylesheets = createStyleSheet(theme => ({
     fontSize: theme.fontSize.xs,
     lineHeight: theme.fontSize.xs,
     textDecorationLine: 'line-through',
-    opacity: 0.6,
+    opacity: 0.8,
     marginEnd: theme.spacing.sm,
   },
   miscInfoContainer: {

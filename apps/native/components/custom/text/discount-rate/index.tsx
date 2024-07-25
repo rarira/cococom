@@ -18,7 +18,7 @@ const stylesheet = createStyleSheet(theme => ({
   text: (fontSize?: number) => ({
     fontSize: fontSize || theme.fontSize.md - 1,
     lineHeight: fontSize || theme.fontSize.md - 1,
-    color: 'red',
+    color: theme.colors.alert,
     marginEnd: theme.spacing.sm,
   }),
 }));
