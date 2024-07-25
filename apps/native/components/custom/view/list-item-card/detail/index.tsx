@@ -14,9 +14,6 @@ interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'
 
 function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
-  // if (discount.discountPrice === 0) {
-  //   console.log('0', { discount });
-  // }
 
   const isWholeProduct = discount.discountPrice === 0;
 
@@ -27,7 +24,7 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
       </Text>
       <View>
         <View style={styles.priceContainer}>
-          {!isWholeProduct && (
+          {isWholeProduct ? null : (
             <>
               <Text
                 style={styles.regularPriceText}
