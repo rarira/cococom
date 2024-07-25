@@ -175,6 +175,21 @@ export class Supabase {
     console.log('inserted history');
   }
 
+  async fetchLatestHistory() {
+    const { data, error } = await this.supabaseClient
+      .from('histories')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.log('fetchLatestHistory error', error);
+      throw error;
+    }
+
+    return data;
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

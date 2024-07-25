@@ -1,6 +1,7 @@
+import { CategorySectors } from '@cococom/supabase/libs';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -9,8 +10,6 @@ import { supabase } from '@/libs/supabase';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 import CategorySectorGroupView from '../../view/category-sector-group';
-
-interface CategorySectorListProps {}
 
 function fetchCurrentDiscountsByCategorySector() {
   const currentTimestamp = new Date().toISOString().split('T')[0];
@@ -23,12 +22,16 @@ export type DiscountsByCategorySector = NonNullable<
 
 const NumberOfColumns = 4;
 
-function CategorySectorList() {
+interface CategorySectorListProps {
+  setTotalDiscounts: Dispatch<SetStateAction<number>>;
+}
+
+function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   const { data, error, isLoading } = useQuery({
     queryKey: queryKeys.discounts.currentListByCategorySector(),
-    queryFn: () => fetchCurrentDiscountsByCategorySector(),
+    queryFn: fetchCurrentDiscountsByCategorySector,
   });
 
   const { width } = useWindowDimensions();
@@ -39,9 +42,20 @@ function CategorySectorList() {
     (width - horizontalGap * 2 - theme.screenHorizontalPadding * 2) / NumberOfColumns;
 
   useEffect(() => {
-    const categorySectors = data?.map(item => item.categorySector) ?? [];
-    setCategorySectorsArray(categorySectors);
-  }, [data, setCategorySectorsArray]);
+    const reduced = data?.reduce(
+      (acc, item) => {
+        acc.totalDiscounts += item.discountsCount;
+        acc.categorySectorsArray.push(item.categorySector);
+        return acc;
+      },
+      { totalDiscounts: 0, categorySectorsArray: [] } as {
+        totalDiscounts: number;
+        categorySectorsArray: CategorySectors[];
+      },
+    );
+    setCategorySectorsArray(reduced?.categorySectorsArray ?? []);
+    setTotalDiscounts(reduced?.totalDiscounts ?? 0);
+  }, [data, setCategorySectorsArray, setTotalDiscounts]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: NonNullable<typeof data>[number][]; index: number }) => {
@@ -76,7 +90,6 @@ function CategorySectorList() {
       keyExtractor={item => item[0].itemId.toString()}
       numColumns={1}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-      contentContainerStyle={styles.container}
     />
   );
 }
