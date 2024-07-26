@@ -16,7 +16,7 @@ const TabIcons: Record<
     unfocusedIcon: ComponentProps<typeof Ionicons>['name'];
   }
 > = {
-  '(home)': {
+  index: {
     focusedIcon: 'home',
     unfocusedIcon: 'home-outline',
   },
@@ -56,7 +56,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen
-        name="(home)"
+        name="index"
         options={{
           title: 'Home',
         }}
