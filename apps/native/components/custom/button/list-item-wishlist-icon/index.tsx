@@ -99,7 +99,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       <IconButton
         text={item.totalWishlistCount.toString()}
         textStyle={styles.text}
-        iconProps={iconProps}
+        iconProps={{ font: { type: 'MaterialIcon', name: iconProps.name }, color: iconProps.color }}
         onPress={handlePress}
       />
       {needAuthDialogVisible && (

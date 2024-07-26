@@ -48,7 +48,7 @@ export default function SalesScreen() {
   const renderHeaderRightButton = useCallback(
     () => (
       <HeaderRightButton
-        iconProps={{ name: 'sort' }}
+        iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
         onPress={() => bottomSheetModalRef.current?.present()}
       />
     ),
