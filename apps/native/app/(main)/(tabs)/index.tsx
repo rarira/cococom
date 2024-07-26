@@ -1,6 +1,7 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CategorySectorList from '@/components/custom/list/category-sector';
@@ -11,10 +12,12 @@ export default function HomeScreen() {
 
   const tabBarHeight = useBottomTabBarHeight();
 
+  const { top } = useSafeAreaInsets();
+
   const [totalDiscounts, setTotalDiscounts] = useState<number>(0);
 
   return (
-    <View style={styles.container(tabBarHeight)}>
+    <View style={styles.container(top, tabBarHeight)}>
       <HistoryInfoBanner totalDiscounts={totalDiscounts} />
       <CategorySectorList setTotalDiscounts={setTotalDiscounts} />
     </View>
@@ -22,10 +25,11 @@ export default function HomeScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (tabBarHeight: number) => ({
+  container: (topInset: number, tabBarHeight: number) => ({
     flex: 1,
     backgroundColor: theme.colors.background,
     paddingBottom: tabBarHeight + theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
+    paddingTop: topInset,
   }),
 }));
