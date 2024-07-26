@@ -119,7 +119,7 @@ function RootLayout() {
                   }}
                 >
                   <Stack.Screen
-                    name="(tabs)"
+                    name="(main)"
                     options={{
                       headerShown: false,
                     }}
