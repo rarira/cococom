@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
@@ -36,6 +37,7 @@ const TabIcons: Record<
 
 export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
+  const { top } = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -58,25 +60,25 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: '홈',
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          title: '검색',
         }}
       />
       <Tabs.Screen
         name="ranking"
         options={{
-          title: 'Ranking',
+          title: '랭킹',
         }}
       />
       <Tabs.Screen
         name="my/index"
         options={{
-          title: 'My',
+          title: '마이',
         }}
       />
     </Tabs>

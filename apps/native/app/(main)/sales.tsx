@@ -1,14 +1,7 @@
 import { CategorySectors } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { router, useLocalSearchParams, useNavigation } from 'expo-router';
-import React, {
-  ComponentType,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
@@ -46,8 +39,6 @@ export default function SalesScreen() {
 
   const layout = useWindowDimensions();
 
-  const navigation = useNavigation();
-
   const { bottom: bottomInset } = useSafeAreaInsets();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -63,12 +54,6 @@ export default function SalesScreen() {
     ),
     [],
   );
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: renderHeaderRightButton,
-    });
-  }, [navigation, renderHeaderRightButton]);
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
@@ -125,6 +110,7 @@ export default function SalesScreen() {
 
   return (
     <View style={styles.container(bottomInset)}>
+      <Stack.Screen options={{ headerRight: renderHeaderRightButton }} />
       <TabView
         lazy
         navigationState={{ index, routes }}
