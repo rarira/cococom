@@ -18,13 +18,10 @@ import SalesSortBottomSheet from '@/components/custom/bottom-sheet/sales-sort';
 import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
-import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useSalesSort } from '@/hooks/useSalesSort';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
-  useHideTabBar();
-
   const { categorySectorsArray } = useCategorySectorsStore();
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
     categorySector: CategorySectors;
