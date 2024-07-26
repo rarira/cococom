@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
+import TextInput from '@/components/ui/text-input';
 
 interface SearchScreenProps {}
 
@@ -15,6 +16,7 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
+      <TextInput placeholder="검색어를 입력하세요" />
       {/* <Stack.Screen
         options={{
           headerShown: true,
