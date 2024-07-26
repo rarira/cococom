@@ -1,20 +1,14 @@
 import { Stack } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStyles } from 'react-native-unistyles';
 
 export default function MainLayout() {
   const { theme } = useStyles();
-  const { top } = useSafeAreaInsets();
   return (
     <Stack
       screenOptions={{
         headerShown: false,
         headerStyle: { backgroundColor: theme.colors.background },
         headerTitleStyle: { color: theme.colors.typography },
-        contentStyle: {
-          paddingTop: top,
-          backgroundColor: theme.colors.background,
-        },
       }}
     >
       <Stack.Screen name="(tabs)" options={{ title: '홈', headerShown: false }} />
@@ -28,7 +22,6 @@ export default function MainLayout() {
             return {
               title: categorySector,
               headerShown: true,
-              contentStyle: { paddingTop: 0 },
             };
           }) as any
         }
