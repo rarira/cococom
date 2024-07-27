@@ -91,29 +91,35 @@ export default function SignInScreen() {
       <Button title="Go back" onPress={() => router.dismiss()} />
 
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <TextInput
-          onChangeText={text => setEmail(text)}
-          value={email}
-          placeholder="email@address.com"
-          autoCapitalize={'none'}
-        />
+        <TextInput.Root variants="outlined">
+          <TextInput.Field
+            onChangeText={text => setEmail(text)}
+            value={email}
+            placeholder="email@address.com"
+            autoCapitalize={'none'}
+          />
+        </TextInput.Root>
       </View>
       <View style={styles.verticallySpaced}>
-        <TextInput
-          onChangeText={text => setPassword(text)}
-          value={password}
-          secureTextEntry={true}
-          placeholder="Password"
-          autoCapitalize={'none'}
-        />
+        <TextInput.Root variants="underlined">
+          <TextInput.Field
+            onChangeText={text => setPassword(text)}
+            value={password}
+            secureTextEntry={true}
+            placeholder="Password"
+            autoCapitalize={'none'}
+          />
+        </TextInput.Root>
       </View>
       <View style={styles.verticallySpaced}>
-        <TextInput
-          onChangeText={text => setNickname(text)}
-          value={nickname}
-          placeholder="Nickname"
-          autoCapitalize={'none'}
-        />
+        <TextInput.Root variants="rounded">
+          <TextInput.Field
+            onChangeText={text => setNickname(text)}
+            value={nickname}
+            placeholder="Nickname"
+            autoCapitalize={'none'}
+          />
+        </TextInput.Root>
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
