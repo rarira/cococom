@@ -26,6 +26,7 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     paddingTop: topInset,
     paddingHorizontal: theme.screenHorizontalPadding,
+    backgroundColor: theme.colors.background,
   }),
 }));
 

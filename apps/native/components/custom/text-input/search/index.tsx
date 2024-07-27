@@ -12,11 +12,14 @@ const SearchTextInput = memo(function SearchTextInput({}: SearchTextInputProps) 
   return (
     <TextInput.Root variants="rounded" style={styles.textInputRoot}>
       <TextInput.Slot style={styles.textInputSlot}>
-        <TextInput.Icon font={{ type: 'MaterialIcon', name: 'search' }} />
+        <TextInput.Icon
+          font={{ type: 'MaterialIcon', name: 'search' }}
+          style={styles.textInputIcon}
+        />
       </TextInput.Slot>
       <TextInput.Field
         placeholder="검색어를 입력하고 검색 버튼을 누르세요"
-        placeholderTextColor={`${theme.colors.background}99`}
+        placeholderTextColor={`${theme.colors.typography}99`}
         style={styles.textInputField}
       />
       <TextInput.Slot
@@ -32,23 +35,27 @@ const SearchTextInput = memo(function SearchTextInput({}: SearchTextInputProps) 
 const stylesheet = createStyleSheet(theme => ({
   textInputRoot: {
     borderRadius: theme.borderRadius.md,
-    backgroundColor: theme.colors.typography,
+    backgroundColor: theme.colors.lightShadow,
     paddingVertical: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
-    borderColor: theme.colors.typography,
+    borderColor: theme.colors.lightShadow,
   },
   textInputSlot: {
     paddingRight: theme.spacing.sm,
   },
+  textInputIcon: {
+    // color: theme.colors.background,
+  },
+
   textInputField: {
-    color: theme.colors.background,
+    // color: theme.colors.background,
   },
   searachButton: ({ pressed }: { pressed: boolean }) => ({
     paddingLeft: theme.spacing.sm,
     opacity: pressed ? 0.5 : 1,
   }),
   searchButtonText: {
-    color: theme.colors.background,
+    // color: theme.colors.background,
     fontWeight: 'bold',
   },
 }));
