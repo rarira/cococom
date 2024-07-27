@@ -45,7 +45,9 @@ function TextInputSlot({ style, ...restProps }: PressableProps) {
 
 function TextInputIcon({ style, ...restProps }: IconProps) {
   const { theme } = useStyles();
-  return <Icon style={style} size={theme.fontSize.lg} {...restProps} />;
+  return (
+    <Icon style={style} size={theme.fontSize.lg} color={theme.colors.typography} {...restProps} />
+  );
 }
 
 const stylesheet = createStyleSheet(theme => ({
