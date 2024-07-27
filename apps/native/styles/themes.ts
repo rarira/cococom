@@ -40,7 +40,9 @@ export const lightTheme = {
     tint2: '#4C3BCF',
     tint3: '#4B70F5',
     shadow: '#888888',
+    lightShadow: '#DDDDDD',
     scrim: 'rgba(0, 0, 0, 0.5)',
+    darkBackground: '#11181C',
   },
 } as const;
 
@@ -57,6 +59,7 @@ export const darkTheme = {
     tint2: '#FFFED3',
     tint3: '#BBE9FF',
     shadow: '#333333',
+    lightShadow: '#555555',
     scrim: 'rgba(26,26,26, 0.6)',
   },
 } as const;
