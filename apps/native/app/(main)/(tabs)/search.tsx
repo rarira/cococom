@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -10,17 +10,43 @@ import Text from '@/components/ui/text';
 interface SearchScreenProps {}
 
 const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   const { top } = useSafeAreaInsets();
+
+  const [values, setValues] = useState<string[]>(['product_number']);
+
+  // const handleChange = useCallback(
+  //   ({ value, isChecked }: { value: string; isChecked: boolean }) => {
+  //     if (isChecked) {
+  //       setValues(values => [...values, value]);
+  //     } else {
+  //       setValues(values => values.filter(v => v !== value));
+  //     }
+  //   },
+  //   [],
+  // );
+
+  console.log('SearchScreen', JSON.stringify(values));
 
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
       <SearchTextInput />
-      <Checkbox.Root value={'game'} defaultIsChecked>
-        <Checkbox.Test />
-      </Checkbox.Root>
+      <Checkbox.Group value={values} onChange={setValues}>
+        <Checkbox.Root value={'product_number'} defaultIsChecked>
+          <Checkbox.Indicator>
+            <Checkbox.Icon font={{ type: 'FontAwesomeIcon', name: 'check' }} />
+          </Checkbox.Indicator>
+          <Checkbox.Label>상품번호로 검색</Checkbox.Label>
+        </Checkbox.Root>
+        <Checkbox.Root value={'new'}>
+          <Checkbox.Indicator>
+            <Checkbox.Icon font={{ type: 'FontAwesomeIcon', name: 'check' }} />
+          </Checkbox.Indicator>
+          <Checkbox.Label>할인 중인 상품만</Checkbox.Label>
+        </Checkbox.Root>
+      </Checkbox.Group>
     </View>
   );
 });
