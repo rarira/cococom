@@ -17,7 +17,6 @@ interface CategorySectorCardProps {
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  console.log(discountInfo);
   return (
     <Link
       href={`/sales?categorySector=${discountInfo.categorySector}`}
