@@ -1,13 +1,37 @@
-import Text from '@/components/ui/text';
-import { createContext, memo, ReactNode, Reducer, useContext, useEffect, useReducer } from 'react';
-import { Pressable, PressableProps, View } from 'react-native';
+import {
+  createContext,
+  Dispatch,
+  memo,
+  ReactNode,
+  Reducer,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
+import { Pressable, PressableProps, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import Icon, { IconProps } from '@/components/ui/icon';
+import Text, { TextProps } from '@/components/ui/text';
 
 interface CheckboxProps extends PressableProps {
   value: string;
-  onChange?: (value: boolean) => void;
+  onChange?: ({ value, isChecked }: { value: string; isChecked: boolean }) => void;
   defaultIsChecked?: boolean;
   isChecked?: boolean;
+}
+
+interface CheckboxGroupViewProps extends ViewProps {
+  value: string[];
+  onChange?: (value: string[]) => void;
+}
+
+interface CheckboxIndicatorProps extends Omit<ViewProps, 'style'> {
+  style?: (checked: boolean) => ViewProps['style'];
 }
 
 type CheckboxContextType = {
@@ -23,7 +47,7 @@ const CheckboxDispatchContext = createContext<CheckBoxDispatchContextType | null
 
 function CheckboxProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useReducer<Reducer<CheckboxContextType, Partial<CheckboxContextType>>>(
-    (state, action) => ({ ...state, action }),
+    (state, newState) => ({ ...state, ...newState }),
     {
       value: '',
       isChecked: false,
@@ -41,33 +65,119 @@ function CheckboxProvider({ children }: { children: ReactNode }) {
 
 function useCheckbox() {
   const context = useContext(CheckboxContext);
-  const setContext = useContext(CheckboxDispatchContext);
-  if (!context || !setContext) {
+  if (!context) {
     throw new Error('useCheckbox must be used within a CheckboxProvider');
   }
-  return [context, setContext] as const;
+  return context;
 }
+function useCheckboxDispatch() {
+  const context = useContext(CheckboxDispatchContext);
+  if (!context) {
+    throw new Error('useCheckboxDispatch must be used within a CheckboxProvider');
+  }
+  return context;
+}
+
+const CheckboxGroupContext = createContext<string[] | null>(null);
+
+const CheckboxGroupDispatchContext = createContext<Dispatch<SetStateAction<string[]>> | null>(null);
+
+function CheckboxGroupProvider({ children }: { children: ReactNode }) {
+  const [state, setState] = useState<string[]>([]);
+
+  return (
+    <CheckboxGroupContext.Provider value={state}>
+      <CheckboxGroupDispatchContext.Provider value={setState}>
+        {children}
+      </CheckboxGroupDispatchContext.Provider>
+    </CheckboxGroupContext.Provider>
+  );
+}
+
+function useCheckboxGroup() {
+  const context = useContext(CheckboxGroupContext);
+  if (!context) {
+    throw new Error('useCheckboxGroup must be used within a CheckboxGroupProvider');
+  }
+  return context;
+}
+
+function useCheckboxGroupDispatch() {
+  const context = useContext(CheckboxGroupDispatchContext);
+  if (!context) {
+    throw new Error('useCheckboxGroupDispatch must be used within a CheckboxGroupProvider');
+  }
+  return context;
+}
+
+const CheckboxGroupView = memo(function CheckboxGroup({
+  style,
+  value,
+  onChange,
+  ...restProps
+}: CheckboxGroupViewProps) {
+  const checkboxGroupContext = useCheckboxGroup();
+  const setCheckboxGroupContext = useCheckboxGroupDispatch();
+  const firstInitRef = useRef(false);
+
+  useEffect(() => {
+    if (!firstInitRef.current) {
+      console.log('call initial setCheckboxGroupContex in CheckboxGroupView', value);
+      setCheckboxGroupContext(value);
+      firstInitRef.current = true;
+    }
+  }, [setCheckboxGroupContext, value]);
+
+  useEffect(() => {
+    onChange?.(checkboxGroupContext);
+  }, [onChange, checkboxGroupContext]);
+
+  return <View {...restProps} />;
+});
 
 const CheckboxPressable = memo(function CheckboxPressable({
   style,
+  value,
   isChecked,
   defaultIsChecked,
+  onChange,
   ...restProps
 }: CheckboxProps) {
-  const [checboxContext, setCheckboxContext] = useCheckbox();
+  const checkboxContext = useCheckbox();
+  const setCheckboxContext = useCheckboxDispatch();
+  const setCheckboxGroupContext = useCheckboxGroupDispatch();
+
+  const firstInitRef = useRef(false);
+
   const { styles } = useStyles(stylesheet);
 
   useEffect(() => {
-    if (isChecked !== undefined) {
-      setCheckboxContext({ isChecked });
-    } else if (defaultIsChecked !== undefined) {
-      setCheckboxContext({ isChecked: defaultIsChecked });
+    if (!firstInitRef.current) {
+      setCheckboxContext({ isChecked: defaultIsChecked || isChecked, value });
+      firstInitRef.current = true;
     }
-  }, [ defaultIsChecked, isChecked, setCheckboxContext]);
+  }, [defaultIsChecked, isChecked, setCheckboxContext, value]);
+
+  useEffect(() => {
+    onChange?.({ isChecked: checkboxContext.isChecked, value: checkboxContext.value });
+    if (setCheckboxGroupContext) {
+      if (checkboxContext.isChecked) {
+        setCheckboxGroupContext(values => (values.includes(value) ? values : [...values, value]));
+      } else {
+        setCheckboxGroupContext(values => values.filter(v => v !== value));
+      }
+    }
+  }, [checkboxContext.isChecked, checkboxContext.value, onChange, setCheckboxGroupContext, value]);
+
+  const handlePress = useCallback(
+    () => setCheckboxContext({ isChecked: !checkboxContext.isChecked }),
+    [checkboxContext.isChecked, setCheckboxContext],
+  );
 
   return (
     <Pressable
-      style={state => [styles.wrapper, typeof style === 'function' ? style(state) : style]}
+      style={state => [styles.pressable, typeof style === 'function' ? style(state) : style]}
+      onPress={handlePress}
       {...restProps}
     />
   );
@@ -81,30 +191,80 @@ const CheckboxWrapper = memo(function CheckboxWrapper(props: CheckboxProps) {
   );
 });
 
-const CheckboxTest = memo(function CheckboxTest() {
-  const [context, setContext] = useCheckbox();
-  console.log('context', context);
+const CheckboxGroupWrapper = memo(function CheckboxGroupWrapper(props: CheckboxGroupViewProps) {
+  return (
+    <CheckboxGroupProvider>
+      <CheckboxGroupView {...props} />
+    </CheckboxGroupProvider>
+  );
+});
+
+const CheckboxIndicator = memo(function CheckboxIndicator({
+  style,
+  children,
+  ...restProps
+}: CheckboxIndicatorProps) {
+  const { isChecked } = useCheckbox();
+
+  const { styles } = useStyles(stylesheet);
 
   return (
-    <View>
-      <Text>Checkbox</Text>
+    <View style={[styles.indicator(isChecked), style?.(isChecked)]} {...restProps}>
+      {isChecked ? children : null}
     </View>
   );
 });
 
+const CheckboxIcon = memo(function CheckboxIcon({ style, ...restProps }: IconProps) {
+  const { styles, theme } = useStyles(stylesheet);
+  return (
+    <Icon
+      style={[styles.icon, style]}
+      size={theme.fontSize.sm}
+      color={theme.colors.background}
+      {...restProps}
+    />
+  );
+});
+
+const CheckboxLabel = memo(function CheckboxLabel({ style, ...restProps }: TextProps) {
+  const { styles } = useStyles(stylesheet);
+
+  return <Text style={[styles.label, style]} {...restProps} />;
+});
 
 const stylesheet = createStyleSheet(theme => ({
-  wrapper: {
+  pressable: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     gap: theme.spacing.sm,
   },
+  indicator: (checked: boolean) => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: theme.fontSize.md,
+    height: theme.fontSize.md,
+    borderRadius: theme.fontSize.md / 4,
+    backgroundColor: checked ? theme.colors.tint : 'transparent',
+    borderColor: checked ? theme.colors.tint : theme.colors.typography,
+    borderWidth: 1,
+  }),
+  icon: {
+    fontWeight: 'bold',
+  },
+  label: {
+    color: theme.colors.typography,
+    fontSize: theme.fontSize.sm,
+  },
 }));
 
 const Checkbox = {
+  Group: CheckboxGroupWrapper,
   Root: CheckboxWrapper,
-  Test: CheckboxTest,
+  Indicator: CheckboxIndicator,
+  Icon: CheckboxIcon,
+  Label: CheckboxLabel,
 };
 
 export default Checkbox;
