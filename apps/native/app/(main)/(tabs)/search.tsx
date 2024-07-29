@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SearchTextInput from '@/components/custom/text-input/search';
+import Checkbox from '@/components/ui/checkbox';
 import Text from '@/components/ui/text';
 
 interface SearchScreenProps {}
@@ -17,6 +18,9 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
     <View style={styles.container(top)}>
       <Text>Search</Text>
       <SearchTextInput />
+      <Checkbox.Root value={'game'} defaultIsChecked>
+        <Checkbox.Test />
+      </Checkbox.Root>
     </View>
   );
 });
