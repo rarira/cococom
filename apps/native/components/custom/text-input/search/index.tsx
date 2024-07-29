@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
 
 interface SearchTextInputProps {}
@@ -11,22 +10,12 @@ const SearchTextInput = memo(function SearchTextInput({}: SearchTextInputProps) 
 
   return (
     <TextInput.Root variants="rounded" style={styles.textInputRoot}>
-      <TextInput.Slot style={styles.textInputSlot}>
-        <TextInput.Icon
-          font={{ type: 'MaterialIcon', name: 'search' }}
-          style={styles.textInputIcon}
-        />
-      </TextInput.Slot>
       <TextInput.Field
         placeholder="검색어를 입력하고 검색 버튼을 누르세요"
         placeholderTextColor={`${theme.colors.typography}99`}
-        style={styles.textInputField}
       />
-      <TextInput.Slot
-        style={state => styles.searachButton(state)}
-        onPress={() => console.log('검색하기')}
-      >
-        <Text style={styles.searchButtonText}>검색</Text>
+      <TextInput.Slot style={styles.textInputSlot} onPress={() => console.log('검색 실행')}>
+        <TextInput.Icon font={{ type: 'MaterialIcon', name: 'search' }} />
       </TextInput.Slot>
     </TextInput.Root>
   );
@@ -42,21 +31,6 @@ const stylesheet = createStyleSheet(theme => ({
   },
   textInputSlot: {
     paddingRight: theme.spacing.sm,
-  },
-  textInputIcon: {
-    // color: theme.colors.background,
-  },
-
-  textInputField: {
-    // color: theme.colors.background,
-  },
-  searachButton: ({ pressed }: { pressed: boolean }) => ({
-    paddingLeft: theme.spacing.sm,
-    opacity: pressed ? 0.5 : 1,
-  }),
-  searchButtonText: {
-    // color: theme.colors.background,
-    fontWeight: 'bold',
   },
 }));
 
