@@ -8,4 +8,6 @@ module.exports = {
   useTabs: false,
   arrowParens: "avoid",
   endOfLine: "auto",
+  plugins: [require("prettier-plugin-tailwindcss")],
+  tailwindFunctions: ["tva"],
 };

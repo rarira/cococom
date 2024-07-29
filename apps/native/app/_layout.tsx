@@ -28,6 +28,7 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime } from 'react-native-unistyles';
 
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
 setDefaultOptions({ locale: ko });
@@ -107,36 +108,38 @@ function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
-        <SafeAreaProvider>
-          <PortalProvider>
-            <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
-              <BottomSheetModalProvider>
-                <Stack
-                  screenOptions={{
-                    contentStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(main)"
-                    options={{
-                      headerShown: false,
+        <GluestackUIProvider>
+          <SafeAreaProvider>
+            <PortalProvider>
+              <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
+                <BottomSheetModalProvider>
+                  <Stack
+                    screenOptions={{
+                      contentStyle: {
+                        backgroundColor: 'transparent',
+                      },
                     }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                  <Stack.Screen
-                    name="auth"
-                    options={{
-                      presentation: 'modal',
-                      headerShown: false,
-                    }}
-                  />
-                </Stack>
-              </BottomSheetModalProvider>
-            </ThemeProvider>
-          </PortalProvider>
-        </SafeAreaProvider>
+                  >
+                    <Stack.Screen
+                      name="(main)"
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                    <Stack.Screen
+                      name="auth"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                      }}
+                    />
+                  </Stack>
+                </BottomSheetModalProvider>
+              </ThemeProvider>
+            </PortalProvider>
+          </SafeAreaProvider>
+        </GluestackUIProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );
