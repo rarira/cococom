@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   Pressable,
   PressableProps,
@@ -11,11 +12,15 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Icon, { IconProps } from '@/components/ui/icon';
 import Util from '@/libs/util';
 
-interface TextInputWrapperFields extends ViewProps {
+interface TextInputWrapperProps extends ViewProps {
   variants?: 'outlined' | 'underlined' | 'rounded';
 }
 
-function TextInputWrapper({ style, variants = 'outlined', ...restProps }: TextInputWrapperFields) {
+const TextInputWrapper = memo(function TextInputWrapper({
+  style,
+  variants = 'outlined',
+  ...restProps
+}: TextInputWrapperProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -24,15 +29,15 @@ function TextInputWrapper({ style, variants = 'outlined', ...restProps }: TextIn
       {...restProps}
     />
   );
-}
+});
 
-function TextInputField({ style, ...restProps }: RNTextInputProps) {
+const TextInputField = memo(function TextInputField({ style, ...restProps }: RNTextInputProps) {
   const { styles } = useStyles(stylesheet);
 
   return <RNTextInput style={[styles.field, style]} {...restProps} />;
-}
+});
 
-function TextInputSlot({ style, ...restProps }: PressableProps) {
+const TextInputSlot = memo(function TextInputSlot({ style, ...restProps }: PressableProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -41,14 +46,14 @@ function TextInputSlot({ style, ...restProps }: PressableProps) {
       {...restProps}
     />
   );
-}
+});
 
-function TextInputIcon({ style, ...restProps }: IconProps) {
+const TextInputIcon = memo(function TextInputIcon({ style, ...restProps }: IconProps) {
   const { theme } = useStyles();
   return (
     <Icon style={style} size={theme.fontSize.lg} color={theme.colors.typography} {...restProps} />
   );
-}
+});
 
 const stylesheet = createStyleSheet(theme => ({
   wrapperContainer: {
