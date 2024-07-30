@@ -248,14 +248,13 @@ export type Database = {
           is_on_sale: boolean
         }
         Returns: {
-          bestDiscount: number | null
-          bestDiscountRate: number | null
-          categoryId: number | null
-          created_at: string | null
           id: number
           itemId: string
-          itemName: string | null
-          lowestPrice: number | null
+          itemName: string
+          bestDiscountRate: number
+          bestDiscount: number
+          lowestPrice: number
+          isOnSaleNow: boolean
         }[]
       }
       search_items_by_keyword: {
@@ -264,14 +263,13 @@ export type Database = {
           is_on_sale: boolean
         }
         Returns: {
-          bestDiscount: number | null
-          bestDiscountRate: number | null
-          categoryId: number | null
-          created_at: string | null
           id: number
           itemId: string
-          itemName: string | null
-          lowestPrice: number | null
+          itemName: string
+          bestDiscountRate: number
+          bestDiscount: number
+          lowestPrice: number
+          isOnSaleNow: boolean
         }[]
       }
     }
