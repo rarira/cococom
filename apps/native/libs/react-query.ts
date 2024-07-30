@@ -16,5 +16,6 @@ export const queryKeys = {
   },
   search: {
     keyword: (keyword: string) => ['search', { keyword }],
+    itemId: (itemId: string) => ['search', { itemId }],
   },
 };

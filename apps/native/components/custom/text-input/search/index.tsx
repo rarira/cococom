@@ -6,18 +6,24 @@ import TextInput from '@/components/ui/text-input';
 
 interface SearchTextInputProps extends TextInputProps {
   onPressSearch: () => void;
+  disabled?: boolean;
 }
 
 const SearchTextInput = memo(function SearchTextInput({
   onPressSearch,
+  disabled,
   ...restProps
 }: SearchTextInputProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
     <TextInput.Root variants="rounded" style={styles.textInputRoot}>
-      <TextInput.Field placeholderTextColor={`${theme.colors.typography}99`} {...restProps} />
-      <TextInput.Slot style={styles.textInputSlot} onPress={onPressSearch}>
+      <TextInput.Field
+        placeholderTextColor={`${theme.colors.typography}99`}
+        editable={!disabled}
+        {...restProps}
+      />
+      <TextInput.Slot style={styles.textInputSlot} onPress={onPressSearch} disabled={disabled}>
         <TextInput.Icon font={{ type: 'MaterialIcon', name: 'search' }} />
       </TextInput.Slot>
     </TextInput.Root>
