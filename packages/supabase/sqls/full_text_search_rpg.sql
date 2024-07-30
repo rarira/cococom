@@ -1,10 +1,29 @@
 CREATE OR REPLACE FUNCTION search_items_by_keyword(keyword text, is_on_sale boolean)
-RETURNS SETOF items
+RETURNS TABLE(
+    id INT,
+    "itemId" TEXT,
+    "itemName" TEXT,
+    "bestDiscountRate" NUMERIC,
+    "bestDiscount" NUMERIC,
+    "lowestPrice" NUMERIC,
+    "isOnSaleNow" BOOLEAN
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT *
+    SELECT i.id,
+        i."itemId",
+        i."itemName",
+        i."bestDiscountRate",
+        i."bestDiscount",
+        i."lowestPrice",
+    EXISTS (
+        SELECT 1
+        FROM discounts d
+        WHERE d."itemId" = i.id
+        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+    ) as "isOnSaleNow"
     FROM items
     WHERE "itemName" &@~ keyword
     AND (
@@ -19,12 +38,31 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION search_items_by_itemId(item_id text, is_on_sale boolean)
-RETURNS SETOF items
+RETURNS TABLE(
+    id INT,
+    "itemId" TEXT,
+    "itemName" TEXT,
+    "bestDiscountRate" NUMERIC,
+    "bestDiscount" NUMERIC,
+    "lowestPrice" NUMERIC,
+    "isOnSaleNow" BOOLEAN
+)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT *
+    SELECT i.id,
+        i."itemId",
+        i."itemName",
+        i."bestDiscountRate",
+        i."bestDiscount",
+        i."lowestPrice",
+    EXISTS (
+        SELECT 1
+        FROM discounts d
+        WHERE d."itemId" = i.id
+        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+    ) as "isOnSaleNow"
     FROM items
     WHERE "itemId" LIKE '%' || item_id || '%'
     AND (
