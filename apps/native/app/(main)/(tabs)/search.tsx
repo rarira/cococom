@@ -16,19 +16,6 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
 
   const [values, setValues] = useState<string[]>(['product_number']);
 
-  // const handleChange = useCallback(
-  //   ({ value, isChecked }: { value: string; isChecked: boolean }) => {
-  //     if (isChecked) {
-  //       setValues(values => [...values, value]);
-  //     } else {
-  //       setValues(values => values.filter(v => v !== value));
-  //     }
-  //   },
-  //   [],
-  // );
-
-  console.log('SearchScreen', JSON.stringify(values));
-
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
