@@ -14,4 +14,7 @@ export const queryKeys = {
   histories: {
     latest: ['histories', 'latest'],
   },
+  search: {
+    keyword: (keyword: string) => ['search', { keyword }],
+  },
 };
