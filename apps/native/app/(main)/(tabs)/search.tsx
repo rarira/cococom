@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -6,30 +6,38 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import SearchTextInput from '@/components/custom/text-input/search';
 import Checkbox from '@/components/ui/checkbox';
 import Text from '@/components/ui/text';
+import { useSearchInput } from '@/hooks/useSearchInput';
 
 interface SearchScreenProps {}
 
+export type SearchOptionValue = 'product_number' | 'on_sale';
+
 const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const { top } = useSafeAreaInsets();
 
-  const [values, setValues] = useState<string[]>(['product_number']);
+  const { options, setOptions, keyword, setKeyword, placeholder, handlePressSearch } =
+    useSearchInput();
 
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
-      <SearchTextInput />
-      <Checkbox.Group value={values} onChange={setValues}>
+      <SearchTextInput
+        onChangeText={setKeyword}
+        placeholder={placeholder}
+        onPressSearch={handlePressSearch}
+      />
+      <Checkbox.Group value={options} onChange={setOptions} style={styles.checkboxGroup}>
         <Checkbox.Root value={'product_number'} defaultIsChecked>
           <Checkbox.Indicator>
-            <Checkbox.Icon font={{ type: 'FontAwesomeIcon', name: 'check' }} />
+            <Checkbox.Icon />
           </Checkbox.Indicator>
           <Checkbox.Label>상품번호로 검색</Checkbox.Label>
         </Checkbox.Root>
         <Checkbox.Root value={'new'}>
           <Checkbox.Indicator>
-            <Checkbox.Icon font={{ type: 'FontAwesomeIcon', name: 'check' }} />
+            <Checkbox.Icon />
           </Checkbox.Indicator>
           <Checkbox.Label>할인 중인 상품만</Checkbox.Label>
         </Checkbox.Root>
@@ -45,6 +53,13 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: theme.screenHorizontalPadding,
     backgroundColor: theme.colors.background,
   }),
+  checkboxGroup: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: theme.spacing.lg,
+    marginTop: theme.spacing.sm,
+  },
 }));
 
 export default SearchScreen;

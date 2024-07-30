@@ -190,6 +190,18 @@ export class Supabase {
     return data;
   }
 
+  async fullTextSearchItems(searchValue: string) {
+    const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
+      keyword: searchValue,
+    });
+
+    if (error) {
+      console.error(error);
+    }
+
+    return data;
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);
