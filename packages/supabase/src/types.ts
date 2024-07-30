@@ -242,6 +242,21 @@ export type Database = {
         }
         Returns: Json
       }
+      search_items_by_keyword: {
+        Args: {
+          keyword: string
+        }
+        Returns: {
+          bestDiscount: number | null
+          bestDiscountRate: number | null
+          categoryId: number | null
+          created_at: string | null
+          id: number
+          itemId: string
+          itemName: string | null
+          lowestPrice: number | null
+        }[]
+      }
     }
     Enums: {
       CategorySectors:
