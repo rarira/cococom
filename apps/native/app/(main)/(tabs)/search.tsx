@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -12,7 +11,7 @@ interface SearchScreenProps {}
 
 export type SearchOptionValue = 'product_number' | 'on_sale';
 
-const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
+export default function SearchScreen({}: SearchScreenProps) {
   const { styles } = useStyles(stylesheet);
 
   const { top } = useSafeAreaInsets();
@@ -46,7 +45,7 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
       </Checkbox.Group>
     </View>
   );
-});
+}
 
 const stylesheet = createStyleSheet(theme => ({
   container: (topInset: number) => ({
@@ -63,5 +62,3 @@ const stylesheet = createStyleSheet(theme => ({
     marginTop: theme.spacing.sm,
   },
 }));
-
-export default SearchScreen;
