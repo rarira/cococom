@@ -1,20 +1,23 @@
 import { memo } from 'react';
+import { TextInputProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TextInput from '@/components/ui/text-input';
 
-interface SearchTextInputProps {}
+interface SearchTextInputProps extends TextInputProps {
+  onPressSearch: () => void;
+}
 
-const SearchTextInput = memo(function SearchTextInput({}: SearchTextInputProps) {
+const SearchTextInput = memo(function SearchTextInput({
+  onPressSearch,
+  ...restProps
+}: SearchTextInputProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
     <TextInput.Root variants="rounded" style={styles.textInputRoot}>
-      <TextInput.Field
-        placeholder="검색어를 입력하고 검색 버튼을 누르세요"
-        placeholderTextColor={`${theme.colors.typography}99`}
-      />
-      <TextInput.Slot style={styles.textInputSlot} onPress={() => console.log('검색 실행')}>
+      <TextInput.Field placeholderTextColor={`${theme.colors.typography}99`} {...restProps} />
+      <TextInput.Slot style={styles.textInputSlot} onPress={onPressSearch}>
         <TextInput.Icon font={{ type: 'MaterialIcon', name: 'search' }} />
       </TextInput.Slot>
     </TextInput.Root>

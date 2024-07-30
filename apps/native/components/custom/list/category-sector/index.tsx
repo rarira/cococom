@@ -78,6 +78,8 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
         [] as (typeof data)[number][][],
       ) ?? [];
 
+    if (matrix.length === 0) return matrix;
+
     const lastRowLength = matrix[matrix.length - 1].length;
 
     if (lastRowLength < NumberOfColumns) {
