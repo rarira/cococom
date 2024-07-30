@@ -242,9 +242,26 @@ export type Database = {
         }
         Returns: Json
       }
+      search_items_by_itemid: {
+        Args: {
+          item_id: string
+          is_on_sale: boolean
+        }
+        Returns: {
+          bestDiscount: number | null
+          bestDiscountRate: number | null
+          categoryId: number | null
+          created_at: string | null
+          id: number
+          itemId: string
+          itemName: string | null
+          lowestPrice: number | null
+        }[]
+      }
       search_items_by_keyword: {
         Args: {
           keyword: string
+          is_on_sale: boolean
         }
         Returns: {
           bestDiscount: number | null
