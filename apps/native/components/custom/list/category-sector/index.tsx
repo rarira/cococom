@@ -64,8 +64,8 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
     [],
   );
 
-  const chunkedData = useMemo(
-    () =>
+  const chunkedData = useMemo(() => {
+    const matrix =
       data?.reduce(
         (acc, item, index) => {
           const chunkIndex = Math.floor(index / NumberOfColumns);
@@ -76,9 +76,17 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
           return acc;
         },
         [] as (typeof data)[number][][],
-      ) ?? [],
-    [data],
-  );
+      ) ?? [];
+
+    const lastRowLength = matrix[matrix.length - 1].length;
+
+    if (lastRowLength < NumberOfColumns) {
+      const emptyItems = new Array(NumberOfColumns - lastRowLength).fill(null);
+      matrix[matrix.length - 1] = matrix[matrix.length - 1].concat(emptyItems);
+    }
+
+    return matrix;
+  }, [data]);
 
   if (error || !data || isLoading) return null;
 
