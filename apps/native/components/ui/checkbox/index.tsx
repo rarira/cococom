@@ -95,19 +95,11 @@ function CheckboxGroupProvider({ children }: { children: ReactNode }) {
 }
 
 function useCheckboxGroup() {
-  const context = useContext(CheckboxGroupContext);
-  if (!context) {
-    throw new Error('useCheckboxGroup must be used within a CheckboxGroupProvider');
-  }
-  return context;
+  return useContext(CheckboxGroupContext);
 }
 
 function useCheckboxGroupDispatch() {
-  const context = useContext(CheckboxGroupDispatchContext);
-  if (!context) {
-    throw new Error('useCheckboxGroupDispatch must be used within a CheckboxGroupProvider');
-  }
-  return context;
+  return useContext(CheckboxGroupDispatchContext);
 }
 
 const CheckboxGroupView = memo(function CheckboxGroup({
@@ -123,13 +115,15 @@ const CheckboxGroupView = memo(function CheckboxGroup({
   useEffect(() => {
     if (!firstInitRef.current) {
       console.log('call initial setCheckboxGroupContex in CheckboxGroupView', value);
-      setCheckboxGroupContext(value);
+      setCheckboxGroupContext?.(value);
       firstInitRef.current = true;
     }
   }, [setCheckboxGroupContext, value]);
 
   useEffect(() => {
-    onChange?.(checkboxGroupContext);
+    if (checkboxGroupContext) {
+      onChange?.(checkboxGroupContext);
+    }
   }, [onChange, checkboxGroupContext]);
 
   return <View {...restProps} />;
