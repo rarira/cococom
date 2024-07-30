@@ -17,16 +17,18 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
 
   const { top } = useSafeAreaInsets();
 
-  const { options, setOptions, keyword, setKeyword, placeholder, handlePressSearch } =
+  const { options, keyword, setOptions, isFetching, setKeyword, placeholder, handlePressSearch } =
     useSearchInput();
 
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
       <SearchTextInput
+        value={keyword}
         onChangeText={setKeyword}
         placeholder={placeholder}
         onPressSearch={handlePressSearch}
+        disabled={isFetching}
       />
       <Checkbox.Group value={options} onChange={setOptions} style={styles.checkboxGroup}>
         <Checkbox.Root value={'product_number'} defaultIsChecked>
@@ -35,7 +37,7 @@ const SearchScreen = memo(function SearchScreen({}: SearchScreenProps) {
           </Checkbox.Indicator>
           <Checkbox.Label>상품번호로 검색</Checkbox.Label>
         </Checkbox.Root>
-        <Checkbox.Root value={'new'}>
+        <Checkbox.Root value={'on_sale'}>
           <Checkbox.Indicator>
             <Checkbox.Icon />
           </Checkbox.Indicator>
