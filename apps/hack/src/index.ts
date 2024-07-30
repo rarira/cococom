@@ -150,7 +150,10 @@ async function updateDiscounts(date?: string) {
 
       if (!response?.data) throw new Error('Item not found');
 
-      const update: Partial<Tables<'items'>> = {};
+      const update: Partial<Tables<'items'>> = {
+        bestDiscountRate: newlyAddedDiscount.discountRate,
+        bestDiscount: newlyAddedDiscount.discount,
+      };
 
       if (
         newlyAddedDiscount.discountRate &&
