@@ -34,6 +34,12 @@ interface CheckboxIndicatorProps extends Omit<ViewProps, 'style'> {
   style?: (checked: boolean) => ViewProps['style'];
 }
 
+interface CheckboxIconProps extends Omit<IconProps, 'font'> {
+  font?: IconProps['font'];
+}
+
+const CheckboxIconFont = { type: 'FontAwesomeIcon', name: 'check' };
+
 type CheckboxContextType = {
   value: string;
   isChecked: boolean;
@@ -103,7 +109,6 @@ function useCheckboxGroupDispatch() {
 }
 
 const CheckboxGroupView = memo(function CheckboxGroup({
-  style,
   value,
   onChange,
   ...restProps
@@ -114,7 +119,6 @@ const CheckboxGroupView = memo(function CheckboxGroup({
 
   useEffect(() => {
     if (!firstInitRef.current) {
-      console.log('call initial setCheckboxGroupContex in CheckboxGroupView', value);
       setCheckboxGroupContext?.(value);
       firstInitRef.current = true;
     }
@@ -209,13 +213,14 @@ const CheckboxIndicator = memo(function CheckboxIndicator({
   );
 });
 
-const CheckboxIcon = memo(function CheckboxIcon({ style, ...restProps }: IconProps) {
+const CheckboxIcon = memo(function CheckboxIcon({ style, font, ...restProps }: CheckboxIconProps) {
   const { styles, theme } = useStyles(stylesheet);
   return (
     <Icon
       style={[styles.icon, style]}
       size={theme.fontSize.sm}
       color={theme.colors.background}
+      font={font || (CheckboxIconFont as IconProps['font'])}
       {...restProps}
     />
   );
