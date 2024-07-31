@@ -2,9 +2,8 @@ import { memo, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { SearchItemsOptions } from '@/app/(main)/(tabs)/search';
 import Chip from '@/components/ui/chip';
-import { SearchHistory } from '@/hooks/search/useSearchHistory';
+import { SearchHistory, SearchItemsOptions } from '@/libs/search';
 
 interface SearchHistoryViewProps {
   searchHistory: SearchHistory[];
@@ -54,8 +53,6 @@ const SearchHistoryView = memo(function SearchHistoryView({
     );
   }, [onPressSearchHistory, searchHistory, styles, theme]);
 
-  console.log('SearchHistoryView', { searchHistory });
-
   return <View style={styles.container}>{SearchHistoryChips}</View>;
 });
 
@@ -64,6 +61,7 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: theme.spacing.md,
+    marginVertical: theme.spacing.md,
   },
   chip: {
     backgroundColor: 'transparent',
