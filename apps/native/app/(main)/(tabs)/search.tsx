@@ -2,39 +2,17 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
+import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import SearchHistoryView from '@/components/custom/view/search-history';
 import Checkbox from '@/components/ui/checkbox';
 import Text from '@/components/ui/text';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
+import { SearchItemOptionInfo, SearchItemsOptions, SearchOptionValue } from '@/libs/search';
 
 interface SearchScreenProps {}
-
-export type SearchOptionValue = 'item_id' | 'on_sale';
-
-type SearchItemOptionInfo = {
-  label: string;
-  indicatorColor: string;
-  iconColor: string;
-};
-
-export const SearchItemsOptions = (
-  theme: UnistylesTheme,
-): Record<SearchOptionValue, SearchItemOptionInfo> => ({
-  item_id: {
-    label: '상품번호로 검색',
-    indicatorColor: theme.colors.tint,
-    iconColor: theme.colors.background,
-  },
-  on_sale: {
-    label: '할인 중인 상품만',
-    indicatorColor: theme.colors.alert,
-    iconColor: 'white',
-  },
-});
 
 export default function SearchScreen({}: SearchScreenProps) {
   const { styles, theme } = useStyles(stylesheet);
@@ -52,6 +30,7 @@ export default function SearchScreen({}: SearchScreenProps) {
     placeholder,
     handlePressSearch,
     handlePressSearchHistory,
+    searchResult,
   } = useSearchInput({ addSearchHistory });
 
   const SearchItemCheckbox = useMemo(() => {
@@ -90,13 +69,14 @@ export default function SearchScreen({}: SearchScreenProps) {
         onPressSearch={handlePressSearch}
         disabled={isFetching}
       />
-      <Checkbox.Group value={options} onChange={setOptions} style={styles.checkboxGroup}>
+      <Checkbox.Group value={options} onChange={setOptions as any} style={styles.checkboxGroup}>
         {SearchItemCheckbox}
       </Checkbox.Group>
       <SearchHistoryView
         searchHistory={searchHistory}
         onPressSearchHistory={handlePressSearchHistory}
       />
+      {searchResult && <SearchResultList searchResult={searchResult} />}
     </View>
   );
 }
