@@ -1,0 +1,91 @@
+import { memo, useMemo } from 'react';
+import { Pressable, View } from 'react-native';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import { SearchItemsOptions } from '@/app/(main)/(tabs)/search';
+import Chip from '@/components/ui/chip';
+import { SearchHistory } from '@/hooks/search/useSearchHistory';
+
+interface SearchHistoryViewProps {
+  searchHistory: SearchHistory[];
+  onPressSearchHistory: (searchHistory: SearchHistory) => void;
+}
+
+const SearchHistoryView = memo(function SearchHistoryView({
+  searchHistory,
+  onPressSearchHistory,
+}: SearchHistoryViewProps) {
+  const { styles, theme } = useStyles(stylesheet);
+
+  const SearchHistoryChips = useMemo(() => {
+    return (
+      <>
+        {searchHistory.map((history, index) => {
+          return (
+            <Pressable
+              key={`${history.keyword}_${index}`}
+              onPress={() => onPressSearchHistory(history)}
+            >
+              <Chip
+                text={history.keyword}
+                style={styles.chip}
+                textProps={{ style: styles.chipText }}
+                renderSuffix={
+                  history.options.length > 0
+                    ? () => (
+                        <View style={styles.chipSuffixContainer}>
+                          {history.options.map((option, index) => (
+                            <View
+                              key={option}
+                              style={styles.chipSuffixCircle(
+                                SearchItemsOptions(theme)[option].indicatorColor,
+                              )}
+                            />
+                          ))}
+                        </View>
+                      )
+                    : undefined
+                }
+              />
+            </Pressable>
+          );
+        })}
+      </>
+    );
+  }, [onPressSearchHistory, searchHistory, styles, theme]);
+
+  console.log('SearchHistoryView', { searchHistory });
+
+  return <View style={styles.container}>{SearchHistoryChips}</View>;
+});
+
+const stylesheet = createStyleSheet(theme => ({
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.md,
+  },
+  chip: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: theme.colors.typography,
+    padding: theme.spacing.sm,
+  },
+  chipText: {
+    color: theme.colors.typography,
+  },
+  chipSuffixContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    marginLeft: theme.spacing.sm,
+  },
+  chipSuffixCircle: (backgroundColor: string) => ({
+    backgroundColor,
+    width: theme.spacing.md,
+    height: theme.spacing.md,
+    borderRadius: 9999,
+  }),
+}));
+
+export default SearchHistoryView;
