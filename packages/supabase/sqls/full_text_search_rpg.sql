@@ -21,16 +21,16 @@ BEGIN
     EXISTS (
         SELECT 1
         FROM discounts d
-        WHERE d."itemId" = i.id
+        WHERE d."itemId" = i."itemId"
         AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
     ) as "isOnSaleNow"
-    FROM items
-    WHERE "itemName" &@~ keyword
+    FROM items i
+    WHERE i."itemName" &@~ keyword
     AND (
         NOT is_on_sale OR EXISTS (
             SELECT 1
             FROM discounts
-            WHERE discounts."itemId" = items."itemId"
+            WHERE discounts."itemId" = i."itemId"
             AND CURRENT_TIMESTAMP BETWEEN discounts."startDate" AND discounts."endDate"
         )
     );
@@ -60,16 +60,16 @@ BEGIN
     EXISTS (
         SELECT 1
         FROM discounts d
-        WHERE d."itemId" = i.id
-        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+    WHERE d."itemId" = i."itemId"
+    AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
     ) as "isOnSaleNow"
-    FROM items
-    WHERE "itemId" LIKE '%' || item_id || '%'
+    FROM items i
+    WHERE i."itemId" LIKE '%' || item_id || '%'
     AND (
         NOT is_on_sale OR EXISTS (
             SELECT 1
             FROM discounts
-            WHERE discounts."itemId" = items."itemId"
+            WHERE discounts."itemId" = i."itemId"
             AND CURRENT_TIMESTAMP BETWEEN discounts."startDate" AND discounts."endDate"
         )
     );
