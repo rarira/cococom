@@ -1,68 +1,73 @@
-import { useQuery } from '@tanstack/react-query';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { queryKeys } from '@/libs/react-query';
+import { SearchResult } from '@/components/custom/list/search-result';
+import { SearchHistory, SearchOptionValue } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
-
-import { SearchHistory } from './useSearchHistory';
 
 type UseSearchInputParams = {
   addSearchHistory: (searchHistory: SearchHistory) => void;
 };
 
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
-  const [options, setOptions] = useState<string[]>([]);
+  const [options, setOptions] = useState<SearchOptionValue[]>([]);
   const [keyword, setKeyword] = useState<string>('');
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
+
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
-  const isOnSaleSearch = useMemo(() => options.includes('on_sale'), [options]);
-
-  const searchKeywordRef = useRef<string>('');
 
   const placeholder = isItemIdSearch
     ? '상품번호를 숫자로만 입력하세요'
     : '상품명, 브랜드를 입력하세요';
 
-  const { data, isFetching, isSuccess, refetch } = useQuery({
-    queryKey: isItemIdSearch
-      ? queryKeys.search.itemId(searchKeywordRef.current)
-      : queryKeys.search.keyword(searchKeywordRef.current),
-    queryFn: () => {
+  const fetchResult = useCallback(
+    async (options: SearchOptionValue[], keyword: string) => {
+      const isOnSaleSearch = options.includes('on_sale');
+      const isItemIdSearch = options.includes('item_id');
+
+      console.log('call fetchResult', { isItemIdSearch, keyword, options });
+      let fetchFn;
+      if (isItemIdSearch) {
+        fetchFn = supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch);
+      } else {
+        fetchFn = supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch);
+      }
+      setIsFetching(true);
       try {
-        let result;
-        if (isItemIdSearch) {
-          result = supabase.fullTextSearchItemsByItemId(searchKeywordRef.current, isOnSaleSearch);
-        } else {
-          result = supabase.fullTextSearchItemsByKeyworkd(searchKeywordRef.current, isOnSaleSearch);
-        }
-        addSearchHistory({ keyword: searchKeywordRef.current, options });
-        searchKeywordRef.current = '';
-        return result;
+        const data = await fetchFn;
+        setSearchResult(data);
+        addSearchHistory({ keyword, options });
+        setKeyword('');
       } catch (error) {
         console.error(error);
+        setSearchResult(null);
       }
+      setIsFetching(false);
     },
-    enabled: false,
-    refetchOnWindowFocus: false,
-  });
+    [addSearchHistory],
+  );
 
   const handlePressSearch = useCallback(async () => {
-    console.log('call handlePressSearch');
-    searchKeywordRef.current = keyword;
-    refetch();
-  }, [refetch, keyword]);
+    fetchResult(options, keyword);
+  }, [fetchResult, keyword, options]);
 
   const handlePressSearchHistory = useCallback(
     (history: SearchHistory) => {
-      searchKeywordRef.current = history.keyword;
+      console.log('handlePressSearchHistory', history);
       setKeyword(history.keyword);
       setOptions(history.options);
-      requestAnimationFrame(() => refetch());
+      fetchResult(history.options, history.keyword);
     },
-    [refetch],
+    [fetchResult],
   );
 
-  console.log('useSearchInput', { isFetching, isSuccess, data });
+  console.log('useSearchInput', {
+    keyword,
+    options,
+    isFetching,
+    searchResult,
+  });
 
   return {
     options,
@@ -73,5 +78,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     handlePressSearch,
     isFetching,
     handlePressSearchHistory,
+    searchResult,
   };
 }

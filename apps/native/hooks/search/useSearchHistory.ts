@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SearchOptionValue } from '@/app/(main)/(tabs)/search';
 import { storage, STORAGE_KEYS } from '@/libs/mmkv';
+import { SearchHistory } from '@/libs/search';
 import Util from '@/libs/util';
-
-export type SearchHistory = {
-  keyword: string;
-  options: SearchOptionValue[];
-};
 
 export function useSearchHistory(maxHistoryLength = 10) {
   const [searchHistory, setSearchHistory] = useState<SearchHistory[]>([]);
@@ -26,7 +21,7 @@ export function useSearchHistory(maxHistoryLength = 10) {
           Util.stringifySearchHistory(newHistory),
           ...searchHistory.map(Util.stringifySearchHistory),
         ]),
-      ).slice(0, maxHistoryLength);
+      ).slice(0, maxHistoryLength + 1);
       setSearchHistory(newSearchHistory.map(history => JSON.parse(history)));
       storage.set(STORAGE_KEYS.SEARCH_HISTORY, JSON.stringify(newSearchHistory));
     },
