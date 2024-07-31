@@ -15,7 +15,7 @@ export const queryKeys = {
     latest: ['histories', 'latest'],
   },
   search: {
-    keyword: (keyword: string) => ['search', { keyword }],
-    itemId: (itemId: string) => ['search', { itemId }],
+    keyword: (keyword: string, isOnSaleSearch: boolean) => ['search', { keyword, isOnSaleSearch }],
+    itemId: (itemId: string, isOnSaleSearch: boolean) => ['search', { itemId, isOnSaleSearch }],
   },
 };
