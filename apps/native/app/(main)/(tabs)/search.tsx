@@ -27,11 +27,12 @@ export default function SearchScreen({}: SearchScreenProps) {
     isFetching,
     keyword,
     setKeyword,
-    placeholder,
     handlePressSearch,
     handlePressSearchHistory,
     searchResult,
   } = useSearchInput({ addSearchHistory });
+
+  const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
 
   const SearchItemCheckbox = useMemo(() => {
     const searchItemsOptions = Object.entries(SearchItemsOptions(theme)) as [
@@ -65,7 +66,9 @@ export default function SearchScreen({}: SearchScreenProps) {
       <SearchTextInput
         value={keyword}
         onChangeText={setKeyword}
-        placeholder={placeholder}
+        placeholder={
+          isItemIdSearch ? '상품번호를 숫자로만 입력하세요' : '상품명, 브랜드를 입력하세요'
+        }
         onPressSearch={handlePressSearch}
         disabled={isFetching}
       />
