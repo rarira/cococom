@@ -4,15 +4,17 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 
+import { SearchHistory } from './useSearchHistory';
+
 type UseSearchInputParams = {
-  addSearchHistory: (keyword: string) => void;
+  addSearchHistory: (searchHistory: SearchHistory) => void;
 };
 
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [options, setOptions] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>('');
 
-  const isItemIdSearch = useMemo(() => options.includes('product_number'), [options]);
+  const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
   const isOnSaleSearch = useMemo(() => options.includes('on_sale'), [options]);
 
   const searchKeywordRef = useRef<string>('');
@@ -33,7 +35,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
         } else {
           result = supabase.fullTextSearchItemsByKeyworkd(searchKeywordRef.current, isOnSaleSearch);
         }
-        addSearchHistory(searchKeywordRef.current);
+        addSearchHistory({ keyword: searchKeywordRef.current, options });
         searchKeywordRef.current = '';
         return result;
       } catch (error) {
@@ -50,6 +52,16 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     refetch();
   }, [refetch, keyword]);
 
+  const handlePressSearchHistory = useCallback(
+    (history: SearchHistory) => {
+      searchKeywordRef.current = history.keyword;
+      setKeyword(history.keyword);
+      setOptions(history.options);
+      requestAnimationFrame(() => refetch());
+    },
+    [refetch],
+  );
+
   console.log('useSearchInput', { isFetching, isSuccess, data });
 
   return {
@@ -60,5 +72,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     placeholder,
     handlePressSearch,
     isFetching,
+    handlePressSearchHistory,
   };
 }
