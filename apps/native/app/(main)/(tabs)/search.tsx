@@ -5,7 +5,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import SearchTextInput from '@/components/custom/text-input/search';
 import Checkbox from '@/components/ui/checkbox';
 import Text from '@/components/ui/text';
-import { useSearchInput } from '@/hooks/useSearchInput';
+import { useSearchHistory } from '@/hooks/search/useSearchHistory';
+import { useSearchInput } from '@/hooks/search/useSearchInput';
 
 interface SearchScreenProps {}
 
@@ -16,14 +17,16 @@ export default function SearchScreen({}: SearchScreenProps) {
 
   const { top } = useSafeAreaInsets();
 
-  const { options, keyword, setOptions, isFetching, setKeyword, placeholder, handlePressSearch } =
-    useSearchInput();
+  const { searchHistory, addSearchHistory, clearSearchHistory } = useSearchHistory();
+
+  const { options, setOptions, isFetching, setKeyword, placeholder, handlePressSearch } =
+    useSearchInput({ addSearchHistory });
 
   return (
     <View style={styles.container(top)}>
       <Text>Search</Text>
       <SearchTextInput
-        value={keyword}
+        // value={keyword}
         onChangeText={setKeyword}
         placeholder={placeholder}
         onPressSearch={handlePressSearch}
@@ -43,6 +46,7 @@ export default function SearchScreen({}: SearchScreenProps) {
           <Checkbox.Label>할인 중인 상품만</Checkbox.Label>
         </Checkbox.Root>
       </Checkbox.Group>
+      <Text>{searchHistory.join(' / ')}</Text>
     </View>
   );
 }

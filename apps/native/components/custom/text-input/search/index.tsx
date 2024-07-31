@@ -21,6 +21,10 @@ const SearchTextInput = memo(function SearchTextInput({
       <TextInput.Field
         placeholderTextColor={`${theme.colors.typography}99`}
         editable={!disabled}
+        autoCorrect={false}
+        autoComplete="off"
+        autoCapitalize="none"
+        clearButtonMode="while-editing"
         {...restProps}
       />
       <TextInput.Slot style={styles.textInputSlot} onPress={onPressSearch} disabled={disabled}>
