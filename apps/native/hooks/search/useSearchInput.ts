@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
 
 import { SearchResult } from '@/components/custom/list/search-result';
+import { queryKeys } from '@/libs/react-query';
 import { SearchHistory, SearchOptionValue } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 
@@ -12,14 +14,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
   const [keyword, setKeyword] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
+  const queryClient = useQueryClient();
 
   const [isFetching, setIsFetching] = useState<boolean>(false);
-
-  const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
-
-  const placeholder = isItemIdSearch
-    ? '상품번호를 숫자로만 입력하세요'
-    : '상품명, 브랜드를 입력하세요';
 
   const fetchResult = useCallback(
     async (options: SearchOptionValue[], keyword: string) => {
@@ -27,25 +24,30 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
       const isItemIdSearch = options.includes('item_id');
 
       console.log('call fetchResult', { isItemIdSearch, keyword, options });
-      let fetchFn;
+      let queryFn;
       if (isItemIdSearch) {
-        fetchFn = supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch);
+        queryFn = () => supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch);
       } else {
-        fetchFn = supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch);
+        queryFn = () => supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch);
       }
       setIsFetching(true);
       try {
-        const data = await fetchFn;
+        const data = await queryClient.fetchQuery({
+          queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+            keyword,
+            isOnSaleSearch,
+          ),
+          queryFn,
+        });
         setSearchResult(data);
         addSearchHistory({ keyword, options });
-        setKeyword('');
       } catch (error) {
         console.error(error);
         setSearchResult(null);
       }
       setIsFetching(false);
     },
-    [addSearchHistory],
+    [addSearchHistory, queryClient],
   );
 
   const handlePressSearch = useCallback(async () => {
@@ -74,7 +76,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     setOptions,
     keyword,
     setKeyword,
-    placeholder,
     handlePressSearch,
     isFetching,
     handlePressSearchHistory,
