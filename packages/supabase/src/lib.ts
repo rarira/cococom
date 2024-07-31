@@ -198,6 +198,7 @@ export class Supabase {
 
     if (error) {
       console.error(error);
+      throw error;
     }
 
     return data;
@@ -211,6 +212,7 @@ export class Supabase {
 
     if (error) {
       console.error(error);
+      throw error;
     }
 
     return data;

@@ -9,8 +9,7 @@ import {
   useContext,
   useEffect,
   useReducer,
-  useRef,
-  useState
+  useState,
 } from 'react';
 import { Pressable, PressableProps, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -51,14 +50,26 @@ const CheckboxContext = createContext<CheckboxContextType | null>(null);
 
 const CheckboxDispatchContext = createContext<CheckBoxDispatchContextType | null>(null);
 
-function CheckboxProvider({ children }: PropsWithChildren) {
+function CheckboxProvider({
+  children,
+  value,
+  isChecked,
+}: PropsWithChildren & Pick<CheckboxProps, 'value'> & { isChecked: boolean }) {
+  const checkboxGroupContext = useCheckboxGroup();
+
   const [state, setState] = useReducer<Reducer<CheckboxContextType, Partial<CheckboxContextType>>>(
     (state, newState) => ({ ...state, ...newState }),
     {
-      value: '',
-      isChecked: false,
+      value,
+      isChecked: checkboxGroupContext ? checkboxGroupContext.includes(value) : isChecked,
     },
   );
+
+  useEffect(() => {
+    if (checkboxGroupContext) {
+      setState({ isChecked: checkboxGroupContext.includes(value) });
+    }
+  }, [checkboxGroupContext, value]);
 
   return (
     <CheckboxContext.Provider value={state}>
@@ -88,8 +99,15 @@ const CheckboxGroupContext = createContext<string[] | null>(null);
 
 const CheckboxGroupDispatchContext = createContext<Dispatch<SetStateAction<string[]>> | null>(null);
 
-function CheckboxGroupProvider({ children }: PropsWithChildren) {
-  const [state, setState] = useState<string[]>([]);
+function CheckboxGroupProvider({
+  children,
+  value,
+}: PropsWithChildren & Pick<CheckboxGroupViewProps, 'value'>) {
+  const [state, setState] = useState<string[]>(value);
+
+  useEffect(() => {
+    setState(value);
+  }, [value]);
 
   return (
     <CheckboxGroupContext.Provider value={state}>
@@ -108,21 +126,12 @@ function useCheckboxGroupDispatch() {
   return useContext(CheckboxGroupDispatchContext);
 }
 
-const CheckboxGroupView = memo(function CheckboxGroup({
+export const CheckboxGroupView = memo(function CheckboxGroup({
   value,
   onChange,
   ...restProps
 }: CheckboxGroupViewProps) {
   const checkboxGroupContext = useCheckboxGroup();
-  const setCheckboxGroupContext = useCheckboxGroupDispatch();
-  const firstInitRef = useRef(false);
-
-  useEffect(() => {
-    if (!firstInitRef.current) {
-      setCheckboxGroupContext?.(value);
-      firstInitRef.current = true;
-    }
-  }, [setCheckboxGroupContext, value]);
 
   useEffect(() => {
     if (checkboxGroupContext) {
@@ -142,19 +151,11 @@ const CheckboxPressable = memo(function CheckboxPressable({
   ...restProps
 }: CheckboxProps) {
   const checkboxContext = useCheckbox();
+  const checkboxGroupContext = useCheckboxGroup();
   const setCheckboxContext = useCheckboxDispatch();
   const setCheckboxGroupContext = useCheckboxGroupDispatch();
 
-  const firstInitRef = useRef(false);
-
   const { styles } = useStyles(stylesheet);
-
-  useEffect(() => {
-    if (!firstInitRef.current) {
-      setCheckboxContext({ isChecked: defaultIsChecked || isChecked, value });
-      firstInitRef.current = true;
-    }
-  }, [defaultIsChecked, isChecked, setCheckboxContext, value]);
 
   useEffect(() => {
     onChange?.({ isChecked: checkboxContext.isChecked, value: checkboxContext.value });
@@ -166,6 +167,12 @@ const CheckboxPressable = memo(function CheckboxPressable({
       }
     }
   }, [checkboxContext.isChecked, checkboxContext.value, onChange, setCheckboxGroupContext, value]);
+
+  useEffect(() => {
+    if (checkboxGroupContext) {
+      setCheckboxContext({ isChecked: checkboxGroupContext.includes(value) });
+    }
+  }, [checkboxGroupContext, setCheckboxContext, value]);
 
   const handlePress = useCallback(
     () => setCheckboxContext({ isChecked: !checkboxContext.isChecked }),
@@ -183,7 +190,7 @@ const CheckboxPressable = memo(function CheckboxPressable({
 
 const CheckboxWrapper = memo(function CheckboxWrapper(props: CheckboxProps) {
   return (
-    <CheckboxProvider>
+    <CheckboxProvider value={props.value} isChecked={!!props.defaultIsChecked || !!props.isChecked}>
       <CheckboxPressable {...props} />
     </CheckboxProvider>
   );
@@ -191,7 +198,7 @@ const CheckboxWrapper = memo(function CheckboxWrapper(props: CheckboxProps) {
 
 const CheckboxGroupWrapper = memo(function CheckboxGroupWrapper(props: CheckboxGroupViewProps) {
   return (
-    <CheckboxGroupProvider>
+    <CheckboxGroupProvider value={props.value}>
       <CheckboxGroupView {...props} />
     </CheckboxGroupProvider>
   );
