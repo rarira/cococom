@@ -2,7 +2,7 @@ import {
   createContext,
   Dispatch,
   memo,
-  ReactNode,
+  PropsWithChildren,
   Reducer,
   SetStateAction,
   useCallback,
@@ -10,7 +10,7 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
+  useState
 } from 'react';
 import { Pressable, PressableProps, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -51,7 +51,7 @@ const CheckboxContext = createContext<CheckboxContextType | null>(null);
 
 const CheckboxDispatchContext = createContext<CheckBoxDispatchContextType | null>(null);
 
-function CheckboxProvider({ children }: { children: ReactNode }) {
+function CheckboxProvider({ children }: PropsWithChildren) {
   const [state, setState] = useReducer<Reducer<CheckboxContextType, Partial<CheckboxContextType>>>(
     (state, newState) => ({ ...state, ...newState }),
     {
@@ -88,7 +88,7 @@ const CheckboxGroupContext = createContext<string[] | null>(null);
 
 const CheckboxGroupDispatchContext = createContext<Dispatch<SetStateAction<string[]>> | null>(null);
 
-function CheckboxGroupProvider({ children }: { children: ReactNode }) {
+function CheckboxGroupProvider({ children }: PropsWithChildren) {
   const [state, setState] = useState<string[]>([]);
 
   return (
