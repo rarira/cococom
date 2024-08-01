@@ -34,7 +34,7 @@ const SearchResultList = memo(function SearchResultList({
       <FlashList
         data={searchResult}
         renderItem={renderItem}
-        estimatedItemSize={600}
+        estimatedItemSize={200}
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
         contentContainerStyle={styles.flashListContainer}
