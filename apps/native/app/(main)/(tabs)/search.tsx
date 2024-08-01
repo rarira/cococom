@@ -19,7 +19,7 @@ export default function SearchScreen({}: SearchScreenProps) {
 
   const { top } = useSafeAreaInsets();
 
-  const { searchHistory, addSearchHistory, clearSearchHistory } = useSearchHistory();
+  const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
 
   const {
     options,
@@ -76,8 +76,8 @@ export default function SearchScreen({}: SearchScreenProps) {
         {SearchItemCheckbox}
       </Checkbox.Group>
       <SearchHistoryView
-        searchHistory={searchHistory}
         onPressSearchHistory={handlePressSearchHistory}
+        {...restSearchHistoryReturns}
       />
       {searchResult && <SearchResultList searchResult={searchResult} />}
     </View>

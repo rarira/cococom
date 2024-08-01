@@ -5,6 +5,7 @@ export type SearchOptionValue = 'item_id' | 'on_sale';
 export type SearchHistory = {
   keyword: string;
   options: SearchOptionValue[];
+  hash: string;
 };
 
 export type SearchItemOptionInfo = {
@@ -27,3 +28,7 @@ export const SearchItemsOptions = (
     iconColor: 'white',
   },
 });
+
+export const getSearchHistoryHash = (keyword: string, options: SearchOptionValue[]): string => {
+  return `${keyword}_${options.join('_')}`;
+};
