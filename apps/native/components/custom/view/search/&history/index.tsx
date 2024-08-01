@@ -108,13 +108,15 @@ const stylesheet = createStyleSheet(theme => ({
     marginVertical: theme.spacing.md,
   },
   chip: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.typography,
-    padding: theme.spacing.sm,
+    backgroundColor: theme.colors.lightShadow,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm / 2,
   },
   chipText: {
     color: theme.colors.typography,
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.5,
+    fontWeight: 'normal',
   },
   chipSuffixContainer: {
     flexDirection: 'row',

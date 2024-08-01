@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -24,17 +24,19 @@ function DiscountListItemCard({
 
   return (
     <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
-      <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
-        <View style={styles.itemContainer(numColumns === 1)}>
-          <ProductCardThumbnailImage
-            product={discount.items!}
-            width={115}
-            height={115}
-            style={styles.thumbnail}
-          />
-          <DiscountListItemCardDetailView discount={discount} />
-        </View>
-      </Card>
+      <Pressable onPress={() => console.log('Pressed')}>
+        <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
+          <View style={styles.itemContainer(numColumns === 1)}>
+            <ProductCardThumbnailImage
+              product={discount.items!}
+              width={115}
+              height={115}
+              style={styles.thumbnail}
+            />
+            <DiscountListItemCardDetailView discount={discount} />
+          </View>
+        </Card>
+      </Pressable>
     </Shadow>
   );
 }

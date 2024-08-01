@@ -6,6 +6,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import { SearchResult } from '@/components/custom/list/search-result';
+import DiscountRateText from '@/components/custom/text/discount-rate';
+import SuperscriptWonText from '@/components/custom/text/superscript-won';
+import Chip from '@/components/ui/chip';
+import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
@@ -68,34 +72,35 @@ function SearchResultListItemCardDetailView({
       <Text style={styles.itemNameText} numberOfLines={3}>
         {item.itemName}
       </Text>
-      <View>
-        {/* <View style={styles.priceContainer}>
-          {isWholeProduct ? null : (
-            <>
-              <Text
-                style={styles.regularPriceText}
-              >{`\u20A9${Util.toWonString(discount.price)}`}</Text>
-              <DiscountRateText discountRate={discount.discountRate!} />
-            </>
-          )}
-          <SuperscriptWonText
-            price={discount[isWholeProduct ? 'discount' : 'discountPrice']}
-            isMinus={isWholeProduct}
-          />
-        </View>
-        <View style={styles.miscInfoContainer}>
-          <ListItemCardChipsView discount={discount} />
-          <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
-        </View> */}
-        <View style={styles.actionButtonContainer}>
-          {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <ListItemWishlistIconButton<SearchResult[number]>
-            item={item}
-            portalHostName={PortalHostNames.SEARCH}
-            queryKey={queryKey}
-            onMutate={handleMutate}
-          />
-        </View>
+      <View style={styles.infoContainer}>
+        {isWholeProduct ? (
+          <View style={styles.infoBlock}>
+            <Text style={styles.discountLabelText}>역대 최대 단위당 할인 금액</Text>
+            <SuperscriptWonText price={item.bestDiscount} isMinus />
+          </View>
+        ) : (
+          <>
+            <View style={styles.infoBlock}>
+              <Text style={styles.discountLabelText}>역대 최대 할인률</Text>
+              <DiscountRateText discountRate={item.bestDiscountRate} />
+            </View>
+            <Divider orientation="vertical" style={styles.infoDivider} />
+            <View style={styles.infoBlock}>
+              <Text style={styles.discountLabelText}>역대 최저가</Text>
+              <SuperscriptWonText price={item.lowestPrice} />
+            </View>
+          </>
+        )}
+      </View>
+      <View style={styles.actionButtonContainer}>
+        {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
+        {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
+        <ListItemWishlistIconButton<SearchResult[number]>
+          item={item}
+          portalHostName={PortalHostNames.SEARCH}
+          queryKey={queryKey}
+          onMutate={handleMutate}
+        />
       </View>
     </View>
   );
@@ -114,32 +119,33 @@ const stylesheets = createStyleSheet(theme => ({
   itemNameText: {
     flex: 1,
     fontSize: theme.fontSize.sm,
-    lineHeight: 16,
-    fontWeight: 'semibold',
+    lineHeight: theme.fontSize.sm * 1.5,
+    fontWeight: 'bold',
   },
-  priceContainer: {
+  infoContainer: {
     width: '100%',
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'flex-end',
-    marginVertical: theme.spacing.md,
+    marginVertical: theme.spacing.sm,
   },
-  regularPriceText: {
-    fontSize: theme.fontSize.xs,
-    lineHeight: theme.fontSize.xs,
-    textDecorationLine: 'line-through',
-    opacity: 0.8,
-    marginEnd: theme.spacing.sm,
+  infoDivider: {
+    opacity: 0.2,
+    marginHorizontal: theme.spacing.lg,
   },
-  miscInfoContainer: {
+  infoBlock: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  discountLabelText: {
+    color: `${theme.colors.typography}AA`,
+    fontSize: theme.fontSize.sm,
+  },
+  actionButtonContainer: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  actionButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
     gap: theme.spacing.sm,
   },
 }));

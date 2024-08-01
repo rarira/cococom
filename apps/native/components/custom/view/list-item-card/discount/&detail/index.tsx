@@ -116,8 +116,8 @@ const stylesheets = createStyleSheet(theme => ({
   itemNameText: {
     flex: 1,
     fontSize: theme.fontSize.sm,
-    lineHeight: 16,
-    fontWeight: 'semibold',
+    lineHeight: theme.fontSize.sm * 1.5,
+    fontWeight: 'bold',
   },
   priceContainer: {
     width: '100%',

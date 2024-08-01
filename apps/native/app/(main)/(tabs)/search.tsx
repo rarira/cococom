@@ -1,3 +1,4 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,9 +32,10 @@ export default function SearchScreen() {
   } = useSearchInput({ addSearchHistory });
 
   const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
+  const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <View style={styles.container(top)}>
+    <View style={styles.container(top, tabBarHeight)}>
       <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
         <View style={styles.searchBox}>
           <SearchTextInput
@@ -71,9 +73,10 @@ export default function SearchScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (topInset: number) => ({
+  container: (topInset: number, tabBarHeight: number) => ({
     flex: 1,
     paddingTop: topInset,
+    paddingBottom: tabBarHeight + theme.spacing.lg,
     backgroundColor: theme.colors.background,
     alignItems: 'center',
   }),
