@@ -246,6 +246,7 @@ export type Database = {
         Args: {
           item_id: string
           is_on_sale: boolean
+          user_id: string
         }
         Returns: {
           id: number
@@ -255,12 +256,15 @@ export type Database = {
           bestDiscount: number
           lowestPrice: number
           isOnSaleNow: boolean
+          totalWishlistCount: number
+          isWishlistedByUser: boolean
         }[]
       }
       search_items_by_keyword: {
         Args: {
           keyword: string
           is_on_sale: boolean
+          user_id: string
         }
         Returns: {
           id: number
@@ -270,6 +274,8 @@ export type Database = {
           bestDiscount: number
           lowestPrice: number
           isOnSaleNow: boolean
+          totalWishlistCount: number
+          isWishlistedByUser: boolean
         }[]
       }
     }

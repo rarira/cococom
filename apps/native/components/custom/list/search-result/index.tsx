@@ -1,10 +1,12 @@
 import { Database } from '@cococom/supabase/types';
+import { PortalHost } from '@gorhom/portal';
 import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
+import { PortalHostNames } from '@/constants';
 
 export type SearchResult = Database['public']['Functions']['search_items_by_keyword']['Returns'];
 
@@ -16,24 +18,27 @@ const SearchResultList = memo(function SearchResultList({ searchResult }: Search
   const { styles } = useStyles(stylesheet);
 
   const renderItem = useCallback(({ item }: { item: SearchResult[number]; index: number }) => {
-    return <Text>{item.itemName}</Text>;
+    return <SearchResultListItemCard item={item} key={item.id} />;
   }, []);
 
   return (
-    <FlashList
-      data={searchResult}
-      renderItem={renderItem}
-      estimatedItemSize={600}
-      keyExtractor={item => item?.id.toString()}
-      ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-      contentContainerStyle={styles.flashListContainer}
-    />
+    <>
+      <FlashList
+        data={searchResult}
+        renderItem={renderItem}
+        estimatedItemSize={600}
+        keyExtractor={item => item?.id.toString()}
+        ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
+        contentContainerStyle={styles.flashListContainer}
+      />
+      <PortalHost name={PortalHostNames.SEARCH} />
+    </>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   flashListContainer: {
-    paddingTop: theme.spacing.md,
+    paddingTop: theme.spacing.lg * 1.5,
     paddingHorizontal: theme.screenHorizontalPadding,
   },
   seperatorStyle: {

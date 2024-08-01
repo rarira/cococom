@@ -1,10 +1,10 @@
 import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
+import { JoinedItems } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
@@ -14,10 +14,12 @@ import { useUserStore } from '@/store/user';
 import NeedAuthDialog from '../../dialog/need-auth';
 
 interface ListItemWishlistIconButtonProps {
-  item: ListItemCardProps['discount']['items'];
+  item: Record<string, unknown> &
+    Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>;
+  portalHostName: PortalHostNames;
 }
 
-function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
+function ListItemWishlistIconButton({ item, portalHostName }: ListItemWishlistIconButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user, setCallbackAfterSignIn } = useUserStore();
@@ -104,7 +106,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       />
       {needAuthDialogVisible && (
         <NeedAuthDialog
-          portalHostName={PortalHostNames.HOME}
+          portalHostName={portalHostName}
           visible={needAuthDialogVisible}
           setVisible={setNeedAuthDialogVisible}
           body="관심 상품 등록을 하시면 편리하게 쇼핑하실 수 있습니다. 로그인이 필요합니다"

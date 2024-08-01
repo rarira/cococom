@@ -190,10 +190,11 @@ export class Supabase {
     return data;
   }
 
-  async fullTextSearchItemsByKeyworkd(keyword: string, isOnsale: boolean) {
+  async fullTextSearchItemsByKeyworkd(keyword: string, isOnsale: boolean, userId?: string) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
       keyword,
       is_on_sale: isOnsale,
+      user_id: userId ?? null,
     });
 
     if (error) {
@@ -204,10 +205,11 @@ export class Supabase {
     return data;
   }
 
-  async fullTextSearchItemsByItemId(itemId: string, isOnsale: boolean) {
+  async fullTextSearchItemsByItemId(itemId: string, isOnsale: boolean, userId?: string) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_itemid', {
       item_id: itemId,
       is_on_sale: isOnsale,
+      user_id: userId ?? null,
     });
 
     if (error) {
