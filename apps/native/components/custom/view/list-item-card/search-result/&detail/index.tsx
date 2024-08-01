@@ -1,3 +1,6 @@
+import { InsertWishlist } from '@cococom/supabase/libs';
+import { QueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -5,15 +8,60 @@ import ListItemWishlistIconButton from '@/components/custom/button/list-item-wis
 import { SearchResult } from '@/components/custom/list/search-result';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
+import { queryKeys } from '@/libs/react-query';
+import { SearchQueryParams } from '@/libs/search';
+import { useUserStore } from '@/store/user';
 
-interface SearchResultListItemCardDetailViewProps {
+interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResult[number];
+  setSearchResult: (searchResult: SearchResult) => void;
 }
 
-function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDetailViewProps) {
+function SearchResultListItemCardDetailView({
+  item,
+  keyword,
+  options,
+  setSearchResult,
+}: SearchResultListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
 
+  const { user } = useUserStore();
+
   const isWholeProduct = item.lowestPrice === 0;
+
+  const queryKey = useMemo(() => {
+    const isOnSaleNow = options.includes('on_sale');
+    const isItemIdSearch = options.includes('item_id');
+    return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](keyword, isOnSaleNow, user?.id);
+  }, [keyword, options, user?.id]);
+
+  const handleMutate = useCallback(
+    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey) as unknown as SearchResult;
+
+      const index = previousData?.findIndex(item => item.id === newWishlist.itemId);
+
+      queryClient.setQueryData(queryKey, (old: SearchResult) => {
+        if (index === -1) return old;
+        const updatedItem = {
+          ...old[index],
+          totalWishlistCount: item.isWishlistedByUser
+            ? item.totalWishlistCount - 1
+            : item.totalWishlistCount + 1,
+          isWishlistedByUser: !item.isWishlistedByUser,
+        };
+
+        const newSearchResult = [...old.slice(0, index), updatedItem, ...old.slice(index + 1)];
+        setSearchResult(newSearchResult);
+
+        return newSearchResult;
+      });
+
+      return { previousData };
+    },
+    [item.isWishlistedByUser, item.totalWishlistCount, queryKey, setSearchResult],
+  );
 
   return (
     <View style={styles.container}>
@@ -41,7 +89,12 @@ function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDe
         </View> */}
         <View style={styles.actionButtonContainer}>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <ListItemWishlistIconButton item={item} portalHostName={PortalHostNames.SEARCH} />
+          <ListItemWishlistIconButton<SearchResult[number]>
+            item={item}
+            portalHostName={PortalHostNames.SEARCH}
+            queryKey={queryKey}
+            onMutate={handleMutate}
+          />
         </View>
       </View>
     </View>

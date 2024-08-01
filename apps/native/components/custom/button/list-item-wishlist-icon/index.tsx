@@ -1,36 +1,36 @@
-import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
+import { InsertWishlist } from '@cococom/supabase/libs';
 import { JoinedItems } from '@cococom/supabase/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
 
-interface ListItemWishlistIconButtonProps {
-  item: Record<string, unknown> &
-    Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>;
+interface ListItemWishlistIconButtonProps<
+  T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
+> {
+  item: T;
   portalHostName: PortalHostNames;
+  queryKey: QueryKey;
+  onMutate?: (
+    queryClient: QueryClient,
+  ) => (newWishlist: InsertWishlist) => Promise<{ previousData: T[] }>;
 }
 
-function ListItemWishlistIconButton({ item, portalHostName }: ListItemWishlistIconButtonProps) {
+function ListItemWishlistIconButton<
+  T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
+>({ item, portalHostName, queryKey, onMutate }: ListItemWishlistIconButtonProps<T>) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user, setCallbackAfterSignIn } = useUserStore();
 
   const queryClient = useQueryClient();
 
-  const { categorySector: categorySectorParam } = useLocalSearchParams<{
-    categorySector: CategorySectors;
-  }>();
-
-  const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
@@ -38,34 +38,12 @@ function ListItemWishlistIconButton({ item, portalHostName }: ListItemWishlistIc
       }
       return supabase.createWishlist(newWishlist);
     },
-    onMutate: async newWishlist => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(
-        queryKey,
-      ) as unknown as ListItemCardProps['discount'][];
-
-      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
-
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (discountIndex === -1) return old;
-        const updatedDiscount = {
-          ...old[discountIndex],
-          items: {
-            ...old[discountIndex].items,
-            totalWishlistCount: item.isWishlistedByUser
-              ? item.totalWishlistCount - 1
-              : item.totalWishlistCount + 1,
-            isWishlistedByUser: !item.isWishlistedByUser,
-          },
-        };
-
-        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
-      });
-
-      return { previousData };
-    },
+    onMutate: onMutate ? onMutate(queryClient) : undefined,
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 
@@ -80,6 +58,8 @@ function ListItemWishlistIconButton({ item, portalHostName }: ListItemWishlistIc
     if (!user) {
       setCallbackAfterSignIn(user => {
         requestAnimationFrame(() => {
+          console.log('call wishlistMutation.mutate after signin', item.id, user.id);
+
           wishlistMutation.mutate({
             itemId: item.id,
             userId: user.id,
@@ -90,6 +70,8 @@ function ListItemWishlistIconButton({ item, portalHostName }: ListItemWishlistIc
       setNeedAuthDialogVisible(true);
       return;
     }
+    console.log('call wishlistMutation.mutate', item.id, user.id);
+
     wishlistMutation.mutate({
       itemId: item.id,
       userId: user.id,

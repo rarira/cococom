@@ -142,6 +142,7 @@ export class Supabase {
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
+    console.log('call createWishlist', newWishlist);
     const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
 
     if (error) {

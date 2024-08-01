@@ -38,7 +38,9 @@ export function useSearchHistory(maxHistoryLength = 10) {
     (searchHistoryHash: string) => {
       const newSearchHistory = searchHistory
         .filter(
-          history => getSearchHistoryHash(history.keyword, history.options) !== searchHistoryHash,
+          history =>
+            getSearchHistoryHash({ keyword: history.keyword, options: history.options }) !==
+            searchHistoryHash,
         )
         .slice(0, maxHistoryLength);
       setSearchHistory(newSearchHistory);
