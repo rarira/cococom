@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 import { SearchResult } from '@/components/custom/list/search-result';
 import { queryKeys } from '@/libs/react-query';
@@ -14,9 +15,13 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
   const [keyword, setKeyword] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const queryClient = useQueryClient();
-
   const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
+  const { keyword: keywordParam, options: optionsParam } = useLocalSearchParams<{
+    keyword: string;
+    options: SearchOptionValue[];
+  }>();
 
   const fetchResult = useCallback(
     async (options: SearchOptionValue[], keyword: string) => {
@@ -49,6 +54,13 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     },
     [addSearchHistory, queryClient],
   );
+
+  // TODO : 테스트 필요
+  useLayoutEffect(() => {
+    if (keywordParam) setKeyword(keywordParam);
+    if (optionsParam) setOptions(optionsParam);
+    if (keywordParam) fetchResult(optionsParam || [], keywordParam);
+  }, [fetchResult, keywordParam, optionsParam]);
 
   const handlePressSearch = useCallback(async () => {
     fetchResult(options, keyword);
