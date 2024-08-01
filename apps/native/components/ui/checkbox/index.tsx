@@ -24,7 +24,7 @@ interface CheckboxProps extends PressableProps {
   isChecked?: boolean;
 }
 
-interface CheckboxGroupViewProps extends ViewProps {
+export interface CheckboxGroupViewProps extends ViewProps {
   value: string[];
   onChange?: (value: string[]) => void;
 }

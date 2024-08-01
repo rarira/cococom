@@ -34,6 +34,7 @@ const SearchResultList = memo(function SearchResultList({ searchResult }: Search
 const stylesheet = createStyleSheet(theme => ({
   flashListContainer: {
     paddingTop: theme.spacing.md,
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
   seperatorStyle: {
     height: theme.spacing.md * 2,

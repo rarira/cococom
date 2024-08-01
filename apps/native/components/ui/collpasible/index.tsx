@@ -1,17 +1,28 @@
 import { memo, PropsWithChildren, useCallback, useState } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Icon from '@/components/ui/icon';
-import Text from '@/components/ui/text';
+import Icon, { IconProps } from '@/components/ui/icon';
+import Text, { TextProps } from '@/components/ui/text';
 
-interface CollapsibleProps extends PropsWithChildren {
+export interface CollapsibleProps extends PropsWithChildren {
   title: string;
   containerStyle?: ViewProps['style'];
   contentStyle?: ViewProps['style'];
+  headerStyle?: TouchableOpacityProps['style'];
+  iconProps?: Partial<IconProps>;
+  textProps?: TextProps;
 }
 
-function Collapsible({ children, title, containerStyle, contentStyle }: CollapsibleProps) {
+function Collapsible({
+  children,
+  title,
+  containerStyle,
+  contentStyle,
+  headerStyle,
+  iconProps,
+  textProps,
+}: CollapsibleProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,13 +30,20 @@ function Collapsible({ children, title, containerStyle, contentStyle }: Collapsi
 
   return (
     <View style={containerStyle}>
-      <TouchableOpacity style={styles.heading} onPress={handlePress} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={[styles.heading, headerStyle]}
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
         <Icon
           font={{ type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward-outline' }}
           size={18}
           color={theme.colors.typography}
+          {...iconProps}
         />
-        <Text type="defaultSemiBold">{title}</Text>
+        <Text type="defaultSemiBold" {...textProps}>
+          {title}
+        </Text>
       </TouchableOpacity>
       {isOpen && <View style={[styles.content, contentStyle]}>{children}</View>}
     </View>
