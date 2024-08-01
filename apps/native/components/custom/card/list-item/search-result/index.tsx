@@ -7,16 +7,19 @@ import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-
 import { SearchResult } from '@/components/custom/list/search-result';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
 import Card from '@/components/ui/card';
+import { SearchQueryParams } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 
-interface SearchResultListItemCardProps {
+interface SearchResultListItemCardProps extends SearchQueryParams {
   item: SearchResult[number];
   containerStyle?: StyleProp<ViewStyle>;
+  setSearchResult: (searchResult: SearchResult) => void;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({
   item,
   containerStyle,
+  ...restProps
 }: SearchResultListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
@@ -30,7 +33,7 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
             height={115}
             style={styles.thumbnail}
           />
-          <SearchResultListItemCardDetailView item={item} />
+          <SearchResultListItemCardDetailView item={item} {...restProps} />
         </View>
       </Card>
     </Shadow>

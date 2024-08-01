@@ -7,19 +7,27 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
 import { PortalHostNames } from '@/constants';
+import { SearchQueryParams } from '@/libs/search';
 
 export type SearchResult = Database['public']['Functions']['search_items_by_keyword']['Returns'];
 
-interface SearchResultListProps {
+interface SearchResultListProps extends SearchQueryParams {
   searchResult: SearchResult;
+  setSearchResult: (searchResult: SearchResult) => void;
 }
 
-const SearchResultList = memo(function SearchResultList({ searchResult }: SearchResultListProps) {
+const SearchResultList = memo(function SearchResultList({
+  searchResult,
+  ...restProps
+}: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const renderItem = useCallback(({ item }: { item: SearchResult[number]; index: number }) => {
-    return <SearchResultListItemCard item={item} key={item.id} />;
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: SearchResult[number]; index: number }) => {
+      return <SearchResultListItemCard item={item} key={item.id} {...restProps} />;
+    },
+    [restProps],
+  );
 
   return (
     <>

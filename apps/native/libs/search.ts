@@ -1,10 +1,13 @@
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
-export type SearchOptionValue = 'item_id' | 'on_sale';
-
-export type SearchHistory = {
+export type SearchQueryParams = {
   keyword: string;
   options: SearchOptionValue[];
+};
+
+export type SearchOptionValue = 'item_id' | 'on_sale';
+
+export type SearchHistory = SearchQueryParams & {
   hash: string;
 };
 
@@ -29,6 +32,6 @@ export const SearchItemsOptions = (
   },
 });
 
-export const getSearchHistoryHash = (keyword: string, options: SearchOptionValue[]): string => {
+export const getSearchHistoryHash = ({ keyword, options }: SearchQueryParams): string => {
   return `${keyword}${!!options?.length ? -`${options.join('-')}` : ''}`;
 };

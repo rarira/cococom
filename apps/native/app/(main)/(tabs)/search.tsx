@@ -27,6 +27,7 @@ export default function SearchScreen() {
     handlePressSearch,
     handlePressSearchHistory,
     searchResult,
+    setSearchResult,
   } = useSearchInput({ addSearchHistory });
 
   const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
@@ -57,7 +58,12 @@ export default function SearchScreen() {
 
       {searchResult && (
         <View style={styles.resultContainer}>
-          <SearchResultList searchResult={searchResult} />
+          <SearchResultList
+            searchResult={searchResult}
+            keyword={keyword}
+            options={options}
+            setSearchResult={setSearchResult}
+          />
         </View>
       )}
     </View>

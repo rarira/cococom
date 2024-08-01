@@ -4,7 +4,12 @@ import { useCallback, useLayoutEffect, useState } from 'react';
 
 import { SearchResult } from '@/components/custom/list/search-result';
 import { queryKeys } from '@/libs/react-query';
-import { getSearchHistoryHash, SearchHistory, SearchOptionValue } from '@/libs/search';
+import {
+  getSearchHistoryHash,
+  SearchHistory,
+  SearchOptionValue,
+  SearchQueryParams,
+} from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -27,7 +32,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   }>();
 
   const fetchResult = useCallback(
-    async (options: SearchOptionValue[], keyword: string) => {
+    async ({ keyword, options }: SearchQueryParams) => {
       const isOnSaleSearch = options.includes('on_sale');
       const isItemIdSearch = options.includes('item_id');
 
@@ -43,11 +48,12 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
           queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
             keyword,
             isOnSaleSearch,
+            user?.id,
           ),
           queryFn,
         });
         setSearchResult(data);
-        addSearchHistory({ keyword, options, hash: getSearchHistoryHash(keyword, options) });
+        addSearchHistory({ keyword, options, hash: getSearchHistoryHash({ keyword, options }) });
       } catch (error) {
         console.error(error);
         setSearchResult(null);
@@ -61,21 +67,23 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   useLayoutEffect(() => {
     if (keywordParam) setKeyword(keywordParam);
     if (optionsParam) setOptions(optionsParam);
-    if (keywordParam) fetchResult(optionsParam || [], keywordParam);
+    if (keywordParam) fetchResult({ options: optionsParam || [], keyword: keywordParam });
   }, [fetchResult, keywordParam, optionsParam]);
 
   const handlePressSearch = useCallback(async () => {
-    fetchResult(options, keyword);
+    fetchResult({ options, keyword });
   }, [fetchResult, keyword, options]);
 
   const handlePressSearchHistory = useCallback(
     (history: SearchHistory) => {
       setKeyword(history.keyword);
       setOptions(history.options);
-      fetchResult(history.options, history.keyword);
+      fetchResult({ options: history.options, keyword: history.keyword });
     },
     [fetchResult],
   );
+
+  // const resetQueryData = useCallback(({keyword, options}: SearchQueryParams => {}, []);
 
   console.log('useSearchInput', {
     keyword,
@@ -93,5 +101,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     isFetching,
     handlePressSearchHistory,
     searchResult,
+    setSearchResult,
   };
 }
