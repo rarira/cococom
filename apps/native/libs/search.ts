@@ -30,5 +30,5 @@ export const SearchItemsOptions = (
 });
 
 export const getSearchHistoryHash = (keyword: string, options: SearchOptionValue[]): string => {
-  return `${keyword}_${options.join('_')}`;
+  return `${keyword}${!!options?.length ? -`${options.join('-')}` : ''}`;
 };
