@@ -93,7 +93,7 @@ export default function SalesScreen() {
           bounces
           gap={theme.spacing.md}
           // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset을 requestAnimationFrame적용 필요
-          contentContainerStyle={{ width: undefined }}
+          contentContainerStyle={styles.tabBarContentContainer}
         />
       );
     },
@@ -147,6 +147,10 @@ const stylesheet = createStyleSheet(theme => ({
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
     backgroundColor: theme.colors.background,
+    marginHorizontal: theme.spacing.md,
+  },
+  tabBarContentContainer: {
+    width: undefined,
   },
   tabBarIndicatorContainer: {
     display: 'none',

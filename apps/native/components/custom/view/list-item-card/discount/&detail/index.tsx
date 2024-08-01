@@ -2,17 +2,18 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import { ListItemCardProps } from '@/components/custom/card/list-item';
+import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
 import DiscountRateText from '@/components/custom/text/discount-rate';
 import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
+import { PortalHostNames } from '@/constants';
 import Util from '@/libs/util';
 
-interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
+interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
 
-function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
+function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
 
   const isWholeProduct = discount.discountPrice === 0;
@@ -43,7 +44,7 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
         </View>
         <View style={styles.actionButtonContainer}>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <ListItemWishlistIconButton item={discount.items} />
+          <ListItemWishlistIconButton item={discount.items} portalHostName={PortalHostNames.HOME} />
         </View>
       </View>
     </View>
@@ -93,4 +94,4 @@ const stylesheets = createStyleSheet(theme => ({
   },
 }));
 
-export default ListItemCardDetailView;
+export default DiscountListItemCardDetailView;
