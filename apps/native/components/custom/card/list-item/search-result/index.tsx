@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -25,17 +25,19 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
 
   return (
     <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
-      <Card style={[styles.cardContainer, containerStyle]}>
-        <View style={styles.itemContainer}>
-          <ProductCardThumbnailImage
-            product={item}
-            width={115}
-            height={115}
-            style={styles.thumbnail}
-          />
-          <SearchResultListItemCardDetailView item={item} {...restProps} />
-        </View>
-      </Card>
+      <Pressable onPress={() => console.log('Pressed')}>
+        <Card style={[styles.cardContainer, containerStyle]}>
+          <View style={styles.itemContainer}>
+            <ProductCardThumbnailImage
+              product={item}
+              width={115}
+              height={115}
+              style={styles.thumbnail}
+            />
+            <SearchResultListItemCardDetailView item={item} {...restProps} />
+          </View>
+        </Card>
+      </Pressable>
     </Shadow>
   );
 });
