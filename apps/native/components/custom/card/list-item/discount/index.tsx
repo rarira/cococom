@@ -5,17 +5,21 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
 
-import Card from '../../../ui/card';
-import ProductCardThumbnailImage from '../../image/list-item-card-thumbnail';
-import ListItemCardDetailView from '../../view/list-item-card/detail';
+import Card from '../../../../ui/card';
+import ProductCardThumbnailImage from '../../../image/list-item-card-thumbnail';
+import DiscountListItemCardDetailView from '../../../view/list-item-card/discount/&detail';
 
-export interface ListItemCardProps {
+export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
   numColumns?: number;
   containerStyle?: StyleProp<ViewStyle>;
 }
 
-function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCardProps) {
+function DiscountListItemCard({
+  discount,
+  numColumns = 1,
+  containerStyle,
+}: DiscountListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
@@ -28,7 +32,7 @@ function ListItemCard({ discount, numColumns = 1, containerStyle }: ListItemCard
             height={115}
             style={styles.thumbnail}
           />
-          <ListItemCardDetailView discount={discount} />
+          <DiscountListItemCardDetailView discount={discount} />
         </View>
       </Card>
     </Shadow>
@@ -53,4 +57,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default ListItemCard;
+export default DiscountListItemCard;
