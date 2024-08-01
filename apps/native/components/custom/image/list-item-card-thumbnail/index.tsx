@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/ui/text';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>>;
   width: DimensionValue;
@@ -26,6 +27,9 @@ function ListItemCardThumbnailImage({
         alt={`${product.itemName} thumbnail image`}
         style={styles.image}
       />
+      <View style={styles.itemIdOverlay}>
+        <Text style={styles.itemIdText}>{product.itemId}</Text>
+      </View>
     </View>
   );
 }
@@ -39,6 +43,21 @@ const stylesheet = createStyleSheet(theme => ({
   }),
   image: {
     flex: 1,
+  },
+  itemIdOverlay: {
+    position: 'absolute',
+    top: theme.spacing.sm,
+    left: theme.spacing.sm,
+    backgroundColor: theme.colors.background,
+    opacity: 0.8,
+    paddingHorizontal: theme.spacing.sm,
+    borderRadius: theme.borderRadius.sm,
+  },
+  itemIdText: {
+    color: theme.colors.typography,
+    fontSize: theme.fontSize.xs,
+    lineHeight: theme.fontSize.xs * 1.5,
+    fontWeight: 'bold',
   },
 }));
 
