@@ -2,11 +2,13 @@ import { memo, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/ui/button/icon';
 import Chip from '@/components/ui/chip';
+import Divider from '@/components/ui/divider';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { SearchHistory, SearchItemsOptions } from '@/libs/search';
 
-interface SearchHistoryViewProps
+export interface SearchHistoryViewProps
   extends Omit<ReturnType<typeof useSearchHistory>, 'addSearchHistory'> {
   onPressSearchHistory: (searchHistory: SearchHistory) => void;
 }
@@ -57,11 +59,49 @@ const SearchHistoryView = memo(function SearchHistoryView({
     );
   }, [onPressSearchHistory, removeSearchHistory, searchHistory, styles, theme]);
 
-  return <View style={styles.container}>{SearchHistoryChips}</View>;
+  if (searchHistory.length === 0) {
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      <Divider />
+      <View style={styles.clearAllButtonContainer}>
+        <IconButton
+          iconProps={{
+            font: { type: 'MaterialIcon', name: 'clear' },
+            color: theme.colors.alert,
+            style: { paddingTop: theme.spacing.sm },
+          }}
+          onPress={clearSearchHistories}
+          text="검색 기록 모두 삭제"
+          textStyle={styles.clearAllButtonText}
+        />
+      </View>
+      <View style={styles.chipContainer}>{SearchHistoryChips}</View>
+    </View>
+  );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: theme.spacing.sm,
+  },
+  clearAllButtonContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  clearAllButtonText: {
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.5,
+    color: theme.colors.alert,
+    fontWeight: 'normal',
+  },
+  chipContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: theme.spacing.md,
