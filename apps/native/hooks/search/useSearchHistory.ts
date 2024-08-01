@@ -10,7 +10,7 @@ export function useSearchHistory(maxHistoryLength = 10) {
   useEffect(() => {
     const jsonSearchHistory = storage.getString(STORAGE_KEYS.SEARCH_HISTORY);
     if (jsonSearchHistory) {
-      setSearchHistory(JSON.parse(jsonSearchHistory).map(JSON.parse));
+      setSearchHistory(JSON.parse(jsonSearchHistory).map((history: string) => JSON.parse(history)));
     }
   }, []);
 
