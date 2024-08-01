@@ -3,16 +3,19 @@ import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Chip from '@/components/ui/chip';
+import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { SearchHistory, SearchItemsOptions } from '@/libs/search';
 
-interface SearchHistoryViewProps {
-  searchHistory: SearchHistory[];
+interface SearchHistoryViewProps
+  extends Omit<ReturnType<typeof useSearchHistory>, 'addSearchHistory'> {
   onPressSearchHistory: (searchHistory: SearchHistory) => void;
 }
 
 const SearchHistoryView = memo(function SearchHistoryView({
-  searchHistory,
   onPressSearchHistory,
+  clearSearchHistories,
+  removeSearchHistory,
+  searchHistory,
 }: SearchHistoryViewProps) {
   const { styles, theme } = useStyles(stylesheet);
 
@@ -24,6 +27,7 @@ const SearchHistoryView = memo(function SearchHistoryView({
             <Pressable
               key={`${history.keyword}_${index}`}
               onPress={() => onPressSearchHistory(history)}
+              onLongPress={() => removeSearchHistory(history.hash)}
             >
               <Chip
                 text={history.keyword}
@@ -51,7 +55,7 @@ const SearchHistoryView = memo(function SearchHistoryView({
         })}
       </>
     );
-  }, [onPressSearchHistory, searchHistory, styles, theme]);
+  }, [onPressSearchHistory, removeSearchHistory, searchHistory, styles, theme]);
 
   return <View style={styles.container}>{SearchHistoryChips}</View>;
 });

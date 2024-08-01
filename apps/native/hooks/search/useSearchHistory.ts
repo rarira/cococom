@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { storage, STORAGE_KEYS } from '@/libs/mmkv';
-import { SearchHistory } from '@/libs/search';
+import { getSearchHistoryHash, SearchHistory } from '@/libs/search';
 import Util from '@/libs/util';
 
 export function useSearchHistory(maxHistoryLength = 10) {
@@ -22,20 +22,35 @@ export function useSearchHistory(maxHistoryLength = 10) {
           ...searchHistory.map(Util.stringifySearchHistory),
         ]),
       ).slice(0, maxHistoryLength + 1);
+
       setSearchHistory(newSearchHistory.map(history => JSON.parse(history)));
       storage.set(STORAGE_KEYS.SEARCH_HISTORY, JSON.stringify(newSearchHistory));
     },
     [maxHistoryLength, searchHistory],
   );
 
-  const clearSearchHistory = useCallback(() => {
+  const clearSearchHistories = useCallback(() => {
     setSearchHistory([]);
     storage.delete(STORAGE_KEYS.SEARCH_HISTORY);
   }, []);
 
+  const removeSearchHistory = useCallback(
+    (searchHistoryHash: string) => {
+      const newSearchHistory = searchHistory
+        .filter(
+          history => getSearchHistoryHash(history.keyword, history.options) !== searchHistoryHash,
+        )
+        .slice(0, maxHistoryLength);
+      setSearchHistory(newSearchHistory);
+      storage.set(STORAGE_KEYS.SEARCH_HISTORY, JSON.stringify(newSearchHistory));
+    },
+    [maxHistoryLength, searchHistory],
+  );
+
   return {
     searchHistory,
     addSearchHistory,
-    clearSearchHistory,
+    clearSearchHistories,
+    removeSearchHistory,
   };
 }
