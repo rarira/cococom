@@ -18,14 +18,12 @@ import { useUserStore } from '@/store/user';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResult[number];
-  setSearchResult: (searchResult: SearchResult) => void;
 }
 
 function SearchResultListItemCardDetailView({
   item,
   keyword,
   options,
-  setSearchResult,
 }: SearchResultListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
 
@@ -56,15 +54,12 @@ function SearchResultListItemCardDetailView({
           isWishlistedByUser: !item.isWishlistedByUser,
         };
 
-        const newSearchResult = [...old.slice(0, index), updatedItem, ...old.slice(index + 1)];
-        setSearchResult(newSearchResult);
-
-        return newSearchResult;
+        return [...old.slice(0, index), updatedItem, ...old.slice(index + 1)];
       });
 
       return { previousData };
     },
-    [item.isWishlistedByUser, item.totalWishlistCount, queryKey, setSearchResult],
+    [item.isWishlistedByUser, item.totalWishlistCount, queryKey],
   );
 
   return (
