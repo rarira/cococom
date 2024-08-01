@@ -11,9 +11,7 @@ import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { shadowPresets } from '@/libs/shadow';
 
-interface SearchScreenProps {}
-
-export default function SearchScreen({}: SearchScreenProps) {
+export default function SearchScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const { top } = useSafeAreaInsets();
@@ -57,7 +55,11 @@ export default function SearchScreen({}: SearchScreenProps) {
         </View>
       </Shadow>
 
-      {searchResult && <SearchResultList searchResult={searchResult} />}
+      {searchResult && (
+        <View style={styles.resultContainer}>
+          <SearchResultList searchResult={searchResult} />
+        </View>
+      )}
     </View>
   );
 }
@@ -69,7 +71,7 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
     alignItems: 'center',
   }),
-  shadowContainer: { width: '90%' },
+  shadowContainer: { width: '95%' },
   searchBox: {
     width: '100%',
     flexDirection: 'column',
@@ -81,5 +83,9 @@ const stylesheet = createStyleSheet(theme => ({
     borderColor: `${theme.colors.typography}55`,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
+  },
+  resultContainer: {
+    flex: 1,
+    width: '100%',
   },
 }));

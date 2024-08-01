@@ -6,6 +6,7 @@ import { SearchResult } from '@/components/custom/list/search-result';
 import { queryKeys } from '@/libs/react-query';
 import { getSearchHistoryHash, SearchHistory, SearchOptionValue } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 type UseSearchInputParams = {
   addSearchHistory: (searchHistory: SearchHistory) => void;
@@ -16,6 +17,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [keyword, setKeyword] = useState<string>('');
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  const { user } = useUserStore();
 
   const queryClient = useQueryClient();
   const { keyword: keywordParam, options: optionsParam } = useLocalSearchParams<{
@@ -30,9 +33,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
 
       let queryFn;
       if (isItemIdSearch) {
-        queryFn = () => supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch);
+        queryFn = () => supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch, user?.id);
       } else {
-        queryFn = () => supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch);
+        queryFn = () => supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch, user?.id);
       }
       setIsFetching(true);
       try {
@@ -51,7 +54,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
       }
       setIsFetching(false);
     },
-    [addSearchHistory, queryClient],
+    [addSearchHistory, queryClient, user?.id],
   );
 
   // TODO : 테스트 필요

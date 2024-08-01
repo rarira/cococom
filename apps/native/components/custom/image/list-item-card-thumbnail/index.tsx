@@ -4,7 +4,7 @@ import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 interface ListItemCardThumbnailImageProps {
-  product: Tables<'items'>;
+  product: Partial<Tables<'items'>>;
   width: DimensionValue;
   height: DimensionValue;
   style?: StyleProp<ViewStyle>;

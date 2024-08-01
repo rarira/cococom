@@ -36,6 +36,42 @@ export type Database = MergeDeep<
             items: JoinedItems;
           }[];
         };
+        search_items_by_itemid: {
+          Args: {
+            item_id: string;
+            is_on_sale: boolean;
+            user_id: string | null;
+          };
+          Returns: {
+            id: number;
+            itemId: string;
+            itemName: string;
+            bestDiscountRate: number;
+            bestDiscount: number;
+            lowestPrice: number;
+            isOnSaleNow: boolean;
+            totalWishlistCount: number;
+            isWishlistedByUser: boolean;
+          }[];
+        };
+        search_items_by_keyword: {
+          Args: {
+            keyword: string;
+            is_on_sale: boolean;
+            user_id: string | null;
+          };
+          Returns: {
+            id: number;
+            itemId: string;
+            itemName: string;
+            bestDiscountRate: number;
+            bestDiscount: number;
+            lowestPrice: number;
+            isOnSaleNow: boolean;
+            totalWishlistCount: number;
+            isWishlistedByUser: boolean;
+          }[];
+        };
       };
     };
   }
