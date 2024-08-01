@@ -13,7 +13,6 @@ import { shadowPresets } from '@/libs/shadow';
 interface SearchResultListItemCardProps extends SearchQueryParams {
   item: SearchResult[number];
   containerStyle?: StyleProp<ViewStyle>;
-  setSearchResult: (searchResult: SearchResult) => void;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({

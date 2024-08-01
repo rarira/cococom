@@ -1,8 +1,7 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
-import { SearchResult } from '@/components/custom/list/search-result';
 import { queryKeys } from '@/libs/react-query';
 import {
   getSearchHistoryHash,
@@ -18,89 +17,83 @@ type UseSearchInputParams = {
 };
 
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
-  const [options, setOptions] = useState<SearchOptionValue[]>([]);
-  const [keyword, setKeyword] = useState<string>('');
-  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
+  const [keywordToSearch, setKeywordToSearch] = useState<string>('');
 
   const { user } = useUserStore();
 
-  const queryClient = useQueryClient();
   const { keyword: keywordParam, options: optionsParam } = useLocalSearchParams<{
     keyword: string;
     options: SearchOptionValue[];
   }>();
 
-  const fetchResult = useCallback(
-    async ({ keyword, options }: SearchQueryParams) => {
-      const isOnSaleSearch = options.includes('on_sale');
-      const isItemIdSearch = options.includes('item_id');
-
-      let queryFn;
-      if (isItemIdSearch) {
-        queryFn = () => supabase.fullTextSearchItemsByItemId(keyword, isOnSaleSearch, user?.id);
-      } else {
-        queryFn = () => supabase.fullTextSearchItemsByKeyworkd(keyword, isOnSaleSearch, user?.id);
-      }
-      setIsFetching(true);
-      try {
-        const data = await queryClient.fetchQuery({
-          queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-            keyword,
-            isOnSaleSearch,
-            user?.id,
-          ),
-          queryFn,
-        });
-        setSearchResult(data);
-        addSearchHistory({ keyword, options, hash: getSearchHistoryHash({ keyword, options }) });
-      } catch (error) {
-        console.error(error);
-        setSearchResult(null);
-      }
-      setIsFetching(false);
-    },
-    [addSearchHistory, queryClient, user?.id],
-  );
-
   // TODO : 테스트 필요
   useLayoutEffect(() => {
-    if (keywordParam) setKeyword(keywordParam);
-    if (optionsParam) setOptions(optionsParam);
-    if (keywordParam) fetchResult({ options: optionsParam || [], keyword: keywordParam });
-  }, [fetchResult, keywordParam, optionsParam]);
+    if (keywordParam) setKeywordToSearch(keywordParam);
+    if (optionsParam) setOptionsToSearch(optionsParam);
+  }, [keywordParam, optionsParam]);
 
-  const handlePressSearch = useCallback(async () => {
-    fetchResult({ options, keyword });
-  }, [fetchResult, keyword, options]);
+  const isOnSaleSearch = optionsToSearch.includes('on_sale');
+  const isItemIdSearch = optionsToSearch.includes('item_id');
 
-  const handlePressSearchHistory = useCallback(
-    (history: SearchHistory) => {
-      setKeyword(history.keyword);
-      setOptions(history.options);
-      fetchResult({ options: history.options, keyword: history.keyword });
+  const {
+    data: searchResult,
+    isFetching,
+    isSuccess,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+      keywordToSearch,
+      isOnSaleSearch,
+      user?.id,
+    ),
+    queryFn: () => {
+      if (isItemIdSearch) {
+        return supabase.fullTextSearchItemsByItemId(keywordToSearch, isOnSaleSearch, user?.id);
+      }
+      return supabase.fullTextSearchItemsByKeyworkd(keywordToSearch, isOnSaleSearch, user?.id);
     },
-    [fetchResult],
-  );
+    enabled: !!keywordToSearch,
+  });
 
-  // const resetQueryData = useCallback(({keyword, options}: SearchQueryParams => {}, []);
+  useEffect(() => {
+    if (isSuccess) {
+      addSearchHistory({
+        keyword: keywordToSearch,
+        options: optionsToSearch,
+        hash: getSearchHistoryHash({ keyword: keywordToSearch, options: optionsToSearch }),
+      });
+    }
+    // NOTE: 무한 업데이트 방지하기 위해 eslint-disable-next-line 추가
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, keywordToSearch, optionsToSearch]);
+
+  const setSearchQueryParams = useCallback(async ({ keyword, options }: SearchQueryParams) => {
+    setKeywordToSearch(keyword);
+    setOptionsToSearch(options);
+  }, []);
+
+  const handlePressSearchHistory = useCallback((history: SearchHistory) => {
+    setKeywordToSearch(history.keyword);
+    setOptionsToSearch(history.options);
+  }, []);
 
   console.log('useSearchInput', {
-    keyword,
-    options,
+    keywordToSearch,
+    optionsToSearch,
     isFetching,
+    isSuccess,
     searchResult,
   });
 
   return {
-    options,
-    setOptions,
-    keyword,
-    setKeyword,
-    handlePressSearch,
+    keywordToSearch,
+    optionsToSearch,
+    setKeywordToSearch,
+    setOptionsToSearch,
+    setSearchQueryParams,
     isFetching,
     handlePressSearchHistory,
     searchResult,
-    setSearchResult,
   };
 }
