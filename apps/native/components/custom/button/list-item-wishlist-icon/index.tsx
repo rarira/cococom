@@ -58,8 +58,6 @@ function ListItemWishlistIconButton<
     if (!user) {
       setCallbackAfterSignIn(user => {
         requestAnimationFrame(() => {
-          console.log('call wishlistMutation.mutate after signin', item.id, user.id);
-
           wishlistMutation.mutate({
             itemId: item.id,
             userId: user.id,
@@ -70,7 +68,6 @@ function ListItemWishlistIconButton<
       setNeedAuthDialogVisible(true);
       return;
     }
-    console.log('call wishlistMutation.mutate', item.id, user.id);
 
     wishlistMutation.mutate({
       itemId: item.id,

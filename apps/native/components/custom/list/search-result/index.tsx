@@ -13,7 +13,6 @@ export type SearchResult = Database['public']['Functions']['search_items_by_keyw
 
 interface SearchResultListProps extends SearchQueryParams {
   searchResult: SearchResult;
-  setSearchResult: (searchResult: SearchResult) => void;
 }
 
 const SearchResultList = memo(function SearchResultList({

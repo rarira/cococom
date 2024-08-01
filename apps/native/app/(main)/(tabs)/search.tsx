@@ -1,5 +1,5 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
@@ -10,9 +10,12 @@ import SearchTextInput from '@/components/custom/text-input/search';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
+import { SearchOptionValue } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 
 export default function SearchScreen() {
+  const [options, setOptions] = useState<SearchOptionValue[]>([]);
+
   const { styles, theme } = useStyles(stylesheet);
 
   const { top } = useSafeAreaInsets();
@@ -20,33 +23,40 @@ export default function SearchScreen() {
   const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
 
   const {
-    options,
-    setOptions,
     isFetching,
-    keyword,
-    setKeyword,
-    handlePressSearch,
+    keywordToSearch,
+    optionsToSearch,
+    setSearchQueryParams,
     handlePressSearchHistory,
     searchResult,
-    setSearchResult,
   } = useSearchInput({ addSearchHistory });
+
+  useLayoutEffect(() => {
+    if (optionsToSearch) setOptions(optionsToSearch);
+  }, [optionsToSearch]);
 
   const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
   const tabBarHeight = useBottomTabBarHeight();
+
+  const handlePressSearch = useCallback(
+    (keyword: string) => {
+      setSearchQueryParams({ keyword, options });
+    },
+    [options, setSearchQueryParams],
+  );
 
   return (
     <View style={styles.container(top, tabBarHeight)}>
       <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
         <View style={styles.searchBox}>
           <SearchTextInput
-            value={keyword}
-            onChangeText={setKeyword}
             placeholder={
               isItemIdSearch ? '상품번호를 숫자로만 입력하세요' : '상품명, 브랜드를 입력하세요'
             }
-            onPressSearch={handlePressSearch}
             disabled={isFetching}
             autoFocus
+            onPressSearch={handlePressSearch}
+            keywordToSearch={keywordToSearch}
           />
           <SearchAccessoriesView
             checkboxGroupProps={{ value: options, onChange: setOptions as any }}
@@ -57,14 +67,12 @@ export default function SearchScreen() {
           />
         </View>
       </Shadow>
-
       {searchResult && (
         <View style={styles.resultContainer}>
           <SearchResultList
             searchResult={searchResult}
-            keyword={keyword}
-            options={options}
-            setSearchResult={setSearchResult}
+            keyword={keywordToSearch}
+            options={optionsToSearch}
           />
         </View>
       )}
