@@ -13,6 +13,21 @@ export type JoinedItems = Tables<'items'> & {
   totalWishlistCount: number;
   isWishlistedByUser: boolean;
 };
+
+export type InfiniteSearchResultPages = {
+  totalRecords: number | null;
+  items: {
+    id: number;
+    itemId: string;
+    itemName: string;
+    bestDiscountRate: number;
+    bestDiscount: number;
+    lowestPrice: number;
+    isOnSaleNow: boolean;
+    totalWishlistCount: number;
+    isWishlistedByUser: boolean;
+  }[];
+};
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
   DatabaseGenerated,
@@ -35,6 +50,30 @@ export type Database = MergeDeep<
             discount: number;
             items: JoinedItems;
           }[];
+        };
+        search_items_by_itemid: {
+          Args: {
+            item_id: string;
+            is_on_sale: boolean;
+            user_id: string | null;
+            page: number;
+            page_size: number;
+            order_field: string;
+            order_direction: string;
+          };
+          Returns: InfiniteSearchResultPages;
+        };
+        search_items_by_keyword: {
+          Args: {
+            keyword: string;
+            is_on_sale: boolean;
+            user_id: string | null;
+            page: number;
+            page_size: number;
+            order_field: string;
+            order_direction: string;
+          };
+          Returns: InfiniteSearchResultPages;
         };
       };
     };

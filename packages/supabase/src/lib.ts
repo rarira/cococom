@@ -26,6 +26,9 @@ export type InsertCategory = Database['public']['Tables']['categories']['Insert'
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
+export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
+export type SearchItemSortDirection = 'ASC' | 'DESC';
+
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
 
@@ -142,6 +145,7 @@ export class Supabase {
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
+    console.log('call createWishlist', newWishlist);
     const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
 
     if (error) {
@@ -184,6 +188,60 @@ export class Supabase {
 
     if (error) {
       console.log('fetchLatestHistory error', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fullTextSearchItemsByKeyword(
+    keyword: string,
+    isOnsale: boolean,
+    userId?: string,
+    page = 1,
+    pageSize = 20,
+    sortField: SearchItemSortField = 'itemName',
+    sortDirection: SearchItemSortDirection = 'ASC',
+  ) {
+    const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
+      keyword,
+      is_on_sale: isOnsale,
+      user_id: userId ?? null,
+      page,
+      page_size: pageSize,
+      order_field: sortField,
+      order_direction: sortDirection,
+    });
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fullTextSearchItemsByItemId(
+    itemId: string,
+    isOnsale: boolean,
+    userId?: string,
+    page = 1,
+    pageSize = 20,
+    sortField: SearchItemSortField = 'itemName',
+    sortDirection: SearchItemSortDirection = 'ASC',
+  ) {
+    const { data, error } = await this.supabaseClient.rpc('search_items_by_itemid', {
+      item_id: itemId,
+      is_on_sale: isOnsale,
+      user_id: userId ?? null,
+      page,
+      page_size: pageSize,
+      order_field: sortField,
+      order_direction: sortDirection,
+    });
+
+    if (error) {
+      console.error(error);
       throw error;
     }
 

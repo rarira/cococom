@@ -1,34 +1,38 @@
-import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { InsertWishlist } from '@cococom/supabase/libs';
+import { JoinedItems } from '@cococom/supabase/types';
+import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { ListItemCardProps } from '@/components/custom/card/list-item';
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
 
-interface ListItemWishlistIconButtonProps {
-  item: ListItemCardProps['discount']['items'];
+interface ListItemWishlistIconButtonProps<
+  T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
+> {
+  item: T;
+  portalHostName: PortalHostNames;
+  queryKey: QueryKey;
+  onMutate?: (
+    queryClient: QueryClient,
+  ) => (
+    newWishlist: InsertWishlist,
+  ) => Promise<{ previousData: T[] | { pages: T[]; [key: string]: unknown } }>;
 }
 
-function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
+function ListItemWishlistIconButton<
+  T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
+>({ item, portalHostName, queryKey, onMutate }: ListItemWishlistIconButtonProps<T>) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user, setCallbackAfterSignIn } = useUserStore();
 
   const queryClient = useQueryClient();
 
-  const { categorySector: categorySectorParam } = useLocalSearchParams<{
-    categorySector: CategorySectors;
-  }>();
-
-  const queryKey = queryKeys.discounts.currentList(user?.id, categorySectorParam);
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
@@ -36,32 +40,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       }
       return supabase.createWishlist(newWishlist);
     },
-    onMutate: async newWishlist => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(
-        queryKey,
-      ) as unknown as ListItemCardProps['discount'][];
-
-      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
-
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (discountIndex === -1) return old;
-        const updatedDiscount = {
-          ...old[discountIndex],
-          items: {
-            ...old[discountIndex].items,
-            totalWishlistCount: item.isWishlistedByUser
-              ? item.totalWishlistCount - 1
-              : item.totalWishlistCount + 1,
-            isWishlistedByUser: !item.isWishlistedByUser,
-          },
-        };
-
-        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
-      });
-
-      return { previousData };
-    },
+    onMutate: onMutate ? onMutate(queryClient) : undefined,
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
     },
@@ -88,6 +67,7 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       setNeedAuthDialogVisible(true);
       return;
     }
+
     wishlistMutation.mutate({
       itemId: item.id,
       userId: user.id,
@@ -99,12 +79,12 @@ function ListItemWishlistIconButton({ item }: ListItemWishlistIconButtonProps) {
       <IconButton
         text={item.totalWishlistCount.toString()}
         textStyle={styles.text}
-        iconProps={iconProps}
+        iconProps={{ font: { type: 'MaterialIcon', name: iconProps.name }, color: iconProps.color }}
         onPress={handlePress}
       />
       {needAuthDialogVisible && (
         <NeedAuthDialog
-          portalHostName={PortalHostNames.HOME}
+          portalHostName={portalHostName}
           visible={needAuthDialogVisible}
           setVisible={setNeedAuthDialogVisible}
           body="관심 상품 등록을 하시면 편리하게 쇼핑하실 수 있습니다. 로그인이 필요합니다"

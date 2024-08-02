@@ -150,7 +150,10 @@ async function updateDiscounts(date?: string) {
 
       if (!response?.data) throw new Error('Item not found');
 
-      const update: Partial<Tables<'items'>> = {};
+      const update: Partial<Tables<'items'>> = {
+        bestDiscountRate: newlyAddedDiscount.discountRate,
+        bestDiscount: newlyAddedDiscount.discount,
+      };
 
       if (
         newlyAddedDiscount.discountRate &&
@@ -183,13 +186,11 @@ async function updateDiscounts(date?: string) {
 }
 
 async function createHistory() {
-  const result = await supabase.insertHistory({
+  await supabase.insertHistory({
     new_item_count: newItems.length,
     added_discount_count: newDiscountsCount,
     no_images: newItemsWithNoImage,
   });
-
-  console.log(result);
 }
 
 (async () => {
@@ -215,6 +216,6 @@ async function createHistory() {
   //   await updateDiscounts(date);
   // }
   // NOTE: 루틴
-  // await updateDiscounts();
-  // await createHistory();
+  await updateDiscounts();
+  await createHistory();
 })();

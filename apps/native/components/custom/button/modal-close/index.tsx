@@ -1,9 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { memo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Button from '@/components/ui/button';
+import Icon from '@/components/ui/icon';
 
 interface ModalCloseButtonProps {
   onPress: () => void;
@@ -18,7 +18,11 @@ const ModalCloseButton = memo(function ModalCloseButton({ onPress, show }: Modal
   return (
     <View style={styles.container}>
       <Button onPress={onPress}>
-        <MaterialIcons name="close" size={theme.fontSize.lg} color={theme.colors.typography} />
+        <Icon
+          font={{ type: 'MaterialIcon', name: 'close' }}
+          size={theme.fontSize.lg}
+          color={theme.colors.typography}
+        />
       </Button>
     </View>
   );

@@ -1,9 +1,10 @@
 import { CategorySectors } from '@cococom/supabase/libs';
 import { Database, JoinedItems } from '@cococom/supabase/types';
 
-import { ListItemCardProps } from '@/components/custom/card/list-item';
+import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 
 import { queryKeys } from './react-query';
+import { SearchItemSortOption } from './search';
 
 type DiscountSortOption = {
   field:
@@ -63,25 +64,27 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
 
 export function sortDiscountsByCategorySector(
   sortKey: keyof typeof DISCOUNT_SORT_OPTIONS,
-  data: ListItemCardProps['discount'][],
+  data: DiscountListItemCardProps['discount'][],
 ) {
-  return [...data].sort((a: ListItemCardProps['discount'], b: ListItemCardProps['discount']) => {
-    const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
-    const [prop1, prop2] = sortOption.field.split('.');
+  return [...data].sort(
+    (a: DiscountListItemCardProps['discount'], b: DiscountListItemCardProps['discount']) => {
+      const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
+      const [prop1, prop2] = sortOption.field.split('.');
 
-    const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
-    const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
+      const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
+      const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
 
-    if (aValue === bValue) {
-      return 0;
-    }
+      if (aValue === bValue) {
+        return 0;
+      }
 
-    if (sortOption.orderBy === 'asc') {
-      return aValue > bValue ? 1 : -1;
-    }
+      if (sortOption.orderBy === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      }
 
-    return aValue < bValue ? 1 : -1;
-  });
+      return aValue < bValue ? 1 : -1;
+    },
+  );
 }
 
 export function updateDiscountsByCategorySectorCache({
@@ -97,7 +100,40 @@ export function updateDiscountsByCategorySectorCache({
 }) {
   const queryKey = queryKeys.discounts.currentList(userId, categorySector);
 
-  queryClient.setQueryData(queryKey, (prevData: ListItemCardProps['discount'][]) => {
+  queryClient.setQueryData(queryKey, (prevData: DiscountListItemCardProps['discount'][]) => {
     return sortDiscountsByCategorySector(sortKey, prevData);
   });
 }
+
+export const ITEM_SORT_OPTIONS: Record<string, SearchItemSortOption> = {
+  itemNameAsc: {
+    field: 'itemName',
+    direction: 'ASC',
+    text: '상품명 A-Z순',
+  },
+  itemNameDesc: {
+    field: 'itemName',
+    direction: 'DESC',
+    text: '상품명 Z-A순',
+  },
+  itemIdDesc: {
+    field: 'itemId',
+    direction: 'DESC',
+    text: '상품번호 높은 순',
+  },
+  itemIdAsc: {
+    field: 'itemId',
+    direction: 'ASC',
+    text: '상품번호 낮은 순',
+  },
+  biggest: {
+    field: 'bestDiscountRate',
+    direction: 'DESC',
+    text: '역대 최고 할인율 높은 순',
+  },
+  cheapset: {
+    field: 'lowestPrice',
+    direction: 'ASC',
+    text: '역대 최저가 낮은 순',
+  },
+};

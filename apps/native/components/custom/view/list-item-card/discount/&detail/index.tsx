@@ -1,21 +1,69 @@
+import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
+import { JoinedItems } from '@cococom/supabase/types';
+import { QueryClient } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import { ListItemCardProps } from '@/components/custom/card/list-item';
+import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
 import DiscountRateText from '@/components/custom/text/discount-rate';
 import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
+import { PortalHostNames } from '@/constants';
+import { queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
+import { useUserStore } from '@/store/user';
 
-interface ListItemCardDetailViewProps extends Pick<ListItemCardProps, 'discount'> {}
+interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
 
-function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
+function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
+  const { user } = useUserStore();
 
   const isWholeProduct = discount.discountPrice === 0;
+
+  const { categorySector: categorySectorParam } = useLocalSearchParams<{
+    categorySector: CategorySectors;
+  }>();
+
+  const queryKey = useMemo(
+    () => queryKeys.discounts.currentList(user?.id, categorySectorParam),
+    [user?.id, categorySectorParam],
+  );
+
+  const handleMutate = useCallback(
+    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey) as unknown as JoinedItems[];
+
+      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+
+      const item = discount.items;
+
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (discountIndex === -1) return old;
+        const updatedDiscount = {
+          ...old[discountIndex],
+          items: {
+            ...old[discountIndex].items,
+            totalWishlistCount: item.isWishlistedByUser
+              ? item.totalWishlistCount - 1
+              : item.totalWishlistCount + 1,
+            isWishlistedByUser: !item.isWishlistedByUser,
+          },
+        };
+
+        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
+      });
+
+      return { previousData };
+    },
+    [discount.items, queryKey],
+  );
 
   return (
     <View style={styles.container}>
@@ -43,7 +91,12 @@ function ListItemCardDetailView({ discount }: ListItemCardDetailViewProps) {
         </View>
         <View style={styles.actionButtonContainer}>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-          <ListItemWishlistIconButton item={discount.items} />
+          <ListItemWishlistIconButton<JoinedItems>
+            item={discount.items}
+            portalHostName={PortalHostNames.HOME}
+            queryKey={queryKey}
+            onMutate={handleMutate}
+          />
         </View>
       </View>
     </View>
@@ -63,8 +116,8 @@ const stylesheets = createStyleSheet(theme => ({
   itemNameText: {
     flex: 1,
     fontSize: theme.fontSize.sm,
-    lineHeight: 16,
-    fontWeight: 'semibold',
+    lineHeight: theme.fontSize.sm * 1.5,
+    fontWeight: 'bold',
   },
   priceContainer: {
     width: '100%',
@@ -93,4 +146,4 @@ const stylesheets = createStyleSheet(theme => ({
   },
 }));
 
-export default ListItemCardDetailView;
+export default DiscountListItemCardDetailView;
