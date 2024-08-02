@@ -11,13 +11,14 @@ import { shadowPresets } from '@/libs/shadow';
 import { DiscountsByCategorySector } from '../../list/category-sector';
 
 interface CategorySectorCardProps {
-  discountInfo: Awaited<DiscountsByCategorySector>[number];
+  discountInfo: Awaited<DiscountsByCategorySector>[number] | null;
 }
 
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  console.log(discountInfo);
+  if (discountInfo === null) return <View style={styles.cardContainer} />;
+
   return (
     <Link
       href={`/sales?categorySector=${discountInfo.categorySector}`}

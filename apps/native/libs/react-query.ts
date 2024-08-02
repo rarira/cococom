@@ -1,4 +1,8 @@
-import { CategorySectors } from '@cococom/supabase/libs';
+import {
+  CategorySectors,
+  SearchItemSortDirection,
+  SearchItemSortField,
+} from '@cococom/supabase/libs';
 
 export const queryKeys = {
   discounts: {
@@ -13,5 +17,21 @@ export const queryKeys = {
   },
   histories: {
     latest: ['histories', 'latest'],
+  },
+  search: {
+    keyword: (
+      keyword: string,
+      isOnSaleSearch: boolean,
+      sortField: SearchItemSortField,
+      sortDirecntion: SearchItemSortDirection,
+      userId?: string,
+    ) => ['search', { keyword, isOnSaleSearch, userId, sortField, sortDirecntion }],
+    itemId: (
+      itemId: string,
+      isOnSaleSearch: boolean,
+      sortField: SearchItemSortField,
+      sortDirecntion: SearchItemSortDirection,
+      userId?: string,
+    ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion }],
   },
 };

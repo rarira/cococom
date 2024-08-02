@@ -6,7 +6,7 @@ import CategorySectorCard from '@/components/custom/card/category-sector';
 import { DiscountsByCategorySector } from '@/components/custom/list/category-sector';
 
 interface CategorySectorGroupViewProps {
-  group: Awaited<DiscountsByCategorySector>[number][];
+  group: (Awaited<DiscountsByCategorySector>[number] | null)[];
 }
 
 const CategorySectorGroupView = memo(function CategorySectorGroupView({
@@ -17,9 +17,14 @@ const CategorySectorGroupView = memo(function CategorySectorGroupView({
   const row = useMemo(
     () => (
       <>
-        {group.map(disountInfo => (
-          <CategorySectorCard discountInfo={disountInfo} key={disountInfo.itemId} />
-        ))}
+        {group.map((disountInfo, index) => {
+          return (
+            <CategorySectorCard
+              discountInfo={disountInfo}
+              key={disountInfo?.itemId || `null-${index}`}
+            />
+          );
+        })}
       </>
     ),
     [group],

@@ -242,6 +242,52 @@ export type Database = {
         }
         Returns: Json
       }
+      search_items_by_itemid:
+        | {
+            Args: {
+              item_id: string
+              is_on_sale: boolean
+              user_id: string
+              page: number
+              page_size: number
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              item_id: string
+              is_on_sale: boolean
+              user_id: string
+              page: number
+              page_size: number
+              order_field: string
+              order_direction: string
+            }
+            Returns: Json
+          }
+      search_items_by_keyword:
+        | {
+            Args: {
+              keyword: string
+              is_on_sale: boolean
+              user_id: string
+              page: number
+              page_size: number
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              keyword: string
+              is_on_sale: boolean
+              user_id: string
+              page: number
+              page_size: number
+              order_field: string
+              order_direction: string
+            }
+            Returns: Json
+          }
     }
     Enums: {
       CategorySectors:

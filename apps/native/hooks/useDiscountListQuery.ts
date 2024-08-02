@@ -5,7 +5,7 @@ import { useLayoutEffect } from 'react';
 
 import { ListItemCardProps } from '@/components/custom/card/list-item';
 import { queryKeys } from '@/libs/react-query';
-import { DISCOUNT_SORT_OPTIONS, updateDiscountsByCategorySectorCache } from '@/libs/sorts';
+import { DISCOUNT_SORT_OPTIONS, updateDiscountsByCategorySectorCache } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 

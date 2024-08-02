@@ -4,21 +4,22 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
-import { ListItemCardProps } from '@/components/custom/card/list-item';
+import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import Chip from '@/components/ui/chip';
 import { 할인마감임박잔여일수 } from '@/constants/numbers';
 
-interface ListItemCardChipsViewProps extends Pick<ListItemCardProps, 'discount'> {}
+interface ListItemCardChipsViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
 
 const chips = [
   {
     text: '첫할인',
-    checkFn: (discount: ListItemCardProps['discount']) => discount.items.discountsLength === 1,
+    checkFn: (discount: DiscountListItemCardProps['discount']) =>
+      discount.items.discountsLength === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
     text: '최저가',
-    checkFn: (discount: ListItemCardProps['discount']) =>
+    checkFn: (discount: DiscountListItemCardProps['discount']) =>
       discount.discountPrice !== 0 &&
       discount.items.discountsLength > 1 &&
       discount.discountPrice === discount.items?.lowestPrice,
@@ -26,7 +27,7 @@ const chips = [
   },
   {
     text: '최대할인',
-    checkFn: (discount: ListItemCardProps['discount']) =>
+    checkFn: (discount: DiscountListItemCardProps['discount']) =>
       discount.items.discountsLength > 1 &&
       (discount.discountPrice === 0
         ? discount.discount === discount.items?.bestDiscount
@@ -35,7 +36,7 @@ const chips = [
   },
   {
     text: '곧마감',
-    checkFn: (discount: ListItemCardProps['discount']) =>
+    checkFn: (discount: DiscountListItemCardProps['discount']) =>
       isAfter(add(new Date(), { days: 할인마감임박잔여일수 }), new Date(discount.endDate)),
     color: (theme: UnistylesTheme) => theme.colors.alert,
   },
