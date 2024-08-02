@@ -14,5 +14,6 @@ export const shadowPresets = {
     distance: theme.spacing.sm,
     sides: { start: false, top: false, bottom: true, end: false },
     corners: { topStart: false, topEnd: false, bottomStart: false, bottomEnd: false },
+    stretch: true,
   }),
 };

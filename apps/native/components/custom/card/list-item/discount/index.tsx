@@ -23,8 +23,8 @@ function DiscountListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
-      <Pressable onPress={() => console.log('Pressed')}>
+    <Pressable onPress={() => console.log('Pressed')}>
+      <Shadow {...shadowPresets.card(theme)} stretch>
         <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
           <View style={styles.itemContainer(numColumns === 1)}>
             <ProductCardThumbnailImage
@@ -36,8 +36,8 @@ function DiscountListItemCard({
             <DiscountListItemCardDetailView discount={discount} />
           </View>
         </Card>
-      </Pressable>
-    </Shadow>
+      </Shadow>
+    </Pressable>
   );
 }
 
@@ -46,7 +46,6 @@ const stylesheet = createStyleSheet(theme => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
   }),
-  shadowContainer: { flex: 1, width: '100%' },
   itemContainer: (row: boolean) => ({
     flex: 1,
     flexDirection: row ? 'row' : 'column',
