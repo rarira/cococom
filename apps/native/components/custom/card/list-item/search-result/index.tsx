@@ -4,14 +4,13 @@ import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
-import { SearchResult } from '@/components/custom/list/search-result';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
 import Card from '@/components/ui/card';
-import { SearchQueryParams } from '@/libs/search';
+import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 
 interface SearchResultListItemCardProps extends SearchQueryParams {
-  item: SearchResult[number];
+  item: SearchResultToRender[number];
   containerStyle?: StyleProp<ViewStyle>;
 }
 

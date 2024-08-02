@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { InfiniteSearchResultPages } from '@cococom/supabase/types';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 import { queryKeys } from '@/libs/react-query';
 import {
@@ -8,6 +9,7 @@ import {
   SearchHistory,
   SearchOptionValue,
   SearchQueryParams,
+  SearchResultToRender,
 } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -16,9 +18,12 @@ type UseSearchInputParams = {
   addSearchHistory: (searchHistory: SearchHistory) => void;
 };
 
+const PAGE_SIZE = 10;
+
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
+  // const [totalResults, setTotalResults] = useState<number | null>(null);
 
   const { user } = useUserStore();
 
@@ -36,25 +41,38 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const isOnSaleSearch = optionsToSearch.includes('on_sale');
   const isItemIdSearch = optionsToSearch.includes('item_id');
 
-  const {
-    data: searchResult,
-    isFetching,
-    isSuccess,
-    isError,
-  } = useQuery({
-    queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-      keywordToSearch,
-      isOnSaleSearch,
-      user?.id,
-    ),
-    queryFn: () => {
-      if (isItemIdSearch) {
-        return supabase.fullTextSearchItemsByItemId(keywordToSearch, isOnSaleSearch, user?.id);
-      }
-      return supabase.fullTextSearchItemsByKeyworkd(keywordToSearch, isOnSaleSearch, user?.id);
-    },
-    enabled: !!keywordToSearch,
-  });
+  const { data, isFetching, isSuccess, isError, fetchNextPage, hasNextPage, fetchPreviousPage } =
+    useInfiniteQuery<InfiniteSearchResultPages>({
+      queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+        keywordToSearch,
+        isOnSaleSearch,
+        user?.id,
+      ),
+      queryFn: ({ pageParam }) => {
+        if (isItemIdSearch) {
+          return supabase.fullTextSearchItemsByItemId(
+            keywordToSearch,
+            isOnSaleSearch,
+            user?.id,
+            pageParam as number,
+            PAGE_SIZE,
+          );
+        }
+        return supabase.fullTextSearchItemsByKeyword(
+          keywordToSearch,
+          isOnSaleSearch,
+          user?.id,
+          pageParam as number,
+          PAGE_SIZE,
+        );
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.items.length < PAGE_SIZE) return undefined;
+        return allPages.length + 1;
+      },
+      enabled: !!keywordToSearch,
+    });
 
   useEffect(() => {
     if (isSuccess) {
@@ -78,13 +96,28 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     setOptionsToSearch(history.options);
   }, []);
 
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetching) fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isFetching]);
+
   console.log('useSearchInput', {
     keywordToSearch,
     optionsToSearch,
     isFetching,
     isSuccess,
-    searchResult,
+    pages: data?.pages,
+    hasNextPage,
+    pagaParams: data?.pageParams,
+    totalResults: data?.pages[0].totalRecords,
   });
+
+  const searchResult: SearchResultToRender = useMemo(
+    () =>
+      data?.pages
+        .map((page, index) => page.items.map(item => ({ ...item, pageIndex: index })))
+        .flat() ?? [],
+    [data?.pages],
+  );
 
   return {
     keywordToSearch,
@@ -95,5 +128,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     isFetching,
     handlePressSearchHistory,
     searchResult,
+    hasNextPage,
+    handleEndReached,
+    totalResults: data?.pages[0].totalRecords ?? null,
   };
 }
