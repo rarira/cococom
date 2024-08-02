@@ -29,6 +29,8 @@ export default function SearchScreen() {
     setSearchQueryParams,
     handlePressSearchHistory,
     searchResult,
+    hasNextPage,
+    handleEndReached,
   } = useSearchInput({ addSearchHistory });
 
   useLayoutEffect(() => {
@@ -71,8 +73,9 @@ export default function SearchScreen() {
         <View style={styles.resultContainer}>
           <SearchResultList
             searchResult={searchResult}
-            keyword={keywordToSearch}
-            options={optionsToSearch}
+            searchQueryParams={{ keyword: keywordToSearch, options: optionsToSearch }}
+            // hasNextPage={hasNextPage}
+            onEndReached={handleEndReached}
           />
         </View>
       )}

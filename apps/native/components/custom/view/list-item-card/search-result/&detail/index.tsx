@@ -13,11 +13,11 @@ import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
-import { SearchQueryParams } from '@/libs/search';
+import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { useUserStore } from '@/store/user';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
-  item: SearchResult[number];
+  item: SearchResultToRender[number];
 }
 
 function SearchResultListItemCardDetailView({
@@ -40,26 +40,45 @@ function SearchResultListItemCardDetailView({
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
       await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(queryKey) as unknown as SearchResult;
+      const previousData = queryClient.getQueryData(
+        queryKey,
+      ) as unknown as InfiniteSearchResultData;
 
-      const index = previousData?.findIndex(item => item.id === newWishlist.itemId);
+      const itemIndex = previousData.pages[item.pageIndex].items.findIndex(
+        item => item.id === newWishlist.itemId,
+      );
 
-      queryClient.setQueryData(queryKey, (old: SearchResult) => {
-        if (index === -1) return old;
+      queryClient.setQueryData(queryKey, (old: InfiniteSearchResultData) => {
+        if (itemIndex === -1) return old;
         const updatedItem = {
-          ...old[index],
+          ...old.pages[item.pageIndex].items[itemIndex],
           totalWishlistCount: item.isWishlistedByUser
             ? item.totalWishlistCount - 1
             : item.totalWishlistCount + 1,
           isWishlistedByUser: !item.isWishlistedByUser,
         };
 
-        return [...old.slice(0, index), updatedItem, ...old.slice(index + 1)];
+        const updatedPage = {
+          totalRecords: old.pages[item.pageIndex].totalRecords,
+          items: [
+            ...old.pages[item.pageIndex].items.slice(0, itemIndex),
+            updatedItem,
+            ...old.pages[item.pageIndex].items.slice(itemIndex + 1),
+          ],
+        };
+        return {
+          pages: [
+            ...old.pages.slice(0, item.pageIndex),
+            updatedPage,
+            ...old.pages.slice(item.pageIndex + 1),
+          ],
+          pageParams: old.pageParams,
+        };
       });
 
       return { previousData };
     },
-    [item.isWishlistedByUser, item.totalWishlistCount, queryKey],
+    [item.isWishlistedByUser, item.pageIndex, item.totalWishlistCount, queryKey],
   );
 
   return (
