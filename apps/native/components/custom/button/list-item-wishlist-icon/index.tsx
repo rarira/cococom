@@ -42,9 +42,6 @@ function ListItemWishlistIconButton<
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
   });
 
   const iconProps = useMemo(() => {

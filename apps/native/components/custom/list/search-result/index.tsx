@@ -1,31 +1,30 @@
-import { Database } from '@cococom/supabase/types';
 import { PortalHost } from '@gorhom/portal';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
 import { PortalHostNames } from '@/constants';
-import { SearchQueryParams } from '@/libs/search';
+import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 
-export type SearchResult = Database['public']['Functions']['search_items_by_keyword']['Returns'];
-
-interface SearchResultListProps extends SearchQueryParams {
-  searchResult: SearchResult;
+interface SearchResultListProps extends Partial<FlashListProps<SearchResult[number]>> {
+  searchResult: SearchResultToRender;
+  searchQueryParams: SearchQueryParams;
 }
 
 const SearchResultList = memo(function SearchResultList({
   searchResult,
+  searchQueryParams,
   ...restProps
 }: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
 
   const renderItem = useCallback(
-    ({ item }: { item: SearchResult[number]; index: number }) => {
-      return <SearchResultListItemCard item={item} key={item.id} {...restProps} />;
+    ({ item }: { item: SearchResultToRender[number]; index: number }) => {
+      return <SearchResultListItemCard item={item} key={item.id} {...searchQueryParams} />;
     },
-    [restProps],
+    [searchQueryParams],
   );
 
   return (
@@ -37,6 +36,8 @@ const SearchResultList = memo(function SearchResultList({
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
         contentContainerStyle={styles.flashListContainer}
+        onEndReachedThreshold={0.5}
+        {...restProps}
       />
       <PortalHost name={PortalHostNames.SEARCH} />
     </>

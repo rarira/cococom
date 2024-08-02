@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
 interface ListItemCardThumbnailImageProps {
-  product: Partial<Tables<'items'>>;
+  product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;
   height: DimensionValue;
   style?: StyleProp<ViewStyle>;
