@@ -8,10 +8,12 @@ import SearchResultListItemCardDetailView from '@/components/custom/view/list-it
 import Card from '@/components/ui/card';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
+import { ITEM_SORT_OPTIONS } from '@/libs/sort';
 
 interface SearchResultListItemCardProps extends SearchQueryParams {
   item: SearchResultToRender[number];
   containerStyle?: StyleProp<ViewStyle>;
+  sortOption: keyof typeof ITEM_SORT_OPTIONS;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({

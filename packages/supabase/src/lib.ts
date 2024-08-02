@@ -26,6 +26,9 @@ export type InsertCategory = Database['public']['Tables']['categories']['Insert'
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
+export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
+export type SearchItemSortDirection = 'ASC' | 'DESC';
+
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
 
@@ -197,6 +200,8 @@ export class Supabase {
     userId?: string,
     page = 1,
     pageSize = 20,
+    sortField: SearchItemSortField = 'itemName',
+    sortDirection: SearchItemSortDirection = 'ASC',
   ) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
       keyword,
@@ -204,6 +209,8 @@ export class Supabase {
       user_id: userId ?? null,
       page,
       page_size: pageSize,
+      order_field: sortField,
+      order_direction: sortDirection,
     });
 
     if (error) {
@@ -220,6 +227,8 @@ export class Supabase {
     userId?: string,
     page = 1,
     pageSize = 20,
+    sortField: SearchItemSortField = 'itemName',
+    sortDirection: SearchItemSortDirection = 'ASC',
   ) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_itemid', {
       item_id: itemId,
@@ -227,6 +236,8 @@ export class Supabase {
       user_id: userId ?? null,
       page,
       page_size: pageSize,
+      order_field: sortField,
+      order_direction: sortDirection,
     });
 
     if (error) {
