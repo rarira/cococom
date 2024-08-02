@@ -1,30 +1,20 @@
 import { CategorySectors } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { router, useLocalSearchParams, useNavigation } from 'expo-router';
-import React, {
-  ComponentType,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import SalesSortBottomSheet from '@/components/custom/bottom-sheet/sales-sort';
+import DiscountSortBottomSheet from '@/components/custom/bottom-sheet/discount-sort';
 import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
-import { useHideTabBar } from '@/hooks/useHideTabBar';
-import { useSalesSort } from '@/hooks/useSalesSort';
+import { useDiscountsSort } from '@/hooks/useDiscountsSort';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
-  useHideTabBar();
-
   const { categorySectorsArray } = useCategorySectorsStore();
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
     categorySector: CategorySectors;
@@ -49,29 +39,23 @@ export default function SalesScreen() {
 
   const layout = useWindowDimensions();
 
-  const navigation = useNavigation();
-
   const { bottom: bottomInset } = useSafeAreaInsets();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { sort, handleSortChange } = useSalesSort(_sort => bottomSheetModalRef.current?.dismiss());
+  const { sort, handleSortChange } = useDiscountsSort(_sort =>
+    bottomSheetModalRef.current?.dismiss(),
+  );
 
   const renderHeaderRightButton = useCallback(
     () => (
       <HeaderRightButton
-        iconProps={{ name: 'sort' }}
+        iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
         onPress={() => bottomSheetModalRef.current?.present()}
       />
     ),
     [],
   );
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: renderHeaderRightButton,
-    });
-  }, [navigation, renderHeaderRightButton]);
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
@@ -111,7 +95,7 @@ export default function SalesScreen() {
           bounces
           gap={theme.spacing.md}
           // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset을 requestAnimationFrame적용 필요
-          contentContainerStyle={{ width: undefined }}
+          contentContainerStyle={styles.tabBarContentContainer}
         />
       );
     },
@@ -128,6 +112,7 @@ export default function SalesScreen() {
 
   return (
     <View style={styles.container(bottomInset)}>
+      <Stack.Screen options={{ headerRight: renderHeaderRightButton }} />
       <TabView
         lazy
         navigationState={{ index, routes }}
@@ -137,7 +122,7 @@ export default function SalesScreen() {
         style={styles.tabViewContainer}
         renderTabBar={renderTabBar}
       />
-      <SalesSortBottomSheet
+      <DiscountSortBottomSheet
         ref={bottomSheetModalRef}
         currentSort={sort}
         onSortChange={handleSortChange}
@@ -164,6 +149,10 @@ const stylesheet = createStyleSheet(theme => ({
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
     backgroundColor: theme.colors.background,
+    marginHorizontal: theme.spacing.md,
+  },
+  tabBarContentContainer: {
+    width: undefined,
   },
   tabBarIndicatorContainer: {
     display: 'none',

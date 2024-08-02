@@ -6,23 +6,23 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
+import { ITEM_SORT_OPTIONS } from '@/libs/sort';
 
-interface SalesSortBottomSheetProps {
-  currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
-  onSortChange: (sort: keyof typeof DISCOUNT_SORT_OPTIONS) => void;
+interface SearchSortBottomSheetProps {
+  currentSort: keyof typeof ITEM_SORT_OPTIONS;
+  onSortChange: (sort: keyof typeof ITEM_SORT_OPTIONS) => void;
 }
 
-const SalesSortBottomSheet = memo(
-  forwardRef<BottomSheetModal, SalesSortBottomSheetProps>(function SalesSortBottomSheet(
-    { currentSort, onSortChange }: SalesSortBottomSheetProps,
+const SearchSortBottomSheet = memo(
+  forwardRef<BottomSheetModal, SearchSortBottomSheetProps>(function SearchSortBottomSheet(
+    { currentSort, onSortChange }: SearchSortBottomSheetProps,
     ref,
   ) {
     const { styles } = useStyles(stylesheet);
 
     const sortOptions = useMemo(
       () =>
-        Object.entries(DISCOUNT_SORT_OPTIONS).map(([key, sortOption]) => (
+        Object.entries(ITEM_SORT_OPTIONS).map(([key, sortOption]) => (
           <Button
             key={key}
             onPress={() => onSortChange(key)}
@@ -59,4 +59,4 @@ const stylesheet = createStyleSheet(theme => ({
   }),
 }));
 
-export default SalesSortBottomSheet;
+export default SearchSortBottomSheet;

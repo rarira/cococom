@@ -1,14 +1,12 @@
-import { ReactNode } from 'react';
+import { memo, PropsWithChildren } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-function Card({
-  children,
-  style,
-}: {
-  children: ReactNode;
+interface CardProps extends PropsWithChildren {
   style?: StyleProp<ViewStyle>;
-}): JSX.Element {
+}
+
+function Card({ children, style }: CardProps) {
   const { styles } = useStyles(stylesheets);
 
   return <View style={[styles.container, style]}>{children}</View>;
@@ -23,4 +21,4 @@ const stylesheets = createStyleSheet(theme => ({
   },
 }));
 
-export default Card;
+export default memo(Card);

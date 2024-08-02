@@ -4,10 +4,11 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ListItemCard from '@/components/custom/card/list-item';
 import { PortalHostNames } from '@/constants';
 import { useDiscountListQuery } from '@/hooks/useDiscountListQuery';
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
+import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
+
+import DiscountListItemCard from '../../card/list-item/discount';
 
 interface DiscountListProps {
   currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
@@ -22,7 +23,7 @@ export default function DiscountList({ currentSort }: DiscountListProps) {
 
   const renderItem = useCallback(
     ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <ListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
+      return <DiscountListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
     },
     [],
   );
