@@ -66,21 +66,22 @@ function SearchResultListItemCardDetailView({
           isWishlistedByUser: !item.isWishlistedByUser,
         };
 
+        const { items, ...restPages } = old.pages[item.pageIndex];
+
         const updatedPage = {
-          totalRecords: old.pages[item.pageIndex].totalRecords,
-          items: [
-            ...old.pages[item.pageIndex].items.slice(0, itemIndex),
-            updatedItem,
-            ...old.pages[item.pageIndex].items.slice(itemIndex + 1),
-          ],
+          ...restPages,
+          items: [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)],
         };
+
+        const { pages, ...restOld } = old;
+
         return {
+          ...restOld,
           pages: [
-            ...old.pages.slice(0, item.pageIndex),
+            ...pages.slice(0, item.pageIndex),
             updatedPage,
-            ...old.pages.slice(item.pageIndex + 1),
+            ...pages.slice(item.pageIndex + 1),
           ],
-          pageParams: old.pageParams,
         };
       });
 
