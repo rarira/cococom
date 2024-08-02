@@ -1,3 +1,4 @@
+import { Database, InfiniteSearchResultPages } from '@cococom/supabase/types';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
 export type SearchQueryParams = {
@@ -17,6 +18,16 @@ export type SearchItemOptionInfo = {
   iconColor: string;
 };
 
+export type SearchResultToRender =
+  (Database['public']['Functions']['search_items_by_keyword']['Returns']['items'][number] & {
+    pageIndex: number;
+  })[];
+
+export type InfiniteSearchResultData = {
+  pageParams: number[];
+  pages: InfiniteSearchResultPages[];
+};
+
 export const SearchItemsOptions = (
   theme: UnistylesTheme,
 ): Record<SearchOptionValue, SearchItemOptionInfo> => ({
@@ -34,4 +45,23 @@ export const SearchItemsOptions = (
 
 export const getSearchHistoryHash = ({ keyword, options }: SearchQueryParams): string => {
   return `${keyword}${!!options?.length ? -`${options.join('-')}` : ''}`;
+};
+
+export const findIndexOfInfiniteSearchResultItem = (
+  pages: InfiniteSearchResultPages[],
+  newWishListItemId: number,
+) => {
+  let pagesIndex = 0;
+  let nestedItemIndex = 0;
+
+  for (const page of pages) {
+    const itemIndex = page.items.findIndex(item => item.id === newWishListItemId);
+    if (itemIndex !== -1) {
+      nestedItemIndex = itemIndex;
+      break;
+    }
+    pagesIndex += 1;
+  }
+
+  return { pagesIndex, nestedItemIndex };
 };
