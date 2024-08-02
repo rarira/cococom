@@ -6,7 +6,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { PortalHostNames } from '@/constants';
 import { useDiscountListQuery } from '@/hooks/useDiscountListQuery';
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
+import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
 
 import DiscountListItemCard from '../../card/list-item/discount';
 
