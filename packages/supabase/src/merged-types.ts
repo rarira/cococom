@@ -58,6 +58,8 @@ export type Database = MergeDeep<
             user_id: string | null;
             page: number;
             page_size: number;
+            order_field: string;
+            order_direction: string;
           };
           Returns: InfiniteSearchResultPages;
         };
@@ -68,6 +70,8 @@ export type Database = MergeDeep<
             user_id: string | null;
             page: number;
             page_size: number;
+            order_field: string;
+            order_direction: string;
           };
           Returns: InfiniteSearchResultPages;
         };

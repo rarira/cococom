@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import { SearchResult } from '@/components/custom/list/search-result';
 import DiscountRateText from '@/components/custom/text/discount-rate';
 import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import Chip from '@/components/ui/chip';
@@ -14,16 +13,19 @@ import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
+import { ITEM_SORT_OPTIONS } from '@/libs/sort';
 import { useUserStore } from '@/store/user';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResultToRender[number];
+  sortOption: keyof typeof ITEM_SORT_OPTIONS;
 }
 
 function SearchResultListItemCardDetailView({
   item,
   keyword,
   options,
+  sortOption,
 }: SearchResultListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
 
@@ -34,8 +36,14 @@ function SearchResultListItemCardDetailView({
   const queryKey = useMemo(() => {
     const isOnSaleNow = options.includes('on_sale');
     const isItemIdSearch = options.includes('item_id');
-    return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](keyword, isOnSaleNow, user?.id);
-  }, [keyword, options, user?.id]);
+    return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+      keyword,
+      isOnSaleNow,
+      ITEM_SORT_OPTIONS[sortOption].field,
+      ITEM_SORT_OPTIONS[sortOption].direction,
+      user?.id,
+    );
+  }, [keyword, options, sortOption, user?.id]);
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
@@ -109,7 +117,7 @@ function SearchResultListItemCardDetailView({
       <View style={styles.actionButtonContainer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
         {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-        <ListItemWishlistIconButton<SearchResult[number]>
+        <ListItemWishlistIconButton<SearchResultToRender[number]>
           item={item}
           portalHostName={PortalHostNames.SEARCH}
           queryKey={queryKey}
