@@ -24,29 +24,33 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Shadow {...shadowPresets.card(theme)} style={styles.shadowContainer}>
-      <Pressable onPress={() => console.log('Pressed')}>
-        <Card style={[styles.cardContainer, containerStyle]}>
+    <Pressable onPress={() => console.log('Pressed')}>
+      <Shadow
+        {...shadowPresets.card(theme)}
+        {...(item.isOnSaleNow && { startColor: `${theme.colors.tint}44` })}
+        stretch
+      >
+        <Card style={[styles.cardContainer(item.isOnSaleNow), containerStyle]}>
           <View style={styles.itemContainer}>
             <ProductCardThumbnailImage
               product={item}
-              width={115}
-              height={115}
+              width={120}
+              height={120}
               style={styles.thumbnail}
             />
             <SearchResultListItemCardDetailView item={item} {...restProps} />
           </View>
         </Card>
-      </Pressable>
-    </Shadow>
+      </Shadow>
+    </Pressable>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  cardContainer: {
-    borderRadius: theme.borderRadius.md,
-  },
-  shadowContainer: { flex: 1, width: '100%' },
+  cardContainer: (onSale: boolean) => ({
+    borderRadius: theme.borderRadius.lg,
+    ...(onSale && { borderColor: `${theme.colors.tint}77`, borderWidth: 1 }),
+  }),
   itemContainer: {
     flex: 1,
     flexDirection: 'row',
