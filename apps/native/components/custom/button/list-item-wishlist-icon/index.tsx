@@ -19,7 +19,9 @@ interface ListItemWishlistIconButtonProps<
   queryKey: QueryKey;
   onMutate?: (
     queryClient: QueryClient,
-  ) => (newWishlist: InsertWishlist) => Promise<{ previousData: T[] }>;
+  ) => (
+    newWishlist: InsertWishlist,
+  ) => Promise<{ previousData: T[] | { pages: T[]; [key: string]: unknown } }>;
 }
 
 function ListItemWishlistIconButton<

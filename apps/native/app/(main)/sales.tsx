@@ -7,11 +7,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import SalesSortBottomSheet from '@/components/custom/bottom-sheet/sales-sort';
+import DiscountSortBottomSheet from '@/components/custom/bottom-sheet/discount-sort';
 import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
-import { useSalesSort } from '@/hooks/useSalesSort';
+import { useDiscountsSort } from '@/hooks/useDiscountsSort';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
@@ -43,7 +43,9 @@ export default function SalesScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { sort, handleSortChange } = useSalesSort(_sort => bottomSheetModalRef.current?.dismiss());
+  const { sort, handleSortChange } = useDiscountsSort(_sort =>
+    bottomSheetModalRef.current?.dismiss(),
+  );
 
   const renderHeaderRightButton = useCallback(
     () => (
@@ -120,7 +122,7 @@ export default function SalesScreen() {
         style={styles.tabViewContainer}
         renderTabBar={renderTabBar}
       />
-      <SalesSortBottomSheet
+      <DiscountSortBottomSheet
         ref={bottomSheetModalRef}
         currentSort={sort}
         onSortChange={handleSortChange}

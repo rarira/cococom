@@ -11,6 +11,7 @@ import {
   SearchQueryParams,
   SearchResultToRender,
 } from '@/libs/search';
+import { ITEM_SORT_OPTIONS } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -23,29 +24,39 @@ const PAGE_SIZE = 10;
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
-  // const [totalResults, setTotalResults] = useState<number | null>(null);
+  const [sortOption, setSortOption] = useState<keyof typeof ITEM_SORT_OPTIONS>('itemNameAsc');
 
   const { user } = useUserStore();
 
-  const { keyword: keywordParam, options: optionsParam } = useLocalSearchParams<{
+  const {
+    keyword: keywordParam,
+    options: optionsParam,
+    sortOption: sortOptionParam,
+  } = useLocalSearchParams<{
     keyword: string;
     options: SearchOptionValue[];
+    sortOption: keyof typeof ITEM_SORT_OPTIONS;
   }>();
 
   // TODO : 테스트 필요
   useLayoutEffect(() => {
     if (keywordParam) setKeywordToSearch(keywordParam);
     if (optionsParam) setOptionsToSearch(optionsParam);
-  }, [keywordParam, optionsParam]);
+    if (sortOptionParam) {
+      setSortOption(sortOptionParam);
+    }
+  }, [keywordParam, optionsParam, sortOptionParam]);
 
   const isOnSaleSearch = optionsToSearch.includes('on_sale');
   const isItemIdSearch = optionsToSearch.includes('item_id');
 
-  const { data, isFetching, isSuccess, isError, fetchNextPage, hasNextPage, fetchPreviousPage } =
+  const { data, isFetching, isSuccess, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteSearchResultPages>({
       queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
         keywordToSearch,
         isOnSaleSearch,
+        ITEM_SORT_OPTIONS[sortOption].field,
+        ITEM_SORT_OPTIONS[sortOption].direction,
         user?.id,
       ),
       queryFn: ({ pageParam }) => {
@@ -56,6 +67,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
             user?.id,
             pageParam as number,
             PAGE_SIZE,
+            ITEM_SORT_OPTIONS[sortOption].field,
+            ITEM_SORT_OPTIONS[sortOption].direction,
           );
         }
         return supabase.fullTextSearchItemsByKeyword(
@@ -64,6 +77,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
           user?.id,
           pageParam as number,
           PAGE_SIZE,
+          ITEM_SORT_OPTIONS[sortOption].field,
+          ITEM_SORT_OPTIONS[sortOption].direction,
         );
       },
       initialPageParam: 1,
@@ -100,16 +115,24 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     if (hasNextPage && !isFetching) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetching]);
 
-  console.log('useSearchInput', {
-    keywordToSearch,
-    optionsToSearch,
-    isFetching,
-    isSuccess,
-    pages: data?.pages,
-    hasNextPage,
-    pagaParams: data?.pageParams,
-    totalResults: data?.pages[0].totalRecords,
-  });
+  const handleSortChange = useCallback(
+    (sortOption: keyof typeof ITEM_SORT_OPTIONS) => {
+      setSortOption(sortOption);
+    },
+    [setSortOption],
+  );
+
+  // NOTE: DEBUG
+  // console.log('useSearchInput', {
+  //   keywordToSearch,
+  //   optionsToSearch,
+  //   isFetching,
+  //   isSuccess,
+  //   pages: data?.pages,
+  //   hasNextPage,
+  //   pagaParams: data?.pageParams,
+  //   totalResults: data?.pages[0].totalRecords,
+  // });
 
   const searchResult: SearchResultToRender = useMemo(
     () =>
@@ -130,6 +153,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     searchResult,
     hasNextPage,
     handleEndReached,
+    sortOption,
+    handleSortChange,
     totalResults: data?.pages[0].totalRecords ?? null,
   };
 }

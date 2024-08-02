@@ -1,10 +1,12 @@
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import SearchSortBottomSheet from '@/components/custom/bottom-sheet/search-sort';
 import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
@@ -15,6 +17,7 @@ import { shadowPresets } from '@/libs/shadow';
 
 export default function SearchScreen() {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const { styles, theme } = useStyles(stylesheet);
 
@@ -31,6 +34,9 @@ export default function SearchScreen() {
     searchResult,
     hasNextPage,
     handleEndReached,
+    sortOption,
+    handleSortChange,
+    totalResults,
   } = useSearchInput({ addSearchHistory });
 
   useLayoutEffect(() => {
@@ -46,6 +52,10 @@ export default function SearchScreen() {
     },
     [options, setSearchQueryParams],
   );
+
+  const handleSortBottomSheetPresent = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
 
   return (
     <View style={styles.container(top, tabBarHeight)}>
@@ -76,9 +86,17 @@ export default function SearchScreen() {
             searchQueryParams={{ keyword: keywordToSearch, options: optionsToSearch }}
             // hasNextPage={hasNextPage}
             onEndReached={handleEndReached}
+            sortOption={sortOption}
+            totalResults={totalResults}
+            onPressHeaderRightButton={handleSortBottomSheetPresent}
           />
         </View>
       )}
+      <SearchSortBottomSheet
+        ref={bottomSheetModalRef}
+        currentSort={sortOption}
+        onSortChange={handleSortChange}
+      />
     </View>
   );
 }

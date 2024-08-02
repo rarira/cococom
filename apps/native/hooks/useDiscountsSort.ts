@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sorts';
+import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
 
-export function useSalesSort(callback: (sort: keyof typeof DISCOUNT_SORT_OPTIONS) => void) {
+export function useDiscountsSort(callback: (sort: keyof typeof DISCOUNT_SORT_OPTIONS) => void) {
   const [sort, setSort] = useState<keyof typeof DISCOUNT_SORT_OPTIONS>('biggest');
 
   const handleSortChange = useCallback(
