@@ -1,13 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
 
 export const unstable_settings = {
-  initialRouteName: 'home',
+  initialRouteName: '(home)',
 };
 
 const TabIcons: Record<
@@ -17,19 +16,19 @@ const TabIcons: Record<
     unfocusedIcon: ComponentProps<typeof Ionicons>['name'];
   }
 > = {
-  index: {
+  '(home)': {
     focusedIcon: 'home',
     unfocusedIcon: 'home-outline',
   },
-  search: {
+  '(search)': {
     focusedIcon: 'search',
     unfocusedIcon: 'search-outline',
   },
-  ranking: {
+  '(ranking)': {
     focusedIcon: 'star',
     unfocusedIcon: 'star-outline',
   },
-  'my/index': {
+  '(my)': {
     focusedIcon: 'person-circle',
     unfocusedIcon: 'person-circle-outline',
   },
@@ -37,7 +36,6 @@ const TabIcons: Record<
 
 export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
-  const { top } = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -58,25 +56,25 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: '홈',
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="(search)"
         options={{
           title: '검색',
         }}
       />
       <Tabs.Screen
-        name="ranking"
+        name="(ranking)"
         options={{
           title: '랭킹',
         }}
       />
       <Tabs.Screen
-        name="my/index"
+        name="(my)"
         options={{
           title: '마이',
         }}

@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
@@ -24,25 +25,35 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Pressable onPress={() => console.log('Pressed')}>
-      <Shadow
-        {...shadowPresets.card(theme)}
-        {...(item.isOnSaleNow && { startColor: `${theme.colors.tint}44` })}
-        stretch
-      >
-        <Card style={[styles.cardContainer(item.isOnSaleNow), containerStyle]}>
-          <View style={styles.itemContainer}>
-            <ProductCardThumbnailImage
-              product={item}
-              width={120}
-              height={120}
-              style={styles.thumbnail}
-            />
-            <SearchResultListItemCardDetailView item={item} {...restProps} />
-          </View>
-        </Card>
-      </Shadow>
-    </Pressable>
+    <Link
+      href={{
+        pathname: '(search)/details/[itemId]',
+        params: {
+          itemId: item.id,
+        },
+      }}
+      asChild
+    >
+      <Pressable>
+        <Shadow
+          {...shadowPresets.card(theme)}
+          {...(item.isOnSaleNow && { startColor: `${theme.colors.tint}44` })}
+          stretch
+        >
+          <Card style={[styles.cardContainer(item.isOnSaleNow), containerStyle]}>
+            <View style={styles.itemContainer}>
+              <ProductCardThumbnailImage
+                product={item}
+                width={120}
+                height={120}
+                style={styles.thumbnail}
+              />
+              <SearchResultListItemCardDetailView item={item} {...restProps} />
+            </View>
+          </Card>
+        </Shadow>
+      </Pressable>
+    </Link>
   );
 });
 

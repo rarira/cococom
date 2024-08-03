@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router/stack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStyles } from 'react-native-unistyles';
 
 export const unstable_settings = {
@@ -8,7 +7,6 @@ export const unstable_settings = {
 
 export default function HomeLayout() {
   const { theme } = useStyles();
-  const { top } = useSafeAreaInsets();
 
   return (
     <Stack
@@ -17,7 +15,6 @@ export default function HomeLayout() {
         headerStyle: { backgroundColor: theme.colors.background },
         headerTitleStyle: { color: theme.colors.typography },
         contentStyle: {
-          paddingTop: top,
           backgroundColor: theme.colors.background,
         },
       }}
@@ -27,7 +24,7 @@ export default function HomeLayout() {
       <Stack.Screen
         name="sales"
         options={
-          (({ route }) => {
+          (({ route }: any) => {
             //https://github.com/expo/expo/pull/30074
             const { categorySector } = route.params;
             return {
@@ -38,6 +35,7 @@ export default function HomeLayout() {
           }) as any
         }
       />
+      <Stack.Screen name="details/[itemId]" options={{ headerShown: true }} />
     </Stack>
   );
 }
