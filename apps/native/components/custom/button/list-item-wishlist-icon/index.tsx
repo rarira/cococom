@@ -6,6 +6,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
+import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -17,11 +18,9 @@ interface ListItemWishlistIconButtonProps<
   item: T;
   portalHostName: PortalHostNames;
   queryKey: QueryKey;
-  onMutate?: (
-    queryClient: QueryClient,
-  ) => (
-    newWishlist: InsertWishlist,
-  ) => Promise<{ previousData: T[] | { pages: T[]; [key: string]: unknown } }>;
+  onMutate?: (queryClient: QueryClient) => (newWishlist: InsertWishlist) => Promise<{
+    previousData: T[] | InfiniteSearchResultData;
+  }>;
 }
 
 function ListItemWishlistIconButton<

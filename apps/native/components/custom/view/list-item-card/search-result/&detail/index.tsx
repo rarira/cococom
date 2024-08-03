@@ -118,7 +118,7 @@ function SearchResultListItemCardDetailView({
       <View style={styles.actionButtonContainer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
         {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-        <ListItemWishlistIconButton<SearchResultToRender[number]>
+        <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
           item={item}
           portalHostName={PortalHostNames.SEARCH}
           queryKey={queryKey}

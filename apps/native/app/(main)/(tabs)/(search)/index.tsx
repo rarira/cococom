@@ -32,7 +32,7 @@ export default function SearchScreen() {
     setSearchQueryParams,
     handlePressSearchHistory,
     searchResult,
-    hasNextPage,
+    // hasNextPage,
     handleEndReached,
     sortOption,
     handleSortChange,
