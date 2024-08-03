@@ -12,20 +12,6 @@ export default function MainLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ title: '홈', headerShown: false }} />
-      <Stack.Screen
-        name="sales"
-        // options={{ headerShown: true, title: 'Search' }}
-        options={
-          (({ route }: any) => {
-            //https://github.com/expo/expo/pull/30074
-            const { categorySector } = route.params;
-            return {
-              title: categorySector,
-              headerShown: true,
-            };
-          }) as any
-        }
-      />
     </Stack>
   );
 }

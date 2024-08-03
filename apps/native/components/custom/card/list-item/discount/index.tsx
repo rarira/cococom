@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -23,21 +24,31 @@ function DiscountListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Pressable onPress={() => console.log('Pressed')}>
-      <Shadow {...shadowPresets.card(theme)} stretch>
-        <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
-          <View style={styles.itemContainer(numColumns === 1)}>
-            <ProductCardThumbnailImage
-              product={discount.items!}
-              width={115}
-              height={115}
-              style={styles.thumbnail}
-            />
-            <DiscountListItemCardDetailView discount={discount} />
-          </View>
-        </Card>
-      </Shadow>
-    </Pressable>
+    <Link
+      href={{
+        pathname: '(home)/details/[itemId]',
+        params: {
+          itemId: discount.items.id,
+        },
+      }}
+      asChild
+    >
+      <Pressable>
+        <Shadow {...shadowPresets.card(theme)} stretch>
+          <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
+            <View style={styles.itemContainer(numColumns === 1)}>
+              <ProductCardThumbnailImage
+                product={discount.items!}
+                width={115}
+                height={115}
+                style={styles.thumbnail}
+              />
+              <DiscountListItemCardDetailView discount={discount} />
+            </View>
+          </Card>
+        </Shadow>
+      </Pressable>
+    </Link>
   );
 }
 
