@@ -9,17 +9,20 @@ const { url, anonKey } = Constants.expoConfig?.extra?.supabase || {};
 
 export const supabase = new Supabase(url, anonKey, {
   auth: {
-    storage: {
-      getItem: key => {
-        return storage.getString(key) || null;
-      },
-      setItem: (key, value) => {
-        storage.set(key, value);
-      },
-      removeItem: key => {
-        storage.delete(key);
-      },
-    },
+    storage:
+      typeof window !== 'undefined'
+        ? {
+            getItem: key => {
+              return storage.getString(key) || null;
+            },
+            setItem: (key, value) => {
+              storage.set(key, value);
+            },
+            removeItem: key => {
+              storage.delete(key);
+            },
+          }
+        : undefined,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
