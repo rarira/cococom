@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Href, Link } from 'expo-router';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -24,15 +24,7 @@ function DiscountListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Link
-      href={{
-        pathname: '(home)/details/[itemId]',
-        params: {
-          itemId: discount.items.id,
-        },
-      }}
-      asChild
-    >
+    <Link href={`/(home)/item?itemId=${discount.items.id}` as Href<string>} asChild>
       <Pressable>
         <Shadow {...shadowPresets.card(theme)} stretch>
           <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
