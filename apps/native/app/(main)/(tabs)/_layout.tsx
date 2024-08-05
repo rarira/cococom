@@ -50,7 +50,6 @@ export default function TabLayout() {
           headerShown: false,
           // tabBarStyle: styles.tabBar,
           freezeOnBlur: true,
-
           tabBarIcon: ({ color, focused }) => {
             return (
               <TabBarIcon

@@ -1,14 +1,12 @@
-import type { PropsWithChildren, ReactElement } from 'react';
-
-import { StyleSheet, useColorScheme } from 'react-native';
+import { memo, type PropsWithChildren, type ReactElement } from 'react';
+import { View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
   useAnimatedStyle,
   useScrollViewOffset,
 } from 'react-native-reanimated';
-
-import { ThemedView } from '@/components/_old/ThemedView';
+import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 const HEADER_HEIGHT = 250;
 
@@ -17,12 +15,9 @@ type Props = PropsWithChildren<{
   headerBackgroundColor: { dark: string; light: string };
 }>;
 
-export default function ParallaxScrollView({
-  children,
-  headerImage,
-  headerBackgroundColor,
-}: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
+function ParallaxScrollView({ children, headerImage, headerBackgroundColor }: Props) {
+  const { styles, theme } = useStyles(stylesheet);
+
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
@@ -44,26 +39,29 @@ export default function ParallaxScrollView({
   });
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
         <Animated.View
           style={[
             styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
+            { backgroundColor: headerBackgroundColor[UnistylesRuntime.themeName] },
             headerAnimatedStyle,
           ]}
         >
           {headerImage}
         </Animated.View>
-        <ThemedView style={styles.content}>{children}</ThemedView>
+        <View style={styles.content}>{children}</View>
       </Animated.ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
+export default memo(ParallaxScrollView);
+
+const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   header: {
     height: 250,
@@ -74,5 +72,6 @@ const styles = StyleSheet.create({
     padding: 32,
     gap: 16,
     overflow: 'hidden',
+    backgroundColor: theme.colors.background,
   },
-});
+}));

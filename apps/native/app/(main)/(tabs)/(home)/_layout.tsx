@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router/stack';
 import { useStyles } from 'react-native-unistyles';
 
-
 export const unstable_settings = {
   initialRouteName: 'index',
 };
@@ -30,7 +29,7 @@ export default function HomeLayout() {
             return {
               title: categorySector,
               headerShown: true,
-              headerStyle: { backgroundColor: theme.colors.background },
+              headerStyle: { backgroundColor: theme.colors.modalBackground },
               headerTitleStyle: { color: theme.colors.typography },
             };
           }) as any

@@ -7,7 +7,7 @@ export default function MainLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        headerStyle: { backgroundColor: theme.colors.background },
+        headerStyle: { backgroundColor: theme.colors.modalBackground },
         headerTitleStyle: { color: theme.colors.typography },
       }}
     >
