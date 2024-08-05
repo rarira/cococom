@@ -13,6 +13,7 @@ export default function AuthLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: theme.colors.background },
+        headerStyle: { backgroundColor: theme.colors.modalBackground },
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Welcome' }} />
