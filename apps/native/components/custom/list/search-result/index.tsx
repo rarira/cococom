@@ -1,4 +1,5 @@
 import { PortalHost } from '@gorhom/portal';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
@@ -28,6 +29,8 @@ const SearchResultList = memo(function SearchResultList({
   ...restProps
 }: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
+
+  const tabBarHeight = useBottomTabBarHeight();
 
   const renderItem = useCallback(
     ({ item }: { item: SearchResultToRender[number]; index: number }) => {
@@ -76,7 +79,7 @@ const SearchResultList = memo(function SearchResultList({
         estimatedItemSize={200}
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-        contentContainerStyle={styles.flashListContainer}
+        contentContainerStyle={styles.flashListContainer(tabBarHeight)}
         onEndReachedThreshold={0.5}
         {...restProps}
       />
@@ -86,10 +89,11 @@ const SearchResultList = memo(function SearchResultList({
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  flashListContainer: {
+  flashListContainer: (tabBarHeight: number) => ({
     paddingTop: theme.spacing.lg * 1.5,
     paddingHorizontal: theme.screenHorizontalPadding,
-  },
+    paddingBottom: tabBarHeight + theme.spacing.xl,
+  }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
   },

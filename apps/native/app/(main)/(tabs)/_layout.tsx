@@ -1,9 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
+import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
+import { useUIStore } from '@/store/ui';
 
 export const unstable_settings = {
   initialRouteName: '(home)',
@@ -37,23 +40,47 @@ const TabIcons: Record<
 export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
 
+  const { tabBarVisible } = useUIStore();
+
   return (
     <Tabs
-      screenOptions={({ route }) => ({
-        tabBarActiveTintColor: theme.colors.tint,
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        freezeOnBlur: true,
-        tabBarIcon: ({ color, focused }) => {
-          return (
-            <TabBarIcon
-              name={focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon}
-              color={color}
-              size={22}
-            />
-          );
-        },
-      })}
+      screenOptions={({ route }) => {
+        return {
+          tabBarActiveTintColor: theme.colors.tint,
+          headerShown: false,
+          // tabBarStyle: styles.tabBar,
+          freezeOnBlur: true,
+
+          tabBarIcon: ({ color, focused }) => {
+            return (
+              <TabBarIcon
+                name={
+                  focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon
+                }
+                color={color}
+                size={22}
+              />
+            );
+          },
+        };
+      }}
+      tabBar={props => {
+        return (
+          <Animated.View
+            style={{
+              height: tabBarVisible ? 'auto' : 0,
+              position: 'absolute',
+              backgroundColor: theme.colors.background,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+            layout={LinearTransition.duration(100).delay(0).reduceMotion(ReduceMotion.Never)}
+          >
+            <BottomTabBar {...props} />
+          </Animated.View>
+        );
+      }}
     >
       <Tabs.Screen
         name="(home)"

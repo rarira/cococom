@@ -7,8 +7,8 @@ export const unstable_settings = {
 export default function SearchLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="details/[itemId]" options={{ headerShown: true }} />
+      <Stack.Screen name="index" options={{ title: '상품 검색' }} />
+      <Stack.Screen name="item" />
     </Stack>
   );
 }

@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Href, Link } from 'expo-router';
 import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
@@ -25,15 +25,7 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
   const { styles, theme } = useStyles(stylesheet);
 
   return (
-    <Link
-      href={{
-        pathname: '(search)/details/[itemId]',
-        params: {
-          itemId: item.id,
-        },
-      }}
-      asChild
-    >
+    <Link href={`/(search)/item?itemId=${item.id}` as Href<string>} asChild>
       <Pressable>
         <Shadow
           {...shadowPresets.card(theme)}

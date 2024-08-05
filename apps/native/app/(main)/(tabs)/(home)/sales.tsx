@@ -3,7 +3,6 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -38,8 +37,6 @@ export default function SalesScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const layout = useWindowDimensions();
-
-  const { bottom: bottomInset } = useSafeAreaInsets();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -111,7 +108,7 @@ export default function SalesScreen() {
   );
 
   return (
-    <View style={styles.container(bottomInset)}>
+    <View style={styles.container}>
       <Stack.Screen options={{ headerRight: renderHeaderRightButton }} />
       <TabView
         lazy
@@ -132,11 +129,9 @@ export default function SalesScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (bottomInset: number) => ({
+  container: {
     flex: 1,
-    paddingBottom: bottomInset,
-    backgroundColor: theme.colors.background,
-  }),
+  },
   contentContainer: {
     flex: 1,
     alignItems: 'center',
@@ -144,7 +139,6 @@ const stylesheet = createStyleSheet(theme => ({
   tabViewContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    paddingBottom: theme.spacing.lg,
   },
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
