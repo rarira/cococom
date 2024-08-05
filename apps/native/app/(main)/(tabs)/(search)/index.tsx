@@ -1,5 +1,4 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -44,7 +43,6 @@ export default function SearchScreen() {
   }, [optionsToSearch]);
 
   const isItemIdSearch = useMemo(() => options.includes('item_id'), [options]);
-  const tabBarHeight = useBottomTabBarHeight();
 
   const handlePressSearch = useCallback(
     (keyword: string) => {
@@ -58,7 +56,7 @@ export default function SearchScreen() {
   }, []);
 
   return (
-    <View style={styles.container(top, tabBarHeight)}>
+    <View style={styles.container(top)}>
       <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
         <View style={styles.searchBox}>
           <SearchTextInput
@@ -102,10 +100,9 @@ export default function SearchScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (topInset: number, tabBarHeight: number) => ({
+  container: (topInset: number) => ({
     flex: 1,
     paddingTop: topInset,
-    paddingBottom: tabBarHeight + theme.spacing.lg,
     backgroundColor: theme.colors.background,
     alignItems: 'center',
   }),

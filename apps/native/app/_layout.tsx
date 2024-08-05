@@ -26,7 +26,7 @@ import { AppState, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { createStyleSheet, UnistylesRuntime } from 'react-native-unistyles';
+import { UnistylesRuntime } from 'react-native-unistyles';
 
 import { useLoadUser } from '@/hooks/useLoadUser';
 
@@ -141,19 +141,5 @@ function RootLayout() {
     </QueryClientProvider>
   );
 }
-
-const stylesheet = createStyleSheet(theme => {
-  return {
-    topSafeArea: (safeAreaBackgroundColor: UIState['safeAreaBackgroundColor']) => ({
-      flex: 0,
-      backgroundColor: safeAreaBackgroundColor.top || theme.colors.background,
-    }),
-    bottomSafeArea: (safeAreaBackgroundColor: UIState['safeAreaBackgroundColor']) => ({
-      flex: 1,
-      backgroundColor: safeAreaBackgroundColor.bottom || theme.colors.background,
-      position: 'relative',
-    }),
-  };
-});
 
 export default Sentry.wrap(RootLayout);

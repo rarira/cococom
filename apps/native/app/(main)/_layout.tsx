@@ -12,6 +12,12 @@ export default function MainLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ title: '홈', headerShown: false }} />
+      {/* <Stack.Screen
+        name="details"
+        options={{
+          headerShown: false,
+        }}
+      /> */}
     </Stack>
   );
 }
