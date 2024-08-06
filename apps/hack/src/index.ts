@@ -143,44 +143,45 @@ async function updateDiscounts(date?: string) {
   if (newlyAddedDiscounts?.length) {
     newDiscountsCount += newlyAddedDiscounts.length;
     for (const newlyAddedDiscount of newlyAddedDiscounts) {
-      const response = await supabase.fetchData(
-        { value: newlyAddedDiscount.itemId, column: 'itemId' },
-        'items',
-      );
+      try {
+        const data = await supabase.fetchData(
+          { value: newlyAddedDiscount.itemId, column: 'itemId' },
+          'items',
+        );
+        if (!data) throw new Error('no data');
 
-      if (!response?.data) throw new Error('Item not found');
+        const update: Partial<Tables<'items'>> = {
+          bestDiscountRate: newlyAddedDiscount.discountRate,
+          bestDiscount: newlyAddedDiscount.discount,
+        };
 
-      const update: Partial<Tables<'items'>> = {
-        bestDiscountRate: newlyAddedDiscount.discountRate,
-        bestDiscount: newlyAddedDiscount.discount,
-      };
+        if (
+          newlyAddedDiscount.discountRate &&
+          data.bestDiscountRate &&
+          newlyAddedDiscount.discountRate > data.bestDiscountRate
+        ) {
+          update.bestDiscountRate = newlyAddedDiscount.discountRate;
+        }
 
-      if (
-        newlyAddedDiscount.discountRate &&
-        response.data.bestDiscountRate &&
-        newlyAddedDiscount.discountRate > response.data.bestDiscountRate
-      ) {
-        update.bestDiscountRate = newlyAddedDiscount.discountRate;
+        if (!data.lowestPrice || newlyAddedDiscount.discountPrice < data.lowestPrice) {
+          update.lowestPrice = newlyAddedDiscount.discountPrice;
+        }
+
+        if (
+          newlyAddedDiscount.discount &&
+          data.bestDiscount &&
+          data.bestDiscount < newlyAddedDiscount.discount
+        ) {
+          update.bestDiscount = newlyAddedDiscount.discount;
+        }
+
+        if (Object.keys(update).length === 0) continue;
+
+        await supabase.updateItem(update, data.id);
+      } catch (e) {
+        console.error(e);
+        continue;
       }
-
-      if (
-        !response.data.lowestPrice ||
-        newlyAddedDiscount.discountPrice < response.data.lowestPrice
-      ) {
-        update.lowestPrice = newlyAddedDiscount.discountPrice;
-      }
-
-      if (
-        newlyAddedDiscount.discount &&
-        response.data.bestDiscount &&
-        response.data.bestDiscount < newlyAddedDiscount.discount
-      ) {
-        update.bestDiscount = newlyAddedDiscount.discount;
-      }
-
-      if (Object.keys(update).length === 0) continue;
-
-      await supabase.updateItem(update, response.data.id);
     }
   }
 }

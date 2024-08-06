@@ -10,17 +10,21 @@ async function confirmDiscounts() {
   console.log(data.discounts.length);
   for (const [index, discount] of data.discounts.entries()) {
     const hashKey = `${discount.productcode}_${discount.startdate}_${discount.enddate}`;
-    const response = await supabase.fetchData(
-      {
-        value: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
-        column: 'discountHash',
-      },
-      'discounts',
-    );
-    if (response.error) {
-      errors.push(discount);
+    try {
+      const data = await supabase.fetchData(
+        {
+          value: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
+          column: 'discountHash',
+        },
+        'discounts',
+      );
+      console.log({ index, hashKey, data });
+    } catch (error) {
+      if (error) {
+        errors.push(discount);
+      }
+      continue;
     }
-    console.log({ index, hashKey, response: response.data });
   }
 }
 

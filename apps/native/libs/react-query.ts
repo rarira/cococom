@@ -34,4 +34,7 @@ export const queryKeys = {
       userId?: string,
     ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion }],
   },
+  items: {
+    byId: (id: number) => ['items', { id }],
+  },
 };
