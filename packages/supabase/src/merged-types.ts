@@ -75,6 +75,14 @@ export type Database = MergeDeep<
           };
           Returns: InfiniteSearchResultPages;
         };
+        get_items_with_wishlist_counts_by_id: {
+          Args: {
+            item_id: number;
+            user_id: string | null;
+            need_discounts: boolean;
+          };
+          Returns: JoinedItems;
+        };
       };
     };
   }
