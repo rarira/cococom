@@ -1,16 +1,16 @@
 import { memo } from 'react';
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withSequence,
-    withTiming,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
 
-function HelloWave() {
+const HellowWave = memo(function HelloWave() {
   const { styles } = useStyles(stylesheet);
   const rotationAnimation = useSharedValue(0);
 
@@ -28,9 +28,9 @@ function HelloWave() {
       <Text style={styles.text}>👋</Text>
     </Animated.View>
   );
-}
+});
 
-export default memo(HelloWave);
+export default HellowWave;
 
 const stylesheet = createStyleSheet(theme => ({
   text: {
