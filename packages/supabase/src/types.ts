@@ -108,6 +108,7 @@ export type Database = {
           itemId: string
           itemName: string | null
           lowestPrice: number | null
+          updated_at: string | null
         }
         Insert: {
           bestDiscount?: number | null
@@ -118,6 +119,7 @@ export type Database = {
           itemId: string
           itemName?: string | null
           lowestPrice?: number | null
+          updated_at?: string | null
         }
         Update: {
           bestDiscount?: number | null
@@ -128,6 +130,7 @@ export type Database = {
           itemId?: string
           itemName?: string | null
           lowestPrice?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -237,6 +240,14 @@ export type Database = {
       get_items_with_wishlist_counts: {
         Args: {
           item_id: string
+          user_id: string
+          need_discounts: boolean
+        }
+        Returns: Json
+      }
+      get_items_with_wishlist_counts_by_id: {
+        Args: {
+          item_id: number
           user_id: string
           need_discounts: boolean
         }
