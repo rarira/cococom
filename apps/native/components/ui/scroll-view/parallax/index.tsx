@@ -15,7 +15,11 @@ type Props = PropsWithChildren<{
   headerBackgroundColor: { dark: string; light: string };
 }>;
 
-function ParallaxScrollView({ children, headerImage, headerBackgroundColor }: Props) {
+const ParallaxScrollView = memo(function ParallaxScrollView({
+  children,
+  headerImage,
+  headerBackgroundColor,
+}: Props) {
   const { styles, theme } = useStyles(stylesheet);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -54,9 +58,9 @@ function ParallaxScrollView({ children, headerImage, headerBackgroundColor }: Pr
       </Animated.ScrollView>
     </View>
   );
-}
+});
 
-export default memo(ParallaxScrollView);
+export default ParallaxScrollView;
 
 const stylesheet = createStyleSheet(theme => ({
   container: {

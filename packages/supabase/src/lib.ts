@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SupabaseClient, SupabaseClientOptions, createClient } from '@supabase/supabase-js';
+import {
+  SignInWithIdTokenCredentials,
+  SignInWithPasswordCredentials,
+  SignUpWithPasswordCredentials,
+  SupabaseClient,
+  SupabaseClientOptions,
+  createClient,
+} from '@supabase/supabase-js';
 
 import { Database, Tables } from './merged-types';
 
@@ -126,21 +133,21 @@ export class Supabase {
   }
 
   async fetchData<T extends keyof Database['public']['Tables']>(
-    search: { value: string; column: string },
+    search: { value: string | number; column: string },
     tableName: T,
   ): Promise<Tables<T>> {
     const { data, error } = await this.supabaseClient
       .from(tableName)
       .select('*')
       .eq(search.column, search.value)
-      .single<Tables<T>>();
+      .single();
 
     if (error) {
       console.error(error);
       throw error;
     }
 
-    return data;
+    return data as Tables<T>;
   }
 
   async createWishlist(newWishlist: InsertWishlist) {

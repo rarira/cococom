@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Text as NativeText, type TextProps as NativeTextProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -5,7 +6,7 @@ export type TextProps = NativeTextProps & {
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
-function Text({ style, type = 'default', ...rest }: TextProps) {
+const Text = memo(function Text({ style, type = 'default', ...rest }: TextProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -21,7 +22,7 @@ function Text({ style, type = 'default', ...rest }: TextProps) {
       {...rest}
     />
   );
-}
+});
 
 const stylesheet = createStyleSheet(theme => {
   const commonStyles = {
