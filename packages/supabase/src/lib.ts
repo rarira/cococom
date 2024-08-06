@@ -1,15 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  PostgrestSingleResponse,
-  SignInWithIdTokenCredentials,
-  SignInWithPasswordCredentials,
-  SignUpWithPasswordCredentials,
-  SupabaseClient,
-  SupabaseClientOptions,
-  createClient,
-} from '@supabase/supabase-js';
+import { SupabaseClient, SupabaseClientOptions, createClient } from '@supabase/supabase-js';
 
-import { Database } from './merged-types';
+import { Database, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -136,12 +128,19 @@ export class Supabase {
   async fetchData<T extends keyof Database['public']['Tables']>(
     search: { value: string; column: string },
     tableName: T,
-  ): Promise<PostgrestSingleResponse<Database['public']['Tables'][T]['Row']>> {
-    return await this.supabaseClient
+  ): Promise<Tables<T>> {
+    const { data, error } = await this.supabaseClient
       .from(tableName)
       .select('*')
       .eq(search.column, search.value)
-      .single();
+      .single<Tables<T>>();
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
