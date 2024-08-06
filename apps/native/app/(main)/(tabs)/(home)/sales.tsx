@@ -11,6 +11,7 @@ import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
 import { useDiscountsSort } from '@/hooks/useDiscountsSort';
+import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
@@ -37,6 +38,10 @@ export default function SalesScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const layout = useWindowDimensions();
+
+  useTransparentHeader({
+    title: categorySectorParam,
+  });
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 

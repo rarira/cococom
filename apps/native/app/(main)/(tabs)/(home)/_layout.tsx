@@ -11,7 +11,7 @@ export default function HomeLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         contentStyle: {
           paddingTop: 0,
           backgroundColor: theme.colors.background,
@@ -19,23 +19,9 @@ export default function HomeLayout() {
       }}
       // initialRouteName="index"
     >
-      <Stack.Screen name="index" options={{ title: '홈' }} />
-      <Stack.Screen
-        name="sales"
-        options={
-          (({ route }: any) => {
-            //https://github.com/expo/expo/pull/30074
-            const { categorySector } = route.params;
-            return {
-              title: categorySector,
-              headerShown: true,
-              headerStyle: { backgroundColor: theme.colors.modalBackground },
-              headerTitleStyle: { color: theme.colors.typography },
-            };
-          }) as any
-        }
-      />
-      <Stack.Screen name="item" options={{ headerShown: true }} />
+      <Stack.Screen name="index" options={{ title: '홈', headerShown: false }} />
+      <Stack.Screen name="sales" />
+      <Stack.Screen name="item" />
     </Stack>
   );
 }
