@@ -254,6 +254,21 @@ export class Supabase {
     return data;
   }
 
+  async fetchItemsWithWishlistCount(itemId: number, userId?: string, needDiscounts?: boolean) {
+    const { data, error } = await this.supabaseClient.rpc('get_items_with_wishlist_counts_by_id', {
+      item_id: itemId,
+      user_id: userId ?? null,
+      need_discounts: !!needDiscounts,
+    });
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

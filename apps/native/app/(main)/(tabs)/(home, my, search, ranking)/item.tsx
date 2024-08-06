@@ -1,17 +1,17 @@
-import { useHeaderHeight } from '@react-navigation/elements';
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ItemDetailsHeader from '@/components/custom/header/item-details';
+import ItemDetailsPagerView from '@/components/custom/view/pager/item-details';
 import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 const FirstRoute = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }}>
@@ -57,56 +57,44 @@ const FirstRoute = () => (
 const SecondRoute = () => <View style={{ flex: 1, backgroundColor: '#673ab7' }} />;
 
 export default function ItemScreen() {
+  const user = useUserStore(store => store.user);
   // const [scrollY, setScrollY] = useState<number>(0);
   const { styles, theme } = useStyles(stylesheet);
   const { itemId } = useLocalSearchParams();
 
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const navigation = useNavigation();
-
-  const headerHeight = useHeaderHeight();
   useHideTabBar();
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.items.byId(+itemId),
-    queryFn: () => supabase.fetchData<'items'>({ column: 'id', value: +itemId }, 'items'),
+    queryFn: () => supabase.fetchItemsWithWishlistCount(+itemId, user?.id, true),
   });
-
-  // const headerMeasurements = useHeaderMeasurements();
-
-  // console.log(navigation.canGoBack());
 
   console.log('itemData', data);
 
   useTransparentHeader({ title: `Item: ${itemId}`, headerBackTitleVisible: false }, isScrolled);
 
-  const handleScrollY = useCallback((isScrolled: boolean) => {
-    setIsScrolled(isScrolled);
-  }, []);
+  const renderHeader = useCallback(() => {
+    return <ItemDetailsPagerView item={data} onScrollY={setIsScrolled} />;
+  }, [data]);
 
   return (
-    <Tabs.Container
-      renderHeader={() => <ItemDetailsHeader item={data} onScrollY={handleScrollY} />}
-      headerHeight={250} // optional
-      // minHeaderHeight={100}
-      // headerContainerStyle={{ paddingTop: top }}
-      // allowHeaderOverscroll
-      revealHeaderOnScroll
-    >
+    <Tabs.Container renderHeader={renderHeader} revealHeaderOnScroll>
       <Tabs.Tab name="A">
         <Tabs.ScrollView>
           <FirstRoute />
         </Tabs.ScrollView>
       </Tabs.Tab>
       <Tabs.Tab name="B">
-        r
         <Tabs.ScrollView>
           <SecondRoute />
         </Tabs.ScrollView>
       </Tabs.Tab>
     </Tabs.Container>
   );
+
+  // return <ItemDetailsPagerView item={data} onScrollY={handleScrollY} />;
 }
 
 const stylesheet = createStyleSheet({
