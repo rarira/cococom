@@ -1,25 +1,27 @@
-import { Tables } from '@cococom/supabase/types';
+import { JoinedItems } from '@cococom/supabase/types';
 import { Image } from 'expo-image';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { View } from 'react-native';
 import { useCurrentTabScrollY } from 'react-native-collapsible-tab-view';
 import PagerView from 'react-native-pager-view';
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import ItemDetailsPagerGraphPageView from '../&page/graph';
 
-interface ItemDetailsPagerViewProps {
+interface ItemDetailsPagerWrapperViewProps {
   onScrollY: (value: boolean) => void;
-  item?: Tables<'items'>;
+  item?: JoinedItems;
 }
 
-const ItemDetailsPagerView = memo(function ItemDetailsPagerView({
+const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   onScrollY,
   item,
-}: ItemDetailsPagerViewProps) {
+}: ItemDetailsPagerWrapperViewProps) {
   const { styles } = useStyles(stylesheet);
   const scrollY = useCurrentTabScrollY();
+
+  const isWholeProduct = item?.lowestPrice === 0;
 
   useAnimatedReaction(
     () => scrollY.value > 0,
@@ -30,6 +32,20 @@ const ItemDetailsPagerView = memo(function ItemDetailsPagerView({
       }
     },
   );
+
+  const GraphPages = useMemo(() => {
+    const graphValueFieldArray =
+      item?.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
+
+    return graphValueFieldArray.map((valueField, index) => (
+      <View style={styles.page} key={index + 1} collapsable={false}>
+        <ItemDetailsPagerGraphPageView
+          discountsData={item?.discounts}
+          valueField={valueField as any}
+        />
+      </View>
+    ));
+  }, [item?.discounts, item?.lowestPrice, styles.page]);
 
   if (!item) return null;
 
@@ -45,12 +61,7 @@ const ItemDetailsPagerView = memo(function ItemDetailsPagerView({
         <View style={styles.page} key="1" collapsable={false}>
           <Image source={`https://picsum.photos/500/500`} style={styles.image} />
         </View>
-        <View style={styles.page} key="2" collapsable={false}>
-          <Text>Second page</Text>
-        </View>
-        <View style={styles.page} key="3" collapsable={false}>
-          <Text>Third page</Text>
-        </View>
+        {GraphPages}
       </PagerView>
     </View>
   );
@@ -60,12 +71,11 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     width: '100%',
     aspectRatio: 3 / 2,
+    backgroundColor: theme.colors.background,
   },
   page: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   image: {
     flex: 1,
@@ -74,4 +84,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default ItemDetailsPagerView;
+export default ItemDetailsPagerWrapperView;

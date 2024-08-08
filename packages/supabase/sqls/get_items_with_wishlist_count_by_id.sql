@@ -25,9 +25,13 @@ BEGIN
     'discounts', (
       CASE
         WHEN need_discounts THEN
-          (SELECT json_agg(d2)
-          FROM discounts d2
-          WHERE d2."itemId" = i."itemId")
+          (SELECT json_agg(sorted_discounts)
+          FROM (
+            SELECT *
+            FROM discounts d2
+            WHERE d2."itemId" = i."itemId"
+            ORDER BY d2."startDate" ASC
+          ) AS sorted_discounts)
         ELSE
           NULL
       END
