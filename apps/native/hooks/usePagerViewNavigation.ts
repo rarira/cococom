@@ -8,7 +8,6 @@ export function usePagerViewNavigation() {
 
   const handlePageSelected = useCallback(
     ({ nativeEvent }: { nativeEvent: { position: number } }) => {
-      console.log('will set active page', nativeEvent.position);
       setActivePage(nativeEvent.position);
     },
     [],
