@@ -85,7 +85,9 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>{titleText}</Text>
-        <Text style={styles.subTitleText}>{`(최근 ${maxRecordsToShow} 건, 단위 ${unitText})`}</Text>
+        <Text
+          style={styles.subTitleText}
+        >{`(최근 최대 ${maxRecordsToShow} 건, 단위 ${unitText})`}</Text>
       </View>
       <View style={styles.graphContainer}>
         <YAxis
@@ -123,7 +125,7 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
             xAccessor={({ item }) => parseISO(item)}
             scale={scale.scaleTime}
             style={styles.XAxis}
-            contentInset={{ left: -4, right: 26 }}
+            contentInset={{ left: -4, right: 28 }}
             formatLabel={value => format(value, 'yyyy-MM')}
           />
         </View>
@@ -152,14 +154,15 @@ const stylesheet = createStyleSheet(theme => ({
     fontWeight: 'bold',
   },
   subTitleText: {
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.xs,
     fontWeight: 'semibold',
     color: theme.colors.tint,
   },
   graphContainer: {
     flex: 1,
     flexDirection: 'row',
-    padding: theme.spacing.xl,
+    paddingVertical: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.md,
   },
   yAxis: {
     marginBottom: X_AXIS_HEIGHT,
@@ -170,7 +173,6 @@ const stylesheet = createStyleSheet(theme => ({
   },
   lineChart: {
     flex: 1,
-    width: 'auto',
     marginLeft: theme.spacing.lg,
   },
   XAxis: {

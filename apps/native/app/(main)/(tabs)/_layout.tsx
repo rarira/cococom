@@ -5,7 +5,7 @@ import React, { ComponentProps } from 'react';
 import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
+import TabBarIcon from '@/components/custom/navigation/tab-bar-icon';
 import { useUIStore } from '@/store/ui';
 
 export const unstable_settings = {

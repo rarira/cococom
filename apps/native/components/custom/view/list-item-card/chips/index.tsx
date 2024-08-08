@@ -54,7 +54,10 @@ function ListItemCardChipsView({ discount }: ListItemCardChipsViewProps) {
             key={chip.text}
             text={chip.text}
             style={{ backgroundColor: chip.color(theme) }}
-            textProps={{ style: chip.text === '곧마감' ? styles.alertText : undefined }}
+            textProps={{
+              style:
+                chip.text === '곧마감' || chip.text === '첫할인' ? styles.alertText : undefined,
+            }}
           />
         )),
     [discount, styles.alertText, theme],
