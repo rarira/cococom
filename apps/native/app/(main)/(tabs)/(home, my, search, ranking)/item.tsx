@@ -3,7 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { createStyleSheet } from 'react-native-unistyles';
 
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import Text from '@/components/ui/text';
@@ -64,10 +64,11 @@ const queryFn = (itemId: number, userId?: string) => () =>
 export default function ItemScreen() {
   const user = useUserStore(store => store.user);
   // const [scrollY, setScrollY] = useState<number>(0);
-  const { styles, theme } = useStyles(stylesheet);
   const { itemId } = useLocalSearchParams();
 
   const [isScrolled, setIsScrolled] = useState(false);
+
+  useTransparentHeader({ title: `Item: ${itemId}`, headerBackTitleVisible: false }, isScrolled);
 
   useHideTabBar();
 
@@ -77,8 +78,6 @@ export default function ItemScreen() {
   });
 
   console.log('itemData', data);
-
-  useTransparentHeader({ title: `Item: ${itemId}`, headerBackTitleVisible: false }, isScrolled);
 
   const renderHeader = useCallback(() => {
     return <ItemDetailsPagerWrapperView item={data} onScrollY={setIsScrolled} />;
