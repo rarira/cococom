@@ -21,7 +21,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   onScrollY,
   item,
 }: ItemDetailsPagerWrapperViewProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
   const scrollY = useCurrentTabScrollY();
 
   const { pagerViewRef, handlePageSelected, activePage, handleNavigateToPage } =
@@ -30,8 +30,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   useAnimatedReaction(
     () => scrollY.value > 0,
     (currentValue, previousValue) => {
-      if (currentValue !== previousValue) {
-        // do something ✨
+      if (!!previousValue && currentValue !== previousValue) {
         runOnJS(onScrollY)(currentValue);
       }
     },
