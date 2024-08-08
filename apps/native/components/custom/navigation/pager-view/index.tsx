@@ -15,7 +15,6 @@ const PagerViewNavigation = memo(function PagerViewNavigation({
 }: PagerViewNavigationProps) {
   const { styles } = useStyles(stylesheet);
 
-  console.log('rendering pager view navigation', activePage);
   return (
     <View style={styles.container}>
       {Array.from({ length: pageLength }).map((_, index) => (
