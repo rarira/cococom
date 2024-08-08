@@ -7,6 +7,9 @@ import PagerView from 'react-native-pager-view';
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { usePagerViewNavigation } from '@/hooks/usePagerViewNavigation';
+
+import ItemDetailsPagerNavView from '../&nav';
 import ItemDetailsPagerGraphPageView from '../&page/graph';
 
 interface ItemDetailsPagerWrapperViewProps {
@@ -18,10 +21,11 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   onScrollY,
   item,
 }: ItemDetailsPagerWrapperViewProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const scrollY = useCurrentTabScrollY();
 
-  const isWholeProduct = item?.lowestPrice === 0;
+  const { pagerViewRef, handlePageSelected, activePage, handleNavigateToPage } =
+    usePagerViewNavigation();
 
   useAnimatedReaction(
     () => scrollY.value > 0,
@@ -52,17 +56,24 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   return (
     <View style={styles.container}>
       <PagerView
+        ref={pagerViewRef}
         style={styles.container}
         initialPage={0}
         useNext={false}
         scrollEnabled
         orientation="horizontal"
+        onPageSelected={handlePageSelected}
       >
         <View style={styles.page} key="1" collapsable={false}>
           <Image source={`https://picsum.photos/500/500`} style={styles.image} />
         </View>
         {GraphPages}
       </PagerView>
+      <ItemDetailsPagerNavView
+        activePage={activePage}
+        handleNavigateToPage={handleNavigateToPage}
+        totalPages={GraphPages.length + 1}
+      />
     </View>
   );
 });
@@ -72,6 +83,7 @@ const stylesheet = createStyleSheet(theme => ({
     width: '100%',
     aspectRatio: 3 / 2,
     backgroundColor: theme.colors.background,
+    position: 'relative',
   },
   page: {
     width: '100%',
