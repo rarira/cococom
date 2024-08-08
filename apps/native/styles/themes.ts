@@ -23,6 +23,7 @@ const commonTheme = {
   colors: {
     link: '#0a7ea4',
     alert: '#ff0000',
+    graphStroke: '#8641f4',
   },
   screenHorizontalPadding: 16,
 } as const;

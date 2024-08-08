@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ItemDetailsPagerView from '@/components/custom/view/pager/item-details';
+import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
@@ -54,7 +54,12 @@ const FirstRoute = () => (
   </View>
 );
 
-const SecondRoute = () => <View style={{ flex: 1, backgroundColor: '#673ab7' }} />;
+const SecondRoute = () => {
+  return <View style={{ flex: 1, backgroundColor: '#673ab7' }}></View>;
+};
+
+const queryFn = (itemId: number, userId?: string) => () =>
+  supabase.fetchItemsWithWishlistCount(itemId, userId, true);
 
 export default function ItemScreen() {
   const user = useUserStore(store => store.user);
@@ -68,7 +73,7 @@ export default function ItemScreen() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.items.byId(+itemId),
-    queryFn: () => supabase.fetchItemsWithWishlistCount(+itemId, user?.id, true),
+    queryFn: queryFn(+itemId, user?.id),
   });
 
   console.log('itemData', data);
@@ -76,7 +81,7 @@ export default function ItemScreen() {
   useTransparentHeader({ title: `Item: ${itemId}`, headerBackTitleVisible: false }, isScrolled);
 
   const renderHeader = useCallback(() => {
-    return <ItemDetailsPagerView item={data} onScrollY={setIsScrolled} />;
+    return <ItemDetailsPagerWrapperView item={data} onScrollY={setIsScrolled} />;
   }, [data]);
 
   return (

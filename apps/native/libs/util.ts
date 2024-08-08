@@ -1,5 +1,3 @@
-import { SearchHistory } from '@/hooks/search/useSearchHistory';
-
 const Util = {
   toWonString(value: number): string {
     return value.toLocaleString('ko-KR');
