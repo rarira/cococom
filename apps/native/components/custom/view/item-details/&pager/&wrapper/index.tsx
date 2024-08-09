@@ -14,7 +14,7 @@ import ItemDetailsPagerGraphPageView from '../&page/graph';
 
 interface ItemDetailsPagerWrapperViewProps {
   onScrollY: (value: boolean) => void;
-  item?: JoinedItems;
+  item: JoinedItems;
 }
 
 const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
@@ -30,7 +30,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   useAnimatedReaction(
     () => scrollY.value > 0,
     (currentValue, previousValue) => {
-      if (!!previousValue && currentValue !== previousValue) {
+      if (previousValue !== null && currentValue !== previousValue) {
         runOnJS(onScrollY)(currentValue);
       }
     },
@@ -38,19 +38,17 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
 
   const GraphPages = useMemo(() => {
     const graphValueFieldArray =
-      item?.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
+      item.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
 
     return graphValueFieldArray.map((valueField, index) => (
       <View style={styles.page} key={index + 1} collapsable={false}>
         <ItemDetailsPagerGraphPageView
-          discountsData={item?.discounts}
+          discountsData={item.discounts}
           valueField={valueField as any}
         />
       </View>
     ));
-  }, [item?.discounts, item?.lowestPrice, styles.page]);
-
-  if (!item) return null;
+  }, [item.discounts, item.lowestPrice, styles.page]);
 
   return (
     <View style={styles.container}>
@@ -81,7 +79,7 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     width: '100%',
     aspectRatio: 3 / 2,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.cardBackground,
     position: 'relative',
   },
   page: {

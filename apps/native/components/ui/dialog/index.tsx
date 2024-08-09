@@ -51,7 +51,7 @@ function Dialog({
         <View style={styles.scrim}>
           {backdropDismiss && <Button onPress={handleDismiss} style={styles.backdropButton} />}
           <View style={styles.modal}>
-            <Text type="subtitle" style={styles.titleText}>
+            <Text type="title" style={styles.titleText}>
               {title}
             </Text>
             <Text style={styles.bodyText}>{body}</Text>
