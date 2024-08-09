@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { forwardRef, memo } from 'react';
 import { Text as NativeText, type TextProps as NativeTextProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -6,23 +6,26 @@ export type TextProps = NativeTextProps & {
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
-const Text = memo(function Text({ style, type = 'default', ...rest }: TextProps) {
-  const { styles } = useStyles(stylesheet);
+const Text = memo(
+  forwardRef(function Text({ style, type = 'default', ...rest }: TextProps, ref) {
+    const { styles } = useStyles(stylesheet);
 
-  return (
-    <NativeText
-      style={[
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
-});
+    return (
+      <NativeText
+        ref={ref as any}
+        style={[
+          type === 'default' ? styles.default : undefined,
+          type === 'title' ? styles.title : undefined,
+          type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
+          type === 'subtitle' ? styles.subtitle : undefined,
+          type === 'link' ? styles.link : undefined,
+          style,
+        ]}
+        {...rest}
+      />
+    );
+  }),
+);
 
 const stylesheet = createStyleSheet(theme => {
   const commonStyles = {
@@ -43,14 +46,14 @@ const stylesheet = createStyleSheet(theme => {
     },
     title: {
       ...commonStyles,
-      fontSize: theme.fontSize.xl,
+      fontSize: theme.fontSize.lg,
       fontWeight: 'bold',
-      lineHeight: 32,
+      lineHeight: theme.fontSize.lg * 1.5,
     },
     subtitle: {
       ...commonStyles,
-      fontSize: theme.fontSize.lg,
-      lineHeight: theme.fontSize.lg * 1.5,
+      fontSize: theme.fontSize.md,
+      lineHeight: theme.fontSize.md * 1.5,
       fontWeight: 'bold',
     },
     link: {
