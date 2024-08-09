@@ -3,8 +3,9 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { createStyleSheet } from 'react-native-unistyles';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import Text from '@/components/ui/text';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
@@ -61,14 +62,15 @@ const SecondRoute = () => {
 const queryFn = (itemId: number, userId?: string) => () =>
   supabase.fetchItemsWithWishlistCount(itemId, userId, true);
 
+const numberOfLines = 2;
+
 export default function ItemScreen() {
+  const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
   // const [scrollY, setScrollY] = useState<number>(0);
   const { itemId } = useLocalSearchParams();
 
   const [isScrolled, setIsScrolled] = useState(false);
-
-  useTransparentHeader({ title: `Item: ${itemId}`, headerBackTitleVisible: false }, isScrolled);
 
   useHideTabBar();
 
@@ -77,11 +79,32 @@ export default function ItemScreen() {
     queryFn: queryFn(+itemId, user?.id),
   });
 
+  useTransparentHeader(
+    {
+      title: data?.itemName,
+      headerBackTitleVisible: false,
+      headerRight: () => (
+        <>
+          <Text>Share</Text>
+          <Text>Like</Text>
+        </>
+      ),
+    },
+    isScrolled,
+  );
+
   console.log('itemData', data);
 
   const renderHeader = useCallback(() => {
-    return <ItemDetailsPagerWrapperView item={data} onScrollY={setIsScrolled} />;
-  }, [data]);
+    if (!data) return null;
+
+    return (
+      <View style={styles.headerContainer}>
+        <ItemDetailsPagerWrapperView item={data} onScrollY={setIsScrolled} />
+        <ItemDetailsHeaderInfoView item={data} />
+      </View>
+    );
+  }, [data, styles.headerContainer]);
 
   return (
     <Tabs.Container renderHeader={renderHeader} revealHeaderOnScroll>
@@ -101,19 +124,16 @@ export default function ItemScreen() {
   // return <ItemDetailsPagerView item={data} onScrollY={handleScrollY} />;
 }
 
-const stylesheet = createStyleSheet({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  pagerView: {
+const stylesheet = createStyleSheet(theme => ({
+  headerContainer: { backgroundColor: theme.colors.background },
+  headerTitleContainer: { flex: 1, paddingEnd: 100 },
+  headerTitleText: {
+    fontSize: theme.fontSize.md,
+    lineHeight: theme.fontSize.md * 1.2,
     flex: 1,
-  },
-  header: {
-    height: 250,
+    flexWrap: 'wrap',
     width: '100%',
-    backgroundColor: '#2196f3',
+    textAlign: 'left',
+    fontWeight: 'bold',
   },
-});
+}));

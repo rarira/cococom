@@ -19,6 +19,11 @@ export function useTransparentHeader(options: Record<string, any>, transparent?:
           }
         : {}),
       headerTintColor: theme.colors.typography,
+      headerTitleStyle: {
+        paddingStart: 0,
+        fontSize: theme.fontSize.sm,
+        fontWeight: 'bold',
+      },
       ...options,
     });
   }, [

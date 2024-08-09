@@ -25,6 +25,9 @@ const ArrowNavButton = memo(function ArrowNavButton({
           type: 'MaterialIcon',
           name: `keyboard-arrow-${direction}`,
         },
+        style: {
+          left: -1,
+        },
         ...iconProps,
       }}
       style={state => [styles.container, typeof style === 'function' ? style(state) : style]}
