@@ -30,9 +30,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         ios: {
           useFrameworks: 'static',
+          newArchEnabled: true,
         },
         android: {
           extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
+          newArchEnabled: true,
         },
       },
     ],
