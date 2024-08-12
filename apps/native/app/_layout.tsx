@@ -22,13 +22,19 @@ import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect, useMemo } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UnistylesRuntime } from 'react-native-unistyles';
 
 import { useLoadUser } from '@/hooks/useLoadUser';
+
+LogBox.ignoreLogs([
+  'Support for defaultProps will be removed from',
+  'A props object containing',
+  'Failed prop type',
+]);
 
 setDefaultOptions({ locale: ko });
 
