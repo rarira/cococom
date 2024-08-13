@@ -9,14 +9,13 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
-import DiscountRateText from '@/components/custom/text/discount-rate';
-import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
-import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
+
+import DiscountPriceView from '../../../discount-price';
 
 interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
 
@@ -52,18 +51,16 @@ function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetail
       </Text>
       <View>
         <View style={styles.priceContainer}>
-          {isWholeProduct ? null : (
-            <>
-              <Text
-                style={styles.regularPriceText}
-              >{`\u20A9${Util.toWonString(discount.price)}`}</Text>
-              <DiscountRateText discountRate={discount.discountRate!} />
-            </>
+          {isWholeProduct ? (
+            <DiscountPriceView discount={discount.discount} isWholeProduct={isWholeProduct} />
+          ) : (
+            <DiscountPriceView
+              price={discount.price}
+              discountRate={discount.discountRate}
+              discountPrice={discount.discountPrice}
+              isWholeProduct={isWholeProduct}
+            />
           )}
-          <SuperscriptWonText
-            price={discount[isWholeProduct ? 'discount' : 'discountPrice']}
-            isMinus={isWholeProduct}
-          />
         </View>
         <View style={styles.miscInfoContainer}>
           <ListItemCardChipsView discount={discount} />

@@ -41,8 +41,8 @@ const stylesheets = createStyleSheet(theme => ({
     color: isMinus ? theme.colors.alert : theme.colors.typography,
   }),
   superscriptText: (fontSize?: number, isMinus?: boolean) => ({
-    fontSize: ((fontSize || theme.fontSize.md) * 2) / 3,
-    lineHeight: ((fontSize || theme.fontSize.md) * 2) / 3,
+    fontSize: fontSize || theme.fontSize.sm,
+    lineHeight: (fontSize || theme.fontSize.sm) * 1.3,
     color: isMinus ? theme.colors.alert : theme.colors.typography,
   }),
 }));
