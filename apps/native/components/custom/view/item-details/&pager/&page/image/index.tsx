@@ -80,6 +80,9 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
           onMutate={handleMutate}
         />
       </View>
+      <View style={styles.itemIdOverlay}>
+        <Text style={styles.itemIdText}>{item.itemId}</Text>
+      </View>
     </View>
   );
 });
@@ -117,6 +120,19 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.scrim,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
+  },
+  itemIdOverlay: {
+    position: 'absolute',
+    top: theme.spacing.md,
+    left: theme.spacing.md,
+    backgroundColor: theme.colors.scrim,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+  },
+  itemIdText: {
+    color: theme.colors.typography,
+    fontSize: theme.fontSize.sm,
+    fontWeight: 'semibold',
   },
 }));
 
