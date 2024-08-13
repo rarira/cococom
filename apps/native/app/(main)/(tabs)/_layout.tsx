@@ -38,9 +38,9 @@ const TabIcons: Record<
 };
 
 export default function TabLayout() {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useStyles(stylesheet);
 
-  const { tabBarVisible } = useUIStore();
+  const tabBarVisible = useUIStore(state => state.tabBarVisible);
 
   return (
     <Tabs

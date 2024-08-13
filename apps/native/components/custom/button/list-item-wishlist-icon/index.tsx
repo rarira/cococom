@@ -45,7 +45,6 @@ function ListItemWishlistIconButton<
 
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
-      console.log('newWishlist', { newWishlist, item });
       if (item.isWishlistedByUser) {
         return supabase.deleteWishlist(newWishlist);
       }
@@ -65,7 +64,6 @@ function ListItemWishlistIconButton<
   }, [item.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
 
   const handlePress = useCallback(() => {
-    console.log('handPress touch', wishlistMutation);
     if (!user) {
       setCallbackAfterSignIn(user => {
         requestAnimationFrame(() => {

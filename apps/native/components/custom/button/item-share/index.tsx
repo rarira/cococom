@@ -14,8 +14,6 @@ const ItemShareButton = memo(function ItemShareButton({ item, iconProps }: ItemS
   const { styles, theme } = useStyles(stylesheet);
 
   const handlePress = useCallback(async () => {
-    console.log('will share', item);
-
     if (item) {
       Share.share({ message: item.itemName!, url: 'cccom://item?itemId=' + item.id });
     }

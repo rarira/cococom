@@ -15,7 +15,7 @@ import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
-  const { categorySectorsArray } = useCategorySectorsStore();
+  const categorySectorsArray = useCategorySectorsStore(state => state.categorySectorsArray);
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
     categorySector: CategorySectors;
   }>();
