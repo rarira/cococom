@@ -3,7 +3,7 @@ import { useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
-export function useTransparentHeader(options: Record<string, any>, transparent?: boolean) {
+export function useTransparentHeader(options: Record<string, any>, transparent = true) {
   const { theme } = useStyles();
   const headerHeight = useHeaderHeight();
   const navigation = useNavigation();
@@ -21,7 +21,7 @@ export function useTransparentHeader(options: Record<string, any>, transparent?:
       headerTintColor: theme.colors.typography,
       headerTitleStyle: {
         paddingStart: 0,
-        fontSize: theme.fontSize.sm,
+        fontSize: (theme.fontSize.md + theme.fontSize.sm) / 2,
         fontWeight: 'bold',
       },
       ...options,

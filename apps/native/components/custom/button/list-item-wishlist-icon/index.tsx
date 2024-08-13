@@ -4,7 +4,7 @@ import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/re
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton from '@/components/ui/button/icon';
+import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
 import { PortalHostNames } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
@@ -19,13 +19,24 @@ interface ListItemWishlistIconButtonProps<
   portalHostName: PortalHostNames;
   queryKey: QueryKey;
   onMutate?: (queryClient: QueryClient) => (newWishlist: InsertWishlist) => Promise<{
-    previousData: T[] | InfiniteSearchResultData;
+    previousData: T | T[] | InfiniteSearchResultData;
   }>;
+  noText?: boolean;
+  iconProps?: Partial<Pick<IconButtonProps['iconProps'], 'size' | 'color'>>;
+  style?: IconButtonProps['style'];
 }
 
 function ListItemWishlistIconButton<
   T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
->({ item, portalHostName, queryKey, onMutate }: ListItemWishlistIconButtonProps<T>) {
+>({
+  item,
+  portalHostName,
+  queryKey,
+  onMutate,
+  noText,
+  iconProps,
+  style,
+}: ListItemWishlistIconButtonProps<T>) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
   const { user, setCallbackAfterSignIn } = useUserStore();
@@ -34,6 +45,7 @@ function ListItemWishlistIconButton<
 
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
+      console.log('newWishlist', { newWishlist, item });
       if (item.isWishlistedByUser) {
         return supabase.deleteWishlist(newWishlist);
       }
@@ -45,7 +57,7 @@ function ListItemWishlistIconButton<
     },
   });
 
-  const iconProps = useMemo(() => {
+  const iconPropsToPass = useMemo(() => {
     return {
       name: item.isWishlistedByUser ? 'star' : ('star-border' as any),
       color: item.isWishlistedByUser ? theme.colors.alert : theme.colors.typography,
@@ -53,6 +65,7 @@ function ListItemWishlistIconButton<
   }, [item.isWishlistedByUser, theme.colors.alert, theme.colors.typography]);
 
   const handlePress = useCallback(() => {
+    console.log('handPress touch', wishlistMutation);
     if (!user) {
       setCallbackAfterSignIn(user => {
         requestAnimationFrame(() => {
@@ -71,15 +84,19 @@ function ListItemWishlistIconButton<
       itemId: item.id,
       userId: user.id,
     });
-  }, [item.id, setCallbackAfterSignIn, user, wishlistMutation]);
+  }, [item, setCallbackAfterSignIn, user, wishlistMutation]);
 
   return (
     <>
       <IconButton
-        text={item.totalWishlistCount.toString()}
-        textStyle={styles.text}
-        iconProps={{ font: { type: 'MaterialIcon', name: iconProps.name }, color: iconProps.color }}
+        {...(!noText && { text: item.totalWishlistCount.toString(), textStyle: styles.text })}
+        iconProps={{
+          font: { type: 'MaterialIcon', name: iconPropsToPass.name },
+          color: iconPropsToPass.color,
+          ...iconProps,
+        }}
         onPress={handlePress}
+        style={style}
       />
       {needAuthDialogVisible && (
         <NeedAuthDialog

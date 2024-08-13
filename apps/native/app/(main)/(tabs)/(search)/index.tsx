@@ -36,6 +36,7 @@ export default function SearchScreen() {
     sortOption,
     handleSortChange,
     totalResults,
+    queryKey,
   } = useSearchInput({ addSearchHistory });
 
   useLayoutEffect(() => {
@@ -87,6 +88,7 @@ export default function SearchScreen() {
             sortOption={sortOption}
             totalResults={totalResults}
             onPressHeaderRightButton={handleSortBottomSheetPresent}
+            queryKey={queryKey}
           />
         </View>
       )}

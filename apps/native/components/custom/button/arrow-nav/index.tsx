@@ -26,7 +26,7 @@ const ArrowNavButton = memo(function ArrowNavButton({
           name: `keyboard-arrow-${direction}`,
         },
         style: {
-          left: -1,
+          left: direction === 'left' ? -3 : -2,
         },
         ...iconProps,
       }}

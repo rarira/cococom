@@ -14,7 +14,7 @@ import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
+import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
@@ -22,8 +22,7 @@ interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardP
 
 function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
-  const { user } = useUserStore();
-
+  const user = useUserStore(store => store.user);
   const isWholeProduct = discount.discountPrice === 0;
 
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
@@ -37,32 +36,13 @@ function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetail
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(queryKey) as unknown as JoinedItems[];
-
-      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
-
-      const item = discount.items;
-
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (discountIndex === -1) return old;
-        const updatedDiscount = {
-          ...old[discountIndex],
-          items: {
-            ...old[discountIndex].items,
-            totalWishlistCount: item.isWishlistedByUser
-              ? item.totalWishlistCount - 1
-              : item.totalWishlistCount + 1,
-            isWishlistedByUser: !item.isWishlistedByUser,
-          },
-        };
-
-        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
+      return await handleMutateOfDiscountCurrentList({
+        queryClient,
+        queryKey,
+        newWishlist,
       });
-
-      return { previousData };
     },
-    [discount.items, queryKey],
+    [queryKey],
   );
 
   return (

@@ -20,15 +20,22 @@ const NumberOfColumns = 1;
 export default function DiscountList({ currentSort }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading } = useDiscountListQuery(currentSort);
+  const { data, error, isLoading, queryKey } = useDiscountListQuery(currentSort);
 
   const tabBarHeight = useBottomTabBarHeight();
 
   const renderItem = useCallback(
     ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <DiscountListItemCard discount={item} numColumns={NumberOfColumns} key={item.id} />;
+      return (
+        <DiscountListItemCard
+          discount={item}
+          numColumns={NumberOfColumns}
+          key={item.id}
+          queryKeyOfList={queryKey}
+        />
+      );
     },
-    [],
+    [queryKey],
   );
 
   if (error || !data || isLoading) return null;
