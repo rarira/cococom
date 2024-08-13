@@ -26,7 +26,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
   const [sortOption, setSortOption] = useState<keyof typeof ITEM_SORT_OPTIONS>('itemNameAsc');
 
-  const { user } = useUserStore();
+  const user = useUserStore(store => store.user);
 
   const {
     keyword: keywordParam,
@@ -50,15 +50,17 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const isOnSaleSearch = optionsToSearch.includes('on_sale');
   const isItemIdSearch = optionsToSearch.includes('item_id');
 
+  const queryKey = queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+    keywordToSearch,
+    isOnSaleSearch,
+    ITEM_SORT_OPTIONS[sortOption].field,
+    ITEM_SORT_OPTIONS[sortOption].direction,
+    user?.id,
+  );
   const { data, isFetching, isSuccess, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteSearchResultPages>({
-      queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-        keywordToSearch,
-        isOnSaleSearch,
-        ITEM_SORT_OPTIONS[sortOption].field,
-        ITEM_SORT_OPTIONS[sortOption].direction,
-        user?.id,
-      ),
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryKey,
       queryFn: ({ pageParam }) => {
         if (isItemIdSearch) {
           return supabase.fullTextSearchItemsByItemId(
@@ -156,5 +158,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     sortOption,
     handleSortChange,
     totalResults: data?.pages[0].totalRecords ?? null,
+    queryKey,
   };
 }

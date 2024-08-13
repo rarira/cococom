@@ -11,9 +11,10 @@ import Chip from '@/components/ui/chip';
 import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
+import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
@@ -29,7 +30,11 @@ function SearchResultListItemCardDetailView({
 }: SearchResultListItemCardDetailViewProps) {
   const { styles } = useStyles(stylesheets);
 
-  const { user } = useUserStore();
+  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
+    state.setQueryKeyOfList,
+    state.setPageIndexOfInfinteList,
+  ]);
+  const user = useUserStore(store => store.user);
 
   const isWholeProduct = item.lowestPrice === 0;
 
@@ -47,47 +52,14 @@ function SearchResultListItemCardDetailView({
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(
+      return await handleMutateOfSearchResult({
+        queryClient,
         queryKey,
-      ) as unknown as InfiniteSearchResultData;
-
-      const itemIndex = previousData.pages[item.pageIndex].items.findIndex(
-        item => item.id === newWishlist.itemId,
-      );
-
-      queryClient.setQueryData(queryKey, (old: InfiniteSearchResultData) => {
-        if (itemIndex === -1) return old;
-        const updatedItem = {
-          ...old.pages[item.pageIndex].items[itemIndex],
-          totalWishlistCount: item.isWishlistedByUser
-            ? item.totalWishlistCount - 1
-            : item.totalWishlistCount + 1,
-          isWishlistedByUser: !item.isWishlistedByUser,
-        };
-
-        const { items, ...restPages } = old.pages[item.pageIndex];
-
-        const updatedPage = {
-          ...restPages,
-          items: [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)],
-        };
-
-        const { pages, ...restOld } = old;
-
-        return {
-          ...restOld,
-          pages: [
-            ...pages.slice(0, item.pageIndex),
-            updatedPage,
-            ...pages.slice(item.pageIndex + 1),
-          ],
-        };
+        newWishlist,
+        pageIndexOfItem: item.pageIndex,
       });
-
-      return { previousData };
     },
-    [item.isWishlistedByUser, item.pageIndex, item.totalWishlistCount, queryKey],
+    [item.pageIndex, queryKey],
   );
 
   return (

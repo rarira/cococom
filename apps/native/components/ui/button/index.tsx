@@ -12,7 +12,7 @@ function Button({ style, ...restProps }: ButtonProps) {
         styles.container(state.pressed),
         typeof style === 'function' ? style(state) : style,
       ]}
-      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      hitSlop={10}
       {...restProps}
     />
   );

@@ -16,7 +16,6 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.6.0",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.12.7",
     "prisma": "^5.13.0",
