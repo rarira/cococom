@@ -95,7 +95,6 @@ export default function ItemScreen() {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        console.log('ItemScreen unmount');
         setQueryKeyOfList(null);
         setPageIndexOfInfinteList(null);
       };

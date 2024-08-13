@@ -40,7 +40,6 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async () => {
-      console.log('queryKeyOfList', queryKeyOfList);
       if (queryKeyOfList?.[0] === 'discounts') {
         handleMutateOfDiscountCurrentList({
           queryClient,
@@ -70,15 +69,19 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
         </Text>
       </View>
       <View style={styles.buttonOverlay}>
-        <ItemShareButton item={item} />
-        <ListItemWishlistIconButton<JoinedItems>
-          item={item}
-          noText
-          iconProps={{ size: theme.fontSize.lg }}
-          portalHostName={PortalHostNames.ITEM_DETAILS}
-          queryKey={queryKey}
-          onMutate={handleMutate}
-        />
+        <View style={styles.buttonBackground}>
+          <ItemShareButton item={item} />
+        </View>
+        <View style={styles.buttonBackground}>
+          <ListItemWishlistIconButton<JoinedItems>
+            item={item}
+            // noText
+            iconProps={{ size: theme.fontSize.lg }}
+            portalHostName={PortalHostNames.ITEM_DETAILS}
+            queryKey={queryKey}
+            onMutate={handleMutate}
+          />
+        </View>
       </View>
       <View style={styles.itemIdOverlay}>
         <Text style={styles.itemIdText}>{item.itemId}</Text>
@@ -117,6 +120,12 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'row',
     top: theme.spacing.md,
     right: theme.spacing.md,
+    // backgroundColor: theme.colors.scrim,
+    // padding: theme.spacing.sm,
+    // borderRadius: theme.borderRadius.md,
+    gap: theme.spacing.md,
+  },
+  buttonBackground: {
     backgroundColor: theme.colors.scrim,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
