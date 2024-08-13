@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useLayoutEffect } from 'react';
 
-import { ListItemCardProps } from '@/components/custom/card/list-item';
+import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import { queryKeys } from '@/libs/react-query';
 import { DISCOUNT_SORT_OPTIONS, updateDiscountsByCategorySectorCache } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
@@ -28,7 +28,7 @@ function fetchCurrentDiscounts({
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
 export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPTIONS) {
-  const { user } = useUserStore();
+  const user = useUserStore(store => store.user);
 
   const { categorySector } = useLocalSearchParams<{ categorySector: CategorySectors }>();
 
@@ -45,7 +45,7 @@ export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPT
         return fetchCurrentDiscounts({ userId: user?.id, categorySector });
       }
 
-      return isCached as ListItemCardProps['discount'][];
+      return isCached as DiscountListItemCardProps['discount'][];
     },
   });
 
@@ -60,5 +60,5 @@ export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPT
     }
   }, [categorySector, currentSort, isFetched, queryClient, user?.id]);
 
-  return { data, error, isLoading };
+  return { data, error, isLoading, queryKey };
 }

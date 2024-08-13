@@ -1,6 +1,7 @@
 import { PortalHost } from '@gorhom/portal';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { QueryKey } from '@tanstack/react-query';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -18,6 +19,7 @@ interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRen
   sortOption: keyof typeof ITEM_SORT_OPTIONS;
   totalResults: number | null;
   onPressHeaderRightButton: () => void;
+  queryKey: QueryKey;
 }
 
 const SearchResultList = memo(function SearchResultList({
@@ -26,6 +28,7 @@ const SearchResultList = memo(function SearchResultList({
   sortOption,
   totalResults,
   onPressHeaderRightButton,
+  queryKey,
   ...restProps
 }: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
@@ -39,6 +42,7 @@ const SearchResultList = memo(function SearchResultList({
           key={item.id}
           item={item}
           sortOption={sortOption}
+          queryKey={queryKey}
           {...searchQueryParams}
         />
       );

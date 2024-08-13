@@ -11,7 +11,7 @@ import { useUserStore } from '@/store/user';
 export default function MyScreen() {
   const { styles } = useStyles(stylesheet);
 
-  const { user, setUser } = useUserStore();
+  const { user, setUser } = useUserStore(state => ({ user: state.user, setUser: state.setUser }));
 
   const { top } = useSafeAreaInsets();
 

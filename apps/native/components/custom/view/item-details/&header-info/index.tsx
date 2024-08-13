@@ -21,7 +21,7 @@ const ItemDetailsHeaderInfoView = memo(function ItemDetailsHeaderInfoView({
   return (
     <View style={styles.container}>
       <Text type="subtitle" numberOfLines={2} style={styles.title}>
-        {item.itemName}
+        {/* {item.itemName} */}
       </Text>
     </View>
   );

@@ -51,7 +51,8 @@ const stylesheet = createStyleSheet(theme => ({
     position: 'absolute',
     [direction]: theme.spacing.md,
     justifyContent: 'center',
-    height: '100%',
+    top: '50%',
+    transform: [{ translateY: -theme.fontSize.xxl / 2 }],
   }),
 }));
 

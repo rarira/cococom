@@ -1,6 +1,7 @@
+import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -8,14 +9,16 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import Text from '@/components/ui/text';
+import { PortalHostNames } from '@/constants';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
 const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }}>
+  <View style={{ flex: 1, backgroundColor: '#ff4081', paddingBottom: 50 }}>
     <Text>
       What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting
       industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when
@@ -62,16 +65,18 @@ const SecondRoute = () => {
 const queryFn = (itemId: number, userId?: string) => () =>
   supabase.fetchItemsWithWishlistCount(itemId, userId, true);
 
-const numberOfLines = 2;
-
 export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
-  // const [scrollY, setScrollY] = useState<number>(0);
+  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
+    state.setQueryKeyOfList,
+    state.setPageIndexOfInfinteList,
+  ]);
   const { itemId } = useLocalSearchParams();
 
-  const [isScrolled, setIsScrolled] = useState(false);
+  // const [isScrolled, setIsScrolled] = useState(false);
 
+  console.log({ itemId });
   useHideTabBar();
 
   const { data, isLoading, error } = useQuery({
@@ -83,57 +88,50 @@ export default function ItemScreen() {
     {
       title: data?.itemName,
       headerBackTitleVisible: false,
-      headerRight: () => (
-        <>
-          <Text>Share</Text>
-          <Text>Like</Text>
-        </>
-      ),
     },
-    isScrolled,
+    // isScrolled,
   );
 
-  console.log('itemData', data);
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        console.log('ItemScreen unmount');
+        setQueryKeyOfList(null);
+        setPageIndexOfInfinteList(null);
+      };
+    }, [setPageIndexOfInfinteList, setQueryKeyOfList]),
+  );
 
   const renderHeader = useCallback(() => {
     if (!data) return null;
 
     return (
       <View style={styles.headerContainer}>
-        <ItemDetailsPagerWrapperView item={data} onScrollY={setIsScrolled} />
+        <ItemDetailsPagerWrapperView item={data} />
         <ItemDetailsHeaderInfoView item={data} />
       </View>
     );
   }, [data, styles.headerContainer]);
 
   return (
-    <Tabs.Container renderHeader={renderHeader} revealHeaderOnScroll>
-      <Tabs.Tab name="A">
-        <Tabs.ScrollView>
-          <FirstRoute />
-        </Tabs.ScrollView>
-      </Tabs.Tab>
-      <Tabs.Tab name="B">
-        <Tabs.ScrollView>
-          <SecondRoute />
-        </Tabs.ScrollView>
-      </Tabs.Tab>
-    </Tabs.Container>
+    <View style={{ flex: 1, paddingBottom: 50 }}>
+      <Tabs.Container renderHeader={renderHeader} revealHeaderOnScroll>
+        <Tabs.Tab name="A">
+          <Tabs.ScrollView>
+            <FirstRoute />
+          </Tabs.ScrollView>
+        </Tabs.Tab>
+        <Tabs.Tab name="B">
+          <Tabs.ScrollView>
+            <SecondRoute />
+          </Tabs.ScrollView>
+        </Tabs.Tab>
+      </Tabs.Container>
+      <PortalHost name={PortalHostNames.ITEM_DETAILS} />
+    </View>
   );
-
-  // return <ItemDetailsPagerView item={data} onScrollY={handleScrollY} />;
 }
 
 const stylesheet = createStyleSheet(theme => ({
   headerContainer: { backgroundColor: theme.colors.background },
-  headerTitleContainer: { flex: 1, paddingEnd: 100 },
-  headerTitleText: {
-    fontSize: theme.fontSize.md,
-    lineHeight: theme.fontSize.md * 1.2,
-    flex: 1,
-    flexWrap: 'wrap',
-    width: '100%',
-    textAlign: 'left',
-    fontWeight: 'bold',
-  },
 }));
