@@ -17,7 +17,6 @@ export default function HomeLayout() {
           backgroundColor: theme.colors.background,
         },
       }}
-      // initialRouteName="index"
     >
       <Stack.Screen name="index" options={{ title: '홈', headerShown: false }} />
       <Stack.Screen name="sales" />
