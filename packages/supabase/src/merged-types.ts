@@ -10,6 +10,7 @@ export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
   discounts: Array<Tables<'discounts'>> | null;
   discountsLength: number;
+  memosLength: number | null;
   totalWishlistCount: number;
   isWishlistedByUser: boolean;
 };

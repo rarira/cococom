@@ -37,6 +37,16 @@ BEGIN
           NULL
       END
     ),
+    'memosLength', (
+      CASE
+        WHEN user_id IS NOT NULL THEN
+          (SELECT COUNT(*)
+          FROM memos m
+          WHERE m."itemId" = i."id" AND m."userId" = user_id)
+        ELSE
+          NULL
+      END
+    ),
     'totalWishlistCount', (
       SELECT COUNT(*)
       FROM wishlists w
