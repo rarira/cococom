@@ -101,7 +101,7 @@ export default function ItemScreen() {
             <SecondRoute />
           </Tabs.ScrollView>
         </Tabs.Tab>
-        <Tabs.Tab name={`메모(3)`}>
+        <Tabs.Tab name={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
           <Tabs.ScrollView>
             <SecondRoute />
           </Tabs.ScrollView>
