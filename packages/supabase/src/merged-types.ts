@@ -48,7 +48,7 @@ export type Database = MergeDeep<
             discountPrice: number;
             discountRate: number;
             discount: number;
-            items: JoinedItems;
+            items: Omit<JoinedItems, 'discounts'>;
           }[];
         };
         search_items_by_itemid: {

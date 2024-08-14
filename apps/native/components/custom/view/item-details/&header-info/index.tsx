@@ -8,6 +8,7 @@ import Text from '@/components/ui/text';
 import { getDiscountInfoFromItem } from '@/libs/item';
 
 import DiscountPriceView from '../../discount-price';
+import DiscountRecordView from '../../discount-record';
 import ListItemCardChipsView from '../../list-item-card/chips';
 
 interface ItemDetailsHeaderInfoViewProps {
@@ -25,34 +26,31 @@ const ItemDetailsHeaderInfoView = memo(function ItemDetailsHeaderInfoView({
     <View style={styles.container}>
       {isOnSaleNow && (
         <>
-          <ListItemCardChipsView
-            discount={discount!}
-            item={item}
-            style={styles.chipViewContainer}
-          />
+          <ListItemCardChipsView discount={discount} item={item} style={styles.chipViewContainer} />
           <View style={styles.saleInfoContainer}>
             <View style={styles.periodContainer}>
               <Text style={styles.onSaleText}>할인중</Text>
-              <DiscountPeriodText startDate={discount!.startDate} endDate={discount!.endDate} />
+              <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
             </View>
             {isWholeProduct ? (
               <DiscountPriceView
                 isWholeProduct
-                discount={discount!.discount}
+                discount={discount.discount}
                 style={styles.priceViewContainer}
               />
             ) : (
               <DiscountPriceView
                 isWholeProduct={false}
-                price={discount!.price}
-                discountPrice={discount!.discountPrice}
-                discountRate={discount!.discountRate!}
+                price={discount.price}
+                discountPrice={discount.discountPrice}
+                discountRate={discount.discountRate!}
                 style={styles.priceViewContainer}
               />
             )}
           </View>
         </>
       )}
+      <DiscountRecordView item={item} isWholeProduct={isWholeProduct} infoDirection="row" />
     </View>
   );
 });

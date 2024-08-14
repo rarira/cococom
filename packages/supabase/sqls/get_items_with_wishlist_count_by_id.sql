@@ -30,7 +30,8 @@ BEGIN
             SELECT *
             FROM discounts d2
             WHERE d2."itemId" = i."itemId"
-            ORDER BY d2."startDate" ASC
+            ORDER BY d2."startDate" DESC
+            LIMIT 10
           ) AS sorted_discounts)
         ELSE
           NULL

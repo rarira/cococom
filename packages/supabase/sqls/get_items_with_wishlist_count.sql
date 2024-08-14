@@ -18,16 +18,16 @@ BEGIN
       FROM discounts d
       WHERE d."itemId" = i."itemId"
     ),
-    'discounts', (
-      CASE
-        WHEN need_discounts THEN
-          (SELECT json_agg(d2)
-          FROM discounts d2
-          WHERE d2."itemId" = i."itemId")
-        ELSE
-          NULL
-      END
-    ),
+    -- 'discounts', (
+    --   CASE
+    --     WHEN need_discounts THEN
+    --       (SELECT json_agg(d2)
+    --       FROM discounts d2
+    --       WHERE d2."itemId" = i."itemId")
+    --     ELSE
+    --       NULL
+    --   END
+    -- ),
     'totalWishlistCount', (
       SELECT COUNT(*)
       FROM wishlists w
