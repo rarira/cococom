@@ -15,6 +15,7 @@ const commonTheme = {
     xxs: 9,
     xs: 10,
     sm: 12,
+    normal: 14,
     md: 16,
     lg: 20,
     xl: 24,
