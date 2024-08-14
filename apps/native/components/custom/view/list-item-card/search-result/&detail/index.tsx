@@ -5,10 +5,7 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import DiscountRateText from '@/components/custom/text/discount-rate';
-import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import Chip from '@/components/ui/chip';
-import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
@@ -16,6 +13,8 @@ import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } fro
 import { ITEM_SORT_OPTIONS } from '@/libs/sort';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
+
+import DiscountRecordView from '../../../discount-record';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResultToRender[number];
@@ -67,26 +66,11 @@ function SearchResultListItemCardDetailView({
       <Text style={styles.itemNameText} numberOfLines={3}>
         {item.itemName}
       </Text>
-      <View style={styles.infoContainer}>
-        {isWholeProduct ? (
-          <View style={styles.infoBlock}>
-            <Text style={styles.discountLabelText}>역대 최대 단위당 할인 금액</Text>
-            <SuperscriptWonText price={item.bestDiscount} isMinus />
-          </View>
-        ) : (
-          <>
-            <View style={styles.infoBlock}>
-              <Text style={styles.discountLabelText}>역대 최대 할인률</Text>
-              <DiscountRateText discountRate={item.bestDiscountRate} />
-            </View>
-            <Divider orientation="vertical" style={styles.infoDivider} />
-            <View style={styles.infoBlock}>
-              <Text style={styles.discountLabelText}>역대 최저가</Text>
-              <SuperscriptWonText price={item.lowestPrice} />
-            </View>
-          </>
-        )}
-      </View>
+      <DiscountRecordView
+        item={item}
+        isWholeProduct={isWholeProduct}
+        style={styles.discountRecordContainer}
+      />
       <View style={styles.actionButtonContainer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
         {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
@@ -117,25 +101,10 @@ const stylesheets = createStyleSheet(theme => ({
     lineHeight: theme.fontSize.sm * 1.5,
     fontWeight: 'bold',
   },
-  infoContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+  discountRecordContainer: {
     marginVertical: theme.spacing.sm,
   },
-  infoDivider: {
-    opacity: 0.2,
-    marginHorizontal: theme.spacing.lg,
-  },
-  infoBlock: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
-  discountLabelText: {
-    color: `${theme.colors.typography}AA`,
-    fontSize: theme.fontSize.sm,
-  },
+
   actionButtonContainer: {
     width: '100%',
     flexDirection: 'row',

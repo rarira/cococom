@@ -8,7 +8,7 @@ export function formatLongLocalizedDate(date: string) {
 export function isItemOnSaleNow(item: JoinedItems) {
   if (!item.discounts?.length) return false;
 
-  const { startDate, endDate } = item.discounts[item.discounts.length - 1];
+  const { startDate, endDate } = item.discounts[0];
 
   const now = new Date();
   const start = new Date(startDate);
