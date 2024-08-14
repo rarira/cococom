@@ -2,16 +2,12 @@ import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
+import { convertDateString } from '@/libs/date';
 
 interface DiscountPeriodTextProps {
   startDate: string;
   endDate: string;
   style?: StyleProp<ViewStyle>;
-}
-
-function convertDateString(dateString: string) {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
 }
 
 function DiscountPeriodText({ startDate, endDate, style }: DiscountPeriodTextProps) {
