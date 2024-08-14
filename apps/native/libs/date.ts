@@ -16,3 +16,8 @@ export function isItemOnSaleNow(item: JoinedItems) {
 
   return now >= start && now < end;
 }
+
+export function convertDateString(dateString: string) {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+}
