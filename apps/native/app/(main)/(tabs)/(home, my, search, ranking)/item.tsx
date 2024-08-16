@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountHistoryTabView from '@/components/custom/tab-view/discount-history';
+import MemoTabView from '@/components/custom/tab-view/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import { PortalHostNames } from '@/constants';
@@ -89,21 +90,26 @@ export default function ItemScreen() {
 
   console.log('item screen', data);
   return (
-    <View style={styles.container(bottom)}>
-      <Tabs.Container renderTabBar={renderTabBar} renderHeader={renderHeader} revealHeaderOnScroll>
-        <Tabs.Tab name={`할인 이력(${data.discounts?.length})`}>
+    <>
+      <Tabs.Container
+        containerStyle={styles.container(bottom)}
+        renderTabBar={renderTabBar}
+        renderHeader={renderHeader}
+        revealHeaderOnScroll
+      >
+        <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
             <DiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
-        <Tabs.Tab name={`댓글(5)`}>
+        <Tabs.Tab name="comment" label={`댓글(5)`}>
           <Tabs.ScrollView>
             <SecondRoute />
           </Tabs.ScrollView>
         </Tabs.Tab>
-        <Tabs.Tab name={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
+        <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
           <Tabs.ScrollView>
-            <SecondRoute />
+            <MemoTabView itemId={+itemId} />
           </Tabs.ScrollView>
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
@@ -114,14 +120,13 @@ export default function ItemScreen() {
         </Tabs.Tab> */}
       </Tabs.Container>
       <PortalHost name={PortalHostNames.ITEM_DETAILS} />
-    </View>
+    </>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
   container: (bottom: number) => ({
-    flex: 1,
-    paddingBottom: bottom,
+    marginBottom: bottom,
     backgroundColor: theme.colors.background,
   }),
   tabBarContainer: {
