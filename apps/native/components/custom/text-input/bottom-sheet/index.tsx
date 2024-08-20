@@ -1,23 +1,27 @@
 import { memo } from 'react';
 import { TextInputProps } from 'react-native';
+import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TextInput from '@/components/ui/text-input';
 
 import { useBottomSheetTextInput } from './__hooks/useBottomSheetTextInput';
 
-interface BottomSheetTextInputProps extends TextInputProps {}
+interface BottomSheetTextInputProps extends TextInputProps {
+  rootStyle?: ViewProps['style'];
+}
 
 const BottomSheetTextInput = memo(function BottomSheetTextInput({
   onFocus,
   onBlur,
+  rootStyle,
   ...restProps
 }: BottomSheetTextInputProps) {
   const { styles, theme } = useStyles(stylesheet);
   const { handleOnBlur, handleOnFocus } = useBottomSheetTextInput({ onBlur, onFocus });
 
   return (
-    <TextInput.Root variants="outlined" style={styles.textInputRoot}>
+    <TextInput.Root variants="outlined" style={[styles.textInputRoot, rootStyle]}>
       <TextInput.Field
         multiline
         placeholderTextColor={`${theme.colors.typography}99`}
@@ -36,17 +40,17 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
 });
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    flexDirection: 'column',
+  },
   textInputRoot: {
     borderRadius: theme.borderRadius.md,
-    // backgroundColor: theme.colors.lightShadow,
     paddingVertical: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
-    borderColor: theme.colors.lightShadow,
-    minHeight: 200,
+    borderColor: theme.colors.shadow,
   },
   textInputField: {
     color: theme.colors.typography,
-    padding: theme.spacing.md,
     fontSize: theme.fontSize.md,
     lineHeight: theme.fontSize.md * 1.5,
   },

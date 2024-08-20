@@ -15,7 +15,6 @@ export function useBottomSheetTextInput({
 
   const handleOnFocus = useCallback(
     (args: NativeSyntheticEvent<TextInputFocusEventData>) => {
-      console.log('call handleOnFocus');
       shouldHandleKeyboardEvents.value = true;
       if (onFocus) {
         onFocus(args);
@@ -36,7 +35,6 @@ export function useBottomSheetTextInput({
 
   useEffect(() => {
     return () => {
-      console.log('unmount');
       // Reset the flag on unmount
       shouldHandleKeyboardEvents.value = false;
     };
