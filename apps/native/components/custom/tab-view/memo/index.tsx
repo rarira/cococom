@@ -23,7 +23,6 @@ const MemoTabView = memo(function MemoTabView({ itemId, memoBottomSheetRef }: Me
     ? undefined
     : collapsibleStyle.contentContainerStyle?.minHeight - collapsibleStyle.progressViewOffset;
 
-  console.log('MemoTabView render', height);
   return (
     <View style={styles.container(height)}>
       {!user ? (

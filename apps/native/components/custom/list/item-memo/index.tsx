@@ -10,6 +10,7 @@ import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 
 import BottomSheetTextInput from '../../text-input/bottom-sheet';
+import TextInputCounterView from '../../view/text-input-counter';
 
 interface ItemMemoListProps {
   user: User;
@@ -43,7 +44,17 @@ const ItemMemoList = memo(function ItemMemoList({ user }: ItemMemoListProps) {
         keyboardBlurBehavior="restore"
       >
         <View style={styles.contentContainer(bottom)}>
-          <BottomSheetTextInput defaultValue={newMemoText} onChangeText={setNewMemoText} />
+          <BottomSheetTextInput
+            defaultValue={newMemoText}
+            onChangeText={setNewMemoText}
+            maxLength={140}
+            rootStyle={styles.textInput}
+          />
+          <TextInputCounterView
+            maxLength={140}
+            currentLength={newMemoText.length}
+            style={styles.counter}
+          />
         </View>
       </BottomSheet>
     </>
@@ -56,22 +67,19 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
   },
   textInput: {
-    alignSelf: 'stretch',
-    marginHorizontal: 12,
-    marginBottom: 12,
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: 'grey',
-    color: 'white',
-    textAlign: 'center',
+    minHeight: theme.fontSize.md * 1.5 * 6,
   },
   contentContainer: (bottom: number) => ({
-    flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
-    // height: '100%',
-    // minHeight: 300 + bottom,
     paddingBottom: bottom,
   }),
+  counter: {
+    marginTop: theme.spacing.sm,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+  },
 }));
 
 export default ItemMemoList;
