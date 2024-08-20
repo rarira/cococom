@@ -24,6 +24,7 @@ import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UnistylesRuntime } from 'react-native-unistyles';
@@ -114,34 +115,36 @@ function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
         <SafeAreaProvider>
-          <PortalProvider>
-            <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
-              <BottomSheetModalProvider>
-                <Stack
-                  screenOptions={{
-                    contentStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(main)"
-                    options={{
-                      headerShown: false,
+          <KeyboardProvider>
+            <PortalProvider>
+              <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
+                <BottomSheetModalProvider>
+                  <Stack
+                    screenOptions={{
+                      contentStyle: {
+                        backgroundColor: 'transparent',
+                      },
                     }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                  <Stack.Screen
-                    name="auth"
-                    options={{
-                      presentation: 'modal',
-                      headerShown: false,
-                    }}
-                  />
-                </Stack>
-              </BottomSheetModalProvider>
-            </ThemeProvider>
-          </PortalProvider>
+                  >
+                    <Stack.Screen
+                      name="(main)"
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                    <Stack.Screen
+                      name="auth"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                      }}
+                    />
+                  </Stack>
+                </BottomSheetModalProvider>
+              </ThemeProvider>
+            </PortalProvider>
+          </KeyboardProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
