@@ -90,7 +90,7 @@ export default function ItemScreen() {
 
   console.log('item screen', data);
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <Tabs.Container
         containerStyle={styles.container(bottom)}
         renderTabBar={renderTabBar}
@@ -108,9 +108,11 @@ export default function ItemScreen() {
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
-          <Tabs.ScrollView>
-            <MemoTabView itemId={+itemId} />
-          </Tabs.ScrollView>
+          <Tabs.Lazy>
+            <Tabs.ScrollView>
+              <MemoTabView itemId={+itemId} />
+            </Tabs.ScrollView>
+          </Tabs.Lazy>
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
         <Tabs.Tab name={`구매기록(3)`}>
@@ -120,7 +122,7 @@ export default function ItemScreen() {
         </Tabs.Tab> */}
       </Tabs.Container>
       <PortalHost name={PortalHostNames.ITEM_DETAILS} />
-    </>
+    </View>
   );
 }
 
