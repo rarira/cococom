@@ -12,7 +12,7 @@ interface MemoTabViewProps {
   itemId: number;
 }
 
-const MemoTabView = memo(function MemoTabView({ itemId, memoBottomSheetRef }: MemoTabViewProps) {
+const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
   const { styles } = useStyles(stylesheet);
 
   const user = useUserStore(store => store.user);
@@ -33,7 +33,7 @@ const MemoTabView = memo(function MemoTabView({ itemId, memoBottomSheetRef }: Me
           </Text>
         </View>
       ) : (
-        <ItemMemoList user={user} />
+        <ItemMemoList itemId={itemId} />
       )}
     </View>
   );
