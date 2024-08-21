@@ -5,6 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
+import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
 
 import AddMemoBottomSheet from '../../bottom-sheet/add-memo';
 
@@ -16,6 +17,8 @@ const ItemMemoList = memo(function ItemMemoList({ itemId }: ItemMemoListProps) {
   const { styles } = useStyles(stylesheet);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const { memos, error, isFetching, handleEndReached } = useInfiniteMemos(itemId);
 
   return (
     <>

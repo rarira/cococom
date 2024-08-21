@@ -42,6 +42,10 @@ export const queryKeys = {
   items: {
     byId: (id: number) => ['items', { id }],
   },
+  memos: {
+    byItem: (itemId: number, userId: string) => ['memos', { itemId, userId }],
+    byUserId: (userId: string) => ['memos', { userId }],
+  },
 };
 
 export const handleMutateOfDiscountCurrentList = async ({
