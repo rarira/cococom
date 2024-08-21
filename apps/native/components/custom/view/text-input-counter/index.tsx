@@ -18,7 +18,7 @@ const TextInputCounterView = memo(function TextInputCounterView({
   const { styles } = useStyles(stylesheet);
 
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       <Text style={styles.counterText(currentLength >= maxLength)}>{currentLength}</Text>
       <Text style={styles.basicText}>{` / `}</Text>
       <Text style={styles.basicText}>{maxLength}</Text>
@@ -27,6 +27,10 @@ const TextInputCounterView = memo(function TextInputCounterView({
 });
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   basicText: {
     color: `${theme.colors.typography}99`,
     fontSize: theme.fontSize.sm,

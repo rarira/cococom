@@ -24,6 +24,7 @@ export type InsertItem = Database['public']['Tables']['items']['Insert'];
 export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
+export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
 export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
 export type SearchItemSortDirection = 'ASC' | 'DESC';
@@ -267,6 +268,15 @@ export class Supabase {
     }
 
     return data;
+  }
+
+  async insertMemo(memo: InsertMemo) {
+    const { error } = await this.supabaseClient.from('memos').insert(memo);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   // Auth Methods

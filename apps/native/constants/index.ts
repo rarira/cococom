@@ -3,3 +3,5 @@ export const enum PortalHostNames {
   SEARCH = 'SearchPortalHost',
   ITEM_DETAILS = 'ItemDetailsPortalHost',
 }
+
+export const MAX_MEMO_LENGTH = 140;
