@@ -279,6 +279,33 @@ export class Supabase {
     }
   }
 
+  async fetchMemos({
+    itemId,
+    userId,
+    page,
+    pageSize = 20,
+  }: {
+    itemId: number;
+    userId: string;
+    page: number;
+    pageSize?: number;
+  }) {
+    const { data, error } = await this.supabaseClient
+      .from('memos')
+      .select('*')
+      .eq('itemId', itemId)
+      .eq('userId', userId)
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

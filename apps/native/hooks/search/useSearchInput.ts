@@ -138,9 +138,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
 
   const searchResult: SearchResultToRender = useMemo(
     () =>
-      data?.pages
-        .map((page, index) => page.items.map(item => ({ ...item, pageIndex: index })))
-        .flat() ?? [],
+      data?.pages.flatMap((page, index) =>
+        page.items.map(item => ({ ...item, pageIndex: index })),
+      ) ?? [],
     [data?.pages],
   );
 
