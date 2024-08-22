@@ -271,10 +271,7 @@ export class Supabase {
   }
 
   async upsertMemo(memo: InsertMemo) {
-    const { error } = await this.supabaseClient.from('memos').upsert(memo, {
-      ignoreDuplicates: true,
-      onConflict: 'id',
-    });
+    const { error } = await this.supabaseClient.from('memos').upsert(memo);
 
     if (error) {
       console.error(error);
