@@ -5,6 +5,10 @@ export function formatLongLocalizedDate(date: string) {
   return format(date, 'PPPP');
 }
 
+export function formatLongLocalizedDateTime(date: string) {
+  return format(date, 'PPpp');
+}
+
 export function isItemOnSaleNow(item: JoinedItems) {
   if (!item.discounts?.length) return false;
 

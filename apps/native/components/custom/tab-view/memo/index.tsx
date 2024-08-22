@@ -45,7 +45,6 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-    paddingHorizontal: theme.screenHorizontalPadding,
   }),
   loginContainer: {
     justifyContent: 'center',
