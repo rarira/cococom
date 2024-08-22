@@ -1,7 +1,7 @@
 import { InsertMemo } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { memo, RefObject, useCallback, useState } from 'react';
+import { memo, RefObject, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -14,6 +14,7 @@ import Text from '@/components/ui/text';
 import { MAX_MEMO_LENGTH } from '@/constants';
 import { handleMutateOfUpsertMemo, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useMemoEditStore } from '@/store/memo-edit';
 import { useUserStore } from '@/store/user';
 
 interface AddMemoBottomSheetProps {
@@ -30,11 +31,17 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
   const user = useUserStore(store => store.user);
   const queryClient = useQueryClient();
 
-  const [newMemoText, setNewMemoText] = useState('');
+  const { memo, setMemo, setBottomSheetRef } = useMemoEditStore();
 
-  const impossibleToSave = newMemoText.length === 0 || newMemoText.length > MAX_MEMO_LENGTH;
+  useEffect(() => {
+    setBottomSheetRef(bottomSheetRef);
+  }, [bottomSheetRef, setBottomSheetRef]);
+
+  const impossibleToSave =
+    !!memo?.content && (memo.content.length === 0 || memo.content.length > MAX_MEMO_LENGTH);
 
   const queryKey = queryKeys.memos.byItem(itemId, user!.id);
+
   const upsertMemoMutation = useMutation({
     mutationFn: (newMemo: InsertMemo) => {
       return supabase.upsertMemo(newMemo);
@@ -49,6 +56,10 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
     },
+    onSuccess: (_data, variables) => {
+      if (variables.id) return;
+      queryClient.invalidateQueries({ queryKey });
+    },
   });
 
   const handlePress = useCallback(async () => {
@@ -59,16 +70,28 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     const newMemo = {
       userId: user.id,
       itemId,
-      content: newMemoText,
+      id: memo.id,
+      content: memo.content,
     };
 
     try {
-      await upsertMemoMutation.mutate(newMemo);
+      await upsertMemoMutation.mutateAsync(newMemo);
       bottomSheetRef.current?.dismiss();
     } catch (error) {
       console.error(error);
     }
-  }, [bottomSheetRef, upsertMemoMutation, itemId, newMemoText, user]);
+  }, [user, itemId, memo, upsertMemoMutation, bottomSheetRef]);
+
+  const handleDismiss = useCallback(() => {
+    setMemo({ content: '' });
+  }, [setMemo]);
+
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setMemo({ ...memo, content: text });
+    },
+    [memo, setMemo],
+  );
 
   return (
     <BottomSheet
@@ -76,17 +99,20 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
       ref={bottomSheetRef}
       snapPoints={['40%', '100%']}
       keyboardBlurBehavior="restore"
-      onDismiss={() => setNewMemoText('')}
+      onDismiss={handleDismiss}
     >
       <View style={styles.contentContainer(bottom)}>
         <BottomSheetTextInput
-          defaultValue={newMemoText}
-          onChangeText={setNewMemoText}
+          defaultValue={memo.content!}
+          onChangeText={handleChangeText}
           maxLength={MAX_MEMO_LENGTH}
           rootStyle={styles.textInput}
         />
         <View style={styles.actionContainer}>
-          <TextInputCounterView maxLength={MAX_MEMO_LENGTH} currentLength={newMemoText.length} />
+          <TextInputCounterView
+            maxLength={MAX_MEMO_LENGTH}
+            currentLength={memo?.content?.length ?? 0}
+          />
           <Button style={styles.saveButton} disabled={impossibleToSave} onPress={handlePress}>
             <Text style={styles.saveText}>저장</Text>
           </Button>

@@ -228,15 +228,25 @@ export const handleMutateOfUpsertMemo = async ({
   );
 
   queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'memos'>[]>) => {
-    if (!pageIndex) {
-      const newFlatPages = [makeNewMemoObject(newMemo, flatPages[0].id + 1), ...flatPages];
-
+    if (typeof pageIndex === 'undefined') {
+      const newFlatPages = [makeNewMemoObject(newMemo, (flatPages[0]?.id ?? 0) + 1), ...flatPages];
       return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
     }
-    old.pages[pageIndex][memoIndex].content = newMemo.content!;
-    old.pages[pageIndex][memoIndex].updated_at = new Date().toISOString();
 
-    return old;
+    newMemo.updated_at = new Date().toISOString();
+
+    return {
+      ...old,
+      pages: [
+        ...old.pages.slice(0, pageIndex),
+        [
+          ...old.pages[pageIndex].slice(0, memoIndex),
+          newMemo,
+          ...old.pages[pageIndex].slice(memoIndex + 1),
+        ],
+        ...old.pages.slice(pageIndex + 1),
+      ],
+    };
   });
 
   return { previousData };

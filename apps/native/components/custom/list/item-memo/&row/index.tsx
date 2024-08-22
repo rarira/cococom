@@ -11,6 +11,7 @@ import Text from '@/components/ui/text';
 import { formatLongLocalizedDateTime } from '@/libs/date';
 import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useMemoEditStore } from '@/store/memo-edit';
 
 interface ItemMemoListRowProps {
   memo: Tables<'memos'>;
@@ -22,6 +23,11 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
   const { theme, styles } = useStyles(stylesheet);
 
   const queryClient = useQueryClient();
+
+  const { bottomSheetRef, setMemo } = useMemoEditStore(store => ({
+    setMemo: store.setMemo,
+    bottomSheetRef: store.bottomSheetRef,
+  }));
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -57,10 +63,16 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
     }
   }, [deleteMemoMutation]);
 
+  const handleEditPress = useCallback(() => {
+    setMemo(memo);
+    bottomSheetRef.current?.present();
+    swipeableRef.current?.close();
+  }, [bottomSheetRef, memo, setMemo, swipeableRef]);
+
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
       <IconButton
-        onPress={() => {}}
+        onPress={handleEditPress}
         iconProps={{
           font: { type: 'MaterialIcon', name: 'edit' },
           size: theme.fontSize.lg,
