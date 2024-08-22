@@ -12,6 +12,7 @@ import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { MAX_MEMO_LENGTH } from '@/constants';
+import { handleMutateOfUpsertMemo, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -33,13 +34,20 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
 
   const impossibleToSave = newMemoText.length === 0 || newMemoText.length > MAX_MEMO_LENGTH;
 
-  const insertMemoMutation = useMutation({
+  const queryKey = queryKeys.memos.byItem(itemId, user!.id);
+  const upsertMemoMutation = useMutation({
     mutationFn: (newMemo: InsertMemo) => {
-      return supabase.insertMemo(newMemo);
+      return supabase.upsertMemo(newMemo);
     },
-    // onMutate: onMutate ? onMutate(queryClient) : undefined,
+    onMutate: (newMemo: InsertMemo) => {
+      return handleMutateOfUpsertMemo({
+        queryClient,
+        queryKey,
+        newMemo,
+      });
+    },
     onError: (_error, _variables, context) => {
-      //   queryClient.setQueryData(queryKey, context?.previousData);
+      queryClient.setQueryData(queryKey, context?.previousData);
     },
   });
 
@@ -55,12 +63,12 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     };
 
     try {
-      await insertMemoMutation.mutate(newMemo);
+      await upsertMemoMutation.mutate(newMemo);
       bottomSheetRef.current?.dismiss();
     } catch (error) {
       console.error(error);
     }
-  }, [bottomSheetRef, insertMemoMutation, itemId, newMemoText, user]);
+  }, [bottomSheetRef, upsertMemoMutation, itemId, newMemoText, user]);
 
   return (
     <BottomSheet

@@ -47,7 +47,7 @@ const stylesheet = createStyleSheet(theme => ({
     borderRadius: theme.borderRadius.md,
     paddingVertical: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
-    borderColor: theme.colors.shadow,
+    borderColor: `${theme.colors.typography}99`,
   },
   textInputField: {
     color: theme.colors.typography,
