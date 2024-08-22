@@ -1,7 +1,7 @@
 import { Tables } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, useCallback, useRef } from 'react';
-import { Pressable } from 'react-native';
+import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -33,16 +33,19 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
     };
   });
 
+  const queryKey = queryKeys.memos.byItem(memo.itemId, memo.userId);
+
   const deleteMemoMutation = useMutation({
     mutationFn: () => supabase.deleteMemo(memo.id),
     onMutate: () => {
-      handleMutateOfDeleteMemo({
+      return handleMutateOfDeleteMemo({
         queryClient,
-        queryKey: queryKeys.memos.byItem(memo.itemId, memo.userId),
+        queryKey,
+        memoId: memo.id,
       });
     },
-    onError: error => {
-      console.error(error);
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
     },
   });
 
@@ -101,15 +104,12 @@ const ItemMemoListRow = memo(function ItemMemoListRow({ memo }: ItemMemoListRowP
       rightThreshold={40}
       renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableRow)}
     >
-      <Pressable
-        style={styles.container}
-        onPress={() => console.log('press itemmemolistrow', memo.id)}
-      >
+      <View style={styles.container}>
         <Text style={styles.timeText}>
           {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
         </Text>
         <Text style={styles.contentText}>{memo.content}</Text>
-      </Pressable>
+      </View>
     </Swipeable>
   );
 });

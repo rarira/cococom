@@ -160,6 +160,7 @@ export const handleMutateOfSearchResult = async ({
 const findMemoIndexFromPreviousData = (
   previousData: InfiniteQueryResult<Tables<'memos'>[]>,
   memoId?: number,
+  noNeedToFindIndex?: boolean,
 ) => {
   let pageIndex = undefined;
   let memoIndex = undefined;
@@ -167,6 +168,10 @@ const findMemoIndexFromPreviousData = (
   const flatPages = previousData?.pages.flat();
 
   const flatMemoIndex = memoId ? flatPages.findIndex(memo => memo.id === memoId) : -1;
+
+  if (noNeedToFindIndex) {
+    return { flatPages, flatMemoIndex };
+  }
 
   if (flatMemoIndex === -1) {
     return { flatPages, pageIndex, memoIndex };
@@ -247,15 +252,20 @@ export const handleMutateOfDeleteMemo = async ({
   queryKey: QueryKey;
 }) => {
   await queryClient.cancelQueries({ queryKey });
-  const previousData = queryClient.getQueryData(queryKey) as unknown as Tables<'memos'>;
+  const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
+    Tables<'memos'>[]
+  >;
 
-  console.log('handleMutateOfDeleteMemo', previousData);
-  // queryClient.setQueryData(queryKey, (old: JoinedItems) => {
-  //   return {
-  //     ...old,
-  //     memos: old.memos.filter(memo => memo.id !== memoId),
-  //   };
-  // });
+  const { flatPages, flatMemoIndex } = findMemoIndexFromPreviousData(previousData, memoId, true);
+
+  queryClient.setQueryData(queryKey, (old: JoinedItems) => {
+    const newFlatPages = [
+      ...flatPages.slice(0, flatMemoIndex),
+      ...flatPages.slice(flatMemoIndex! + 1),
+    ];
+
+    return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+  });
 
   return { previousData };
 };
