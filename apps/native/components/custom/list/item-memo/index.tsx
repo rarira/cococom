@@ -1,6 +1,7 @@
 import { Tables } from '@cococom/supabase/types';
 import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
+import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/ui/text';
@@ -24,18 +25,21 @@ const ItemMemoList = memo(function ItemMemoList({ itemId }: ItemMemoListProps) {
     return <Text>{error?.message}</Text>;
   }
 
+  console.log('itemMemoList', memos);
   return (
-    <FlashList
-      data={memos}
-      renderItem={renderItem}
-      onEndReached={handleEndReached}
-      estimatedItemSize={100}
-    />
+    <View style={styles.container}>
+      <FlashList
+        data={memos}
+        renderItem={renderItem}
+        onEndReached={handleEndReached}
+        estimatedItemSize={100}
+      />
+    </View>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {},
+  container: { height: '100%', width: '100%' },
 }));
 
 export default ItemMemoList;
