@@ -90,9 +90,9 @@ export default function ItemScreen() {
 
   console.log('item screen', data);
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Tabs.Container
-        containerStyle={styles.container(bottom)}
+        containerStyle={styles.tabsContainer(bottom)}
         renderTabBar={renderTabBar}
         renderHeader={renderHeader}
         revealHeaderOnScroll
@@ -127,7 +127,11 @@ export default function ItemScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (bottom: number) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  tabsContainer: (bottom: number) => ({
     marginBottom: bottom,
     backgroundColor: theme.colors.background,
   }),

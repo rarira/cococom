@@ -1,13 +1,20 @@
 import {
   CategorySectors,
+  InsertMemo,
   InsertWishlist,
   SearchItemSortDirection,
   SearchItemSortField,
 } from '@cococom/supabase/libs';
-import { JoinedItems } from '@cococom/supabase/types';
+import { JoinedItems, Tables } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
+import { MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
+
+export type InfiniteQueryResult<T> = {
+  pageParams: number[];
+  pages: T[];
+};
 
 export const queryKeys = {
   discounts: {
@@ -146,6 +153,109 @@ export const handleMutateOfSearchResult = async ({
       pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
     };
   });
+
+  return { previousData };
+};
+
+const findMemoIndexFromPreviousData = (
+  previousData: InfiniteQueryResult<Tables<'memos'>[]>,
+  memoId?: number,
+) => {
+  let pageIndex = undefined;
+  let memoIndex = undefined;
+
+  const flatPages = previousData?.pages.flat();
+
+  const flatMemoIndex = memoId ? flatPages.findIndex(memo => memo.id === memoId) : -1;
+
+  if (flatMemoIndex === -1) {
+    return { flatPages, pageIndex, memoIndex };
+  }
+
+  pageIndex = Math.floor(flatMemoIndex / MEMO_INFINITE_QUERY_PAGE_SIZE);
+  memoIndex = flatMemoIndex % MEMO_INFINITE_QUERY_PAGE_SIZE;
+
+  return { pageIndex, memoIndex, flatPages };
+};
+
+const makeNewMemoInfiniteQueryResult = (newFlatPages: Tables<'memos'>[], queryPageSize: number) => {
+  const newPages = newFlatPages.reduce((acc, memo, index) => {
+    if (index % queryPageSize === 0) {
+      acc.push([memo]);
+    } else {
+      acc[acc.length - 1].push(memo);
+    }
+    return acc;
+  }, [] as Tables<'memos'>[][]);
+
+  return {
+    pageParams: Array.from({ length: newPages.length }, (_, i) => i + 1),
+    pages: newPages,
+  };
+};
+
+const makeNewMemoObject = (newMemo: InsertMemo, newId: number) => {
+  return {
+    ...newMemo,
+    id: newId,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+};
+
+export const handleMutateOfUpsertMemo = async ({
+  queryClient,
+  queryKey,
+  newMemo,
+}: {
+  queryClient: QueryClient;
+  queryKey: QueryKey;
+  newMemo: InsertMemo;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
+    Tables<'memos'>[]
+  >;
+
+  const { flatPages, pageIndex, memoIndex } = findMemoIndexFromPreviousData(
+    previousData,
+    newMemo.id,
+  );
+
+  queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'memos'>[]>) => {
+    if (!pageIndex) {
+      const newFlatPages = [makeNewMemoObject(newMemo, flatPages[0].id + 1), ...flatPages];
+
+      return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+    }
+    old.pages[pageIndex][memoIndex].content = newMemo.content!;
+    old.pages[pageIndex][memoIndex].updated_at = new Date().toISOString();
+
+    return old;
+  });
+
+  return { previousData };
+};
+
+export const handleMutateOfDeleteMemo = async ({
+  queryClient,
+  queryKey,
+  memoId,
+}: {
+  queryClient: QueryClient;
+  memoId?: number;
+  queryKey: QueryKey;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as Tables<'memos'>;
+
+  console.log('handleMutateOfDeleteMemo', previousData);
+  // queryClient.setQueryData(queryKey, (old: JoinedItems) => {
+  //   return {
+  //     ...old,
+  //     memos: old.memos.filter(memo => memo.id !== memoId),
+  //   };
+  // });
 
   return { previousData };
 };

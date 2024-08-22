@@ -270,8 +270,20 @@ export class Supabase {
     return data;
   }
 
-  async insertMemo(memo: InsertMemo) {
-    const { error } = await this.supabaseClient.from('memos').insert(memo);
+  async upsertMemo(memo: InsertMemo) {
+    const { error } = await this.supabaseClient.from('memos').upsert(memo, {
+      ignoreDuplicates: true,
+      onConflict: 'id',
+    });
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteMemo(memoId: number) {
+    const { error } = await this.supabaseClient.from('memos').delete().eq('id', memoId);
 
     if (error) {
       console.error(error);
