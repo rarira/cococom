@@ -34,6 +34,7 @@ LogBox.ignoreLogs([
   'Support for defaultProps will be removed from',
   'A props object containing',
   'Failed prop type',
+  '[Reanimated] Tried to modify key',
 ]);
 
 setDefaultOptions({ locale: ko });

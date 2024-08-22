@@ -4,7 +4,7 @@ import { useCollapsibleStyle } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LoginButton from '@/components/custom/button/login';
-import ItemMemoList from '@/components/custom/list/item-memo';
+import ItemMemoView from '@/components/custom/view/item-memo';
 import Text from '@/components/ui/text';
 import { useUserStore } from '@/store/user';
 
@@ -33,7 +33,7 @@ const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
           </Text>
         </View>
       ) : (
-        <ItemMemoList itemId={itemId} />
+        <ItemMemoView itemId={itemId} />
       )}
     </View>
   );
