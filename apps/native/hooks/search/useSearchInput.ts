@@ -57,7 +57,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     ITEM_SORT_OPTIONS[sortOption].direction,
     user?.id,
   );
-  const { data, isFetching, isSuccess, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteSearchResultPages>({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
@@ -85,7 +85,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.items.length < PAGE_SIZE) return undefined;
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
         return allPages.length + 1;
       },
       enabled: !!keywordToSearch,
@@ -138,8 +138,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
 
   const searchResult: SearchResultToRender = useMemo(
     () =>
-      data?.pages.flatMap((page, index) =>
-        page.items.map(item => ({ ...item, pageIndex: index })),
+      data?.pages.flatMap(
+        (page, index) => page.items?.map(item => ({ ...item, pageIndex: index })) ?? [],
       ) ?? [],
     [data?.pages],
   );
@@ -150,7 +150,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     setKeywordToSearch,
     setOptionsToSearch,
     setSearchQueryParams,
+    isLoading,
     isFetching,
+    isFetchingNextPage,
     handlePressSearchHistory,
     searchResult,
     hasNextPage,

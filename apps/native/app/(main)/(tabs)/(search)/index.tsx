@@ -9,6 +9,7 @@ import SearchSortBottomSheet from '@/components/custom/bottom-sheet/search-sort'
 import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
+import CircularProgress from '@/components/ui/progress/circular';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { SearchOptionValue } from '@/libs/search';
@@ -31,7 +32,8 @@ export default function SearchScreen() {
     setSearchQueryParams,
     handlePressSearchHistory,
     searchResult,
-    // hasNextPage,
+    isLoading,
+    isFetchingNextPage,
     handleEndReached,
     sortOption,
     handleSortChange,
@@ -56,6 +58,8 @@ export default function SearchScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
 
+  console.log({ isLoading, isFetching, isFetchingNextPage, searchResult, totalResults, queryKey });
+
   return (
     <View style={styles.container(top)}>
       <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
@@ -78,17 +82,18 @@ export default function SearchScreen() {
           />
         </View>
       </Shadow>
+      {isLoading && <CircularProgress style={styles.loadingProgress} />}
       {searchResult && (
         <View style={styles.resultContainer}>
           <SearchResultList
             searchResult={searchResult}
             searchQueryParams={{ keyword: keywordToSearch, options: optionsToSearch }}
-            // hasNextPage={hasNextPage}
             onEndReached={handleEndReached}
             sortOption={sortOption}
             totalResults={totalResults}
             onPressHeaderRightButton={handleSortBottomSheetPresent}
             queryKey={queryKey}
+            isFetchingNextPage={isFetchingNextPage}
           />
         </View>
       )}
@@ -124,5 +129,8 @@ const stylesheet = createStyleSheet(theme => ({
   resultContainer: {
     flex: 1,
     width: '100%',
+  },
+  loadingProgress: {
+    marginTop: theme.spacing.xl * 3,
   },
 }));

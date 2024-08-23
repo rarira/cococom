@@ -1,9 +1,12 @@
 import { Tables } from '@cococom/supabase/types';
-import { FlashList } from '@shopify/flash-list';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/ui/button/icon';
+import CircularProgress from '@/components/ui/progress/circular';
+import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';
 import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
 
@@ -11,35 +14,142 @@ import ItemMemoListRow from './&row';
 
 interface ItemMemoListProps {
   itemId: number;
+  onAddMemoPress?: () => void;
 }
 
-const ItemMemoList = memo(function ItemMemoList({ itemId }: ItemMemoListProps) {
-  const { styles } = useStyles(stylesheet);
-  const { memos, error, isFetching, handleEndReached } = useInfiniteMemos(itemId);
+const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: ItemMemoListProps) {
+  const { styles, theme } = useStyles(stylesheet);
+  const {
+    memos,
+    error,
+    isFetchingNextPage,
+    isLoading,
+    handleEndReached,
+    refreshing,
+    handleRefresh,
+  } = useInfiniteMemos(itemId);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
     return <ItemMemoListRow memo={item} key={item.id} />;
   }, []);
 
-  if (error || !memos) {
+  const ListHeaderComponent = useMemo(() => {
+    return (
+      <IconButton
+        iconProps={{
+          font: { type: 'MaterialIcon', name: 'post-add' },
+          color: theme.colors.typography,
+          size: theme.fontSize.lg,
+        }}
+        text="메모 추가"
+        onPress={onAddMemoPress}
+        textStyle={styles.addButtonText}
+      />
+    );
+  }, [onAddMemoPress, styles.addButtonText, theme.colors.typography, theme.fontSize.lg]);
+
+  const ListEmptyComponent = useMemo(
+    () => (
+      <View style={styles.listEmptyContainer}>
+        <Text style={styles.listEmptyTitle}>저장된 메모가 없습니다</Text>
+        <Text style={styles.listEmptyTitle}>
+          위의 <Text style={styles.listEmptyBoldText}>'메모 추가'</Text> 버튼을 눌러 작성해 보세요
+        </Text>
+        <Text style={styles.listEmptyInfoText}>저장된 메모는 작성자 본인만 볼 수 있습니다</Text>
+      </View>
+    ),
+    [styles],
+  );
+
+  const ListFooterComponent = useMemo(() => {
+    if (!isFetchingNextPage) {
+      return null;
+    }
+
+    return <LinearProgress />;
+  }, [isFetchingNextPage]);
+
+  const ItemSeparatorComponent = useCallback(
+    () => <View style={styles.seperator} />,
+    [styles.seperator],
+  );
+
+  if (error) {
     return <Text>{error?.message}</Text>;
   }
 
-  console.log('itemMemoList', memos);
+  if (isLoading) {
+    return <CircularProgress style={styles.loadinProgress} />;
+  }
+
+  console.log('itemMemoList', memos, refreshing);
   return (
-    <View style={styles.container}>
-      <FlashList
-        data={memos}
-        renderItem={renderItem}
-        onEndReached={handleEndReached}
-        estimatedItemSize={100}
-      />
-    </View>
+    <Tabs.FlashList
+      data={memos}
+      renderItem={renderItem}
+      onEndReached={handleEndReached}
+      estimatedItemSize={50}
+      ListHeaderComponent={ListHeaderComponent}
+      ListHeaderComponentStyle={styles.addButton}
+      ListEmptyComponent={ListEmptyComponent}
+      ListFooterComponent={ListFooterComponent}
+      ListFooterComponentStyle={styles.fetchingNextProgress}
+      keyExtractor={item => item.id.toString()}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      onEndReachedThreshold={0.5}
+      onRefresh={handleRefresh}
+      refreshing={refreshing}
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    />
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  container: { height: '100%', width: '100%' },
+  container: {
+    height: '100%',
+    width: '100%',
+  },
+  contentContainer: {
+    paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  listEmptyContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: theme.spacing.xl * 3,
+  },
+  listEmptyTitle: {
+    fontSize: theme.fontSize.normal,
+  },
+  listEmptyBoldText: {
+    fontSize: theme.fontSize.normal,
+    fontWeight: 'bold',
+  },
+  listEmptyInfoText: {
+    fontSize: theme.fontSize.normal,
+    color: theme.colors.tint,
+    marginTop: theme.spacing.md,
+  },
+  loadinProgress: {
+    flex: 1,
+    marginTop: theme.spacing.xl * 3,
+  },
+  fetchingNextProgress: {
+    marginVertical: theme.spacing.md,
+  },
+  seperator: {
+    backgroundColor: `${theme.colors.shadow}33`,
+    height: 1,
+    width: '100%',
+  },
+  addButton: {
+    paddingTop: theme.spacing.lg,
+    alignSelf: 'flex-end',
+  },
+  addButtonText: {
+    fontSize: theme.fontSize.normal,
+  },
+  emptyPlaceholder: (minHeight: number) => ({ width: '100%', height: '100%', minHeight }),
 }));
 
 export default ItemMemoList;
