@@ -95,7 +95,8 @@ export default function ItemScreen() {
         containerStyle={styles.tabsContainer(bottom)}
         renderTabBar={renderTabBar}
         renderHeader={renderHeader}
-        revealHeaderOnScroll
+        // revealHeaderOnScroll
+        allowHeaderOverscroll
       >
         <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
@@ -109,9 +110,7 @@ export default function ItemScreen() {
         </Tabs.Tab>
         <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
           <Tabs.Lazy>
-            <Tabs.ScrollView>
-              <MemoTabView itemId={+itemId} />
-            </Tabs.ScrollView>
+            <MemoTabView itemId={+itemId} />
           </Tabs.Lazy>
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
