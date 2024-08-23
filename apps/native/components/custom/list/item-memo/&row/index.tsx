@@ -130,14 +130,11 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     width: '100%',
     flexDirection: 'column',
-    borderColor: `${theme.colors.shadow}33`,
-    borderBottomWidth: 1,
-    paddingHorizontal: theme.screenHorizontalPadding,
     paddingVertical: theme.spacing.md,
   },
   timeText: {
     fontSize: theme.fontSize.sm,
-    color: `${theme.colors.typography}99`,
+    color: `${theme.colors.typography}BB`,
   },
   contentText: {
     fontSize: theme.fontSize.normal,

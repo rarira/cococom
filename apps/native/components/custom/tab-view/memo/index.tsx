@@ -1,6 +1,5 @@
 import { memo } from 'react';
-import { View } from 'react-native';
-import { useCollapsibleStyle } from 'react-native-collapsible-tab-view';
+import { Tabs, useCollapsibleStyle } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LoginButton from '@/components/custom/button/login';
@@ -24,33 +23,29 @@ const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
     : collapsibleStyle.contentContainerStyle?.minHeight - collapsibleStyle.progressViewOffset;
 
   return (
-    <View style={styles.container(height)}>
+    <>
       {!user ? (
-        <View style={styles.loginContainer}>
+        <Tabs.ScrollView style={styles.container(height)}>
           <LoginButton style={styles.loginButton} />
           <Text style={styles.loginText}>
             로그인하시면 본 상품에 대한 메모를 남기실 수 있습니다
           </Text>
-        </View>
+        </Tabs.ScrollView>
       ) : (
         <ItemMemoView itemId={itemId} />
       )}
-    </View>
+    </>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   container: (height?: number) => ({
-    height,
+    height: height,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-  }),
-  loginContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
     gap: theme.spacing.lg,
-  },
+  }),
   loginButton: {
     width: undefined,
     paddingHorizontal: theme.screenHorizontalPadding,
