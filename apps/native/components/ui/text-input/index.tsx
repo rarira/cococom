@@ -75,7 +75,7 @@ const stylesheet = createStyleSheet(theme => ({
     borderBottomColor: Util.hexToRgba(theme.colors.typography, 0.6),
   },
   rounded: {
-    borderRadius: 9999,
+    borderRadius: 100,
     borderWidth: 1,
     borderColor: Util.hexToRgba(theme.colors.typography, 0.6),
   },

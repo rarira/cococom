@@ -128,7 +128,7 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor,
     width: theme.spacing.md,
     height: theme.spacing.md,
-    borderRadius: 9999,
+    borderRadius: theme.spacing.md / 2,
   }),
 }));
 
