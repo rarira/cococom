@@ -12,7 +12,8 @@
     "lint": "expo lint",
     "build:local:ios": "eas build --platform ios --profile development-simulator --local --non-interactive",
     "eas-build-pre-install": "node scripts/pre-install.js",
-    "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled"
+    "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled",
+    "postinstall": "patch-package"
   },
   "jest": {
     "preset": "jest-expo"
@@ -46,13 +47,14 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.75.2",
     "react-native-animated-spinkit": "^1.5.2",
     "react-native-collapsible-tab-view": "^8.0.0",
     "react-native-gesture-handler": "~2.18.1",
-    "react-native-mmkv": "^2.12.2",
+    "react-native-mmkv": "3.0.0-beta.7",
     "react-native-pager-view": "6.4.0",
     "react-native-reanimated": "~3.15.0",
     "react-native-reanimated-table": "^0.0.2",
@@ -90,6 +92,11 @@
         "react-native-screens@~3.31.1",
         "@shopify/flash-list@1.6.4"
       ]
+    },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "enabled": true
+      }
     }
   }
 }
