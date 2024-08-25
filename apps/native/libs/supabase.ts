@@ -1,13 +1,18 @@
 import { Supabase } from '@cococom/supabase/libs';
 import Constants from 'expo-constants';
-import { AppState } from 'react-native';
+import * as DevClient from 'expo-dev-client';
+import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
 import 'react-native-url-polyfill/auto';
 
-const { url, anonKey } = Constants.expoConfig?.extra?.supabase || {};
+let url = Constants.expoConfig?.extra?.supabase?.url;
 
-export const supabase = new Supabase(url, anonKey, {
+if (DevClient.isDevelopmentBuild() && Platform.OS === 'android') {
+  url = 'http://10.0.2.2:54321';
+}
+
+export const supabase = new Supabase(url, Constants.expoConfig?.extra?.supabase?.anonKey, {
   auth: {
     storage:
       typeof window !== 'undefined'
