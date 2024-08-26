@@ -1,7 +1,7 @@
 // const queryFn = (itemId: number, userId: string) => () => supabase.fetchMemos(itemId, userId);
 
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
@@ -41,16 +41,12 @@ export function useInfiniteMemos(itemId: number) {
     if (hasNextPage && !isFetching) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetching]);
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = useCallback(async () => {
     setRefreshing(true);
-    queryClient.invalidateQueries({ queryKey });
-  }, [queryClient, queryKey]);
-
-  useLayoutEffect(() => {
-    if (refreshing && !isFetching) {
-      setRefreshing(false);
-    }
-  }, [isFetching, refreshing]);
+    await queryClient.invalidateQueries({ queryKey });
+    await queryClient.refetchQueries({ queryKey: queryKeys.items.byId(itemId) });
+    setRefreshing(false);
+  }, [itemId, queryClient, queryKey]);
 
   return {
     memos,
