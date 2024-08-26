@@ -38,17 +38,17 @@ const TabIcons: Record<
 };
 
 export default function TabLayout() {
-  const { theme } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   const tabBarVisible = useUIStore(state => state.tabBarVisible);
 
+  console.log('TabLayout', tabBarVisible);
   return (
     <Tabs
       screenOptions={({ route }) => {
         return {
           tabBarActiveTintColor: theme.colors.tint,
           headerShown: false,
-          // tabBarStyle: styles.tabBar,
           freezeOnBlur: true,
           tabBarIcon: ({ color, focused }) => {
             return (
@@ -66,14 +66,7 @@ export default function TabLayout() {
       tabBar={props => {
         return (
           <Animated.View
-            style={{
-              height: tabBarVisible ? 'auto' : 0,
-              position: 'absolute',
-              backgroundColor: theme.colors.background,
-              bottom: 0,
-              left: 0,
-              right: 0,
-            }}
+            style={styles.tabBarContainer(tabBarVisible)}
             layout={LinearTransition.duration(100).delay(0).reduceMotion(ReduceMotion.Never)}
           >
             <BottomTabBar {...props} />
@@ -110,8 +103,12 @@ export default function TabLayout() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  tabBar: {
+  tabBarContainer: (tabBarVisible: boolean) => ({
+    height: tabBarVisible ? 'auto' : 0,
     position: 'absolute',
     backgroundColor: theme.colors.background,
-  },
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }),
 }));
