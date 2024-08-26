@@ -1,6 +1,7 @@
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
+import { Platform } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
 export function useTransparentHeader(options: Record<string, any>) {
@@ -10,10 +11,13 @@ export function useTransparentHeader(options: Record<string, any>) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: 'transparent' },
-      headerBlurEffect: 'systemUltraThinMaterial',
-      headerTransparent: true,
-      contentStyle: { paddingTop: headerHeight },
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBlurEffect: 'systemUltraThinMaterial',
+            headerTransparent: true,
+            contentStyle: { paddingTop: headerHeight },
+          }
+        : { headerStyle: { backgroundColor: theme.colors.modalBackground } }),
       headerTintColor: theme.colors.typography,
       headerTitleStyle: {
         paddingStart: 0,
