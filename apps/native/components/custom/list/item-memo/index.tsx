@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { MemoTabViewProps } from '@/components/custom/tab-view/memo';
 import IconButton from '@/components/ui/button/icon';
 import CircularProgress from '@/components/ui/progress/circular';
 import LinearProgress from '@/components/ui/progress/linear';
@@ -12,8 +13,7 @@ import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
 
 import ItemMemoListRow from './&row';
 
-interface ItemMemoListProps {
-  itemId: number;
+interface ItemMemoListProps extends MemoTabViewProps {
   onAddMemoPress?: () => void;
 }
 
