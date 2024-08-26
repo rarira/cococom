@@ -23,6 +23,9 @@
         "expo-modules-*",
         "typescript"
       ]
+    },
+    "patchedDependencies": {
+      "react-native-collapsible-tab-view": "patches/react-native-collapsible-tab-view.patch"
     }
   }
 }
