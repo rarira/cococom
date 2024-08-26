@@ -42,7 +42,6 @@ export default function TabLayout() {
 
   const tabBarVisible = useUIStore(state => state.tabBarVisible);
 
-  console.log('TabLayout', tabBarVisible);
   return (
     <Tabs
       screenOptions={({ route }) => {

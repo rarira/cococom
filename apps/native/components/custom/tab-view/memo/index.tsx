@@ -8,7 +8,7 @@ import ItemMemoView from '@/components/custom/view/item-memo';
 import Text from '@/components/ui/text';
 import { useUserStore } from '@/store/user';
 
-interface MemoTabViewProps {
+export interface MemoTabViewProps {
   itemId: number;
 }
 

@@ -3,10 +3,9 @@ import { memo, useCallback, useRef } from 'react';
 
 import AddMemoBottomSheet from '../../bottom-sheet/add-memo';
 import ItemMemoList from '../../list/item-memo';
+import { MemoTabViewProps } from '../../tab-view/memo';
 
-interface ItemMemoViewProps {
-  itemId: number;
-}
+interface ItemMemoViewProps extends MemoTabViewProps {}
 
 const ItemMemoView = memo(function ItemMemoView({ itemId }: ItemMemoViewProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);

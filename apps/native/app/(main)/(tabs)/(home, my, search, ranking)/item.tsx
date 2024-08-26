@@ -39,10 +39,12 @@ export default function ItemScreen() {
 
   useHideTabBar();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: queryKeys.items.byId(+itemId),
     queryFn: queryFn(+itemId, user?.id),
   });
+
+  console.log('item screen', isFetching);
 
   useTransparentHeader({
     title: data?.itemName,
@@ -88,7 +90,6 @@ export default function ItemScreen() {
 
   if (error || !data || isLoading) return null;
 
-  console.log('item screen', data);
   return (
     <View style={styles.container}>
       <Tabs.Container
