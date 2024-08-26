@@ -14,6 +14,7 @@ const LoginButton = memo(function LoginButton({ style }: LoginButtonProps) {
     router.push('/auth/signin');
   }, []);
 
+  console.log('LoginButton render');
   return (
     <Button
       onPress={handlePress}
