@@ -2,7 +2,7 @@ import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -95,8 +95,8 @@ export default function ItemScreen() {
         containerStyle={styles.tabsContainer(bottom)}
         renderTabBar={renderTabBar}
         renderHeader={renderHeader}
-        // revealHeaderOnScroll
         allowHeaderOverscroll
+        lazy={Platform.OS === 'ios'}
       >
         <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
@@ -109,9 +109,7 @@ export default function ItemScreen() {
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
-          <Tabs.Lazy>
-            <MemoTabView itemId={+itemId} />
-          </Tabs.Lazy>
+          <MemoTabView itemId={+itemId} />
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
         <Tabs.Tab name={`구매기록(3)`}>
@@ -128,6 +126,7 @@ export default function ItemScreen() {
 const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
+    height: '100%',
     backgroundColor: theme.colors.background,
   },
   tabsContainer: (bottom: number) => ({

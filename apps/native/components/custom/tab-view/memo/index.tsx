@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { Tabs, useCollapsibleStyle } from 'react-native-collapsible-tab-view';
+import { View } from 'react-native';
+import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LoginButton from '@/components/custom/button/login';
@@ -16,20 +17,16 @@ const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
 
   const user = useUserStore(store => store.user);
 
-  const collapsibleStyle = useCollapsibleStyle();
-
-  const height = !!user
-    ? undefined
-    : collapsibleStyle.contentContainerStyle?.minHeight - collapsibleStyle.progressViewOffset;
-
   return (
     <>
       {!user ? (
-        <Tabs.ScrollView style={styles.container(height)}>
-          <LoginButton style={styles.loginButton} />
-          <Text style={styles.loginText}>
-            로그인하시면 본 상품에 대한 메모를 남기실 수 있습니다
-          </Text>
+        <Tabs.ScrollView>
+          <View style={styles.container(!!user)}>
+            <LoginButton style={styles.loginButton} />
+            <Text style={styles.loginText}>
+              로그인하시면 본 상품에 대한 메모를 남기실 수 있습니다
+            </Text>
+          </View>
         </Tabs.ScrollView>
       ) : (
         <ItemMemoView itemId={itemId} />
@@ -39,8 +36,8 @@ const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (height?: number) => ({
-    height: height,
+  container: (authed?: boolean) => ({
+    height: !authed ? 200 : undefined,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
