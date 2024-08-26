@@ -42,7 +42,6 @@ export function useInfiniteMemos(itemId: number) {
   }, [fetchNextPage, hasNextPage, isFetching]);
 
   const handleRefresh = useCallback(() => {
-    console.log('call handleRefresh');
     setRefreshing(true);
     queryClient.invalidateQueries({ queryKey });
   }, [queryClient, queryKey]);

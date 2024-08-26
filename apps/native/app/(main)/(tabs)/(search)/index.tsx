@@ -58,8 +58,6 @@ export default function SearchScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  console.log({ isLoading, isFetching, isFetchingNextPage, searchResult, totalResults, queryKey });
-
   return (
     <View style={styles.container(top)}>
       <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
