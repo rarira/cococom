@@ -30,8 +30,6 @@ const CategorySectorGroupView = memo(function CategorySectorGroupView({
     [group],
   );
 
-  console.log('CategorySectorGroupView render', group, row);
-
   return <View style={styles.container}>{row}</View>;
 });
 
