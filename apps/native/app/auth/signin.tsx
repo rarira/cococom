@@ -65,6 +65,7 @@ export default function SignInScreen() {
 
   async function signInWithKakao() {
     const result = await login();
+
     const {
       data: { user },
       error,
@@ -73,9 +74,22 @@ export default function SignInScreen() {
       token: result.idToken!, // OpenID Connect 활성화 필요
       access_token: result.accessToken,
     });
+
+    const profile = await supabase.fetchData<'profiles'>(
+      {
+        column: 'id',
+        value: user?.id!,
+      },
+      'profiles',
+    );
+
+    console.log('kakao sign in result', profile);
     if (!error) {
       if (user) {
         setUser(user);
+        if (!profile.confirmed) {
+          console.log('should confirm nickname');
+        }
         if (callbackAfterSignIn) {
           callbackAfterSignIn(user);
           setCallbackAfterSignIn(null);
