@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -22,34 +22,44 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   return (
     <Link
       href={`/sales?categorySector=${discountInfo.categorySector}`}
-      style={{ flex: 1, width: '100%', height: '100%' }}
+      style={styles.container}
+      asChild
     >
-      <Shadow {...shadowPresets.card(theme)}>
-        <Card style={styles.cardContainer}>
-          <View style={styles.imageContainer}>
-            <Image
-              // TODO: 상품별 이미지로 변경
-              source={`https://picsum.photos/150/150`}
-              contentFit="cover"
-              alt={`${discountInfo.categorySector} thumbnail image`}
-              style={styles.image}
-            />
-          </View>
-          <View style={styles.infoContaier}>
-            <View style={styles.categoryNameContainer}>
-              <Text style={styles.categoryName} numberOfLines={2}>
-                {discountInfo.categorySector}
-              </Text>
+      <Pressable>
+        <Shadow {...shadowPresets.card(theme)}>
+          <Card style={styles.cardContainer}>
+            <View>
+              <View style={styles.imageContainer}>
+                <Image
+                  // TODO: 상품별 이미지로 변경
+                  source={`https://picsum.photos/150/150`}
+                  contentFit="cover"
+                  alt={`${discountInfo.categorySector} thumbnail image`}
+                  style={styles.image}
+                />
+              </View>
+              <View style={styles.infoContaier}>
+                <View style={styles.categoryNameContainer}>
+                  <Text style={styles.categoryName} numberOfLines={2}>
+                    {discountInfo.categorySector}
+                  </Text>
+                </View>
+                <Text style={styles.count}>{discountInfo.discountsCount}개의 할인</Text>
+              </View>
             </View>
-            <Text style={styles.count}>{discountInfo.discountsCount}개의 할인</Text>
-          </View>
-        </Card>
-      </Shadow>
+          </Card>
+        </Shadow>
+      </Pressable>
     </Link>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   cardContainer: {
     flex: 1,
     width: '100%',
