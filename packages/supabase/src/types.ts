@@ -186,19 +186,31 @@ export type Database = {
       }
       profiles: {
         Row: {
+          confirmed: boolean | null
           created_at: string | null
+          email: string | null
+          email_verified: boolean | null
           id: string
           nickname: string | null
+          picture: string | null
         }
         Insert: {
+          confirmed?: boolean | null
           created_at?: string | null
+          email?: string | null
+          email_verified?: boolean | null
           id: string
           nickname?: string | null
+          picture?: string | null
         }
         Update: {
+          confirmed?: boolean | null
           created_at?: string | null
+          email?: string | null
+          email_verified?: boolean | null
           id?: string
           nickname?: string | null
+          picture?: string | null
         }
         Relationships: [
           {
