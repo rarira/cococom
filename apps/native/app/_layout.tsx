@@ -137,6 +137,7 @@ function RootLayout() {
                     options={{
                       presentation: 'modal',
                       headerShown: false,
+                      gestureEnabled: false,
                     }}
                   />
                 </Stack>

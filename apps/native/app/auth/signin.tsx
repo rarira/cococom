@@ -16,7 +16,7 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
+  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -87,15 +87,18 @@ export default function SignInScreen() {
     if (!error) {
       if (user) {
         setUser(user);
+        setProfile(profile);
         if (!profile.confirmed) {
-          console.log('should confirm nickname');
-        }
-        if (callbackAfterSignIn) {
+          return router.navigate({
+            pathname: '/auth/signup/confirm',
+            params: { provider: 'kakao' },
+          });
+        } else if (callbackAfterSignIn) {
           callbackAfterSignIn(user);
           setCallbackAfterSignIn(null);
         }
+        router.dismiss();
       }
-      router.dismiss();
     }
   }
 
