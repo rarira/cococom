@@ -14,10 +14,12 @@ export default function AuthLayout() {
         headerShown: false,
         contentStyle: { backgroundColor: theme.colors.background },
         headerStyle: { backgroundColor: theme.colors.modalBackground },
+        gestureEnabled: false,
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Welcome' }} />
       <Stack.Screen name="signin" options={{ title: 'Sign In' }} />
+      <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
     </Stack>
   );
 }
