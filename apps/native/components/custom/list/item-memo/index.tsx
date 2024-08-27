@@ -82,7 +82,6 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
     return <CircularProgress style={styles.loadinProgress} />;
   }
 
-  console.log('itemMemoList', memos, refreshing);
   return (
     <Tabs.FlashList
       data={memos}

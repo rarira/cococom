@@ -7,7 +7,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
-import TextInputCounterView from '@/components/custom/view/text-input-counter';
 import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
@@ -93,6 +92,14 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     [memo, setMemo],
   );
 
+  const renderButton = useCallback(() => {
+    return (
+      <Button style={styles.saveButton} disabled={impossibleToSave} onPress={handlePress}>
+        <Text style={styles.saveText}>저장</Text>
+      </Button>
+    );
+  }, [styles.saveButton, styles.saveText, impossibleToSave, handlePress]);
+
   return (
     <BottomSheet
       index={1}
@@ -107,16 +114,8 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
           onChangeText={handleChangeText}
           maxLength={MAX_MEMO_LENGTH}
           rootStyle={styles.textInput}
+          renderButton={renderButton}
         />
-        <View style={styles.actionContainer}>
-          <TextInputCounterView
-            maxLength={MAX_MEMO_LENGTH}
-            currentLength={memo?.content?.length ?? 0}
-          />
-          <Button style={styles.saveButton} disabled={impossibleToSave} onPress={handlePress}>
-            <Text style={styles.saveText}>저장</Text>
-          </Button>
-        </View>
       </View>
     </BottomSheet>
   );
@@ -131,14 +130,6 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     paddingBottom: bottom,
   }),
-  actionContainer: {
-    marginTop: theme.spacing.sm,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: theme.spacing.md,
-    width: '100%',
-  },
   saveButton: {
     backgroundColor: theme.colors.tint,
     paddingHorizontal: theme.spacing.lg,
