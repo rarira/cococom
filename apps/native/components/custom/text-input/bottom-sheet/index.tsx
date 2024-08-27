@@ -9,19 +9,29 @@ import { useBottomSheetTextInput } from './__hooks/useBottomSheetTextInput';
 
 interface BottomSheetTextInputProps extends TextInputProps {
   rootStyle?: ViewProps['style'];
+  renderButton?: () => JSX.Element;
 }
 
 const BottomSheetTextInput = memo(function BottomSheetTextInput({
   onFocus,
   onBlur,
   rootStyle,
+  defaultValue,
+  maxLength,
+  renderButton,
   ...restProps
 }: BottomSheetTextInputProps) {
   const { styles, theme } = useStyles(stylesheet);
   const { handleOnBlur, handleOnFocus } = useBottomSheetTextInput({ onBlur, onFocus });
 
   return (
-    <TextInput.Root variants="outlined" style={[styles.textInputRoot, rootStyle]}>
+    <TextInput.Root
+      variants="outlined"
+      style={[styles.textInputRoot, rootStyle]}
+      defaultValue={defaultValue}
+      maxLength={maxLength}
+      renderButton={renderButton}
+    >
       <TextInput.Field
         multiline
         placeholderTextColor={`${theme.colors.typography}99`}

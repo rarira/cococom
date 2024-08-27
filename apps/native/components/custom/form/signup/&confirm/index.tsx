@@ -30,19 +30,22 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormP
     <View>
       <Controller
         control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput.Root>
-            <TextInput.Field
-              placeholder="이메일"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              editable={!profile?.email_verified}
-            />
+        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+          <TextInput.Root editable={!profile?.email_verified} value={value} error={error?.message}>
+            <TextInput.Field placeholder="이메일" onBlur={onBlur} onChangeText={onChange} />
           </TextInput.Root>
         )}
         name="email"
-        disabled={!!profile?.email_verified}
+      />
+      <Controller
+        control={control}
+        rules={{ required: '닉네임을 입력해주세요' }}
+        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+          <TextInput.Root value={value} error={error?.message}>
+            <TextInput.Field placeholder="닉네임" onBlur={onBlur} onChangeText={onChange} />
+          </TextInput.Root>
+        )}
+        name="nickname"
       />
     </View>
   );
