@@ -189,6 +189,7 @@ export type Database = {
           confirmed: boolean | null
           created_at: string | null
           email: string | null
+          email_opted_in: boolean
           email_verified: boolean | null
           id: string
           nickname: string | null
@@ -198,6 +199,7 @@ export type Database = {
           confirmed?: boolean | null
           created_at?: string | null
           email?: string | null
+          email_opted_in?: boolean
           email_verified?: boolean | null
           id: string
           nickname?: string | null
@@ -207,6 +209,7 @@ export type Database = {
           confirmed?: boolean | null
           created_at?: string | null
           email?: string | null
+          email_opted_in?: boolean
           email_verified?: boolean | null
           id?: string
           nickname?: string | null

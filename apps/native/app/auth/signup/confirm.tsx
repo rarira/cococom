@@ -33,7 +33,7 @@ const stylesheet = createStyleSheet(theme => ({
   title: {
     fontSize: theme.fontSize.md,
     fontWeight: 'bold',
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.xl,
   },
   subtitle: {
     fontSize: theme.fontSize.md,
