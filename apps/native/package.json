@@ -24,6 +24,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^4",
     "@gorhom/portal": "^1.0.14",
+    "@hookform/resolvers": "^3.9.0",
     "@react-native-community/netinfo": "11.3.1",
     "@react-native-firebase/analytics": "^20.3.0",
     "@react-native-firebase/app": "^20.3.0",
@@ -66,6 +67,7 @@
     "react-native-unistyles": "^2.9.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.12",
+    "zod": "^3.23.8",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
