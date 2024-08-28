@@ -27,7 +27,7 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
   return (
     <TextInput.Root
       variants="outlined"
-      style={[styles.textInputRoot, rootStyle]}
+      rowStyle={[styles.textInputRoot, rootStyle]}
       defaultValue={defaultValue}
       maxLength={maxLength}
       renderButton={renderButton}

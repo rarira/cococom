@@ -23,7 +23,10 @@ type TextInputContextType = {
   error?: string;
   renderButton?: () => JSX.Element;
 };
-interface TextInputWrapperProps extends ViewProps, TextInputContextType {}
+interface TextInputWrapperProps extends ViewProps, TextInputContextType {
+  label?: string;
+  rowStyle?: ViewProps['style'];
+}
 
 const TextInputContext = createContext<TextInputContextType>({});
 
@@ -39,7 +42,9 @@ function useTextInputContext() {
 }
 
 const TextInputWrapper = memo(function TextInputWrapper({
+  label,
   style,
+  rowStyle,
   variants = 'outlined',
   children,
   editable = true,
@@ -53,13 +58,16 @@ const TextInputWrapper = memo(function TextInputWrapper({
   const { styles } = useStyles(stylesheet);
 
   return (
-    <TextInputContext.Provider value={{ editable, value, maxLength, error, renderButton }}>
+    <TextInputContext.Provider
+      value={{ editable, value, defaultValue, maxLength, error, renderButton }}
+    >
       <View style={[styles.container, style]} {...restProps}>
+        {label && <TextInputLabel>{label}</TextInputLabel>}
         <View
           style={[
             styles.rowContainer(!!editable, !!error),
             [variants ? styles[variants] : {}],
-            style,
+            rowStyle,
           ]}
           {...restProps}
         >
@@ -81,6 +89,12 @@ const TextInputAccessoryRow = memo(function TextInputAccessoryRow({
   const { styles } = useStyles(stylesheet);
 
   return <View style={[styles.accessoryContainer, style]} {...restProps} />;
+});
+
+const TextInputLabel = memo(function TextInputLabel({ style, ...restProps }: TextProps) {
+  const { styles } = useStyles(stylesheet);
+
+  return <Text style={[styles.label, style]} {...restProps} />;
 });
 
 const TextInputField = memo(function TextInputField({
@@ -180,6 +194,12 @@ const stylesheet = createStyleSheet(theme => ({
       editable ? 0.6 : 0.2,
     ),
   }),
+  label: {
+    color: `${theme.colors.typography}99`,
+    fontSize: theme.fontSize.sm,
+    marginBottom: theme.spacing.sm,
+    alignSelf: 'flex-start',
+  },
   accessoryContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -201,6 +221,7 @@ const stylesheet = createStyleSheet(theme => ({
     color: error ? theme.colors.alert : theme.colors.typography,
     fontSize: theme.fontSize.md,
     opacity: editable ? 1 : 0.5,
+    paddingHorizontal: theme.spacing.md,
   }),
   slot: {
     justifyContent: 'center',
