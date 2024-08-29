@@ -48,6 +48,7 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
         queryClient,
         queryKey,
         memoId: memo.id,
+        itemQueryKey: queryKeys.items.byId(memo.itemId, memo.userId),
       });
     },
     onError: (_error, _variables, context) => {

@@ -50,6 +50,7 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
         queryClient,
         queryKey,
         newMemo,
+        itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
     },
     onError: (_error, _variables, context) => {
@@ -129,6 +130,7 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     paddingBottom: bottom,
+    paddingTop: theme.spacing.lg,
   }),
   saveButton: {
     backgroundColor: theme.colors.tint,

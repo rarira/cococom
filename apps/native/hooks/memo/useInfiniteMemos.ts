@@ -44,9 +44,9 @@ export function useInfiniteMemos(itemId: number) {
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({ queryKey });
-    await queryClient.refetchQueries({ queryKey: queryKeys.items.byId(itemId) });
+    await queryClient.refetchQueries({ queryKey: queryKeys.items.byId(itemId, user?.id) });
     setRefreshing(false);
-  }, [itemId, queryClient, queryKey]);
+  }, [itemId, queryClient, queryKey, user?.id]);
 
   return {
     memos,

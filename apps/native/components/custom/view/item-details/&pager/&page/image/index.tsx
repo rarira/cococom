@@ -36,7 +36,7 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
     state.pageIndexOfInfinteList,
   ]);
 
-  const queryKey = queryKeys.items.byId(+itemId);
+  const queryKey = queryKeys.items.byId(+itemId, user?.id);
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async () => {

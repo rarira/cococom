@@ -204,10 +204,11 @@ const stylesheet = createStyleSheet(theme => ({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.lg,
   },
   outlined: {
     borderWidth: 1,
+    borderRadius: theme.spacing.md,
   },
   underlined: {
     borderBottomWidth: 1,

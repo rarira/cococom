@@ -40,7 +40,7 @@ export default function ItemScreen() {
   useHideTabBar();
 
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: queryKeys.items.byId(+itemId),
+    queryKey: queryKeys.items.byId(+itemId, user?.id),
     queryFn: queryFn(+itemId, user?.id),
   });
 
