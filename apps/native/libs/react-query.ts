@@ -204,15 +204,19 @@ const makeNewInfiniteQueryResult = <T>(newFlatPages: T[], queryPageSize: number)
   };
 };
 
-const makeNewInfiniteObjectForOptimisticUpdate = <T>(
+const makeNewInfiniteObjectForOptimisticUpdate = <
+  T extends {
+    [key: string]: unknown;
+  },
+>(
   newObject: T,
   newId: number,
   needUpdateAt?: boolean,
 ) => {
   return {
     ...newObject,
-    id: newId,
-    created_at: new Date().toISOString(),
+    id: newObject.id || newId,
+    created_at: newObject.created_at || new Date().toISOString(),
     updated_at: needUpdateAt ? new Date().toISOString() : undefined,
   };
 };
@@ -325,11 +329,13 @@ export const handleMutateOfInsertComment = async ({
   queryKey,
   newComment,
   itemQueryKey,
+  needSort,
 }: {
   queryClient: QueryClient;
   queryKey: QueryKey;
   newComment: InsertComment;
   itemQueryKey: QueryKey;
+  needSort?: boolean;
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
@@ -352,6 +358,13 @@ export const handleMutateOfInsertComment = async ({
         makeNewInfiniteObjectForOptimisticUpdate(newComment, (flatPages[0]?.id ?? 0) + 1),
         ...flatPages,
       ];
+
+      if (needSort) {
+        newFlatPages.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
+      }
+
       return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
     }
 
@@ -421,4 +434,3 @@ export const handleMutateOfDeleteComment = async ({
 
   return { previousData };
 };
-export { InfiniteQueryResult };

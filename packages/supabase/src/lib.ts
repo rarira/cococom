@@ -8,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database, InfiniteQueryResult, JoinedComments, Tables } from './merged-types';
+import { Database, JoinedComments, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -137,10 +137,11 @@ export class Supabase {
   async fetchData<T extends keyof Database['public']['Tables']>(
     search: { value: string | number; column: string },
     tableName: T,
+    columns?: string,
   ): Promise<Tables<T>> {
     const { data, error } = await this.supabaseClient
       .from(tableName)
-      .select('*')
+      .select(columns || '*')
       .eq(search.column, search.value)
       .single();
 
@@ -352,7 +353,7 @@ export class Supabase {
       throw error;
     }
 
-    return data as unknown as InfiniteQueryResult<JoinedComments>;
+    return data as unknown as JoinedComments[];
   }
 
   async insertComment(comment: InsertComment) {
