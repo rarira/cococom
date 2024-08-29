@@ -25,6 +25,7 @@ export type InsertCategory = Database['public']['Tables']['categories']['Insert'
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
+export type InsertComment = Database['public']['Tables']['comments']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
 export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
 export type SearchItemSortDirection = 'ASC' | 'DESC';
@@ -329,6 +330,49 @@ export class Supabase {
 
     return data;
   }
+
+  async fetchComments({
+    itemId,
+    page,
+    pageSize = 20,
+  }: {
+    itemId: number;
+    page: number;
+    pageSize?: number;
+  }) {
+    const { data, error } = await this.supabaseClient
+      .from('comments')
+      .select('*')
+      .eq('item_id', itemId)
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async insertComment(comment: InsertComment) {
+    const { error } = await this.supabaseClient.from('comments').insert(comment);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteComment(commentId: number) {
+    const { error } = await this.supabaseClient.from('comments').delete().eq('id', commentId);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

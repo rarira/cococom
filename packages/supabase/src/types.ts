@@ -27,6 +27,45 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          item_id: number
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          item_id: number
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          item_id?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discounts: {
         Row: {
           created_at: string | null
