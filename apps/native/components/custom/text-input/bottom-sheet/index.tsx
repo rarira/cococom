@@ -19,6 +19,7 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
   defaultValue,
   maxLength,
   renderButton,
+  placeholder,
   ...restProps
 }: BottomSheetTextInputProps) {
   const { styles, theme } = useStyles(stylesheet);
@@ -35,7 +36,7 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
       <TextInput.Field
         multiline
         placeholderTextColor={`${theme.colors.typography}99`}
-        placeholder="Add Memo"
+        placeholder={placeholder}
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         autoCorrect={false}

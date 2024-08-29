@@ -10,30 +10,33 @@ import IconButton from '@/components/ui/button/icon';
 import CircularProgress from '@/components/ui/progress/circular';
 import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';
-import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
+import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
 
-import ItemMemoListRow from './&row';
+import ItemCommentListRow from './&row';
 
-interface ItemMemoListProps extends MemoTabViewProps {
-  onAddMemoPress?: () => void;
+interface ItemCommentListProps extends MemoTabViewProps {
+  onAddCommentPress?: () => void;
 }
 
-const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: ItemMemoListProps) {
+const ItemCommentList = memo(function ItemCommentList({
+  itemId,
+  onAddCommentPress,
+}: ItemCommentListProps) {
   const { styles, theme } = useStyles(stylesheet);
   const {
-    memos,
+    comments,
     error,
     isFetchingNextPage,
     isLoading,
     handleEndReached,
     refreshing,
     handleRefresh,
-  } = useInfiniteMemos(itemId);
+  } = useInfiniteComments(itemId);
 
   const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
-  const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
-    return <ItemMemoListRow memo={item} key={item.id} ref={previousSwipeableRef} />;
+  const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'comments'>> }) => {
+    return <ItemCommentListRow comment={item} key={item.id} ref={previousSwipeableRef} />;
   }, []);
 
   const ListHeaderComponent = useMemo(() => {
@@ -44,21 +47,21 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
           color: theme.colors.typography,
           size: theme.fontSize.lg,
         }}
-        text="메모 추가"
-        onPress={onAddMemoPress}
+        text="댓글 추가"
+        onPress={onAddCommentPress}
         textStyle={styles.addButtonText}
       />
     );
-  }, [onAddMemoPress, styles.addButtonText, theme.colors.typography, theme.fontSize.lg]);
+  }, [onAddCommentPress, styles.addButtonText, theme.colors.typography, theme.fontSize.lg]);
 
   const ListEmptyComponent = useMemo(
     () => (
       <View style={styles.listEmptyContainer}>
-        <Text style={styles.listEmptyTitle}>저장된 메모가 없습니다</Text>
+        <Text style={styles.listEmptyTitle}>댓글이 없습니다</Text>
         <Text style={styles.listEmptyTitle}>
-          위의 <Text style={styles.listEmptyBoldText}>'메모 추가'</Text> 버튼을 눌러 작성해 보세요
+          위의 <Text style={styles.listEmptyBoldText}>'댓글 추가'</Text> 버튼을 눌러 다른 사용자와
+          정보를 공유하세요!
         </Text>
-        <Text style={styles.listEmptyInfoText}>저장된 메모는 작성자 본인만 볼 수 있습니다</Text>
       </View>
     ),
     [styles],
@@ -87,7 +90,7 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
 
   return (
     <Tabs.FlashList
-      data={memos}
+      data={comments}
       renderItem={renderItem}
       onEndReached={handleEndReached}
       estimatedItemSize={50}
@@ -154,4 +157,4 @@ const stylesheet = createStyleSheet(theme => ({
   emptyPlaceholder: (minHeight: number) => ({ width: '100%', height: '100%', minHeight }),
 }));
 
-export default ItemMemoList;
+export default ItemCommentList;

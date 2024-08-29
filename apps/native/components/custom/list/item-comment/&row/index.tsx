@@ -10,46 +10,40 @@ import IconButton from '@/components/ui/button/icon';
 import Text from '@/components/ui/text';
 import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';
+import { handleMutateOfDeleteComment, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
-import { useMemoEditStore } from '@/store/memo-edit';
 
-interface ItemMemoListRowProps {
-  memo: Tables<'memos'>;
+interface ItemCommentListRowProps {
+  comment: Tables<'comments'>;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
 
-const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
+const RightAction = memo(({ dragX, comment }: any) => {
   const { theme, styles } = useStyles(stylesheet);
 
   const queryClient = useQueryClient();
-
-  const { bottomSheetRef, setMemo } = useMemoEditStore(store => ({
-    setMemo: store.setMemo,
-    bottomSheetRef: store.bottomSheetRef,
-  }));
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateX: dragX.value + ACTION_BUTTON_WIDTH * 2,
+          translateX: dragX.value + ACTION_BUTTON_WIDTH,
         },
       ],
     };
   });
 
-  const queryKey = queryKeys.memos.byItem(memo.itemId, memo.userId);
+  const queryKey = queryKeys.comments.byItem(comment.item_id);
 
   const deleteMemoMutation = useMutation({
-    mutationFn: () => supabase.deleteMemo(memo.id),
+    mutationFn: () => supabase.deleteComment(comment.id),
     onMutate: () => {
-      return handleMutateOfDeleteMemo({
+      return handleMutateOfDeleteComment({
         queryClient,
         queryKey,
-        memoId: memo.id,
-        itemQueryKey: queryKeys.items.byId(memo.itemId, memo.userId),
+        commentId: comment.id,
+        itemQueryKey: queryKeys.items.byId(comment.item_id, comment.user_id),
       });
     },
     onError: (_error, _variables, context) => {
@@ -65,23 +59,8 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
     }
   }, [deleteMemoMutation]);
 
-  const handleEditPress = useCallback(() => {
-    setMemo(memo);
-    bottomSheetRef.current?.present();
-    swipeableRef.current?.close();
-  }, [bottomSheetRef, memo, setMemo, swipeableRef]);
-
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
-      <IconButton
-        onPress={handleEditPress}
-        iconProps={{
-          font: { type: 'MaterialIcon', name: 'edit' },
-          size: theme.fontSize.lg,
-          color: 'white',
-        }}
-        style={styles.actionButton(theme.colors.tint3)}
-      />
       <IconButton
         onPress={handleDeletePress}
         iconProps={{
@@ -97,20 +76,18 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemMemoListRow = memo(
-  forwardRef<SwipeableMethods, ItemMemoListRowProps>(function ItemMemoListRow(
-    { memo },
+const ItemCommentListRow = memo(
+  forwardRef<SwipeableMethods, ItemCommentListRowProps>(function ItemCommentListRow(
+    { comment },
     previousSwipeableRef,
   ) {
     const { styles } = useStyles(stylesheet);
 
     const renderRightActions = useCallback(
-      (
-        _progress: any,
-        translation: SharedValue<number>,
-        swipeableRef: React.RefObject<SwipeableMethods>,
-      ) => <RightAction dragX={translation} swipeableRef={swipeableRef} memo={memo} />,
-      [memo],
+      (_progress: any, translation: SharedValue<number>) => (
+        <RightAction dragX={translation} comment={comment} />
+      ),
+      [comment],
     );
 
     const swipeableProps = useOnlyOneSwipeable(
@@ -122,14 +99,12 @@ const ItemMemoListRow = memo(
         friction={2}
         enableTrackpadTwoFingerGesture
         rightThreshold={40}
-        renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableProps.ref)}
+        renderRightActions={(_, progress) => renderRightActions(_, progress)}
         {...swipeableProps}
       >
         <View style={styles.container}>
-          <Text style={styles.timeText}>
-            {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
-          </Text>
-          <Text style={styles.contentText}>{memo.content}</Text>
+          <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
+          <Text style={styles.contentText}>{comment.content}</Text>
         </View>
       </Swipeable>
     );
@@ -163,4 +138,4 @@ const stylesheet = createStyleSheet(theme => ({
   }),
 }));
 
-export default ItemMemoListRow;
+export default ItemCommentListRow;

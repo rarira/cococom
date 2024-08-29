@@ -1,5 +1,6 @@
 import {
   CategorySectors,
+  InsertComment,
   InsertMemo,
   InsertWishlist,
   SearchItemSortDirection,
@@ -8,7 +9,7 @@ import {
 import { JoinedItems, Tables } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
-import { MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
+import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 
 export type InfiniteQueryResult<T> = {
@@ -52,6 +53,9 @@ export const queryKeys = {
   memos: {
     byItem: (itemId: number, userId: string) => ['memos', { itemId, userId }],
     byUserId: (userId: string) => ['memos', { userId }],
+  },
+  comments: {
+    byItem: (itemId: number) => ['comments', { itemId }],
   },
 };
 
@@ -157,41 +161,47 @@ export const handleMutateOfSearchResult = async ({
   return { previousData };
 };
 
-const findMemoIndexFromPreviousData = (
-  previousData: InfiniteQueryResult<Tables<'memos'>[]>,
-  memoId?: number,
-  noNeedToFindIndex?: boolean,
-) => {
+const findInfinteIndexFromPreviousData = <T extends { id: number }>({
+  previousData,
+  queryPageSizeConstant,
+  resourceId,
+  noNeedToFindIndex,
+}: {
+  previousData: InfiniteQueryResult<T[]>;
+  queryPageSizeConstant: number;
+  resourceId?: number;
+  noNeedToFindIndex?: boolean;
+}) => {
   let pageIndex = undefined;
-  let memoIndex = undefined;
+  let resourceIndex = undefined;
 
   const flatPages = previousData?.pages.flat();
 
-  const flatMemoIndex = memoId ? flatPages.findIndex(memo => memo.id === memoId) : -1;
+  const flatIndex = resourceId ? flatPages.findIndex(memo => memo.id === resourceId) : -1;
 
   if (noNeedToFindIndex) {
-    return { flatPages, flatMemoIndex };
+    return { flatPages, flatIndex };
   }
 
-  if (flatMemoIndex === -1) {
-    return { flatPages, pageIndex, memoIndex };
+  if (flatIndex === -1) {
+    return { flatPages, pageIndex, resourceIndex };
   }
 
-  pageIndex = Math.floor(flatMemoIndex / MEMO_INFINITE_QUERY_PAGE_SIZE);
-  memoIndex = flatMemoIndex % MEMO_INFINITE_QUERY_PAGE_SIZE;
+  pageIndex = Math.floor(flatIndex / queryPageSizeConstant);
+  resourceIndex = flatIndex % queryPageSizeConstant;
 
-  return { pageIndex, memoIndex, flatPages };
+  return { pageIndex, resourceIndex, flatPages };
 };
 
-const makeNewMemoInfiniteQueryResult = (newFlatPages: Tables<'memos'>[], queryPageSize: number) => {
-  const newPages = newFlatPages.reduce((acc, memo, index) => {
+const makeNewInfiniteQueryResult = <T>(newFlatPages: T[], queryPageSize: number) => {
+  const newPages = newFlatPages.reduce((acc, resource, index) => {
     if (index % queryPageSize === 0) {
-      acc.push([memo]);
+      acc.push([resource]);
     } else {
-      acc[acc.length - 1].push(memo);
+      acc[acc.length - 1].push(resource);
     }
     return acc;
-  }, [] as Tables<'memos'>[][]);
+  }, [] as T[][]);
 
   return {
     pageParams: Array.from({ length: newPages.length }, (_, i) => i + 1),
@@ -199,12 +209,16 @@ const makeNewMemoInfiniteQueryResult = (newFlatPages: Tables<'memos'>[], queryPa
   };
 };
 
-const makeNewMemoObject = (newMemo: InsertMemo, newId: number) => {
+const makeNewInfiniteObjectForOptimisticUpdate = <T>(
+  newObject: T,
+  newId: number,
+  needUpdateAt?: boolean,
+) => {
   return {
-    ...newMemo,
+    ...newObject,
     id: newId,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    updated_at: needUpdateAt ? new Date().toISOString() : undefined,
   };
 };
 
@@ -224,15 +238,23 @@ export const handleMutateOfUpsertMemo = async ({
     Tables<'memos'>[]
   >;
 
-  const { flatPages, pageIndex, memoIndex } = findMemoIndexFromPreviousData(
+  const {
+    flatPages,
+    pageIndex,
+    resourceIndex: memoIndex,
+  } = findInfinteIndexFromPreviousData({
     previousData,
-    newMemo.id,
-  );
+    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    resourceId: newMemo.id,
+  });
 
   queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'memos'>[]>) => {
     if (typeof pageIndex === 'undefined') {
-      const newFlatPages = [makeNewMemoObject(newMemo, (flatPages[0]?.id ?? 0) + 1), ...flatPages];
-      return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+      const newFlatPages = [
+        makeNewInfiniteObjectForOptimisticUpdate(newMemo, (flatPages[0]?.id ?? 0) + 1, true),
+        ...flatPages,
+      ];
+      return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
     }
 
     newMemo.updated_at = new Date().toISOString();
@@ -277,7 +299,12 @@ export const handleMutateOfDeleteMemo = async ({
     Tables<'memos'>[]
   >;
 
-  const { flatPages, flatMemoIndex } = findMemoIndexFromPreviousData(previousData, memoId, true);
+  const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
+    previousData,
+    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    resourceId: memoId,
+    noNeedToFindIndex: true,
+  });
 
   queryClient.setQueryData(queryKey, (old: JoinedItems) => {
     const newFlatPages = [
@@ -285,13 +312,115 @@ export const handleMutateOfDeleteMemo = async ({
       ...flatPages.slice(flatMemoIndex! + 1),
     ];
 
-    return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+    return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
   });
 
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
       memosLength: old.memosLength! - 1,
+    };
+  });
+
+  return { previousData };
+};
+
+export const handleMutateOfInsertComment = async ({
+  queryClient,
+  queryKey,
+  newComment,
+  itemQueryKey,
+}: {
+  queryClient: QueryClient;
+  queryKey: QueryKey;
+  newComment: InsertComment;
+  itemQueryKey: QueryKey;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
+    Tables<'comments'>[]
+  >;
+
+  const {
+    flatPages,
+    pageIndex,
+    resourceIndex: commentIndex,
+  } = findInfinteIndexFromPreviousData({
+    previousData,
+    queryPageSizeConstant: COMMENT_INFINITE_QUERY_PAGE_SIZE,
+    resourceId: newComment.id,
+  });
+
+  queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'comments'>[]>) => {
+    if (typeof pageIndex === 'undefined') {
+      const newFlatPages = [
+        makeNewInfiniteObjectForOptimisticUpdate(newComment, (flatPages[0]?.id ?? 0) + 1),
+        ...flatPages,
+      ];
+      return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+    }
+
+    return {
+      ...old,
+      pages: [
+        ...old.pages.slice(0, pageIndex),
+        [
+          ...old.pages[pageIndex].slice(0, commentIndex),
+          newComment,
+          ,
+          ...old.pages[pageIndex].slice(commentIndex + 1),
+        ],
+        ...old.pages.slice(pageIndex + 1),
+      ],
+    };
+  });
+
+  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    return {
+      ...old,
+      commentsLength: (old.commentsLength ?? 0) + 1,
+    };
+  });
+
+  return { previousData };
+};
+
+export const handleMutateOfDeleteComment = async ({
+  queryClient,
+  queryKey,
+  commentId,
+  itemQueryKey,
+}: {
+  queryClient: QueryClient;
+  commentId?: number;
+  queryKey: QueryKey;
+  itemQueryKey: QueryKey;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
+    Tables<'memos'>[]
+  >;
+
+  const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
+    previousData,
+    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    resourceId: commentId,
+    noNeedToFindIndex: true,
+  });
+
+  queryClient.setQueryData(queryKey, (old: JoinedItems) => {
+    const newFlatPages = [
+      ...flatPages.slice(0, flatMemoIndex),
+      ...flatPages.slice(flatMemoIndex! + 1),
+    ];
+
+    return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+  });
+
+  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    return {
+      ...old,
+      commentsLength: old.commentsLength! - 1,
     };
   });
 

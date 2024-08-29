@@ -6,4 +6,5 @@ export const enum PortalHostNames {
 
 export const MAX_MEMO_LENGTH = 140;
 
-export const MEMO_INFINITE_QUERY_PAGE_SIZE = 3;
+export const MEMO_INFINITE_QUERY_PAGE_SIZE = 20;
+export const COMMENT_INFINITE_QUERY_PAGE_SIZE = 20;
