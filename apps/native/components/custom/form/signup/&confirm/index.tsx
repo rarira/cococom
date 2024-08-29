@@ -64,7 +64,6 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormP
   const onSubmit = useCallback(
     async (values: z.infer<typeof formSchema>) => {
       const newProfile = await updateProfileMutation.mutateAsync(values);
-      console.log('signupform', { newProfile }, callbackAfterSignIn);
       setProfile(newProfile[0]);
       if (callbackAfterSignIn) {
         callbackAfterSignIn(user!);
