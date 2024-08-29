@@ -8,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database, Tables } from './merged-types';
+import { Database, InfiniteQueryResult, JoinedComments, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -342,7 +342,7 @@ export class Supabase {
   }) {
     const { data, error } = await this.supabaseClient
       .from('comments')
-      .select('*')
+      .select('id, created_at, content, item_id, author:profiles (id, nickname)')
       .eq('item_id', itemId)
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
@@ -352,7 +352,7 @@ export class Supabase {
       throw error;
     }
 
-    return data;
+    return data as unknown as InfiniteQueryResult<JoinedComments>;
   }
 
   async insertComment(comment: InsertComment) {

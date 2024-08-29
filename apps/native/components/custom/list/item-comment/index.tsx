@@ -1,4 +1,4 @@
-import { Tables } from '@cococom/supabase/types';
+import { JoinedComments } from '@cococom/supabase/types';
 import { memo, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
@@ -35,7 +35,7 @@ const ItemCommentList = memo(function ItemCommentList({
 
   const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
-  const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'comments'>> }) => {
+  const renderItem = useCallback(({ item }: { item: NonNullable<JoinedComments> }) => {
     return <ItemCommentListRow comment={item} key={item.id} ref={previousSwipeableRef} />;
   }, []);
 

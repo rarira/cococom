@@ -6,16 +6,11 @@ import {
   SearchItemSortDirection,
   SearchItemSortField,
 } from '@cococom/supabase/libs';
-import { JoinedItems, Tables } from '@cococom/supabase/types';
+import { InfiniteQueryResult, JoinedComments, JoinedItems, Tables } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
-
-export type InfiniteQueryResult<T> = {
-  pageParams: number[];
-  pages: T[];
-};
 
 export const queryKeys = {
   discounts: {
@@ -338,7 +333,7 @@ export const handleMutateOfInsertComment = async ({
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
-    Tables<'comments'>[]
+    JoinedComments[]
   >;
 
   const {
@@ -398,7 +393,7 @@ export const handleMutateOfDeleteComment = async ({
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
-    Tables<'memos'>[]
+    JoinedComments[]
   >;
 
   const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
@@ -426,3 +421,4 @@ export const handleMutateOfDeleteComment = async ({
 
   return { previousData };
 };
+export { InfiniteQueryResult };

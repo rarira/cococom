@@ -145,6 +145,7 @@ const stylesheet = createStyleSheet(theme => ({
   timeText: {
     fontSize: theme.fontSize.sm,
     color: `${theme.colors.typography}BB`,
+    alignSelf: 'flex-end',
   },
   contentText: {
     fontSize: theme.fontSize.normal,
@@ -154,6 +155,8 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginLeft: theme.spacing.xl,
+    width: ACTION_BUTTON_WIDTH * 2,
   },
   actionButton: (backgroundColor: string) => ({
     backgroundColor,
