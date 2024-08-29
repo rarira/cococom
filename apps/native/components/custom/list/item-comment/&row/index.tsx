@@ -1,4 +1,4 @@
-import { Tables } from '@cococom/supabase/types';
+import { JoinedComments } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { forwardRef, memo, MutableRefObject, useCallback } from 'react';
 import { View } from 'react-native';
@@ -12,9 +12,10 @@ import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
 import { handleMutateOfDeleteComment, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 interface ItemCommentListRowProps {
-  comment: Tables<'comments'>;
+  comment: JoinedComments;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
@@ -22,6 +23,7 @@ const ACTION_BUTTON_WIDTH = 50;
 const RightAction = memo(({ dragX, comment }: any) => {
   const { theme, styles } = useStyles(stylesheet);
 
+  const user = useUserStore(store => store.user);
   const queryClient = useQueryClient();
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -43,7 +45,7 @@ const RightAction = memo(({ dragX, comment }: any) => {
         queryClient,
         queryKey,
         commentId: comment.id,
-        itemQueryKey: queryKeys.items.byId(comment.item_id, comment.user_id),
+        itemQueryKey: queryKeys.items.byId(comment.item_id, user?.id),
       });
     },
     onError: (_error, _variables, context) => {
@@ -82,6 +84,7 @@ const ItemCommentListRow = memo(
     previousSwipeableRef,
   ) {
     const { styles } = useStyles(stylesheet);
+    const user = useUserStore(store => store.user);
 
     const renderRightActions = useCallback(
       (_progress: any, translation: SharedValue<number>) => (
@@ -103,7 +106,12 @@ const ItemCommentListRow = memo(
         {...swipeableProps}
       >
         <View style={styles.container}>
-          <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
+          <View style={styles.header}>
+            <Text style={styles.authorText(comment.author.id === user?.id)}>
+              {comment.author.nickname}
+            </Text>
+            <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
+          </View>
           <Text style={styles.contentText}>{comment.content}</Text>
         </View>
       </Swipeable>
@@ -117,6 +125,16 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'column',
     paddingVertical: theme.spacing.md,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  authorText: (myself: boolean) => ({
+    fontSize: theme.fontSize.normal,
+    color: myself ? theme.colors.tint : `${theme.colors.typography}BB`,
+  }),
   timeText: {
     fontSize: theme.fontSize.sm,
     color: `${theme.colors.typography}BB`,
@@ -127,8 +145,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   actionButtonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    marginLeft: theme.spacing.xl,
+    paddingLeft: theme.spacing.xl,
+    width: ACTION_BUTTON_WIDTH,
   },
   actionButton: (backgroundColor: string) => ({
     backgroundColor,
