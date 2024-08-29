@@ -11,8 +11,6 @@ export default function AuthSignUpConfirmScreen() {
   const { provider } = useLocalSearchParams<{ provider: string }>();
   const { bottom } = useSafeAreaInsets();
 
-  console.log('AuthSignUpConfirmScreen', provider);
-
   return (
     <View style={styles.container(bottom)}>
       <Text style={styles.title}>원활한 사용을 위해 아래 추가 정보를 확인하세요</Text>
