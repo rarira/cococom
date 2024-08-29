@@ -83,7 +83,6 @@ export default function SignInScreen() {
       'profiles',
     );
 
-    console.log('kakao sign in result', profile);
     if (!error) {
       if (user) {
         setUser(user);

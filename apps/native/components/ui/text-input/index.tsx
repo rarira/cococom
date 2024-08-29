@@ -166,7 +166,6 @@ const TextInputError = memo(function TextInputError({
 }: Omit<TextProps, 'children'>) {
   const { styles } = useStyles(stylesheet);
   const { error } = useTextInputContext();
-  console.log('text input error', error);
 
   if (!error) return <View style={{ width: 100 }} />;
 
