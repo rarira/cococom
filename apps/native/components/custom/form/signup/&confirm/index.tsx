@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import { memo, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
@@ -9,6 +11,7 @@ import Button from '@/components/ui/button';
 import Switch from '@/components/ui/switch';
 import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
+import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 interface SignUpConfirmFormProps {}
@@ -40,7 +43,7 @@ const formSchema = z
 const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { profile, setProfile } = useUserStore();
+  const { user, profile, setProfile, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
 
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(formSchema),
@@ -52,9 +55,26 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormP
     mode: 'onSubmit',
   });
 
-  const onSubmit = useCallback((values: z.infer<typeof formSchema>) => {
-    console.log('values', values);
-  }, []);
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof formSchema>) => {
+      return await supabase.updateProfile({ ...data, confirmed: true }, profile!.id);
+    },
+  });
+
+  const onSubmit = useCallback(
+    async (values: z.infer<typeof formSchema>) => {
+      const newProfile = await updateProfileMutation.mutateAsync(values);
+      console.log('signupform', { newProfile }, callbackAfterSignIn);
+      setProfile(newProfile[0]);
+      if (callbackAfterSignIn) {
+        callbackAfterSignIn(user!);
+        setCallbackAfterSignIn(null);
+      }
+      Alert.alert('환영합니다! 가입이 완료되었습니다');
+      router.dismiss();
+    },
+    [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, updateProfileMutation, user],
+  );
 
   return (
     <View style={styles.container}>
@@ -126,7 +146,7 @@ const stylesheet = createStyleSheet(theme => ({
   submitButton: {
     backgroundColor: theme.colors.tint,
     width: '100%',
-    marginTop: theme.spacing.xl,
+    marginTop: theme.spacing.xl * 3,
     alignItems: 'center',
   },
   submitButtonText: {

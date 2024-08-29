@@ -47,7 +47,7 @@ export const queryKeys = {
     ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion }],
   },
   items: {
-    byId: (id: number) => ['items', { id }],
+    byId: (id: number, userId?: string) => ['items', { id, userId }],
   },
   memos: {
     byItem: (itemId: number, userId: string) => ['memos', { itemId, userId }],
@@ -212,10 +212,12 @@ export const handleMutateOfUpsertMemo = async ({
   queryClient,
   queryKey,
   newMemo,
+  itemQueryKey,
 }: {
   queryClient: QueryClient;
   queryKey: QueryKey;
   newMemo: InsertMemo;
+  itemQueryKey: QueryKey;
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
@@ -249,6 +251,13 @@ export const handleMutateOfUpsertMemo = async ({
     };
   });
 
+  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    return {
+      ...old,
+      memosLength: (old.memosLength ?? 0) + 1,
+    };
+  });
+
   return { previousData };
 };
 
@@ -256,10 +265,12 @@ export const handleMutateOfDeleteMemo = async ({
   queryClient,
   queryKey,
   memoId,
+  itemQueryKey,
 }: {
   queryClient: QueryClient;
   memoId?: number;
   queryKey: QueryKey;
+  itemQueryKey: QueryKey;
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteQueryResult<
@@ -275,6 +286,13 @@ export const handleMutateOfDeleteMemo = async ({
     ];
 
     return makeNewMemoInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+  });
+
+  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    return {
+      ...old,
+      memosLength: old.memosLength! - 1,
+    };
   });
 
   return { previousData };

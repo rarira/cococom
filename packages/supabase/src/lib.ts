@@ -315,6 +315,20 @@ export class Supabase {
     return data;
   }
 
+  async updateProfile(profile: Database['public']['Tables']['profiles']['Update'], userId: string) {
+    const { data, error } = await this.supabaseClient
+      .from('profiles')
+      .update(profile)
+      .eq('id', userId)
+      .select();
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

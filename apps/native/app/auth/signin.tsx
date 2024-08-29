@@ -89,7 +89,7 @@ export default function SignInScreen() {
         setUser(user);
         setProfile(profile);
         if (!profile.confirmed) {
-          return router.navigate({
+          return router.replace({
             pathname: '/auth/signup/confirm',
             params: { provider: 'kakao' },
           });
