@@ -16,6 +16,15 @@ export type JoinedItems = Tables<'items'> & {
   isWishlistedByUser: boolean;
 };
 
+export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
+  author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
+};
+
+export type InfiniteQueryResult<T> = {
+  pageParams: number[];
+  pages: T[];
+};
+
 export type InfiniteSearchResultPages = {
   totalRecords: number | null;
   items: {
