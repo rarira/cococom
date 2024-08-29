@@ -11,6 +11,7 @@ export type JoinedItems = Tables<'items'> & {
   discounts: Array<Tables<'discounts'>> | null;
   discountsLength: number;
   memosLength: number | null;
+  commentsLength: number;
   totalWishlistCount: number;
   isWishlistedByUser: boolean;
 };

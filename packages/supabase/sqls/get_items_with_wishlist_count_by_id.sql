@@ -47,6 +47,11 @@ BEGIN
           NULL
       END
     ),
+    'commentsLength', (
+      SELECT COUNT(*)
+      FROM comments c
+      WHERE c."item_id" = i."id"
+    ),
     'totalWishlistCount', (
       SELECT COUNT(*)
       FROM wishlists w

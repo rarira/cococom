@@ -7,6 +7,7 @@ import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import CommentTabView from '@/components/custom/tab-view/comment';
 import DiscountHistoryTabView from '@/components/custom/tab-view/discount-history';
 import MemoTabView from '@/components/custom/tab-view/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
@@ -104,10 +105,11 @@ export default function ItemScreen() {
             <DiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
-        <Tabs.Tab name="comment" label={`댓글(5)`}>
-          <Tabs.ScrollView>
-            <SecondRoute />
-          </Tabs.ScrollView>
+        <Tabs.Tab
+          name="comment"
+          label={`댓글${data.commentsLength ? `(${data.commentsLength})` : ''}`}
+        >
+          <CommentTabView itemId={+itemId} />
         </Tabs.Tab>
         <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
           <MemoTabView itemId={+itemId} />

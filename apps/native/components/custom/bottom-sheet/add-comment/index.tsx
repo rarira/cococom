@@ -1,7 +1,7 @@
-import { InsertMemo } from '@cococom/supabase/libs';
+import { InsertComment } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { memo, RefObject, useCallback, useEffect } from 'react';
+import { memo, RefObject, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -11,49 +11,42 @@ import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfUpsertMemo, queryKeys } from '@/libs/react-query';
+import { handleMutateOfInsertComment, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
-import { useMemoEditStore } from '@/store/memo-edit';
 import { useUserStore } from '@/store/user';
 
-interface AddMemoBottomSheetProps {
+interface AddCommentBottomSheetProps {
   bottomSheetRef: RefObject<BottomSheetModal>;
   itemId: number;
 }
 
-const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
+const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
   bottomSheetRef,
   itemId,
-}: AddMemoBottomSheetProps) {
+}: AddCommentBottomSheetProps) {
+  const [content, setContent] = useState('');
+
   const { styles } = useStyles(stylesheet);
   const { bottom } = useSafeAreaInsets();
   const user = useUserStore(store => store.user);
   const queryClient = useQueryClient();
 
-  const { memo, setMemo, setBottomSheetRef } = useMemoEditStore();
+  const queryKey = queryKeys.comments.byItem(itemId);
 
-  useEffect(() => {
-    setBottomSheetRef(bottomSheetRef);
-  }, [bottomSheetRef, setBottomSheetRef]);
-
-  const impossibleToSave =
-    !!memo?.content && (memo.content.length === 0 || memo.content.length > MAX_MEMO_LENGTH);
-
-  const queryKey = queryKeys.memos.byItem(itemId, user!.id);
-
-  const upsertMemoMutation = useMutation({
-    mutationFn: (newMemo: InsertMemo) => {
-      return supabase.upsertMemo(newMemo);
+  const insertCommentMutation = useMutation({
+    mutationFn: (newComment: InsertComment) => {
+      return supabase.insertComment(newComment);
     },
-    onMutate: (newMemo: InsertMemo) => {
-      return handleMutateOfUpsertMemo({
+    onMutate: (newComment: InsertComment) => {
+      return handleMutateOfInsertComment({
         queryClient,
         queryKey,
-        newMemo,
+        newComment,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
     },
     onError: (_error, _variables, context) => {
+      console.error('insertCommentMutation error', _error);
       queryClient.setQueryData(queryKey, context?.previousData);
     },
     onSuccess: (_data, variables) => {
@@ -67,39 +60,31 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
       return;
     }
 
-    const newMemo = {
-      userId: user.id,
-      itemId,
-      id: memo.id,
-      content: memo.content,
+    const newComment = {
+      user_id: user.id,
+      item_id: itemId,
+      content,
     };
 
     try {
-      await upsertMemoMutation.mutateAsync(newMemo);
+      await insertCommentMutation.mutateAsync(newComment);
       bottomSheetRef.current?.dismiss();
     } catch (error) {
       console.error(error);
     }
-  }, [user, itemId, memo, upsertMemoMutation, bottomSheetRef]);
+  }, [user, itemId, content, insertCommentMutation, bottomSheetRef]);
 
   const handleDismiss = useCallback(() => {
-    setMemo({ content: '' });
-  }, [setMemo]);
-
-  const handleChangeText = useCallback(
-    (text: string) => {
-      setMemo({ ...memo, content: text });
-    },
-    [memo, setMemo],
-  );
+    setContent('');
+  }, []);
 
   const renderButton = useCallback(() => {
     return (
-      <Button style={styles.saveButton} disabled={impossibleToSave} onPress={handlePress}>
+      <Button style={styles.saveButton} disabled={content.length === 0} onPress={handlePress}>
         <Text style={styles.saveText}>저장</Text>
       </Button>
     );
-  }, [styles.saveButton, styles.saveText, impossibleToSave, handlePress]);
+  }, [styles.saveButton, styles.saveText, content.length, handlePress]);
 
   return (
     <BottomSheet
@@ -111,12 +96,12 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     >
       <View style={styles.contentContainer(bottom)}>
         <BottomSheetTextInput
-          defaultValue={memo.content!}
-          onChangeText={handleChangeText}
+          defaultValue={content}
+          onChangeText={setContent}
           maxLength={MAX_MEMO_LENGTH}
           rootStyle={styles.textInput}
           renderButton={renderButton}
-          placeholder="메모를 입력해주세요."
+          placeholder="댓글을 입력해주세요."
         />
       </View>
     </BottomSheet>
@@ -144,4 +129,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default AddMemoBottomSheet;
+export default AddCommentBottomSheet;
