@@ -11,6 +11,7 @@ import CircularProgress from '@/components/ui/progress/circular';
 import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';
 import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
+import { useRealtimeComments } from '@/hooks/comment/useRealtimeComments';
 
 import ItemCommentListRow from './&row';
 
@@ -32,6 +33,8 @@ const ItemCommentList = memo(function ItemCommentList({
     refreshing,
     handleRefresh,
   } = useInfiniteComments(itemId);
+
+  useRealtimeComments(itemId);
 
   const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
