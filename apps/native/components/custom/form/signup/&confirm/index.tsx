@@ -23,14 +23,15 @@ const formSchema = z
       .email({
         message: '이메일 주소 형식을 확인해주세요',
       })
-      .optional(),
+      .optional()
+      .or(z.literal('')),
     nickname: z.string().min(2, { message: '닉네임은 최소 2자 이상으로 입력하세요' }).max(8),
     email_opted_in: z.boolean(),
   })
   .refine(
     data => {
       if (data.email_opted_in) {
-        return data.email !== undefined && data.email !== null;
+        return !!data.email;
       }
       return true;
     },
