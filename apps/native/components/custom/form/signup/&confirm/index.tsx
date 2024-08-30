@@ -14,8 +14,6 @@ import TextInput from '@/components/ui/text-input';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-interface SignUpConfirmFormProps {}
-
 const formSchema = z
   .object({
     email: z
@@ -41,7 +39,7 @@ const formSchema = z
     },
   );
 
-const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormProps) {
+const SignUpConfirmForm = memo(function SignUpConfirmForm() {
   const { styles } = useStyles(stylesheet);
 
   const { user, profile, setProfile, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
@@ -66,12 +64,13 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({}: SignUpConfirmFormP
     async (values: z.infer<typeof formSchema>) => {
       const newProfile = await updateProfileMutation.mutateAsync(values);
       setProfile(newProfile[0]);
+      router.dismiss();
+
       if (callbackAfterSignIn) {
         callbackAfterSignIn(user!);
         setCallbackAfterSignIn(null);
       }
       Alert.alert('환영합니다! 가입이 완료되었습니다');
-      router.dismiss();
     },
     [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, updateProfileMutation, user],
   );
