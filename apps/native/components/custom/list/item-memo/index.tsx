@@ -40,7 +40,7 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
     return (
       <IconButton
         iconProps={{
-          font: { type: 'MaterialIcon', name: 'post-add' },
+          font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
           color: theme.colors.typography,
           size: theme.fontSize.lg,
         }}
@@ -150,6 +150,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   addButtonText: {
     fontSize: theme.fontSize.normal,
+    marginLeft: theme.spacing.sm,
   },
   emptyPlaceholder: (minHeight: number) => ({ width: '100%', height: '100%', minHeight }),
 }));

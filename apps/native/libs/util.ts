@@ -1,4 +1,3 @@
-
 const Util = {
   toWonString(value: number): string {
     return value.toLocaleString('ko-KR');
@@ -36,6 +35,9 @@ const Util = {
     }
 
     return `rgba(${r}, ${g}, ${b}, ${a})`;
+  },
+  showMaxNumber(value: number, max: number): string {
+    return value > max ? `${max}+` : value.toString();
   },
 };
 

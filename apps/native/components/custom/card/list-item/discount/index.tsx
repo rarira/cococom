@@ -5,13 +5,12 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
+import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
+import Card from '@/components/ui/card';
 import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
 import { useListQueryKeyStore } from '@/store/list-query-key';
-
-import Card from '../../../../ui/card';
-import ProductCardThumbnailImage from '../../../image/list-item-card-thumbnail';
-import DiscountListItemCardDetailView from '../../../view/list-item-card/discount/&detail';
 
 export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];

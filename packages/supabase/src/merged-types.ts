@@ -8,11 +8,13 @@ export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
-  discounts: Array<Tables<'discounts'>> | null;
+  discounts?: Array<Tables<'discounts'>> | null;
   discountsLength: number;
   memosLength: number | null;
   commentsLength: number;
   totalWishlistCount: number;
+  totalCommentCount: number;
+  totalMemoCount: number | null;
   isWishlistedByUser: boolean;
 };
 
@@ -36,6 +38,8 @@ export type InfiniteSearchResultPages = {
     lowestPrice: number;
     isOnSaleNow: boolean;
     totalWishlistCount: number;
+    totalCommentCount: number;
+    totalMemoCount: number | null;
     isWishlistedByUser: boolean;
   }[];
 };

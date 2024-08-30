@@ -96,7 +96,7 @@ const SearchResultList = memo(function SearchResultList({
     <>
       <FlashList
         data={searchResult}
-        ListHeaderComponent={ListFooterComponent}
+        ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
         ListFooterComponentStyle={styles.fetchingNextProgress}
         ListEmptyComponent={ListEmptyComponent}
