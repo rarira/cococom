@@ -1,11 +1,14 @@
 import { PortalHost } from '@gorhom/portal';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
-import { memo, useCallback } from 'react';
+import { QueryKey } from '@tanstack/react-query';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import HeaderRightButton from '@/components/custom/button/header-right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
+import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
@@ -17,6 +20,8 @@ interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRen
   sortOption: keyof typeof ITEM_SORT_OPTIONS;
   totalResults: number | null;
   onPressHeaderRightButton: () => void;
+  queryKey: QueryKey;
+  isFetchingNextPage: boolean;
 }
 
 const SearchResultList = memo(function SearchResultList({
@@ -25,9 +30,13 @@ const SearchResultList = memo(function SearchResultList({
   sortOption,
   totalResults,
   onPressHeaderRightButton,
+  queryKey,
+  isFetchingNextPage,
   ...restProps
 }: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
+
+  const tabBarHeight = useBottomTabBarHeight();
 
   const renderItem = useCallback(
     ({ item }: { item: SearchResultToRender[number]; index: number }) => {
@@ -36,14 +45,15 @@ const SearchResultList = memo(function SearchResultList({
           key={item.id}
           item={item}
           sortOption={sortOption}
+          queryKey={queryKey}
           {...searchQueryParams}
         />
       );
     },
-    [searchQueryParams, sortOption],
+    [queryKey, searchQueryParams, sortOption],
   );
 
-  const ListHeaderComponent = useCallback(() => {
+  const ListHeaderComponent = useMemo(() => {
     if (searchResult.length === 0) return null;
 
     return (
@@ -67,16 +77,34 @@ const SearchResultList = memo(function SearchResultList({
     totalResults,
   ]);
 
+  const ListFooterComponent = useMemo(() => {
+    if (!isFetchingNextPage) return null;
+
+    return <LinearProgress />;
+  }, [isFetchingNextPage]);
+
+  const ListEmptyComponent = useMemo(() => {
+    return <Text style={styles.listEmptyText}>검색 결과가 없습니다</Text>;
+  }, [styles.listEmptyText]);
+
+  const ItemSeparatorComponent = useCallback(
+    () => <View style={styles.seperator} />,
+    [styles.seperator],
+  );
+
   return (
     <>
       <FlashList
         data={searchResult}
         ListHeaderComponent={ListHeaderComponent}
+        ListFooterComponent={ListFooterComponent}
+        ListFooterComponentStyle={styles.fetchingNextProgress}
+        ListEmptyComponent={ListEmptyComponent}
         renderItem={renderItem}
         estimatedItemSize={200}
         keyExtractor={item => item?.id.toString()}
-        ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-        contentContainerStyle={styles.flashListContainer}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        contentContainerStyle={styles.flashListContainer(tabBarHeight)}
         onEndReachedThreshold={0.5}
         {...restProps}
       />
@@ -86,11 +114,12 @@ const SearchResultList = memo(function SearchResultList({
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  flashListContainer: {
+  flashListContainer: (tabBarHeight: number) => ({
     paddingTop: theme.spacing.lg * 1.5,
     paddingHorizontal: theme.screenHorizontalPadding,
-  },
-  seperatorStyle: {
+    paddingBottom: tabBarHeight + theme.spacing.xl,
+  }),
+  seperator: {
     height: theme.spacing.md * 2,
   },
   resultHeader: {
@@ -102,6 +131,14 @@ const stylesheet = createStyleSheet(theme => ({
   totalResultsText: {
     fontSize: theme.fontSize.sm,
     fontWeight: 'bold',
+  },
+  fetchingNextProgress: {
+    marginVertical: theme.spacing.md,
+  },
+  listEmptyText: {
+    fontSize: theme.fontSize.normal,
+    alignSelf: 'center',
+    marginTop: theme.spacing.xl * 3,
   },
 }));
 

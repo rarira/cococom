@@ -26,7 +26,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
   const [sortOption, setSortOption] = useState<keyof typeof ITEM_SORT_OPTIONS>('itemNameAsc');
 
-  const { user } = useUserStore();
+  const user = useUserStore(store => store.user);
 
   const {
     keyword: keywordParam,
@@ -50,15 +50,17 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const isOnSaleSearch = optionsToSearch.includes('on_sale');
   const isItemIdSearch = optionsToSearch.includes('item_id');
 
-  const { data, isFetching, isSuccess, fetchNextPage, hasNextPage } =
+  const queryKey = queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
+    keywordToSearch,
+    isOnSaleSearch,
+    ITEM_SORT_OPTIONS[sortOption].field,
+    ITEM_SORT_OPTIONS[sortOption].direction,
+    user?.id,
+  );
+  const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteSearchResultPages>({
-      queryKey: queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-        keywordToSearch,
-        isOnSaleSearch,
-        ITEM_SORT_OPTIONS[sortOption].field,
-        ITEM_SORT_OPTIONS[sortOption].direction,
-        user?.id,
-      ),
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryKey,
       queryFn: ({ pageParam }) => {
         if (isItemIdSearch) {
           return supabase.fullTextSearchItemsByItemId(
@@ -83,7 +85,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.items.length < PAGE_SIZE) return undefined;
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
         return allPages.length + 1;
       },
       enabled: !!keywordToSearch,
@@ -136,9 +138,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
 
   const searchResult: SearchResultToRender = useMemo(
     () =>
-      data?.pages
-        .map((page, index) => page.items.map(item => ({ ...item, pageIndex: index })))
-        .flat() ?? [],
+      data?.pages.flatMap(
+        (page, index) => page.items?.map(item => ({ ...item, pageIndex: index })) ?? [],
+      ) ?? [],
     [data?.pages],
   );
 
@@ -148,7 +150,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     setKeywordToSearch,
     setOptionsToSearch,
     setSearchQueryParams,
+    isLoading,
     isFetching,
+    isFetchingNextPage,
     handlePressSearchHistory,
     searchResult,
     hasNextPage,
@@ -156,5 +160,6 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
     sortOption,
     handleSortChange,
     totalResults: data?.pages[0].totalRecords ?? null,
+    queryKey,
   };
 }

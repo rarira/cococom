@@ -7,25 +7,17 @@ export default function MainLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        headerStyle: { backgroundColor: theme.colors.background },
+        headerStyle: { backgroundColor: theme.colors.modalBackground },
         headerTitleStyle: { color: theme.colors.typography },
       }}
     >
       <Stack.Screen name="(tabs)" options={{ title: '홈', headerShown: false }} />
-      <Stack.Screen
-        name="sales"
-        // options={{ headerShown: true, title: 'Search' }}
-        options={
-          (({ route }: any) => {
-            //https://github.com/expo/expo/pull/30074
-            const { categorySector } = route.params;
-            return {
-              title: categorySector,
-              headerShown: true,
-            };
-          }) as any
-        }
-      />
+      {/* <Stack.Screen
+        name="details"
+        options={{
+          headerShown: false,
+        }}
+      /> */}
     </Stack>
   );
 }

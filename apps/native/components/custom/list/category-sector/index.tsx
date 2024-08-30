@@ -35,7 +35,7 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
   });
 
   const { width } = useWindowDimensions();
-  const { setCategorySectorsArray } = useCategorySectorsStore();
+  const setCategorySectorsArray = useCategorySectorsStore(state => state.setCategorySectorsArray);
 
   const horizontalGap = theme.spacing.lg;
   const itemWidth =

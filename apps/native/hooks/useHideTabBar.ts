@@ -1,24 +1,17 @@
-import { useNavigation } from 'expo-router';
-import { useEffect } from 'react';
-import { useStyles } from 'react-native-unistyles';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+
+import { useUIStore } from '@/store/ui';
 
 export function useHideTabBar() {
-  const navigation = useNavigation();
-  const { theme } = useStyles();
+  const setTabBarVisible = useUIStore(state => state.setTabBarVisible);
 
-  useEffect(() => {
-    navigation.getParent()?.setOptions({
-      tabBarStyle: {
-        display: 'none',
-      },
-    });
-    return () => {
-      navigation.getParent()?.setOptions({
-        tabBarStyle: {
-          position: 'absolute',
-          backgroundColor: theme.colors.background,
-        },
-      });
-    };
-  }, [navigation, theme.colors.background]);
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+      return () => {
+        setTabBarVisible(true);
+      };
+    }, [setTabBarVisible]),
+  );
 }
