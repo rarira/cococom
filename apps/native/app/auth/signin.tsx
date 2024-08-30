@@ -16,7 +16,13 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
+  const { user, setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
+
+  // useLayoutEffect(() => {
+  //   if (user) {
+  //     router.dismiss();
+  //   }
+  // }, [user]);
 
   async function signInWithEmail() {
     setLoading(true);
@@ -92,7 +98,9 @@ export default function SignInScreen() {
             pathname: '/auth/signup/confirm',
             params: { provider: 'kakao' },
           });
-        } else if (callbackAfterSignIn) {
+        }
+
+        if (callbackAfterSignIn) {
           callbackAfterSignIn(user);
           setCallbackAfterSignIn(null);
         }
