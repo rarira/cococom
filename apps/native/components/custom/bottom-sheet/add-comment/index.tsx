@@ -28,7 +28,7 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
 
   const { styles } = useStyles(stylesheet);
   const { bottom } = useSafeAreaInsets();
-  const user = useUserStore(store => store.user);
+  const { user, profile } = useUserStore(store => ({ user: store.user, profile: store.profile }));
   const queryClient = useQueryClient();
 
   const queryKey = queryKeys.comments.byItem(itemId);
@@ -38,10 +38,18 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
       return supabase.insertComment(newComment);
     },
     onMutate: (newComment: InsertComment) => {
+      const newCommentWithAuthor = {
+        ...newComment,
+        user_id: undefined,
+        author: {
+          id: user?.id,
+          nickname: profile?.nickname,
+        },
+      };
       return handleMutateOfInsertComment({
         queryClient,
         queryKey,
-        newComment,
+        newComment: newCommentWithAuthor,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
     },
