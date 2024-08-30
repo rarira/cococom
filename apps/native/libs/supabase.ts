@@ -48,3 +48,15 @@ AppState.addEventListener('change', state => {
     supabaseClient.auth.stopAutoRefresh();
   }
 });
+
+export const getProfile = async (userId: string) => {
+  const profile = await supabase.fetchData<'profiles'>(
+    {
+      column: 'id',
+      value: userId,
+    },
+    'profiles',
+  );
+
+  return profile;
+};

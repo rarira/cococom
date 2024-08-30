@@ -11,14 +11,19 @@ import { useUserStore } from '@/store/user';
 export default function MyScreen() {
   const { styles } = useStyles(stylesheet);
 
-  const { user, setUser } = useUserStore(state => ({ user: state.user, setUser: state.setUser }));
+  const { user, setUser, setProfile } = useUserStore(state => ({
+    user: state.user,
+    setUser: state.setUser,
+    setProfile: state.setProfile,
+  }));
 
   const { top } = useSafeAreaInsets();
 
   const signOut = useCallback(async () => {
     await supabase.signOut();
     setUser(null);
-  }, [setUser]);
+    setProfile(null);
+  }, [setProfile, setUser]);
 
   return (
     <View style={styles.container(top)}>

@@ -1,5 +1,8 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { memo, useCallback, useRef } from 'react';
+import { router, useNavigation } from 'expo-router';
+import { memo, useCallback, useEffect, useRef } from 'react';
+
+import { useUserStore } from '@/store/user';
 
 import AddCommentBottomSheet from '../../bottom-sheet/add-comment';
 import ItemCommentList from '../../list/item-comment';
@@ -8,16 +11,34 @@ export interface CommentTabViewProps {
   itemId: number;
 }
 
-const CommentTabView = memo(function CommentTabView({ itemId }: CommentTabViewProps) {
+const CommentTabView = memo(function CommentTabView({ itemId, tabIndex }: CommentTabViewProps) {
+  const { user, setCallbackAfterSignIn } = useUserStore();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  const handleAddMemoPress = useCallback(() => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log('CommentTabView', navigation.getState());
+    return () => {
+      console.log('CommentTabView unmount');
+    };
+  }, [navigation, tabIndex]);
+
+  const handleAddCommentPress = useCallback(() => {
+    if (!user) {
+      setCallbackAfterSignIn(_user => {
+        console.log('open bottom sheet');
+        bottomSheetRef.current?.present();
+      });
+      router.push('/auth/signin');
+      return;
+    }
     bottomSheetRef.current?.present();
-  }, [bottomSheetRef]);
+  }, [setCallbackAfterSignIn, user]);
 
   return (
     <>
-      <ItemCommentList itemId={itemId} onAddCommentPress={handleAddMemoPress} />
+      <ItemCommentList itemId={itemId} onAddCommentPress={handleAddCommentPress} />
       <AddCommentBottomSheet itemId={itemId} bottomSheetRef={bottomSheetRef} />
     </>
   );
