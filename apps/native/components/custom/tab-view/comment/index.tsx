@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { router, useNavigation } from 'expo-router';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { router } from 'expo-router';
+import { memo, useCallback, useRef } from 'react';
 
 import { useUserStore } from '@/store/user';
 
@@ -15,19 +15,9 @@ const CommentTabView = memo(function CommentTabView({ itemId, tabIndex }: Commen
   const { user, setCallbackAfterSignIn } = useUserStore();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    console.log('CommentTabView', navigation.getState());
-    return () => {
-      console.log('CommentTabView unmount');
-    };
-  }, [navigation, tabIndex]);
-
   const handleAddCommentPress = useCallback(() => {
     if (!user) {
       setCallbackAfterSignIn(_user => {
-        console.log('open bottom sheet');
         bottomSheetRef.current?.present();
       });
       router.push('/auth/signin');

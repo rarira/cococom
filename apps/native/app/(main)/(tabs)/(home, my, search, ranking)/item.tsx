@@ -40,12 +40,10 @@ export default function ItemScreen() {
 
   useHideTabBar();
 
-  const { data, isLoading, isFetching, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.items.byId(+itemId, user?.id),
     queryFn: queryFn(+itemId, user?.id),
   });
-
-  console.log('item screen', isFetching);
 
   useTransparentHeader({
     title: data?.itemName,
