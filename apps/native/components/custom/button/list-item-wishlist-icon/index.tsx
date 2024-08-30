@@ -5,9 +5,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
-import { PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
+import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';
@@ -87,7 +88,10 @@ function ListItemWishlistIconButton<
   return (
     <>
       <IconButton
-        {...(!noText && { text: item.totalWishlistCount.toString(), textStyle: styles.text })}
+        {...(!noText && {
+          text: Util.showMaxNumber(item.totalWishlistCount, ITEM_DETAILS_MAX_COUNT),
+          textStyle: styles.text,
+        })}
         iconProps={{
           font: { type: 'MaterialIcon', name: iconPropsToPass.name },
           color: iconPropsToPass.color,
