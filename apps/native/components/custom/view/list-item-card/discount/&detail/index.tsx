@@ -9,21 +9,21 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
-import DiscountRateText from '@/components/custom/text/discount-rate';
-import SuperscriptWonText from '@/components/custom/text/superscript-won';
+import InfoIconText from '@/components/custom/text/info-icon';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
-import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
+import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
+
+import DiscountPriceView from '../../../discount-price';
 
 interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
 
 function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetailViewProps) {
-  const { styles } = useStyles(stylesheets);
-  const { user } = useUserStore();
-
+  const { styles, theme } = useStyles(stylesheets);
+  const user = useUserStore(store => store.user);
   const isWholeProduct = discount.discountPrice === 0;
 
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
@@ -37,32 +37,13 @@ function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetail
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(queryKey) as unknown as JoinedItems[];
-
-      const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
-
-      const item = discount.items;
-
-      queryClient.setQueryData(queryKey, (old: any) => {
-        if (discountIndex === -1) return old;
-        const updatedDiscount = {
-          ...old[discountIndex],
-          items: {
-            ...old[discountIndex].items,
-            totalWishlistCount: item.isWishlistedByUser
-              ? item.totalWishlistCount - 1
-              : item.totalWishlistCount + 1,
-            isWishlistedByUser: !item.isWishlistedByUser,
-          },
-        };
-
-        return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
+      return await handleMutateOfDiscountCurrentList({
+        queryClient,
+        queryKey,
+        newWishlist,
       });
-
-      return { previousData };
     },
-    [discount.items, queryKey],
+    [queryKey],
   );
 
   return (
@@ -72,24 +53,50 @@ function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetail
       </Text>
       <View>
         <View style={styles.priceContainer}>
-          {isWholeProduct ? null : (
-            <>
-              <Text
-                style={styles.regularPriceText}
-              >{`\u20A9${Util.toWonString(discount.price)}`}</Text>
-              <DiscountRateText discountRate={discount.discountRate!} />
-            </>
+          {isWholeProduct ? (
+            <DiscountPriceView discount={discount.discount} isWholeProduct={isWholeProduct} />
+          ) : (
+            <DiscountPriceView
+              price={discount.price}
+              discountRate={discount.discountRate}
+              discountPrice={discount.discountPrice}
+              isWholeProduct={isWholeProduct}
+            />
           )}
-          <SuperscriptWonText
-            price={discount[isWholeProduct ? 'discount' : 'discountPrice']}
-            isMinus={isWholeProduct}
-          />
         </View>
         <View style={styles.miscInfoContainer}>
           <ListItemCardChipsView discount={discount} />
           <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
         </View>
         <View style={styles.actionButtonContainer}>
+          <View style={styles.infoContainer}>
+            <InfoIconText
+              iconProps={{
+                font: { type: 'FontAwesomeIcon', name: 'comments-o' },
+                size: theme.fontSize.normal,
+              }}
+              textProps={{
+                children: Util.showMaxNumber(
+                  discount.items?.totalCommentCount,
+                  ITEM_DETAILS_MAX_COUNT,
+                ),
+              }}
+            />
+            {user ? (
+              <InfoIconText
+                iconProps={{
+                  font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
+                  size: theme.fontSize.normal,
+                }}
+                textProps={{
+                  children: Util.showMaxNumber(
+                    discount.items?.totalMemoCount!,
+                    ITEM_DETAILS_MAX_COUNT,
+                  ),
+                }}
+              />
+            ) : null}
+          </View>
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
           <ListItemWishlistIconButton<JoinedItems>
             item={discount.items}
@@ -142,7 +149,12 @@ const stylesheets = createStyleSheet(theme => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: theme.spacing.sm,
+    gap: theme.spacing.lg,
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.lg,
   },
 }));
 

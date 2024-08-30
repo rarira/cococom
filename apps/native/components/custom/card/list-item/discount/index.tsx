@@ -1,43 +1,60 @@
+import { QueryKey } from '@tanstack/react-query';
+import { Href, Link } from 'expo-router';
+import { useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
+import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
+import Card from '@/components/ui/card';
 import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
-
-import Card from '../../../../ui/card';
-import ProductCardThumbnailImage from '../../../image/list-item-card-thumbnail';
-import DiscountListItemCardDetailView from '../../../view/list-item-card/discount/&detail';
+import { useListQueryKeyStore } from '@/store/list-query-key';
 
 export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
   numColumns?: number;
   containerStyle?: StyleProp<ViewStyle>;
+  queryKeyOfList: QueryKey;
 }
 
 function DiscountListItemCard({
   discount,
   numColumns = 1,
   containerStyle,
+  queryKeyOfList,
 }: DiscountListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
+  const setQueryKeyOfList = useListQueryKeyStore(state => state.setQueryKeyOfList);
+
+  const handlePress = useCallback(() => {
+    setQueryKeyOfList(queryKeyOfList);
+  }, [queryKeyOfList, setQueryKeyOfList]);
+
   return (
-    <Pressable onPress={() => console.log('Pressed')}>
-      <Shadow {...shadowPresets.card(theme)} stretch>
-        <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
-          <View style={styles.itemContainer(numColumns === 1)}>
-            <ProductCardThumbnailImage
-              product={discount.items!}
-              width={115}
-              height={115}
-              style={styles.thumbnail}
-            />
-            <DiscountListItemCardDetailView discount={discount} />
-          </View>
-        </Card>
-      </Shadow>
-    </Pressable>
+    <Link
+      href={`/(home)/item?itemId=${discount.items.id}` as Href<string>}
+      asChild
+      onPress={handlePress}
+    >
+      <Pressable>
+        <Shadow {...shadowPresets.card(theme)} stretch>
+          <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
+            <View style={styles.itemContainer(numColumns === 1)}>
+              <ProductCardThumbnailImage
+                product={discount.items!}
+                width={115}
+                height={115}
+                style={styles.thumbnail}
+              />
+              <DiscountListItemCardDetailView discount={discount} />
+            </View>
+          </Card>
+        </Shadow>
+      </Pressable>
+    </Link>
   );
 }
 

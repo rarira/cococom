@@ -8,10 +8,23 @@ export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
-  discounts: Array<Tables<'discounts'>> | null;
+  discounts?: Array<Tables<'discounts'>> | null;
   discountsLength: number;
+  memosLength: number | null;
+  commentsLength: number;
   totalWishlistCount: number;
+  totalCommentCount: number;
+  totalMemoCount: number | null;
   isWishlistedByUser: boolean;
+};
+
+export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
+  author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
+};
+
+export type InfiniteQueryResult<T> = {
+  pageParams: number[];
+  pages: T[];
 };
 
 export type InfiniteSearchResultPages = {
@@ -25,6 +38,8 @@ export type InfiniteSearchResultPages = {
     lowestPrice: number;
     isOnSaleNow: boolean;
     totalWishlistCount: number;
+    totalCommentCount: number;
+    totalMemoCount: number | null;
     isWishlistedByUser: boolean;
   }[];
 };
@@ -48,7 +63,7 @@ export type Database = MergeDeep<
             discountPrice: number;
             discountRate: number;
             discount: number;
-            items: JoinedItems;
+            items: Omit<JoinedItems, 'discounts'>;
           }[];
         };
         search_items_by_itemid: {
@@ -74,6 +89,14 @@ export type Database = MergeDeep<
             order_direction: string;
           };
           Returns: InfiniteSearchResultPages;
+        };
+        get_items_with_wishlist_counts_by_id: {
+          Args: {
+            item_id: number;
+            user_id: string | null;
+            need_discounts: boolean;
+          };
+          Returns: JoinedItems;
         };
       };
     };

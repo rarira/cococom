@@ -15,6 +15,7 @@ const commonTheme = {
     xxs: 9,
     xs: 10,
     sm: 12,
+    normal: 14,
     md: 16,
     lg: 20,
     xl: 24,
@@ -23,6 +24,8 @@ const commonTheme = {
   colors: {
     link: '#0a7ea4',
     alert: '#ff0000',
+    graphStroke: '#8641f4',
+    tint3: '#4B70F5',
   },
   screenHorizontalPadding: 16,
 } as const;
@@ -38,7 +41,6 @@ export const lightTheme = {
     modalBackground: '#FFFFFF',
     tint: '#402E7A',
     tint2: '#4C3BCF',
-    tint3: '#4B70F5',
     shadow: '#888888',
     lightShadow: '#DDDDDD',
     scrim: 'rgba(0, 0, 0, 0.5)',
@@ -57,7 +59,6 @@ export const darkTheme = {
     modalBackground: '#232323',
     tint: '#FFE9D0',
     tint2: '#FFFED3',
-    tint3: '#BBE9FF',
     shadow: '#333333',
     lightShadow: '#555555',
     scrim: 'rgba(26,26,26, 0.6)',

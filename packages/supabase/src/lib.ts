@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  PostgrestSingleResponse,
   SignInWithIdTokenCredentials,
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
@@ -9,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database } from './merged-types';
+import { Database, JoinedComments, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -25,6 +24,8 @@ export type InsertItem = Database['public']['Tables']['items']['Insert'];
 export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
 export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
+export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
+export type InsertComment = Database['public']['Tables']['comments']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
 export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
 export type SearchItemSortDirection = 'ASC' | 'DESC';
@@ -134,18 +135,25 @@ export class Supabase {
   }
 
   async fetchData<T extends keyof Database['public']['Tables']>(
-    search: { value: string; column: string },
+    search: { value: string | number; column: string },
     tableName: T,
-  ): Promise<PostgrestSingleResponse<Database['public']['Tables'][T]['Row']>> {
-    return await this.supabaseClient
+    columns?: string,
+  ): Promise<Tables<T>> {
+    const { data, error } = await this.supabaseClient
       .from(tableName)
-      .select('*')
+      .select(columns || '*')
       .eq(search.column, search.value)
       .single();
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data as Tables<T>;
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
-    console.log('call createWishlist', newWishlist);
     const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
 
     if (error) {
@@ -246,6 +254,123 @@ export class Supabase {
     }
 
     return data;
+  }
+
+  async fetchItemsWithWishlistCount(itemId: number, userId?: string, needDiscounts?: boolean) {
+    const { data, error } = await this.supabaseClient.rpc('get_items_with_wishlist_counts_by_id', {
+      item_id: itemId,
+      user_id: userId ?? null,
+      need_discounts: !!needDiscounts,
+    });
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async upsertMemo(memo: InsertMemo) {
+    const { error } = await this.supabaseClient.from('memos').upsert(memo);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteMemo(memoId: number) {
+    const { error } = await this.supabaseClient.from('memos').delete().eq('id', memoId);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async fetchMemos({
+    itemId,
+    userId,
+    page,
+    pageSize = 20,
+  }: {
+    itemId: number;
+    userId: string;
+    page: number;
+    pageSize?: number;
+  }) {
+    const { data, error } = await this.supabaseClient
+      .from('memos')
+      .select('*')
+      .eq('itemId', itemId)
+      .eq('userId', userId)
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async updateProfile(profile: Database['public']['Tables']['profiles']['Update'], userId: string) {
+    const { data, error } = await this.supabaseClient
+      .from('profiles')
+      .update(profile)
+      .eq('id', userId)
+      .select();
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fetchComments({
+    itemId,
+    page,
+    pageSize = 20,
+  }: {
+    itemId: number;
+    page: number;
+    pageSize?: number;
+  }) {
+    const { data, error } = await this.supabaseClient
+      .from('comments')
+      .select('id, created_at, content, item_id, author:profiles (id, nickname)')
+      .eq('item_id', itemId)
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data as unknown as JoinedComments[];
+  }
+
+  async insertComment(comment: InsertComment) {
+    const { error } = await this.supabaseClient.from('comments').insert(comment);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteComment(commentId: number) {
+    const { error } = await this.supabaseClient.from('comments').delete().eq('id', commentId);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   // Auth Methods

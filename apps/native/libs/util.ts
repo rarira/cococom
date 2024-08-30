@@ -1,5 +1,3 @@
-import { SearchHistory } from '@/hooks/search/useSearchHistory';
-
 const Util = {
   toWonString(value: number): string {
     return value.toLocaleString('ko-KR');
@@ -38,9 +36,8 @@ const Util = {
 
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   },
-  stringifySearchHistory(searchHistory: SearchHistory): string {
-    searchHistory.options.sort();
-    return JSON.stringify(searchHistory);
+  showMaxNumber(value: number, max: number): string {
+    return value > max ? `${max}+` : value.toString();
   },
 };
 
