@@ -5,16 +5,17 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import DiscountRateText from '@/components/custom/text/discount-rate';
-import SuperscriptWonText from '@/components/custom/text/superscript-won';
+import InfoIconText from '@/components/custom/text/info-icon';
 import Chip from '@/components/ui/chip';
-import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
-import { PortalHostNames } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
+import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
+
+import DiscountRecordView from '../../../discount-record';
 
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResultToRender[number];
@@ -27,9 +28,9 @@ function SearchResultListItemCardDetailView({
   options,
   sortOption,
 }: SearchResultListItemCardDetailViewProps) {
-  const { styles } = useStyles(stylesheets);
+  const { styles, theme } = useStyles(stylesheets);
 
-  const { user } = useUserStore();
+  const user = useUserStore(store => store.user);
 
   const isWholeProduct = item.lowestPrice === 0;
 
@@ -47,47 +48,14 @@ function SearchResultListItemCardDetailView({
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousData = queryClient.getQueryData(
+      return await handleMutateOfSearchResult({
+        queryClient,
         queryKey,
-      ) as unknown as InfiniteSearchResultData;
-
-      const itemIndex = previousData.pages[item.pageIndex].items.findIndex(
-        item => item.id === newWishlist.itemId,
-      );
-
-      queryClient.setQueryData(queryKey, (old: InfiniteSearchResultData) => {
-        if (itemIndex === -1) return old;
-        const updatedItem = {
-          ...old.pages[item.pageIndex].items[itemIndex],
-          totalWishlistCount: item.isWishlistedByUser
-            ? item.totalWishlistCount - 1
-            : item.totalWishlistCount + 1,
-          isWishlistedByUser: !item.isWishlistedByUser,
-        };
-
-        const { items, ...restPages } = old.pages[item.pageIndex];
-
-        const updatedPage = {
-          ...restPages,
-          items: [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)],
-        };
-
-        const { pages, ...restOld } = old;
-
-        return {
-          ...restOld,
-          pages: [
-            ...pages.slice(0, item.pageIndex),
-            updatedPage,
-            ...pages.slice(item.pageIndex + 1),
-          ],
-        };
+        newWishlist,
+        pageIndexOfItem: item.pageIndex,
       });
-
-      return { previousData };
     },
-    [item.isWishlistedByUser, item.pageIndex, item.totalWishlistCount, queryKey],
+    [item.pageIndex, queryKey],
   );
 
   return (
@@ -95,35 +63,44 @@ function SearchResultListItemCardDetailView({
       <Text style={styles.itemNameText} numberOfLines={3}>
         {item.itemName}
       </Text>
-      <View style={styles.infoContainer}>
-        {isWholeProduct ? (
-          <View style={styles.infoBlock}>
-            <Text style={styles.discountLabelText}>역대 최대 단위당 할인 금액</Text>
-            <SuperscriptWonText price={item.bestDiscount} isMinus />
-          </View>
-        ) : (
-          <>
-            <View style={styles.infoBlock}>
-              <Text style={styles.discountLabelText}>역대 최대 할인률</Text>
-              <DiscountRateText discountRate={item.bestDiscountRate} />
-            </View>
-            <Divider orientation="vertical" style={styles.infoDivider} />
-            <View style={styles.infoBlock}>
-              <Text style={styles.discountLabelText}>역대 최저가</Text>
-              <SuperscriptWonText price={item.lowestPrice} />
-            </View>
-          </>
-        )}
-      </View>
-      <View style={styles.actionButtonContainer}>
+      <DiscountRecordView
+        item={item}
+        isWholeProduct={isWholeProduct}
+        style={styles.discountRecordContainer}
+      />
+      <View style={styles.footer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
         {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-        <ListItemWishlistIconButton<SearchResultToRender[number]>
-          item={item}
-          portalHostName={PortalHostNames.SEARCH}
-          queryKey={queryKey}
-          onMutate={handleMutate}
-        />
+        <View style={styles.actionButtonContainer}>
+          <View style={styles.infoContainer}>
+            <InfoIconText
+              iconProps={{
+                font: { type: 'FontAwesomeIcon', name: 'comments-o' },
+                size: theme.fontSize.normal,
+              }}
+              textProps={{
+                children: Util.showMaxNumber(item?.totalCommentCount, ITEM_DETAILS_MAX_COUNT),
+              }}
+            />
+            {user ? (
+              <InfoIconText
+                iconProps={{
+                  font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
+                  size: theme.fontSize.normal,
+                }}
+                textProps={{
+                  children: Util.showMaxNumber(item?.totalMemoCount!, ITEM_DETAILS_MAX_COUNT),
+                }}
+              />
+            ) : null}
+          </View>
+          <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
+            item={item}
+            portalHostName={PortalHostNames.SEARCH}
+            queryKey={queryKey}
+            onMutate={handleMutate}
+          />
+        </View>
       </View>
     </View>
   );
@@ -145,31 +122,25 @@ const stylesheets = createStyleSheet(theme => ({
     lineHeight: theme.fontSize.sm * 1.5,
     fontWeight: 'bold',
   },
-  infoContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+  discountRecordContainer: {
     marginVertical: theme.spacing.sm,
   },
-  infoDivider: {
-    opacity: 0.2,
-    marginHorizontal: theme.spacing.lg,
-  },
-  infoBlock: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
-  discountLabelText: {
-    color: `${theme.colors.typography}AA`,
-    fontSize: theme.fontSize.sm,
-  },
-  actionButtonContainer: {
+  footer: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: theme.spacing.sm,
+  },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: theme.spacing.lg,
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.lg,
   },
 }));
 
