@@ -5,13 +5,14 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import InfoIconText from '@/components/custom/text/info-icon';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
-import { PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { ITEM_SORT_OPTIONS } from '@/libs/sort';
-import { useListQueryKeyStore } from '@/store/list-query-key';
+import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
 import DiscountRecordView from '../../../discount-record';
@@ -27,12 +28,8 @@ function SearchResultListItemCardDetailView({
   options,
   sortOption,
 }: SearchResultListItemCardDetailViewProps) {
-  const { styles } = useStyles(stylesheets);
+  const { styles, theme } = useStyles(stylesheets);
 
-  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.setQueryKeyOfList,
-    state.setPageIndexOfInfinteList,
-  ]);
   const user = useUserStore(store => store.user);
 
   const isWholeProduct = item.lowestPrice === 0;
@@ -71,15 +68,39 @@ function SearchResultListItemCardDetailView({
         isWholeProduct={isWholeProduct}
         style={styles.discountRecordContainer}
       />
-      <View style={styles.actionButtonContainer}>
+      <View style={styles.footer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
         {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
-        <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
-          item={item}
-          portalHostName={PortalHostNames.SEARCH}
-          queryKey={queryKey}
-          onMutate={handleMutate}
-        />
+        <View style={styles.actionButtonContainer}>
+          <View style={styles.infoContainer}>
+            <InfoIconText
+              iconProps={{
+                font: { type: 'FontAwesomeIcon', name: 'comments-o' },
+                size: theme.fontSize.normal,
+              }}
+              textProps={{
+                children: Util.showMaxNumber(item?.totalCommentCount, ITEM_DETAILS_MAX_COUNT),
+              }}
+            />
+            {user ? (
+              <InfoIconText
+                iconProps={{
+                  font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
+                  size: theme.fontSize.normal,
+                }}
+                textProps={{
+                  children: Util.showMaxNumber(item?.totalMemoCount!, ITEM_DETAILS_MAX_COUNT),
+                }}
+              />
+            ) : null}
+          </View>
+          <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
+            item={item}
+            portalHostName={PortalHostNames.SEARCH}
+            queryKey={queryKey}
+            onMutate={handleMutate}
+          />
+        </View>
       </View>
     </View>
   );
@@ -104,13 +125,22 @@ const stylesheets = createStyleSheet(theme => ({
   discountRecordContainer: {
     marginVertical: theme.spacing.sm,
   },
-
-  actionButtonContainer: {
+  footer: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: theme.spacing.sm,
+  },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: theme.spacing.lg,
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.lg,
   },
 }));
 

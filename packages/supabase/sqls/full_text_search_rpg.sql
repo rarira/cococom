@@ -64,6 +64,18 @@ BEGIN
                             WHERE d."itemId" = i."itemId"
                             AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                         ) as "isOnSaleNow",
+                        (   SELECT COUNT(*)
+                            FROM comments c
+                            WHERE c."item_id" = i.id
+                        ) as "totalCommentCount",
+                        (
+                            CASE
+                                WHEN $4 IS NOT NULL THEN
+                                (SELECT COUNT(*) FROM memos m WHERE m."itemId" = i.id AND m."userId" = $4)
+                                ELSE
+                                NULL
+                            END                        
+                        ) as "totalMemoCount",
                         (
                             SELECT COUNT(*)
                             FROM wishlists w
@@ -166,6 +178,18 @@ BEGIN
                             WHERE d."itemId" = i."itemId"
                             AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                         ) as "isOnSaleNow",
+                        (   SELECT COUNT(*)
+                            FROM comments c
+                            WHERE c."item_id" = i.id
+                        ) as "totalCommentCount",
+                        (
+                            CASE
+                                WHEN $4 IS NOT NULL THEN
+                                (SELECT COUNT(*) FROM memos m WHERE m."itemId" = i.id AND m."userId" = $4)
+                                ELSE
+                                NULL
+                            END                        
+                        ) as "totalMemoCount",
                         (
                             SELECT COUNT(*)
                             FROM wishlists w
