@@ -3,9 +3,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import {
-    handleMutateOfDeleteComment,
-    handleMutateOfInsertComment,
-    queryKeys,
+  handleMutateOfDeleteComment,
+  handleMutateOfInsertComment,
+  queryKeys,
 } from '@/libs/react-query';
 import { supabase, supabaseClient } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -26,6 +26,7 @@ export function useRealtimeComments(itemId: number) {
           schema: 'public',
           table: 'comments',
           event: '*',
+          filter: 'item_id=eq.' + itemId,
         },
         async payload => {
           if (payload.eventType === 'DELETE') {

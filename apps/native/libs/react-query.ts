@@ -250,7 +250,11 @@ export const handleMutateOfUpsertMemo = async ({
   queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'memos'>[]>) => {
     if (typeof pageIndex === 'undefined') {
       const newFlatPages = [
-        makeNewInfiniteObjectForOptimisticUpdate(newMemo, (flatPages[0]?.id ?? 0) + 1, true),
+        makeNewInfiniteObjectForOptimisticUpdate(
+          newMemo,
+          (flatPages[0]?.id ?? Infinity - 1) + 1,
+          true,
+        ),
         ...flatPages,
       ];
       return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
@@ -355,7 +359,10 @@ export const handleMutateOfInsertComment = async ({
   queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'comments'>[]>) => {
     if (typeof pageIndex === 'undefined') {
       const newFlatPages = [
-        makeNewInfiniteObjectForOptimisticUpdate(newComment, (flatPages[0]?.id ?? 0) + 1),
+        makeNewInfiniteObjectForOptimisticUpdate(
+          newComment,
+          (flatPages[0]?.id ?? Infinity - 1) + 1,
+        ),
         ...flatPages,
       ];
 
