@@ -1,13 +1,15 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { TabBarIcon } from '@/components/custom/navigation/TabBarIcon';
+import TabBarIcon from '@/components/custom/navigation/tab-bar-icon';
+import { useUIStore } from '@/store/ui';
 
 export const unstable_settings = {
-  initialRouteName: 'home',
+  initialRouteName: '(home)',
 };
 
 const TabIcons: Record<
@@ -17,19 +19,19 @@ const TabIcons: Record<
     unfocusedIcon: ComponentProps<typeof Ionicons>['name'];
   }
 > = {
-  index: {
+  '(home)': {
     focusedIcon: 'home',
     unfocusedIcon: 'home-outline',
   },
-  search: {
+  '(search)': {
     focusedIcon: 'search',
     unfocusedIcon: 'search-outline',
   },
-  ranking: {
+  '(ranking)': {
     focusedIcon: 'star',
     unfocusedIcon: 'star-outline',
   },
-  'my/index': {
+  '(my)': {
     focusedIcon: 'person-circle',
     unfocusedIcon: 'person-circle-outline',
   },
@@ -37,46 +39,60 @@ const TabIcons: Record<
 
 export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
-  const { top } = useSafeAreaInsets();
+
+  const tabBarVisible = useUIStore(state => state.tabBarVisible);
 
   return (
     <Tabs
-      screenOptions={({ route }) => ({
-        tabBarActiveTintColor: theme.colors.tint,
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        freezeOnBlur: true,
-        tabBarIcon: ({ color, focused }) => {
-          return (
-            <TabBarIcon
-              name={focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon}
-              color={color}
-              size={22}
-            />
-          );
-        },
-      })}
+      screenOptions={({ route }) => {
+        return {
+          tabBarActiveTintColor: theme.colors.tint,
+          headerShown: false,
+          freezeOnBlur: true,
+          tabBarIcon: ({ color, focused }) => {
+            return (
+              <TabBarIcon
+                name={
+                  focused ? TabIcons[route.name].focusedIcon : TabIcons[route.name].unfocusedIcon
+                }
+                color={color}
+                size={22}
+              />
+            );
+          },
+        };
+      }}
+      tabBar={props => {
+        return (
+          <Animated.View
+            style={styles.tabBarContainer(tabBarVisible)}
+            layout={LinearTransition.duration(100).delay(0).reduceMotion(ReduceMotion.Never)}
+          >
+            <BottomTabBar {...props} />
+          </Animated.View>
+        );
+      }}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: '홈',
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="(search)"
         options={{
           title: '검색',
         }}
       />
       <Tabs.Screen
-        name="ranking"
+        name="(ranking)"
         options={{
           title: '랭킹',
         }}
       />
       <Tabs.Screen
-        name="my/index"
+        name="(my)"
         options={{
           title: '마이',
         }}
@@ -86,8 +102,12 @@ export default function TabLayout() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  tabBar: {
+  tabBarContainer: (tabBarVisible: boolean) => ({
+    height: tabBarVisible ? 'auto' : 0,
     position: 'absolute',
     backgroundColor: theme.colors.background,
-  },
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }),
 }));

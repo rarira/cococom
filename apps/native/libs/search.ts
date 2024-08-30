@@ -2,6 +2,7 @@ import { SearchItemSortDirection, SearchItemSortField } from '@cococom/supabase/
 import { Database, InfiniteSearchResultPages } from '@cococom/supabase/types';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
+import { InfiniteQueryResult } from './react-query';
 
 export type SearchQueryParams = {
   keyword: string;
@@ -25,10 +26,7 @@ export type SearchResultToRender =
     pageIndex: number;
   })[];
 
-export type InfiniteSearchResultData = {
-  pageParams: number[];
-  pages: InfiniteSearchResultPages[];
-};
+export type InfiniteSearchResultData = InfiniteQueryResult<InfiniteSearchResultPages>;
 
 export type SearchItemSortOption = {
   field: SearchItemSortField;
@@ -72,4 +70,9 @@ export const findIndexOfInfiniteSearchResultItem = (
   }
 
   return { pagesIndex, nestedItemIndex };
+};
+
+export const stringifySearchHistory = (searchHistory: SearchHistory): string => {
+  searchHistory.options.sort();
+  return JSON.stringify(searchHistory);
 };

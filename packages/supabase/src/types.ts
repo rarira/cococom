@@ -27,6 +27,45 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          item_id: number
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          item_id: number
+          user_id?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          item_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discounts: {
         Row: {
           created_at: string | null
@@ -108,6 +147,7 @@ export type Database = {
           itemId: string
           itemName: string | null
           lowestPrice: number | null
+          updated_at: string | null
         }
         Insert: {
           bestDiscount?: number | null
@@ -118,6 +158,7 @@ export type Database = {
           itemId: string
           itemName?: string | null
           lowestPrice?: number | null
+          updated_at?: string | null
         }
         Update: {
           bestDiscount?: number | null
@@ -128,6 +169,7 @@ export type Database = {
           itemId?: string
           itemName?: string | null
           lowestPrice?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -139,21 +181,78 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      memos: {
         Row: {
-          created_at: string | null
-          id: string
-          nickname: string | null
+          content: string | null
+          created_at: string
+          id: number
+          itemId: number | null
+          updated_at: string | null
+          userId: string | null
         }
         Insert: {
-          created_at?: string | null
-          id: string
-          nickname?: string | null
+          content?: string | null
+          created_at?: string
+          id?: number
+          itemId?: number | null
+          updated_at?: string | null
+          userId?: string | null
         }
         Update: {
+          content?: string | null
+          created_at?: string
+          id?: number
+          itemId?: number | null
+          updated_at?: string | null
+          userId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memos_itemId_fkey"
+            columns: ["itemId"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memos_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          confirmed: boolean | null
+          created_at: string | null
+          email: string | null
+          email_opted_in: boolean
+          email_verified: boolean | null
+          id: string
+          nickname: string | null
+          picture: string | null
+        }
+        Insert: {
+          confirmed?: boolean | null
           created_at?: string | null
+          email?: string | null
+          email_opted_in?: boolean
+          email_verified?: boolean | null
+          id: string
+          nickname?: string | null
+          picture?: string | null
+        }
+        Update: {
+          confirmed?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          email_opted_in?: boolean
+          email_verified?: boolean | null
           id?: string
           nickname?: string | null
+          picture?: string | null
         }
         Relationships: [
           {
@@ -242,52 +341,38 @@ export type Database = {
         }
         Returns: Json
       }
-      search_items_by_itemid:
-        | {
-            Args: {
-              item_id: string
-              is_on_sale: boolean
-              user_id: string
-              page: number
-              page_size: number
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              item_id: string
-              is_on_sale: boolean
-              user_id: string
-              page: number
-              page_size: number
-              order_field: string
-              order_direction: string
-            }
-            Returns: Json
-          }
-      search_items_by_keyword:
-        | {
-            Args: {
-              keyword: string
-              is_on_sale: boolean
-              user_id: string
-              page: number
-              page_size: number
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              keyword: string
-              is_on_sale: boolean
-              user_id: string
-              page: number
-              page_size: number
-              order_field: string
-              order_direction: string
-            }
-            Returns: Json
-          }
+      get_items_with_wishlist_counts_by_id: {
+        Args: {
+          item_id: number
+          user_id: string
+          need_discounts: boolean
+        }
+        Returns: Json
+      }
+      search_items_by_itemid: {
+        Args: {
+          item_id: string
+          is_on_sale: boolean
+          user_id: string
+          page: number
+          page_size: number
+          order_field: string
+          order_direction: string
+        }
+        Returns: Json
+      }
+      search_items_by_keyword: {
+        Args: {
+          keyword: string
+          is_on_sale: boolean
+          user_id: string
+          page: number
+          page_size: number
+          order_field: string
+          order_direction: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       CategorySectors:

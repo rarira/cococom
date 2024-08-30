@@ -18,12 +18,25 @@ BEGIN
       FROM discounts d
       WHERE d."itemId" = i."itemId"
     ),
-    'discounts', (
+    -- 'discounts', (
+    --   CASE
+    --     WHEN need_discounts THEN
+    --       (SELECT json_agg(d2)
+    --       FROM discounts d2
+    --       WHERE d2."itemId" = i."itemId")
+    --     ELSE
+    --       NULL
+    --   END
+    -- ),
+    'totalCommentCount', (
+      SELECT COUNT(*)
+      FROM comments c
+      WHERE c."item_id" = i.id
+    ),
+    'totalMemoCount', (
       CASE
-        WHEN need_discounts THEN
-          (SELECT json_agg(d2)
-          FROM discounts d2
-          WHERE d2."itemId" = i."itemId")
+        WHEN user_id IS NOT NULL THEN
+          (SELECT COUNT(*) FROM memos m WHERE m."itemId" = i.id AND m."userId" = user_id)
         ELSE
           NULL
       END

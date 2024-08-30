@@ -16,7 +16,13 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
+  const { user, setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
+
+  // useLayoutEffect(() => {
+  //   if (user) {
+  //     router.dismiss();
+  //   }
+  // }, [user]);
 
   async function signInWithEmail() {
     setLoading(true);
@@ -65,6 +71,7 @@ export default function SignInScreen() {
 
   async function signInWithKakao() {
     const result = await login();
+
     const {
       data: { user },
       error,
@@ -73,15 +80,32 @@ export default function SignInScreen() {
       token: result.idToken!, // OpenID Connect 활성화 필요
       access_token: result.accessToken,
     });
+
+    const profile = await supabase.fetchData<'profiles'>(
+      {
+        column: 'id',
+        value: user?.id!,
+      },
+      'profiles',
+    );
+
     if (!error) {
       if (user) {
         setUser(user);
+        setProfile(profile);
+        if (!profile.confirmed) {
+          return router.replace({
+            pathname: '/auth/signup/confirm',
+            params: { provider: 'kakao' },
+          });
+        }
+
         if (callbackAfterSignIn) {
           callbackAfterSignIn(user);
           setCallbackAfterSignIn(null);
         }
+        router.dismiss();
       }
-      router.dismiss();
     }
   }
 
