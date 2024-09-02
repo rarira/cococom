@@ -26,13 +26,15 @@ export default function SalesScreen() {
       : categorySectorsArray.indexOf(categorySectorParam),
   );
 
-  const [routes] = useState(() =>
-    !categorySectorsArray
-      ? []
-      : categorySectorsArray.map(categorySector => ({
-          key: categorySector,
-          title: categorySector,
-        })),
+  const routes = useMemo(
+    () =>
+      !categorySectorsArray
+        ? []
+        : categorySectorsArray.map(categorySector => ({
+            key: categorySector,
+            title: categorySector,
+          })),
+    [categorySectorsArray],
   );
 
   const { styles, theme } = useStyles(stylesheet);
