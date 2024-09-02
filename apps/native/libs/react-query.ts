@@ -13,14 +13,13 @@ import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from 
 import { InfiniteSearchResultData } from '@/libs/search';
 
 export const queryKeys = {
+  category: {
+    all: () => ['categories', { currentTimestamp: new Date().toISOString().split('T')[0] }],
+  },
   discounts: {
     currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
-    ],
-    currentListByCategorySector: () => [
-      'discounts',
-      { currentTimestamp: new Date().toISOString().split('T')[0] },
     ],
   },
   histories: {

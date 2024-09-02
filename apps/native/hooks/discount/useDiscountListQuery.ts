@@ -5,7 +5,7 @@ import { useLayoutEffect } from 'react';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import { queryKeys } from '@/libs/react-query';
-import { DISCOUNT_SORT_OPTIONS, updateDiscountsByCategorySectorCache } from '@/libs/sort';
+import { DiscountSortOption, updateDiscountsByCategorySectorCache } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -27,7 +27,7 @@ function fetchCurrentDiscounts({
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
-export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPTIONS) {
+export function useDiscountListQuery(sortOption: DiscountSortOption, limit?: number) {
   const user = useUserStore(store => store.user);
 
   const { categorySector } = useLocalSearchParams<{ categorySector: CategorySectors }>();
@@ -42,7 +42,7 @@ export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPT
       const isCached = queryClient.getQueryData(queryKey);
 
       if (!isCached) {
-        return fetchCurrentDiscounts({ userId: user?.id, categorySector });
+        return fetchCurrentDiscounts({ userId: user?.id, categorySector: categorySector });
       }
 
       return isCached as DiscountListItemCardProps['discount'][];
@@ -53,12 +53,13 @@ export function useDiscountListQuery(currentSort: keyof typeof DISCOUNT_SORT_OPT
     if (isFetched) {
       updateDiscountsByCategorySectorCache({
         userId: user?.id,
-        sortKey: currentSort,
+        sortOption,
         categorySector,
         queryClient,
       });
     }
-  }, [categorySector, currentSort, isFetched, queryClient, user?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categorySector, isFetched, queryClient, sortOption.text, user?.id]);
 
-  return { data, error, isLoading, queryKey };
+  return { data: data?.slice(0, limit), error, isLoading, queryKey };
 }
