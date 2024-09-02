@@ -8,7 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
 import Card from '@/components/ui/card';
-import { CurrentDiscounts } from '@/hooks/useDiscountListQuery';
+import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 
@@ -34,11 +34,7 @@ function DiscountListItemCard({
   }, [queryKeyOfList, setQueryKeyOfList]);
 
   return (
-    <Link
-      href={`/(home)/item?itemId=${discount.items.id}` as Href<string>}
-      asChild
-      onPress={handlePress}
-    >
+    <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild onPress={handlePress}>
       <Pressable>
         <Shadow {...shadowPresets.card(theme)} stretch>
           <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>

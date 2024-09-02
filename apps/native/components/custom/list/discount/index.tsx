@@ -1,26 +1,32 @@
 import { PortalHost } from '@gorhom/portal';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { FlashList } from '@shopify/flash-list';
+import { ContentStyle, FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { PortalHostNames } from '@/constants';
-import { useDiscountListQuery } from '@/hooks/useDiscountListQuery';
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
+import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
+import { DiscountSortOption } from '@/libs/sort';
 
 import DiscountListItemCard from '../../card/list-item/discount';
 
 interface DiscountListProps {
-  currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
+  sortOption: DiscountSortOption;
+  limit?: number;
+  contentContainerStyle?: ContentStyle;
 }
 
 const NumberOfColumns = 1;
 
-export default function DiscountList({ currentSort }: DiscountListProps) {
+export default function DiscountList({
+  sortOption,
+  limit,
+  contentContainerStyle,
+}: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey } = useDiscountListQuery(currentSort);
+  const { data, error, isLoading, queryKey } = useDiscountListQuery(sortOption, limit);
 
   const tabBarHeight = useBottomTabBarHeight();
 
@@ -49,7 +55,10 @@ export default function DiscountList({ currentSort }: DiscountListProps) {
         keyExtractor={item => item?.id.toString()}
         numColumns={NumberOfColumns}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-        contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1, tabBarHeight)}
+        contentContainerStyle={{
+          ...styles.flashListContainer(NumberOfColumns > 1, tabBarHeight),
+          ...contentContainerStyle,
+        }}
       />
       <PortalHost name={PortalHostNames.HOME} />
     </>
