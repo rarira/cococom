@@ -20,10 +20,6 @@ import { supabase } from '@/libs/supabase';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
-const SecondRoute = () => {
-  return <View style={{ flex: 1, backgroundColor: '#673ab7' }}></View>;
-};
-
 const queryFn = (itemId: number, userId?: string) => () =>
   supabase.fetchItemsWithWishlistCount(itemId, userId, true);
 
