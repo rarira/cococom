@@ -6,7 +6,7 @@ import { DiscountListItemCardProps } from '@/components/custom/card/list-item/di
 import { queryKeys } from './react-query';
 import { SearchItemSortOption } from './search';
 
-type DiscountSortOption = {
+export type DiscountSortOption = {
   field:
     | keyof Database['public']['Functions']['get_discounts_with_wishlist_counts']['Returns'][0]
     | `items.${keyof JoinedItems}`;
@@ -35,7 +35,7 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     orderBy: 'desc',
     text: '할인가 높은 순',
   },
-  Approaching: {
+  approaching: {
     field: 'endDate',
     orderBy: 'asc',
     text: '마감 임박 순',
@@ -67,12 +67,11 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
   },
 };
 
-export function sortDiscountsByCategorySector(
-  sortKey: keyof typeof DISCOUNT_SORT_OPTIONS,
+export function sortDiscounts(
+  sortOption: DiscountSortOption,
   data: DiscountListItemCardProps['discount'][],
 ) {
   return [...data].sort((a: Record<string, any>, b: Record<string, any>) => {
-    const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
     const [prop1, prop2] = sortOption.field.split('.');
 
     const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
@@ -92,19 +91,19 @@ export function sortDiscountsByCategorySector(
 
 export function updateDiscountsByCategorySectorCache({
   userId,
-  sortKey,
+  sortOption,
   queryClient,
   categorySector,
 }: {
   userId?: string;
-  sortKey: keyof typeof DISCOUNT_SORT_OPTIONS;
+  sortOption: DiscountSortOption;
   queryClient: any;
   categorySector?: CategorySectors;
 }) {
   const queryKey = queryKeys.discounts.currentList(userId, categorySector);
 
   queryClient.setQueryData(queryKey, (prevData: DiscountListItemCardProps['discount'][]) => {
-    return sortDiscountsByCategorySector(sortKey, prevData);
+    return sortDiscounts(sortOption, prevData);
   });
 }
 
@@ -141,7 +140,7 @@ export const ITEM_SORT_OPTIONS: Record<string, SearchItemSortOption> = {
   },
 };
 
-export const RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
+export const DISCOUNTED_RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
   biggest: {
     field: 'discountRate',
     orderBy: 'desc',
@@ -152,7 +151,7 @@ export const RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     orderBy: 'asc',
     text: '할인가 낮은 순',
   },
-  Approaching: {
+  approaching: {
     field: 'endDate',
     orderBy: 'asc',
     text: '마감 임박 순',
@@ -167,9 +166,9 @@ export const RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     orderBy: 'desc',
     text: '댓글 많은 순',
   },
-  frequent: {
+  rare: {
     field: 'items.discountsLength',
-    orderBy: 'desc',
-    text: '할인 빈도 많은 순',
+    orderBy: 'asc',
+    text: '할인 빈도 적은 순',
   },
 };
