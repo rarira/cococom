@@ -50,6 +50,11 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     orderBy: 'desc',
     text: '인기순',
   },
+  trend: {
+    field: 'items.totalCommentCount',
+    orderBy: 'desc',
+    text: '댓글 많은 순',
+  },
   frequent: {
     field: 'items.discountsLength',
     orderBy: 'desc',
@@ -66,25 +71,23 @@ export function sortDiscountsByCategorySector(
   sortKey: keyof typeof DISCOUNT_SORT_OPTIONS,
   data: DiscountListItemCardProps['discount'][],
 ) {
-  return [...data].sort(
-    (a: DiscountListItemCardProps['discount'], b: DiscountListItemCardProps['discount']) => {
-      const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
-      const [prop1, prop2] = sortOption.field.split('.');
+  return [...data].sort((a: Record<string, any>, b: Record<string, any>) => {
+    const sortOption = DISCOUNT_SORT_OPTIONS[sortKey];
+    const [prop1, prop2] = sortOption.field.split('.');
 
-      const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
-      const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
+    const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
+    const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
 
-      if (aValue === bValue) {
-        return 0;
-      }
+    if (aValue === bValue) {
+      return 0;
+    }
 
-      if (sortOption.orderBy === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      }
+    if (sortOption.orderBy === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    }
 
-      return aValue < bValue ? 1 : -1;
-    },
-  );
+    return aValue < bValue ? 1 : -1;
+  });
 }
 
 export function updateDiscountsByCategorySectorCache({
@@ -135,5 +138,38 @@ export const ITEM_SORT_OPTIONS: Record<string, SearchItemSortOption> = {
     field: 'lowestPrice',
     direction: 'ASC',
     text: '역대 최저가 낮은 순',
+  },
+};
+
+export const RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
+  biggest: {
+    field: 'discountRate',
+    orderBy: 'desc',
+    text: '할인율 높은 순',
+  },
+  cheapset: {
+    field: 'discountPrice',
+    orderBy: 'asc',
+    text: '할인가 낮은 순',
+  },
+  Approaching: {
+    field: 'endDate',
+    orderBy: 'asc',
+    text: '마감 임박 순',
+  },
+  popular: {
+    field: 'items.totalWishlistCount',
+    orderBy: 'desc',
+    text: '인기순',
+  },
+  trend: {
+    field: 'items.totalCommentCount',
+    orderBy: 'desc',
+    text: '댓글 많은 순',
+  },
+  frequent: {
+    field: 'items.discountsLength',
+    orderBy: 'desc',
+    text: '할인 빈도 많은 순',
   },
 };
