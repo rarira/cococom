@@ -32,7 +32,7 @@ const SearchTextInput = memo(function SearchTextInput({
   }, [keyword, onPressSearch]);
 
   return (
-    <TextInput.Root variants="rounded" style={styles.textInputRoot}>
+    <TextInput.Root variants="outlined" rowStyle={styles.textInputRoot}>
       <TextInput.Field
         value={keyword}
         placeholderTextColor={`${theme.colors.typography}99`}
@@ -56,7 +56,7 @@ const stylesheet = createStyleSheet(theme => ({
     borderRadius: theme.borderRadius.md,
     backgroundColor: theme.colors.lightShadow,
     paddingVertical: theme.spacing.lg,
-    paddingHorizontal: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.md,
     borderColor: theme.colors.lightShadow,
   },
   textInputSlot: {

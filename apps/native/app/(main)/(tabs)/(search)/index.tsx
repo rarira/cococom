@@ -107,7 +107,7 @@ export default function SearchScreen() {
 const stylesheet = createStyleSheet(theme => ({
   container: (topInset: number) => ({
     flex: 1,
-    paddingTop: topInset,
+    paddingTop: topInset + theme.spacing.xl,
     backgroundColor: theme.colors.background,
     alignItems: 'center',
   }),
