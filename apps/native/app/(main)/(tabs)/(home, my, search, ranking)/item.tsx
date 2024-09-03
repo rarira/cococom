@@ -101,11 +101,14 @@ export default function ItemScreen() {
         </Tabs.Tab>
         <Tabs.Tab
           name="comment"
-          label={`댓글${data.commentsLength ? `(${data.commentsLength})` : ''}`}
+          label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
           <CommentTabView itemId={+itemId} />
         </Tabs.Tab>
-        <Tabs.Tab name="memo" label={`메모${data.memosLength ? `(${data.memosLength})` : ''}`}>
+        <Tabs.Tab
+          name="memo"
+          label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
+        >
           <MemoTabView itemId={+itemId} />
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 

@@ -17,11 +17,6 @@ BEGIN
         'categoryName', c."categoryName",
         'categorySector', c."categorySector"
     ),
-    'discountsLength', (
-      SELECT COUNT(*)
-      FROM discounts d
-      WHERE d."itemId" = i."itemId"
-    ),
     'discounts', (
       CASE
         WHEN need_discounts THEN
@@ -37,7 +32,10 @@ BEGIN
           NULL
       END
     ),
-    'memosLength', (
+    "totalDiscountCount", i."totalDiscountCount",
+    "totalWishlistCount", i."totalWishlistCount",
+    "totalCommentCount", i."totalCommentCount",
+    'totalMemoCount', (
       CASE
         WHEN user_id IS NOT NULL THEN
           (SELECT COUNT(*)
@@ -46,16 +44,6 @@ BEGIN
         ELSE
           NULL
       END
-    ),
-    'commentsLength', (
-      SELECT COUNT(*)
-      FROM comments c
-      WHERE c."item_id" = i."id"
-    ),
-    'totalWishlistCount', (
-      SELECT COUNT(*)
-      FROM wishlists w
-      WHERE w."itemId" = i.id
     ),
     'isWishlistedByUser', (
       CASE
