@@ -1,28 +1,29 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import React, { forwardRef, memo, useMemo } from 'react';
+import { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
-import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { SortOptions } from '@/libs/sort';
 
-interface SearchSortBottomSheetProps {
-  currentSort: keyof typeof ITEM_SORT_OPTIONS;
-  onSortChange: (sort: keyof typeof ITEM_SORT_OPTIONS) => void;
+interface SortBottomSheetProps {
+  sortOptions: SortOptions;
+  currentSort: keyof SortOptions;
+  onSortChange: (sort: keyof SortOptions) => void;
 }
 
-const SearchSortBottomSheet = memo(
-  forwardRef<BottomSheetModal, SearchSortBottomSheetProps>(function SearchSortBottomSheet(
-    { currentSort, onSortChange }: SearchSortBottomSheetProps,
-    ref,
+const SortBottomSheet = memo(
+  forwardRef(function SortBottomSheet(
+    { currentSort, onSortChange, sortOptions }: SortBottomSheetProps,
+    ref: ForwardedRef<BottomSheetModal>,
   ) {
     const { styles } = useStyles(stylesheet);
 
-    const sortOptions = useMemo(
+    const sortOptionsArray = useMemo(
       () =>
-        Object.entries(ITEM_SORT_OPTIONS).map(([key, sortOption]) => (
+        Object.entries(sortOptions).map(([key, sortOption]) => (
           <Button
             key={key}
             onPress={() => onSortChange(key)}
@@ -31,12 +32,12 @@ const SearchSortBottomSheet = memo(
             <Text style={styles.text(currentSort === key)}>{sortOption.text}</Text>
           </Button>
         )),
-      [currentSort, onSortChange, styles],
+      [currentSort, onSortChange, sortOptions, styles],
     );
 
     return (
       <BottomSheet ref={ref} index={1} title="정렬 방법 변경">
-        <View style={styles.container}>{sortOptions}</View>
+        <View style={styles.container}>{sortOptionsArray}</View>
       </BottomSheet>
     );
   }),
@@ -59,4 +60,4 @@ const stylesheet = createStyleSheet(theme => ({
   }),
 }));
 
-export default SearchSortBottomSheet;
+export default SortBottomSheet;
