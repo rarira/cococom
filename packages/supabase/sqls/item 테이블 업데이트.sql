@@ -45,3 +45,90 @@ FROM (
         w."itemId"
 ) AS subquery
 WHERE i.id = subquery."itemId";
+
+
+CREATE OR REPLACE FUNCTION increment_total_discount_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
+    UPDATE items
+    SET "totalDiscountCount" = "totalDiscountCount" + 1
+    WHERE "itemId" = NEW."itemId";
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER discount_insert_trigger
+AFTER INSERT ON discounts
+FOR EACH ROW
+EXECUTE FUNCTION increment_total_discount_count();
+
+
+CREATE OR REPLACE FUNCTION increment_total_comment_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
+    UPDATE items
+    SET "totalCommentCount" = "totalCommentCount" + 1
+    WHERE id = NEW.item_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER comment_insert_trigger
+AFTER INSERT ON comments
+FOR EACH ROW
+EXECUTE FUNCTION increment_total_comment_count();
+
+CREATE OR REPLACE FUNCTION increment_total_wishlist_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
+    UPDATE items
+    SET "totalWishlistCount" = "totalWishlistCount" + 1
+    WHERE id = NEW."itemId";
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER wishlist_insert_trigger
+AFTER INSERT ON wishlists
+FOR EACH ROW
+EXECUTE FUNCTION increment_total_wishlist_count();
+
+CREATE OR REPLACE FUNCTION decrement_total_comment_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 해당 itemId에 대한 totalCommentCount를 1 감소시킵니다.
+    UPDATE items
+    SET "totalCommentCount" = "totalCommentCount" - 1
+    WHERE id = OLD.item_id;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER comment_delete_trigger
+AFTER DELETE ON comments
+FOR EACH ROW
+EXECUTE FUNCTION decrement_total_comment_count();
+
+CREATE OR REPLACE FUNCTION decrement_total_wishlist_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 해당 itemId에 대한 totalCommentCount를 1 감소시킵니다.
+    UPDATE items
+    SET "totalWishlistCount" = "totalWishlistCount" - 1
+    WHERE id = OLD.item_id;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER wishlist_delete_trigger
+AFTER DELETE ON wishlists
+FOR EACH ROW
+EXECUTE FUNCTION decrement_total_wishlist_count();
