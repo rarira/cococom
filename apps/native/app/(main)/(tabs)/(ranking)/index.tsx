@@ -5,12 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import AlltimeRankingList from '@/components/custom/list/ranking/alltime';
 import DiscountedRankingList from '@/components/custom/list/ranking/discounted';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
-
-const SecondRoute = () => <View style={{ flex: 1 }} />;
 
 export default function RankingScreen() {
   const { styles } = useStyles(stylesheet);
@@ -27,7 +26,7 @@ export default function RankingScreen() {
   const renderScene = useMemo(() => {
     return SceneMap({
       discounted: () => <DiscountedRankingList />,
-      all: SecondRoute,
+      alltime: () => <AlltimeRankingList />,
     });
   }, []);
 

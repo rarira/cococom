@@ -6,12 +6,21 @@ import { DiscountListItemCardProps } from '@/components/custom/card/list-item/di
 import { queryKeys } from './react-query';
 import { SearchItemSortOption } from './search';
 
-export type SortOptions = Record<string, DiscountSortOption | SearchItemSortOption>;
+export type SortOptions = Record<
+  string,
+  DiscountSortOption | SearchItemSortOption | AlltimeSortOption
+>;
 
 export type DiscountSortOption = {
   field:
     | keyof Database['public']['Functions']['get_discounts_with_wishlist_counts']['Returns'][0]
     | `items.${keyof JoinedItems}`;
+  orderBy: 'asc' | 'desc';
+  text: string;
+};
+
+export type AlltimeSortOption = {
+  field: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
   orderBy: 'asc' | 'desc';
   text: string;
 };
@@ -58,12 +67,12 @@ export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
     text: '댓글 많은 순',
   },
   frequent: {
-    field: 'items.discountsLength',
+    field: 'items.totalDiscountCount',
     orderBy: 'desc',
     text: '할인 빈도 많은 순',
   },
   rare: {
-    field: 'items.discountsLength',
+    field: 'items.totalDiscountCount',
     orderBy: 'asc',
     text: '할인 빈도 적은 순',
   },
@@ -169,25 +178,30 @@ export const DISCOUNTED_RANKING_SORT_OPTIONS: Record<string, DiscountSortOption>
     text: '댓글 많은 순',
   },
   rare: {
-    field: 'items.discountsLength',
+    field: 'items.totalDiscountCount',
     orderBy: 'asc',
     text: '할인 빈도 적은 순',
   },
 };
 
-export const ALLTIME_RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
+export const ALLTIME_RANKING_SORT_OPTIONS: Record<string, AlltimeSortOption> = {
   popular: {
-    field: 'items.totalWishlistCount',
+    field: 'totalWishlistCount',
     orderBy: 'desc',
     text: '인기순',
   },
   trend: {
-    field: 'items.totalCommentCount',
+    field: 'totalCommentCount',
     orderBy: 'desc',
     text: '댓글 많은 순',
   },
+  memorable: {
+    field: 'totalMemoCount',
+    orderBy: 'desc',
+    text: '메모 많은 순',
+  },
   rare: {
-    field: 'items.discountsLength',
+    field: 'totalDiscountCount',
     orderBy: 'desc',
     text: '할인 빈도 많은 순',
   },
