@@ -32,9 +32,9 @@ BEGIN
           NULL
       END
     ),
-    "totalDiscountCount", i."totalDiscountCount",
-    "totalWishlistCount", i."totalWishlistCount",
-    "totalCommentCount", i."totalCommentCount",
+    'totalDiscountCount', i."totalDiscountCount",
+    'totalWishlistCount', i."totalWishlistCount",
+    'totalCommentCount', i."totalCommentCount",
     'totalMemoCount', (
       CASE
         WHEN user_id IS NOT NULL THEN
