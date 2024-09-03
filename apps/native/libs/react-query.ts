@@ -51,6 +51,12 @@ export const queryKeys = {
   comments: {
     byItem: (itemId: number) => ['comments', { itemId }],
   },
+  alltimeRankings: (
+    userId?: string | null,
+    orderByColumn?: string,
+    orderByDirection?: 'asc' | 'desc',
+    limit?: number,
+  ) => ['alltimeRankings', { userId, orderByColumn, orderByDirection, limit }],
 };
 
 export const handleMutateOfDiscountCurrentList = async ({

@@ -373,6 +373,32 @@ export class Supabase {
     }
   }
 
+  async fetchAlltimeRankingItems({
+    userId,
+    orderByColumn,
+    orderByDirection,
+    limitCount,
+  }: {
+    userId?: string;
+    orderByColumn?: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
+    orderByDirection?: 'asc' | 'desc';
+    limitCount?: number;
+  }) {
+    const { data, error } = await this.supabaseClient.rpc('get_alltime_top_items', {
+      _user_id: userId ?? null,
+      _order_by_column: orderByColumn,
+      _order_by_direction: orderByDirection,
+      _limit_count: limitCount,
+    });
+
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
   // Auth Methods
   async signUpWithEmail(credentials: SignUpWithPasswordCredentials) {
     return await this.supabaseClient.auth.signUp(credentials);

@@ -58,16 +58,14 @@ BEGIN
                         i."bestDiscountRate",
                         i."bestDiscount",
                         i."lowestPrice",
+                        i."totalCommentCount",
+                        i."totalWishlistCount",
                         EXISTS (
                             SELECT 1
                             FROM discounts d
                             WHERE d."itemId" = i."itemId"
                             AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                         ) as "isOnSaleNow",
-                        (   SELECT COUNT(*)
-                            FROM comments c
-                            WHERE c."item_id" = i.id
-                        ) as "totalCommentCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -76,11 +74,6 @@ BEGIN
                                 NULL
                             END                        
                         ) as "totalMemoCount",
-                        (
-                            SELECT COUNT(*)
-                            FROM wishlists w
-                            WHERE w."itemId" = i.id
-                        ) as "totalWishlistCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -172,16 +165,14 @@ BEGIN
                         i."bestDiscountRate",
                         i."bestDiscount",
                         i."lowestPrice",
+                        i."totalCommentCount",
+                        i."totalWishlistCount",
                         EXISTS (
                             SELECT 1
                             FROM discounts d
                             WHERE d."itemId" = i."itemId"
                             AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                         ) as "isOnSaleNow",
-                        (   SELECT COUNT(*)
-                            FROM comments c
-                            WHERE c."item_id" = i.id
-                        ) as "totalCommentCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -190,11 +181,6 @@ BEGIN
                                 NULL
                             END                        
                         ) as "totalMemoCount",
-                        (
-                            SELECT COUNT(*)
-                            FROM wishlists w
-                            WHERE w."itemId" = i.id
-                        ) as "totalWishlistCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN

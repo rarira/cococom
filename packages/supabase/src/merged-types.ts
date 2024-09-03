@@ -9,9 +9,7 @@ export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
   discounts?: Array<Tables<'discounts'>> | null;
-  discountsLength: number;
-  memosLength: number | null;
-  commentsLength: number;
+  totalDiscountCount: number;
   totalWishlistCount: number;
   totalCommentCount: number;
   totalMemoCount: number | null;
@@ -97,6 +95,15 @@ export type Database = MergeDeep<
             need_discounts: boolean;
           };
           Returns: JoinedItems;
+        };
+        get_alltime_top_items: {
+          Args: {
+            _user_id: string | null;
+            _order_by_column?: string;
+            _order_by_direction?: string;
+            _limit_count?: number;
+          };
+          Returns: Omit<JoinedItems, 'discounts' | 'categories'>[];
         };
       };
     };

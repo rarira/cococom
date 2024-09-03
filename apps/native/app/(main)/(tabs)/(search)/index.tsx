@@ -26,6 +26,10 @@ export default function SearchScreen() {
 
   const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
 
+  const handleDismissSortBottomSheet = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
+
   const {
     isFetching,
     keywordToSearch,
@@ -40,7 +44,7 @@ export default function SearchScreen() {
     handleSortChange,
     totalResults,
     queryKey,
-  } = useSearchInput({ addSearchHistory });
+  } = useSearchInput({ addSearchHistory, callbackSortChange: handleDismissSortBottomSheet });
 
   useLayoutEffect(() => {
     if (optionsToSearch) setOptions(optionsToSearch);
