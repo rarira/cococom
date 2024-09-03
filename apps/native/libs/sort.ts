@@ -6,6 +6,8 @@ import { DiscountListItemCardProps } from '@/components/custom/card/list-item/di
 import { queryKeys } from './react-query';
 import { SearchItemSortOption } from './search';
 
+export type SortOptions = Record<string, DiscountSortOption | SearchItemSortOption>;
+
 export type DiscountSortOption = {
   field:
     | keyof Database['public']['Functions']['get_discounts_with_wishlist_counts']['Returns'][0]
@@ -107,7 +109,7 @@ export function updateDiscountsByCategorySectorCache({
   });
 }
 
-export const ITEM_SORT_OPTIONS: Record<string, SearchItemSortOption> = {
+export const SEARCH_ITEM_SORT_OPTIONS: Record<string, SearchItemSortOption> = {
   itemNameAsc: {
     field: 'itemName',
     direction: 'ASC',
@@ -170,5 +172,23 @@ export const DISCOUNTED_RANKING_SORT_OPTIONS: Record<string, DiscountSortOption>
     field: 'items.discountsLength',
     orderBy: 'asc',
     text: '할인 빈도 적은 순',
+  },
+};
+
+export const ALLTIME_RANKING_SORT_OPTIONS: Record<string, DiscountSortOption> = {
+  popular: {
+    field: 'items.totalWishlistCount',
+    orderBy: 'desc',
+    text: '인기순',
+  },
+  trend: {
+    field: 'items.totalCommentCount',
+    orderBy: 'desc',
+    text: '댓글 많은 순',
+  },
+  rare: {
+    field: 'items.discountsLength',
+    orderBy: 'desc',
+    text: '할인 빈도 많은 순',
   },
 };

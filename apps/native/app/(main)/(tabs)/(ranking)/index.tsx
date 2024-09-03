@@ -21,7 +21,7 @@ export default function RankingScreen() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'discounted', title: '세일 상품' },
-    { key: 'all', title: '모든 상품' },
+    { key: 'alltime', title: '모든 상품' },
   ]);
 
   const renderScene = useMemo(() => {

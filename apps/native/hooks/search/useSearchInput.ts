@@ -11,7 +11,7 @@ import {
   SearchQueryParams,
   SearchResultToRender,
 } from '@/libs/search';
-import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -24,7 +24,7 @@ const PAGE_SIZE = 10;
 export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
-  const [sortOption, setSortOption] = useState<keyof typeof ITEM_SORT_OPTIONS>('itemNameAsc');
+  const [sortOption, setSortOption] = useState<keyof typeof SEARCH_ITEM_SORT_OPTIONS>('itemNameAsc');
 
   const user = useUserStore(store => store.user);
 
@@ -35,7 +35,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   } = useLocalSearchParams<{
     keyword: string;
     options: SearchOptionValue[];
-    sortOption: keyof typeof ITEM_SORT_OPTIONS;
+    sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
   }>();
 
   // TODO : 테스트 필요
@@ -53,8 +53,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const queryKey = queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
     keywordToSearch,
     isOnSaleSearch,
-    ITEM_SORT_OPTIONS[sortOption].field,
-    ITEM_SORT_OPTIONS[sortOption].direction,
+    SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+    SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
     user?.id,
   );
   const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
@@ -69,8 +69,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
             user?.id,
             pageParam as number,
             PAGE_SIZE,
-            ITEM_SORT_OPTIONS[sortOption].field,
-            ITEM_SORT_OPTIONS[sortOption].direction,
+            SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+            SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
           );
         }
         return supabase.fullTextSearchItemsByKeyword(
@@ -79,8 +79,8 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
           user?.id,
           pageParam as number,
           PAGE_SIZE,
-          ITEM_SORT_OPTIONS[sortOption].field,
-          ITEM_SORT_OPTIONS[sortOption].direction,
+          SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+          SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
         );
       },
       initialPageParam: 1,
@@ -118,7 +118,7 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   }, [fetchNextPage, hasNextPage, isFetching]);
 
   const handleSortChange = useCallback(
-    (sortOption: keyof typeof ITEM_SORT_OPTIONS) => {
+    (sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS) => {
       setSortOption(sortOption);
     },
     [setSortOption],
