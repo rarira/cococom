@@ -17,14 +17,16 @@ import { useUserStore } from '@/store/user';
 
 type UseSearchInputParams = {
   addSearchHistory: (searchHistory: SearchHistory) => void;
+  callbackSortChange?: (sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS) => void;
 };
 
 const PAGE_SIZE = 10;
 
-export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
+export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSearchInputParams) {
   const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
-  const [sortOption, setSortOption] = useState<keyof typeof SEARCH_ITEM_SORT_OPTIONS>('itemNameAsc');
+  const [sortOption, setSortOption] =
+    useState<keyof typeof SEARCH_ITEM_SORT_OPTIONS>('itemNameAsc');
 
   const user = useUserStore(store => store.user);
 
@@ -120,8 +122,9 @@ export function useSearchInput({ addSearchHistory }: UseSearchInputParams) {
   const handleSortChange = useCallback(
     (sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS) => {
       setSortOption(sortOption);
+      callbackSortChange?.(sortOption);
     },
-    [setSortOption],
+    [callbackSortChange],
   );
 
   // NOTE: DEBUG

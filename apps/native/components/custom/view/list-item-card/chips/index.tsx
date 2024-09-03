@@ -24,21 +24,21 @@ type ListItemCardChipsViewProps = (
 const chips = [
   {
     text: '첫할인',
-    checkFn: (discount: ChipsDiscount, item: JoinedItems) => item.discountsLength === 1,
+    checkFn: (discount: ChipsDiscount, item: JoinedItems) => item.totalDiscountCount === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
     text: '최저가',
     checkFn: (discount: ChipsDiscount, item: JoinedItems) =>
       discount.discountPrice !== 0 &&
-      item.discountsLength > 1 &&
+      item.totalDiscountCount > 1 &&
       discount.discountPrice === item?.lowestPrice,
     color: (theme: UnistylesTheme) => theme.colors.tint,
   },
   {
     text: '최대할인',
     checkFn: (discount: ChipsDiscount, item: JoinedItems) =>
-      item.discountsLength > 1 &&
+      item.totalDiscountCount > 1 &&
       (discount.discountPrice === 0
         ? discount.discount === item?.bestDiscount
         : discount.discountRate === item?.bestDiscountRate),

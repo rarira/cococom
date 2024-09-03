@@ -37,6 +37,7 @@ const Util = {
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   },
   showMaxNumber(value: number, max: number): string {
+    if (!value) return '0';
     return value > max ? `${max}+` : value.toString();
   },
 };
