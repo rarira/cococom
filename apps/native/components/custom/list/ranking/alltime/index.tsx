@@ -2,15 +2,15 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { memo, useCallback, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
+import DiscountedRankingSortBottomSheet from '@/components/custom/bottom-sheet/ranking-sort/discounted';
 import RankingSortButton from '@/components/custom/button/ranking-sort';
 import DiscountList from '@/components/custom/list/discount';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { DISCOUNTED_RANKING_SORT_OPTIONS } from '@/libs/sort';
 
-interface DiscountedRankingListProps {}
+interface AlltimeRankingListProps {}
 
-const DiscountedRankingList = memo(function DiscountedRankingList({}: DiscountedRankingListProps) {
+const AlltimeRankingList = memo(function AlltimeRankingList({}: AlltimeRankingListProps) {
   const { styles } = useStyles(stylesheet);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -27,9 +27,8 @@ const DiscountedRankingList = memo(function DiscountedRankingList({}: Discounted
     <>
       <RankingSortButton text={sortOption.text} onPress={handlePress} />
       <DiscountList sortOption={sortOption} limit={50} contentContainerStyle={styles.container} />
-      <SortBottomSheet
+      <DiscountedRankingSortBottomSheet
         ref={bottomSheetModalRef}
-        sortOptions={DISCOUNTED_RANKING_SORT_OPTIONS}
         currentSort={sort}
         onSortChange={handleSortChange}
       />
@@ -45,4 +44,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default DiscountedRankingList;
+export default AlltimeRankingList;

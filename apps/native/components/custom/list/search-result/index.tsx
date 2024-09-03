@@ -12,12 +12,12 @@ import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
-import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 
 interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
   searchResult: SearchResultToRender;
   searchQueryParams: SearchQueryParams;
-  sortOption: keyof typeof ITEM_SORT_OPTIONS;
+  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
   totalResults: number | null;
   onPressHeaderRightButton: () => void;
   queryKey: QueryKey;
