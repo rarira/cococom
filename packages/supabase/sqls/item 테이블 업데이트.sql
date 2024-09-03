@@ -57,7 +57,7 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;;
 
 CREATE TRIGGER discount_insert_trigger
 AFTER INSERT ON discounts
@@ -75,7 +75,7 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;;
 
 CREATE TRIGGER comment_insert_trigger
 AFTER INSERT ON comments
@@ -92,7 +92,7 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;;
 
 CREATE TRIGGER wishlist_insert_trigger
 AFTER INSERT ON wishlists
@@ -109,7 +109,7 @@ BEGIN
 
     RETURN OLD;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;;
 
 CREATE TRIGGER comment_delete_trigger
 AFTER DELETE ON comments
@@ -122,11 +122,11 @@ BEGIN
     -- 해당 itemId에 대한 totalCommentCount를 1 감소시킵니다.
     UPDATE items
     SET "totalWishlistCount" = "totalWishlistCount" - 1
-    WHERE id = OLD.item_id;
+    WHERE id = OLD."itemId";    
 
     RETURN OLD;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;;
 
 CREATE TRIGGER wishlist_delete_trigger
 AFTER DELETE ON wishlists
