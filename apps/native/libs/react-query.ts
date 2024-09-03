@@ -284,7 +284,7 @@ export const handleMutateOfUpsertMemo = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      memosLength: (old.memosLength ?? 0) + 1,
+      totalMemoCount: (old.totalMemoCount ?? 0) + 1,
     };
   });
 
@@ -326,7 +326,7 @@ export const handleMutateOfDeleteMemo = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      memosLength: old.memosLength! - 1,
+      totalMemoCount: old.totalMemoCount! - 1,
     };
   });
 
@@ -398,7 +398,7 @@ export const handleMutateOfInsertComment = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      commentsLength: (old.commentsLength ?? 0) + 1,
+      totalCommentCount: (old.totalCommentCount ?? 0) + 1,
     };
   });
 
@@ -440,7 +440,7 @@ export const handleMutateOfDeleteComment = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      commentsLength: old.commentsLength! - 1,
+      totalCommentCount: old.totalCommentCount! - 1,
     };
   });
 
