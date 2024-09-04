@@ -7,9 +7,9 @@ import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import CommentTabView from '@/components/custom/tab-view/comment';
-import DiscountHistoryTabView from '@/components/custom/tab-view/discount-history';
-import MemoTabView from '@/components/custom/tab-view/memo';
+import ItemCommentTabView from '@/components/custom/tab-view/item/comment';
+import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discount-history';
+import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import { PortalHostNames } from '@/constants';
@@ -40,8 +40,6 @@ export default function ItemScreen() {
     queryKey: queryKeys.items.byId(+itemId, user?.id),
     queryFn: queryFn(+itemId, user?.id),
   });
-
-  console.log('item screen data', data);
 
   useTransparentHeader({
     title: data?.itemName,
@@ -98,20 +96,20 @@ export default function ItemScreen() {
       >
         <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
-            <DiscountHistoryTabView discounts={data.discounts} />
+            <ItemDiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab
           name="comment"
           label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
-          <CommentTabView itemId={+itemId} />
+          <ItemCommentTabView itemId={+itemId} />
         </Tabs.Tab>
         <Tabs.Tab
           name="memo"
           label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
         >
-          <MemoTabView itemId={+itemId} />
+          <ItemMemoTabView itemId={+itemId} />
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
         <Tabs.Tab name={`구매기록(3)`}>

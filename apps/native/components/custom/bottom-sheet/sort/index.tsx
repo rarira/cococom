@@ -7,6 +7,7 @@ import BottomSheet from '@/components/ui/bottom-sheet';
 import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { SortOptions } from '@/libs/sort';
+import { useUserStore } from '@/store/user';
 
 interface SortBottomSheetProps {
   sortOptions: SortOptions;
@@ -19,20 +20,27 @@ const SortBottomSheet = memo(
     { currentSort, onSortChange, sortOptions }: SortBottomSheetProps,
     ref: ForwardedRef<BottomSheetModal>,
   ) {
+    const user = useUserStore(store => store.user);
     const { styles } = useStyles(stylesheet);
 
     const sortOptionsArray = useMemo(
       () =>
-        Object.entries(sortOptions).map(([key, sortOption]) => (
-          <Button
-            key={key}
-            onPress={() => onSortChange(key)}
-            style={({ pressed }) => styles.button({ selected: currentSort === key, pressed })}
-          >
-            <Text style={styles.text(currentSort === key)}>{sortOption.text}</Text>
-          </Button>
-        )),
-      [currentSort, onSortChange, sortOptions, styles],
+        Object.entries(sortOptions)
+          .map(([key, sortOption]) => {
+            if (sortOption.authRequired && !user) return null;
+
+            return (
+              <Button
+                key={key}
+                onPress={() => onSortChange(key)}
+                style={({ pressed }) => styles.button({ selected: currentSort === key, pressed })}
+              >
+                <Text style={styles.text(currentSort === key)}>{sortOption.text}</Text>
+              </Button>
+            );
+          })
+          .filter(Boolean),
+      [currentSort, onSortChange, sortOptions, styles, user],
     );
 
     return (

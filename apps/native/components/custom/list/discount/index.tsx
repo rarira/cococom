@@ -5,16 +5,18 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import DiscountListItemCard from '@/components/custom/card/list-item/discount';
+import CircularProgress from '@/components/ui/progress/circular';
 import { PortalHostNames } from '@/constants';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
-
-import DiscountListItemCard from '../../card/list-item/discount';
 
 interface DiscountListProps {
   sortOption: DiscountSortOption;
   limit?: number;
   contentContainerStyle?: ContentStyle;
+  portalHostName?: PortalHostNames;
+  refreshable?: boolean;
 }
 
 const NumberOfColumns = 1;
@@ -23,10 +25,15 @@ export default function DiscountList({
   sortOption,
   limit,
   contentContainerStyle,
+  portalHostName = PortalHostNames.HOME,
+  refreshable,
 }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey } = useDiscountListQuery(sortOption, limit);
+  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useDiscountListQuery(
+    sortOption,
+    limit,
+  );
 
   const tabBarHeight = useBottomTabBarHeight();
 
@@ -38,13 +45,18 @@ export default function DiscountList({
           numColumns={NumberOfColumns}
           key={item.id}
           queryKeyOfList={queryKey}
+          portalHostName={portalHostName}
         />
       );
     },
-    [queryKey],
+    [portalHostName, queryKey],
   );
 
-  if (error || !data || isLoading) return null;
+  if (error) return null;
+
+  if (isLoading) {
+    return <CircularProgress style={styles.loadinProgress} />;
+  }
 
   return (
     <>
@@ -59,8 +71,9 @@ export default function DiscountList({
           ...styles.flashListContainer(NumberOfColumns > 1, tabBarHeight),
           ...contentContainerStyle,
         }}
+        {...(refreshable && { onRefresh: handleRefresh, refreshing })}
       />
-      <PortalHost name={PortalHostNames.HOME} />
+      <PortalHost name={portalHostName} />
     </>
   );
 }
@@ -72,5 +85,9 @@ const stylesheet = createStyleSheet(theme => ({
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
+  },
+  loadinProgress: {
+    flex: 1,
+    marginTop: theme.spacing.xl * 3,
   },
 }));

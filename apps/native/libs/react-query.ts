@@ -6,7 +6,13 @@ import {
   SearchItemSortDirection,
   SearchItemSortField,
 } from '@cococom/supabase/libs';
-import { InfiniteQueryResult, JoinedComments, JoinedItems, Tables } from '@cococom/supabase/types';
+import {
+  AlltimeRankingResultItem,
+  InfiniteQueryResult,
+  JoinedComments,
+  JoinedItems,
+  Tables,
+} from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
@@ -442,6 +448,48 @@ export const handleMutateOfDeleteComment = async ({
       ...old,
       totalCommentCount: old.totalCommentCount! - 1,
     };
+  });
+
+  return { previousData };
+};
+
+export const handleMutateOfAlltimeRanking = async ({
+  queryClient,
+  queryKey,
+  newWishlist,
+}: {
+  queryClient: QueryClient;
+  newWishlist: InsertWishlist;
+  queryKey: QueryKey;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as AlltimeRankingResultItem[];
+
+  queryClient.setQueryData(queryKey, (old: AlltimeRankingResultItem[]) => {
+    const itemIndex = old.findIndex(d => d.id === newWishlist.itemId);
+
+    const updatedItem = {
+      ...old[itemIndex],
+      totalWishlistCount: old[itemIndex].isWishlistedByUser
+        ? old[itemIndex].totalWishlistCount - 1
+        : old[itemIndex].totalWishlistCount + 1,
+      isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
+    };
+
+    console.log('handleMutateOfAlltimeRanking', {
+      updatedItem,
+      new: {
+        ...old.slice(0, itemIndex),
+        updatedItem,
+        ...old.slice(itemIndex + 1),
+      },
+    });
+
+    return [
+      ...old.slice(0, itemIndex),
+      updatedItem,
+      ...old.slice(itemIndex + 1),
+    ] as AlltimeRankingResultItem[];
   });
 
   return { previousData };

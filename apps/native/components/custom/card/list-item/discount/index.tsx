@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
 import Card from '@/components/ui/card';
+import { PortalHostNames } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
 import { useListQueryKeyStore } from '@/store/list-query-key';
@@ -17,6 +18,7 @@ export interface DiscountListItemCardProps {
   numColumns?: number;
   containerStyle?: StyleProp<ViewStyle>;
   queryKeyOfList: QueryKey;
+  portalHostName: PortalHostNames;
 }
 
 function DiscountListItemCard({
@@ -24,6 +26,7 @@ function DiscountListItemCard({
   numColumns = 1,
   containerStyle,
   queryKeyOfList,
+  portalHostName,
 }: DiscountListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
@@ -45,7 +48,7 @@ function DiscountListItemCard({
                 height={115}
                 style={styles.thumbnail}
               />
-              <DiscountListItemCardDetailView discount={discount} />
+              <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
             </View>
           </Card>
         </Shadow>

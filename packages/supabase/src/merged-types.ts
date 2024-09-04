@@ -25,21 +25,28 @@ export type InfiniteQueryResult<T> = {
   pages: T[];
 };
 
+export type InfiniteSearchResultItem = {
+  id: number;
+  itemId: string;
+  itemName: string;
+  bestDiscountRate: number;
+  bestDiscount: number;
+  lowestPrice: number;
+  isOnSaleNow: boolean;
+  totalWishlistCount: number;
+  totalCommentCount: number;
+  totalMemoCount: number | null;
+  isWishlistedByUser: boolean;
+};
+
+export type AlltimeRankingResultItem = InfiniteSearchResultItem & {
+  created_at: string;
+  totalDiscountCount: number;
+};
+
 export type InfiniteSearchResultPages = {
   totalRecords: number | null;
-  items: {
-    id: number;
-    itemId: string;
-    itemName: string;
-    bestDiscountRate: number;
-    bestDiscount: number;
-    lowestPrice: number;
-    isOnSaleNow: boolean;
-    totalWishlistCount: number;
-    totalCommentCount: number;
-    totalMemoCount: number | null;
-    isWishlistedByUser: boolean;
-  }[];
+  items: InfiniteSearchResultItem[];
 };
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
@@ -103,7 +110,7 @@ export type Database = MergeDeep<
             _order_by_direction?: string;
             _limit_count?: number;
           };
-          Returns: Omit<JoinedItems, 'discounts' | 'categories'>[];
+          Returns: AlltimeRankingResultItem[];
         };
       };
     };
