@@ -30,7 +30,7 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: queryKeys.discounts.currentListByCategorySector(),
+    queryKey: queryKeys.category.all(),
     queryFn: fetchCurrentDiscountsByCategorySector,
   });
 

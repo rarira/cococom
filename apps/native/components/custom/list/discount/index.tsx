@@ -1,26 +1,39 @@
 import { PortalHost } from '@gorhom/portal';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { FlashList } from '@shopify/flash-list';
+import { ContentStyle, FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import DiscountListItemCard from '@/components/custom/card/list-item/discount';
+import CircularProgress from '@/components/ui/progress/circular';
 import { PortalHostNames } from '@/constants';
-import { useDiscountListQuery } from '@/hooks/useDiscountListQuery';
-import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
-
-import DiscountListItemCard from '../../card/list-item/discount';
+import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
+import { DiscountSortOption } from '@/libs/sort';
 
 interface DiscountListProps {
-  currentSort: keyof typeof DISCOUNT_SORT_OPTIONS;
+  sortOption: DiscountSortOption;
+  limit?: number;
+  contentContainerStyle?: ContentStyle;
+  portalHostName?: PortalHostNames;
+  refreshable?: boolean;
 }
 
 const NumberOfColumns = 1;
 
-export default function DiscountList({ currentSort }: DiscountListProps) {
+export default function DiscountList({
+  sortOption,
+  limit,
+  contentContainerStyle,
+  portalHostName = PortalHostNames.HOME,
+  refreshable,
+}: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey } = useDiscountListQuery(currentSort);
+  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useDiscountListQuery(
+    sortOption,
+    limit,
+  );
 
   const tabBarHeight = useBottomTabBarHeight();
 
@@ -32,13 +45,18 @@ export default function DiscountList({ currentSort }: DiscountListProps) {
           numColumns={NumberOfColumns}
           key={item.id}
           queryKeyOfList={queryKey}
+          portalHostName={portalHostName}
         />
       );
     },
-    [queryKey],
+    [portalHostName, queryKey],
   );
 
-  if (error || !data || isLoading) return null;
+  if (error) return null;
+
+  if (isLoading) {
+    return <CircularProgress style={styles.loadinProgress} />;
+  }
 
   return (
     <>
@@ -49,9 +67,13 @@ export default function DiscountList({ currentSort }: DiscountListProps) {
         keyExtractor={item => item?.id.toString()}
         numColumns={NumberOfColumns}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
-        contentContainerStyle={styles.flashListContainer(NumberOfColumns > 1, tabBarHeight)}
+        contentContainerStyle={{
+          ...styles.flashListContainer(NumberOfColumns > 1, tabBarHeight),
+          ...contentContainerStyle,
+        }}
+        {...(refreshable && { onRefresh: handleRefresh, refreshing })}
       />
-      <PortalHost name={PortalHostNames.HOME} />
+      <PortalHost name={portalHostName} />
     </>
   );
 }
@@ -63,5 +85,9 @@ const stylesheet = createStyleSheet(theme => ({
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,
+  },
+  loadinProgress: {
+    flex: 1,
+    marginTop: theme.spacing.xl * 3,
   },
 }));

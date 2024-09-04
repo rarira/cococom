@@ -8,11 +8,11 @@ import ItemMemoView from '@/components/custom/view/item-memo';
 import Text from '@/components/ui/text';
 import { useUserStore } from '@/store/user';
 
-export interface MemoTabViewProps {
+export interface ItemMemoTabViewProps {
   itemId: number;
 }
 
-const MemoTabView = memo(function MemoTabView({ itemId }: MemoTabViewProps) {
+const ItemMemoTabView = memo(function ItemMemoTabView({ itemId }: ItemMemoTabViewProps) {
   const { styles } = useStyles(stylesheet);
 
   const user = useUserStore(store => store.user);
@@ -53,4 +53,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default MemoTabView;
+export default ItemMemoTabView;

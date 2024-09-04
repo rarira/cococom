@@ -6,12 +6,13 @@ import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import DiscountSortBottomSheet from '@/components/custom/bottom-sheet/discount-sort';
+import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import HeaderRightButton from '@/components/custom/button/header-right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
-import { useDiscountsSort } from '@/hooks/useDiscountsSort';
+import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
+import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
 import { useCategorySectorsStore } from '@/store/category-sector';
 
 export default function SalesScreen() {
@@ -26,13 +27,15 @@ export default function SalesScreen() {
       : categorySectorsArray.indexOf(categorySectorParam),
   );
 
-  const [routes] = useState(() =>
-    !categorySectorsArray
-      ? []
-      : categorySectorsArray.map(categorySector => ({
-          key: categorySector,
-          title: categorySector,
-        })),
+  const routes = useMemo(
+    () =>
+      !categorySectorsArray
+        ? []
+        : categorySectorsArray.map(categorySector => ({
+            key: categorySector,
+            title: categorySector,
+          })),
+    [categorySectorsArray],
   );
 
   const { styles, theme } = useStyles(stylesheet);
@@ -45,7 +48,7 @@ export default function SalesScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { sort, handleSortChange } = useDiscountsSort(_sort =>
+  const { sort, sortOption, handleSortChange } = useDiscountsSort(DISCOUNT_SORT_OPTIONS, _sort =>
     bottomSheetModalRef.current?.dismiss(),
   );
 
@@ -62,7 +65,7 @@ export default function SalesScreen() {
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
     const routeComponentArray = categorySectorsArray.map(categorySector => {
-      const Component = () => <DiscountList key={categorySector} currentSort={sort} />;
+      const Component = () => <DiscountList key={categorySector} sortOption={sortOption} />;
       Component.displayName = `DiscountList${categorySector}`;
       return Component;
     });
@@ -75,7 +78,7 @@ export default function SalesScreen() {
       {} as Record<CategorySectors, ComponentType<unknown>>,
     );
     return SceneMap(sceneMap);
-  }, [categorySectorsArray, sort]);
+  }, [categorySectorsArray, sortOption]);
 
   const renderTabBar = useCallback<NonNullable<TabViewProps<Route>['renderTabBar']>>(
     props => {
@@ -124,7 +127,8 @@ export default function SalesScreen() {
         style={styles.tabViewContainer}
         renderTabBar={renderTabBar}
       />
-      <DiscountSortBottomSheet
+      <SortBottomSheet
+        sortOptions={DISCOUNT_SORT_OPTIONS}
         ref={bottomSheetModalRef}
         currentSort={sort}
         onSortChange={handleSortChange}

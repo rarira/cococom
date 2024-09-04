@@ -30,6 +30,6 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
     paddingBottom: tabBarHeight + theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
-    paddingTop: topInset,
+    paddingTop: topInset + theme.spacing.lg,
   }),
 }));
