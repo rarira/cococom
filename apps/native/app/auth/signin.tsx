@@ -1,47 +1,20 @@
 import { login } from '@react-native-kakao/user';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Button, Platform, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import TextInput from '@/components/ui/text-input';
+import SignInForm from '@/components/custom/form/signin';
+import ScreenTitleText from '@/components/custom/text/screen-title';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 export default function SignInScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { user, setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
-
-  // useLayoutEffect(() => {
-  //   if (user) {
-  //     router.dismiss();
-  //   }
-  // }, [user]);
-
-  async function signInWithEmail() {
-    setLoading(true);
-    const {
-      data: { user },
-      error,
-    } = await supabase.signInWithEmail({ email, password });
-
-    if (error) Alert.alert(error.message);
-    if (user) {
-      setUser(user);
-      if (callbackAfterSignIn) {
-        callbackAfterSignIn(user);
-        setCallbackAfterSignIn(null);
-      }
-    }
-
-    setLoading(false);
-  }
+  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -69,7 +42,7 @@ export default function SignInScreen() {
     router.dismiss();
   }
 
-  async function signInWithKakao() {
+  const handlePressKakaoLogin = useCallback(async () => {
     const result = await login();
 
     const {
@@ -107,62 +80,30 @@ export default function SignInScreen() {
         router.dismiss();
       }
     }
-  }
+  }, [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, setUser]);
 
   return (
-    <View style={styles.container}>
+    <>
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-      <Button title="Go back" onPress={() => router.dismiss()} />
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <TextInput.Root variants="outlined">
-          <TextInput.Field
-            onChangeText={text => setEmail(text)}
-            value={email}
-            placeholder="email@address.com"
-            autoCapitalize={'none'}
-          />
-        </TextInput.Root>
+      <View style={styles.container}>
+        <ScreenTitleText>회원가입 시 입력한 정보를 입력하세요</ScreenTitleText>
+        <SignInForm />
+        <View style={styles.verticallySpaced}>
+          <Button title="Sign in with kakao" disabled={loading} onPress={handlePressKakaoLogin} />
+        </View>
+        <View style={styles.verticallySpaced}>
+          <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
+        </View>
       </View>
-      <View style={styles.verticallySpaced}>
-        <TextInput.Root variants="underlined">
-          <TextInput.Field
-            onChangeText={text => setPassword(text)}
-            value={password}
-            secureTextEntry={true}
-            placeholder="Password"
-            autoCapitalize={'none'}
-          />
-        </TextInput.Root>
-      </View>
-      <View style={styles.verticallySpaced}>
-        <TextInput.Root variants="rounded">
-          <TextInput.Field
-            onChangeText={text => setNickname(text)}
-            value={nickname}
-            placeholder="Nickname"
-            autoCapitalize={'none'}
-          />
-        </TextInput.Root>
-      </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Button title="Sign in with kakao" disabled={loading} onPress={signInWithKakao} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
-      </View>
-    </View>
+    </>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
-    marginTop: 40,
-    padding: 12,
+    paddingHorizontal: theme.screenHorizontalPadding,
+    paddingVertical: theme.spacing.lg,
     backgroundColor: theme.colors.background,
   },
   verticallySpaced: {
