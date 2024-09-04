@@ -203,7 +203,7 @@ const stylesheet = createStyleSheet(theme => ({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: theme.spacing.lg,
+    // marginTop: theme.spacing.lg,
   },
   outlined: {
     borderWidth: 1,
@@ -221,7 +221,8 @@ const stylesheet = createStyleSheet(theme => ({
     color: error ? theme.colors.alert : theme.colors.typography,
     fontSize: theme.fontSize.md,
     opacity: editable ? 1 : 0.5,
-    paddingHorizontal: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
   }),
   slot: {
     justifyContent: 'center',
