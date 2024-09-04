@@ -6,21 +6,26 @@ import {
   SearchItemSortDirection,
   SearchItemSortField,
 } from '@cococom/supabase/libs';
-import { InfiniteQueryResult, JoinedComments, JoinedItems, Tables } from '@cococom/supabase/types';
+import {
+  AlltimeRankingResultItem,
+  InfiniteQueryResult,
+  JoinedComments,
+  JoinedItems,
+  Tables,
+} from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 
 export const queryKeys = {
+  category: {
+    all: () => ['categories', { currentTimestamp: new Date().toISOString().split('T')[0] }],
+  },
   discounts: {
     currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
-    ],
-    currentListByCategorySector: () => [
-      'discounts',
-      { currentTimestamp: new Date().toISOString().split('T')[0] },
     ],
   },
   histories: {
@@ -52,6 +57,12 @@ export const queryKeys = {
   comments: {
     byItem: (itemId: number) => ['comments', { itemId }],
   },
+  alltimeRankings: (
+    userId?: string | null,
+    orderByColumn?: string,
+    orderByDirection?: 'asc' | 'desc',
+    limit?: number,
+  ) => ['alltimeRankings', { userId, orderByColumn, orderByDirection, limit }],
 };
 
 export const handleMutateOfDiscountCurrentList = async ({
@@ -279,7 +290,7 @@ export const handleMutateOfUpsertMemo = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      memosLength: (old.memosLength ?? 0) + 1,
+      totalMemoCount: (old.totalMemoCount ?? 0) + 1,
     };
   });
 
@@ -321,7 +332,7 @@ export const handleMutateOfDeleteMemo = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      memosLength: old.memosLength! - 1,
+      totalMemoCount: old.totalMemoCount! - 1,
     };
   });
 
@@ -393,7 +404,7 @@ export const handleMutateOfInsertComment = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      commentsLength: (old.commentsLength ?? 0) + 1,
+      totalCommentCount: (old.totalCommentCount ?? 0) + 1,
     };
   });
 
@@ -435,8 +446,50 @@ export const handleMutateOfDeleteComment = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      commentsLength: old.commentsLength! - 1,
+      totalCommentCount: old.totalCommentCount! - 1,
     };
+  });
+
+  return { previousData };
+};
+
+export const handleMutateOfAlltimeRanking = async ({
+  queryClient,
+  queryKey,
+  newWishlist,
+}: {
+  queryClient: QueryClient;
+  newWishlist: InsertWishlist;
+  queryKey: QueryKey;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(queryKey) as unknown as AlltimeRankingResultItem[];
+
+  queryClient.setQueryData(queryKey, (old: AlltimeRankingResultItem[]) => {
+    const itemIndex = old.findIndex(d => d.id === newWishlist.itemId);
+
+    const updatedItem = {
+      ...old[itemIndex],
+      totalWishlistCount: old[itemIndex].isWishlistedByUser
+        ? old[itemIndex].totalWishlistCount - 1
+        : old[itemIndex].totalWishlistCount + 1,
+      isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
+    };
+
+    console.log('handleMutateOfAlltimeRanking', {
+      updatedItem,
+      new: {
+        ...old.slice(0, itemIndex),
+        updatedItem,
+        ...old.slice(itemIndex + 1),
+      },
+    });
+
+    return [
+      ...old.slice(0, itemIndex),
+      updatedItem,
+      ...old.slice(itemIndex + 1),
+    ] as AlltimeRankingResultItem[];
   });
 
   return { previousData };

@@ -147,6 +147,9 @@ export type Database = {
           itemId: string
           itemName: string | null
           lowestPrice: number | null
+          totalCommentCount: number | null
+          totalDiscountCount: number | null
+          totalWishlistCount: number | null
           updated_at: string | null
         }
         Insert: {
@@ -158,6 +161,9 @@ export type Database = {
           itemId: string
           itemName?: string | null
           lowestPrice?: number | null
+          totalCommentCount?: number | null
+          totalDiscountCount?: number | null
+          totalWishlistCount?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -169,6 +175,9 @@ export type Database = {
           itemId?: string
           itemName?: string | null
           lowestPrice?: number | null
+          totalCommentCount?: number | null
+          totalDiscountCount?: number | null
+          totalWishlistCount?: number | null
           updated_at?: string | null
         }
         Relationships: [
@@ -305,6 +314,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_alltime_top_items: {
+        Args: {
+          _user_id: string
+          _order_by_column?: string
+          _order_by_direction?: string
+          _limit_count?: number
+        }
+        Returns: {
+          id: number
+          itemName: string
+          itemId: string
+          created_at: string
+          updated_at: string
+          bestDiscountRate: number
+          lowestPrice: number
+          bestDiscount: number
+          totalWishlistCount: number
+          totalCommentCount: number
+          totalDiscountCount: number
+          totalMemoCount: number
+          isWishlistedByUser: boolean
+          isOnSaleNow: boolean
+        }[]
+      }
       get_current_discounts_by_category_sector: {
         Args: {
           _current_time_stamp: string

@@ -3,7 +3,7 @@ import { memo, useCallback, useRef } from 'react';
 
 import AddMemoBottomSheet from '../../bottom-sheet/add-memo';
 import ItemMemoList from '../../list/item-memo';
-import { MemoTabViewProps } from '../../tab-view/memo';
+import { MemoTabViewProps } from '../../tab-view/item/memo';
 
 interface ItemMemoViewProps extends MemoTabViewProps {}
 

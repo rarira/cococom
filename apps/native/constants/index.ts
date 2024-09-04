@@ -2,6 +2,7 @@ export const enum PortalHostNames {
   HOME = 'HomePortalHost',
   SEARCH = 'SearchPortalHost',
   ITEM_DETAILS = 'ItemDetailsPortalHost',
+  RANKING = 'RankingPortalHost',
 }
 
 export const MAX_MEMO_LENGTH = 140;

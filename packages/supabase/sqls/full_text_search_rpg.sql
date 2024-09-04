@@ -34,13 +34,13 @@ BEGIN
             FROM items i
             WHERE i."itemName" &@~ $1
             AND (
-                NOT $2 OR EXISTS (
+                NOT $2::boolean OR EXISTS (
                     SELECT 1
                     FROM discounts d
                     WHERE d."itemId" = i."itemId"
-                    AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                    AND (CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate")
                 )
-            )', order_field, order_direction)
+            )')
         INTO total_records
         USING keyword, is_on_sale;
     END IF;
@@ -58,16 +58,18 @@ BEGIN
                         i."bestDiscountRate",
                         i."bestDiscount",
                         i."lowestPrice",
-                        EXISTS (
-                            SELECT 1
-                            FROM discounts d
-                            WHERE d."itemId" = i."itemId"
-                            AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                        i."totalCommentCount",
+                        i."totalWishlistCount",
+                        (
+                            SELECT EXISTS (
+                                SELECT 1
+                                FROM discounts d
+                                WHERE d."itemId" = i."itemId"
+                                AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                                ORDER BY d."startDate" DESC
+                                LIMIT 1
+                            )
                         ) as "isOnSaleNow",
-                        (   SELECT COUNT(*)
-                            FROM comments c
-                            WHERE c."item_id" = i.id
-                        ) as "totalCommentCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -76,11 +78,6 @@ BEGIN
                                 NULL
                             END                        
                         ) as "totalMemoCount",
-                        (
-                            SELECT COUNT(*)
-                            FROM wishlists w
-                            WHERE w."itemId" = i.id
-                        ) as "totalWishlistCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -92,7 +89,7 @@ BEGIN
                     FROM items i
                     WHERE i."itemName" &@~ $2
                     AND (
-                        NOT $3 OR EXISTS (
+                        NOT $3::boolean OR EXISTS (
                             SELECT 1
                             FROM discounts
                             WHERE discounts."itemId" = i."itemId"
@@ -133,13 +130,12 @@ BEGIN
         RAISE EXCEPTION 'Invalid order direction: %', order_direction;
     END IF;
 
-   -- Build dynamic order by clause with casting for itemId if needed
+    -- Build dynamic order by clause with casting for itemId if needed
     IF order_field = 'itemId' THEN
         order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
-
 
     -- Calculate total records if page is 1
     IF page = 1 THEN
@@ -148,13 +144,13 @@ BEGIN
             FROM items i
             WHERE i."itemId" LIKE ''%%'' || $1 || ''%%''
             AND (
-                NOT $2 OR EXISTS (
+                NOT $2::boolean OR EXISTS (
                     SELECT 1
                     FROM discounts d
                     WHERE d."itemId" = i."itemId"
                     AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                 )
-            )', order_field, order_direction)
+            )')
         INTO total_records
         USING item_id, is_on_sale;
     END IF;
@@ -172,16 +168,18 @@ BEGIN
                         i."bestDiscountRate",
                         i."bestDiscount",
                         i."lowestPrice",
-                        EXISTS (
-                            SELECT 1
-                            FROM discounts d
-                            WHERE d."itemId" = i."itemId"
-                            AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                        i."totalCommentCount",
+                        i."totalWishlistCount",
+                        (
+                            SELECT EXISTS (
+                                SELECT 1
+                                FROM discounts d
+                                WHERE d."itemId" = i."itemId"
+                                AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                                ORDER BY d."startDate" DESC
+                                LIMIT 1
+                            )
                         ) as "isOnSaleNow",
-                        (   SELECT COUNT(*)
-                            FROM comments c
-                            WHERE c."item_id" = i.id
-                        ) as "totalCommentCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -190,11 +188,6 @@ BEGIN
                                 NULL
                             END                        
                         ) as "totalMemoCount",
-                        (
-                            SELECT COUNT(*)
-                            FROM wishlists w
-                            WHERE w."itemId" = i.id
-                        ) as "totalWishlistCount",
                         (
                             CASE
                                 WHEN $4 IS NOT NULL THEN
@@ -206,7 +199,7 @@ BEGIN
                     FROM items i
                     WHERE i."itemId" LIKE ''%%'' || $2 || ''%%''
                     AND (
-                        NOT $3 OR EXISTS (
+                        NOT $3::boolean OR EXISTS (
                             SELECT 1
                             FROM discounts
                             WHERE discounts."itemId" = i."itemId"
