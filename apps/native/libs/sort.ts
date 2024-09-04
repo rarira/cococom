@@ -1,5 +1,5 @@
 import { CategorySectors } from '@cococom/supabase/libs';
-import { Database, JoinedItems } from '@cococom/supabase/types';
+import { AlltimeRankingResultItem, Database, JoinedItems } from '@cococom/supabase/types';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 
@@ -17,12 +17,14 @@ export type DiscountSortOption = {
     | `items.${keyof JoinedItems}`;
   orderBy: 'asc' | 'desc';
   text: string;
+  authRequired?: boolean;
 };
 
 export type AlltimeSortOption = {
-  field: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
+  field: keyof AlltimeRankingResultItem;
   orderBy: 'asc' | 'desc';
   text: string;
+  authRequired?: boolean;
 };
 
 export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
@@ -199,6 +201,7 @@ export const ALLTIME_RANKING_SORT_OPTIONS: Record<string, AlltimeSortOption> = {
     field: 'totalMemoCount',
     orderBy: 'desc',
     text: '메모 많은 순',
+    authRequired: true,
   },
   rare: {
     field: 'totalDiscountCount',

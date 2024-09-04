@@ -1,67 +1,84 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useQuery } from '@tanstack/react-query';
-import { memo, useCallback, useRef } from 'react';
+import { PortalHost } from '@gorhom/portal';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { ContentStyle, FlashList } from '@shopify/flash-list';
+import { useCallback } from 'react';
+import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
-import RankingSortButton from '@/components/custom/button/ranking-sort';
-import { useAlltimeRankingSort } from '@/hooks/alltime-ranking/useAlltimeRankingSort';
-import { queryKeys } from '@/libs/react-query';
-import { ALLTIME_RANKING_SORT_OPTIONS } from '@/libs/sort';
-import { supabase } from '@/libs/supabase';
-import { useUserStore } from '@/store/user';
+import AlltimeRankingListItemCard from '@/components/custom/card/list-item/alltime-ranking';
+import CircularProgress from '@/components/ui/progress/circular';
+import { PortalHostNames } from '@/constants';
+import { useAlltimeRankingQuery } from '@/hooks/alltime-ranking/useAlltimeRankingQuery';
+import { AlltimeSortOption } from '@/libs/sort';
 
-interface AlltimeRankingListProps {}
+interface AlltimeRankingListProps {
+  sortOption: AlltimeSortOption;
+  limit?: number;
+  contentContainerStyle?: ContentStyle;
+}
 
-const AlltimeRankingList = memo(function AlltimeRankingList({}: AlltimeRankingListProps) {
+export default function AlltimeRankingList({
+  sortOption,
+  limit,
+  contentContainerStyle,
+}: AlltimeRankingListProps) {
   const { styles } = useStyles(stylesheet);
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const user = useUserStore(store => store.user);
-
-  const { sort, handleSortChange, sortOption } = useAlltimeRankingSort(
-    ALLTIME_RANKING_SORT_OPTIONS,
-    _sort => bottomSheetModalRef.current?.dismiss(),
+  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useAlltimeRankingQuery(
+    sortOption,
+    limit,
   );
 
-  const handlePress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
+  const tabBarHeight = useBottomTabBarHeight();
 
-  const { data, isLoading } = useQuery({
-    queryKey: queryKeys.alltimeRankings(user?.id ?? null, sortOption.field, sortOption.orderBy, 50),
-    queryFn: () => {
-      return supabase.fetchAlltimeRankingItems({
-        userId: user?.id,
-        orderByColumn: sortOption.field,
-        orderByDirection: sortOption.orderBy,
-        limitCount: 50,
-      });
+  const renderItem = useCallback(
+    ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
+      return <AlltimeRankingListItemCard item={item} key={item.id} queryKey={queryKey} />;
     },
-  });
+    [queryKey],
+  );
 
-  console.log('alltime ranking list data', data);
+  const ItemSeparatorComponent = useCallback(
+    () => <View style={styles.seperatorStyle} />,
+    [styles.seperatorStyle],
+  );
+
+  if (error) return null;
+
+  if (isLoading) {
+    return <CircularProgress style={styles.loadinProgress} />;
+  }
 
   return (
     <>
-      <RankingSortButton text={sortOption.text} onPress={handlePress} />
-      {/* <DiscountList sortOption={sortOption} limit={50} contentContainerStyle={styles.container} /> */}
-      <SortBottomSheet
-        sortOptions={ALLTIME_RANKING_SORT_OPTIONS}
-        ref={bottomSheetModalRef}
-        currentSort={sort}
-        onSortChange={handleSortChange}
+      <FlashList
+        data={data}
+        renderItem={renderItem}
+        estimatedItemSize={600}
+        keyExtractor={item => item?.id.toString()}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        contentContainerStyle={{
+          ...styles.flashListContainer(tabBarHeight),
+          ...contentContainerStyle,
+        }}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
       />
+      <PortalHost name={PortalHostNames.RANKING} />
     </>
   );
-});
+}
 
 const stylesheet = createStyleSheet(theme => ({
-  container: {
-    paddingHorizontal: 0,
-    // paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.lg,
+  flashListContainer: (tabBarheight: number) => ({
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: tabBarheight + theme.spacing.xl,
+  }),
+  seperatorStyle: {
+    height: theme.spacing.md * 2,
+  },
+  loadinProgress: {
+    flex: 1,
+    marginTop: theme.spacing.xl * 3,
   },
 }));
-
-export default AlltimeRankingList;

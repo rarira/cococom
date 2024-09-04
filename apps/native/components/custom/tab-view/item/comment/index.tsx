@@ -2,16 +2,15 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import { memo, useCallback, useRef } from 'react';
 
+import AddCommentBottomSheet from '@/components/custom/bottom-sheet/add-comment';
+import ItemCommentList from '@/components/custom/list/item-comment';
 import { useUserStore } from '@/store/user';
 
-import AddCommentBottomSheet from '../../bottom-sheet/add-comment';
-import ItemCommentList from '../../list/item-comment';
-
-export interface CommentTabViewProps {
+export interface ItemCommentTabViewProps {
   itemId: number;
 }
 
-const CommentTabView = memo(function CommentTabView({ itemId, tabIndex }: CommentTabViewProps) {
+const ItemCommentTabView = memo(function ItemCommentTabView({ itemId }: ItemCommentTabViewProps) {
   const { user, setCallbackAfterSignIn } = useUserStore();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -34,4 +33,4 @@ const CommentTabView = memo(function CommentTabView({ itemId, tabIndex }: Commen
   );
 });
 
-export default CommentTabView;
+export default ItemCommentTabView;

@@ -5,7 +5,7 @@ import { Tabs } from 'react-native-collapsible-tab-view';
 import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { MemoTabViewProps } from '@/components/custom/tab-view/memo';
+import { MemoTabViewProps } from '@/components/custom/tab-view/item/memo';
 import IconButton from '@/components/ui/button/icon';
 import CircularProgress from '@/components/ui/progress/circular';
 import LinearProgress from '@/components/ui/progress/linear';

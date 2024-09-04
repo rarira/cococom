@@ -12,16 +12,20 @@ import DiscountPeriodText from '@/components/custom/text/discount-period';
 import InfoIconText from '@/components/custom/text/info-icon';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
-import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT } from '@/constants';
 import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
 import DiscountPriceView from '../../../discount-price';
 
-interface DiscountListItemCardDetailViewProps extends Pick<DiscountListItemCardProps, 'discount'> {}
+interface DiscountListItemCardDetailViewProps
+  extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {}
 
-function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetailViewProps) {
+function DiscountListItemCardDetailView({
+  discount,
+  portalHostName,
+}: DiscountListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
   const user = useUserStore(store => store.user);
   const isWholeProduct = discount.discountPrice === 0;
@@ -100,7 +104,7 @@ function DiscountListItemCardDetailView({ discount }: DiscountListItemCardDetail
           {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
           <ListItemWishlistIconButton<JoinedItems>
             item={discount.items}
-            portalHostName={PortalHostNames.HOME}
+            portalHostName={portalHostName}
             queryKey={queryKey}
             onMutate={handleMutate}
           />
