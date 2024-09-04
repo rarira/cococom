@@ -11,6 +11,7 @@ import ListItemWishlistIconButton from '@/components/custom/button/list-item-wis
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import {
+  handleMutateOfAlltimeRanking,
   handleMutateOfDiscountCurrentList,
   handleMutateOfItems,
   handleMutateOfSearchResult,
@@ -53,6 +54,13 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
           queryKey: queryKeyOfList,
           newWishlist: { itemId: item.id, userId: user?.id ?? '' },
           pageIndexOfItem: pageIndexOfInfinteList!,
+        });
+      }
+      if (queryKeyOfList?.[0] === 'alltimeRankings') {
+        handleMutateOfAlltimeRanking({
+          queryClient,
+          queryKey: queryKeyOfList,
+          newWishlist: { itemId: item.id, userId: user?.id ?? '' },
         });
       }
       return await handleMutateOfItems({ queryClient, queryKey });

@@ -6,20 +6,19 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import InfoIconText from '@/components/custom/text/info-icon';
+import DiscountRecordView from '@/components/custom/view/discount-record';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
-import { ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
-import DiscountRecordView from '../../../discount-record';
-
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResultToRender[number];
-  sortOption: keyof typeof ITEM_SORT_OPTIONS;
+  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
 }
 
 function SearchResultListItemCardDetailView({
@@ -40,8 +39,8 @@ function SearchResultListItemCardDetailView({
     return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
       keyword,
       isOnSaleNow,
-      ITEM_SORT_OPTIONS[sortOption].field,
-      ITEM_SORT_OPTIONS[sortOption].direction,
+      SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+      SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
       user?.id,
     );
   }, [keyword, options, sortOption, user?.id]);
