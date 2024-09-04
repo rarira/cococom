@@ -1,8 +1,6 @@
 import { SearchItemSortDirection, SearchItemSortField } from '@cococom/supabase/libs';
-import { Database, InfiniteSearchResultPages } from '@cococom/supabase/types';
+import { Database, InfiniteQueryResult, InfiniteSearchResultPages } from '@cococom/supabase/types';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
-
-import { InfiniteQueryResult } from './react-query';
 
 export type SearchQueryParams = {
   keyword: string;
@@ -32,6 +30,7 @@ export type SearchItemSortOption = {
   field: SearchItemSortField;
   direction: SearchItemSortDirection;
   text: string;
+  authRequired?: boolean;
 };
 
 export const SearchItemsOptions = (

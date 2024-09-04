@@ -54,7 +54,7 @@ const stylesheet = createStyleSheet(theme => {
       ...commonStyles,
       fontSize: theme.fontSize.md,
       lineHeight: theme.fontSize.md * 1.5,
-      fontWeight: 'bold',
+      fontWeight: 'semibold',
     },
     link: {
       ...commonStyles,

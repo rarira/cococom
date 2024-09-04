@@ -9,9 +9,7 @@ export type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './types';
 export type JoinedItems = Tables<'items'> & {
   categories: Tables<'categories'>;
   discounts?: Array<Tables<'discounts'>> | null;
-  discountsLength: number;
-  memosLength: number | null;
-  commentsLength: number;
+  totalDiscountCount: number;
   totalWishlistCount: number;
   totalCommentCount: number;
   totalMemoCount: number | null;
@@ -27,21 +25,28 @@ export type InfiniteQueryResult<T> = {
   pages: T[];
 };
 
+export type InfiniteSearchResultItem = {
+  id: number;
+  itemId: string;
+  itemName: string;
+  bestDiscountRate: number;
+  bestDiscount: number;
+  lowestPrice: number;
+  isOnSaleNow: boolean;
+  totalWishlistCount: number;
+  totalCommentCount: number;
+  totalMemoCount: number | null;
+  isWishlistedByUser: boolean;
+};
+
+export type AlltimeRankingResultItem = InfiniteSearchResultItem & {
+  created_at: string;
+  totalDiscountCount: number;
+};
+
 export type InfiniteSearchResultPages = {
   totalRecords: number | null;
-  items: {
-    id: number;
-    itemId: string;
-    itemName: string;
-    bestDiscountRate: number;
-    bestDiscount: number;
-    lowestPrice: number;
-    isOnSaleNow: boolean;
-    totalWishlistCount: number;
-    totalCommentCount: number;
-    totalMemoCount: number | null;
-    isWishlistedByUser: boolean;
-  }[];
+  items: InfiniteSearchResultItem[];
 };
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
@@ -97,6 +102,15 @@ export type Database = MergeDeep<
             need_discounts: boolean;
           };
           Returns: JoinedItems;
+        };
+        get_alltime_top_items: {
+          Args: {
+            _user_id: string | null;
+            _order_by_column?: string;
+            _order_by_direction?: string;
+            _limit_count?: number;
+          };
+          Returns: AlltimeRankingResultItem[];
         };
       };
     };

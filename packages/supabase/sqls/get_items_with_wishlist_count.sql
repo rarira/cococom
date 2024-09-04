@@ -13,11 +13,9 @@ BEGIN
     'bestDiscountRate', i."bestDiscountRate",
     'lowestPrice', i."lowestPrice",
     'categories', c,
-    'discountsLength', (
-      SELECT COUNT(*)
-      FROM discounts d
-      WHERE d."itemId" = i."itemId"
-    ),
+    'totalDiscountCount', i."totalDiscountCount",
+    'totalWishlistCount', i."totalWishlistCount",
+    'totalCommentCount', i."totalCommentCount",
     -- 'discounts', (
     --   CASE
     --     WHEN need_discounts THEN
@@ -28,11 +26,7 @@ BEGIN
     --       NULL
     --   END
     -- ),
-    'totalCommentCount', (
-      SELECT COUNT(*)
-      FROM comments c
-      WHERE c."item_id" = i.id
-    ),
+
     'totalMemoCount', (
       CASE
         WHEN user_id IS NOT NULL THEN
@@ -40,11 +34,6 @@ BEGIN
         ELSE
           NULL
       END
-    ),
-    'totalWishlistCount', (
-      SELECT COUNT(*)
-      FROM wishlists w
-      WHERE w."itemId" = i.id
     ),
     'isWishlistedByUser', (
       CASE

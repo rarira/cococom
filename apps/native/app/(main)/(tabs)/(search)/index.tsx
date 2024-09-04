@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import SearchSortBottomSheet from '@/components/custom/bottom-sheet/search-sort';
+import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
@@ -14,6 +14,7 @@ import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { SearchOptionValue } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
+import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 
 export default function SearchScreen() {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
@@ -24,6 +25,10 @@ export default function SearchScreen() {
   const { top } = useSafeAreaInsets();
 
   const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
+
+  const handleDismissSortBottomSheet = useCallback(() => {
+    bottomSheetModalRef.current?.dismiss();
+  }, []);
 
   const {
     isFetching,
@@ -39,7 +44,7 @@ export default function SearchScreen() {
     handleSortChange,
     totalResults,
     queryKey,
-  } = useSearchInput({ addSearchHistory });
+  } = useSearchInput({ addSearchHistory, callbackSortChange: handleDismissSortBottomSheet });
 
   useLayoutEffect(() => {
     if (optionsToSearch) setOptions(optionsToSearch);
@@ -95,7 +100,8 @@ export default function SearchScreen() {
           />
         </View>
       )}
-      <SearchSortBottomSheet
+      <SortBottomSheet
+        sortOptions={SEARCH_ITEM_SORT_OPTIONS}
         ref={bottomSheetModalRef}
         currentSort={sortOption}
         onSortChange={handleSortChange}
@@ -107,7 +113,7 @@ export default function SearchScreen() {
 const stylesheet = createStyleSheet(theme => ({
   container: (topInset: number) => ({
     flex: 1,
-    paddingTop: topInset,
+    paddingTop: topInset + theme.spacing.xl,
     backgroundColor: theme.colors.background,
     alignItems: 'center',
   }),
