@@ -335,6 +335,7 @@ export type Database = {
           totalDiscountCount: number
           totalMemoCount: number
           isWishlistedByUser: boolean
+          isOnSaleNow: boolean
         }[]
       }
       get_current_discounts_by_category_sector: {

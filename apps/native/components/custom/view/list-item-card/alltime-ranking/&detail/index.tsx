@@ -1,60 +1,45 @@
 import { InsertWishlist } from '@cococom/supabase/libs';
+import { AlltimeRankingResultItem } from '@cococom/supabase/types';
 import { QueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import { AlltimeRankingListItemCardProps } from '@/components/custom/card/list-item/alltime-ranking';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
-import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
-import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
-import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { handleMutateOfAlltimeRanking } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
-interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
-  item: SearchResultToRender[number];
-  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
-}
+type AlltimeRankingListItemCardDetailViewProps = Omit<
+  AlltimeRankingListItemCardProps,
+  'containerStyle'
+>;
 
-function SearchResultListItemCardDetailView({
+function AlltimeRankingListItemCardDetailView({
   item,
-  keyword,
-  options,
-  sortOption,
-}: SearchResultListItemCardDetailViewProps) {
+  queryKey,
+}: AlltimeRankingListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
   const user = useUserStore(store => store.user);
 
   const isWholeProduct = item.lowestPrice === 0;
 
-  const queryKey = useMemo(() => {
-    const isOnSaleNow = options.includes('on_sale');
-    const isItemIdSearch = options.includes('item_id');
-    return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-      keyword,
-      isOnSaleNow,
-      SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-      SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-      user?.id,
-    );
-  }, [keyword, options, sortOption, user?.id]);
-
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      return await handleMutateOfSearchResult({
+      return await handleMutateOfAlltimeRanking({
         queryClient,
         queryKey,
         newWishlist,
-        pageIndexOfItem: item.pageIndex,
       });
     },
-    [item.pageIndex, queryKey],
+    [queryKey],
   );
 
   return (
@@ -69,7 +54,6 @@ function SearchResultListItemCardDetailView({
       />
       <View style={styles.footer}>
         {item.isOnSaleNow ? <Chip text="할인 중" /> : <View />}
-        {/* <Text style={styles.textStyle}>리뷰: 1000개</Text> */}
         <View style={styles.actionButtonContainer}>
           <View style={styles.infoContainer}>
             <InfoIconText
@@ -93,9 +77,9 @@ function SearchResultListItemCardDetailView({
               />
             ) : null}
           </View>
-          <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
+          <ListItemWishlistIconButton<AlltimeRankingResultItem>
             item={item}
-            portalHostName={PortalHostNames.SEARCH}
+            portalHostName={PortalHostNames.RANKING}
             queryKey={queryKey}
             onMutate={handleMutate}
           />
@@ -143,4 +127,4 @@ const stylesheets = createStyleSheet(theme => ({
   },
 }));
 
-export default SearchResultListItemCardDetailView;
+export default AlltimeRankingListItemCardDetailView;
