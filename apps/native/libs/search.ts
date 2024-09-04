@@ -30,6 +30,7 @@ export type SearchItemSortOption = {
   field: SearchItemSortField;
   direction: SearchItemSortDirection;
   text: string;
+  authRequired?: boolean;
 };
 
 export const SearchItemsOptions = (

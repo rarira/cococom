@@ -9,7 +9,6 @@ RETURNS TABLE(
     "itemName" text,
     "itemId" text,
     created_at timestamp with time zone,
-    updated_at timestamp with time zone,
     "bestDiscountRate" numeric,
     "lowestPrice" numeric,
     "bestDiscount" numeric,
@@ -17,7 +16,8 @@ RETURNS TABLE(
     "totalCommentCount" int,
     "totalDiscountCount" int,
     "totalMemoCount" bigint,
-    "isWishlistedByUser" boolean
+    "isWishlistedByUser" boolean,
+    "isOnSaleNow" boolean
 )
 LANGUAGE plpgsql
 AS $$
@@ -29,7 +29,6 @@ BEGIN
                 i."itemName",
                 i."itemId",
                 i.created_at,
-                i.updated_at,
                 i."bestDiscountRate",
                 i."lowestPrice",
                 i."bestDiscount",
@@ -51,7 +50,17 @@ BEGIN
                         ELSE
                             FALSE
                     END
-                ) as "isWishlistedByUser"
+                ) as "isWishlistedByUser",
+                (
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM discounts d
+                        WHERE d."itemId" = i."itemId"
+                        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                        ORDER BY d."startDate" DESC
+                        LIMIT 1
+                    )
+                ) as "isOnSaleNow"
             FROM
                 items i
         )

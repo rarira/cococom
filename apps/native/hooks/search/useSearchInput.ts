@@ -59,6 +59,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
     SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
     user?.id,
   );
+
   const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteSearchResultPages>({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -67,7 +68,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
         if (isItemIdSearch) {
           return supabase.fullTextSearchItemsByItemId(
             keywordToSearch,
-            isOnSaleSearch,
+            !!isOnSaleSearch,
             user?.id,
             pageParam as number,
             PAGE_SIZE,
@@ -77,7 +78,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
         }
         return supabase.fullTextSearchItemsByKeyword(
           keywordToSearch,
-          isOnSaleSearch,
+          !!isOnSaleSearch,
           user?.id,
           pageParam as number,
           PAGE_SIZE,

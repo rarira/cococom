@@ -4,12 +4,11 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DiscountPeriodText from '@/components/custom/text/discount-period';
+import DiscountPriceView from '@/components/custom/view/discount-price';
+import DiscountRecordView from '@/components/custom/view/discount-record';
+import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import Text from '@/components/ui/text';
 import { getDiscountInfoFromItem } from '@/libs/item';
-
-import DiscountPriceView from '../../discount-price';
-import DiscountRecordView from '../../discount-record';
-import ListItemCardChipsView from '../../list-item-card/chips';
 
 interface ItemDetailsHeaderInfoViewProps {
   item: JoinedItems;

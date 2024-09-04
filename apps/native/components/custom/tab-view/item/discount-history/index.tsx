@@ -4,18 +4,18 @@ import { View } from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-reanimated-table';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import DiscountRateText from '@/components/custom/text/discount-rate';
+import SuperscriptWonText from '@/components/custom/text/superscript-won';
 import Text from '@/components/ui/text';
 import { convertDateString } from '@/libs/date';
 
-import DiscountRateText from '../../text/discount-rate';
-import SuperscriptWonText from '../../text/superscript-won';
-interface DiscountHistoryTabViewProps {
+interface ItemDiscountHistoryTabViewProps {
   discounts: JoinedItems['discounts'];
 }
 
-const DiscountHistoryTabView = memo(function DiscountHistoryTabView({
+const ItemDiscountHistoryTabView = memo(function ItemDiscountHistoryTabView({
   discounts,
-}: DiscountHistoryTabViewProps) {
+}: ItemDiscountHistoryTabViewProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   const renderPeriod = useCallback(
@@ -153,4 +153,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default DiscountHistoryTabView;
+export default ItemDiscountHistoryTabView;

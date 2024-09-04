@@ -4,18 +4,17 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import RankingSortButton from '@/components/custom/button/ranking-sort';
-import DiscountList from '@/components/custom/list/discount';
-import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
-import { DISCOUNTED_RANKING_SORT_OPTIONS } from '@/libs/sort';
+import AlltimeRankingList from '@/components/custom/list/ranking/alltime';
+import { useAlltimeRankingSort } from '@/hooks/alltime-ranking/useAlltimeRankingSort';
+import { ALLTIME_RANKING_SORT_OPTIONS } from '@/libs/sort';
 
-interface DiscountedRankingListProps {}
-
-const DiscountedRankingList = memo(function DiscountedRankingList({}: DiscountedRankingListProps) {
-  const { styles } = useStyles(stylesheet);
+const AlltimeRankingTabView = memo(function AlltimeRankingTabView() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { sort, handleSortChange, sortOption } = useDiscountsSort(
-    DISCOUNTED_RANKING_SORT_OPTIONS,
+  const { styles } = useStyles(stylesheet);
+
+  const { sort, handleSortChange, sortOption } = useAlltimeRankingSort(
+    ALLTIME_RANKING_SORT_OPTIONS,
     _sort => bottomSheetModalRef.current?.dismiss(),
   );
 
@@ -26,10 +25,10 @@ const DiscountedRankingList = memo(function DiscountedRankingList({}: Discounted
   return (
     <>
       <RankingSortButton text={sortOption.text} onPress={handlePress} />
-      <DiscountList sortOption={sortOption} limit={50} contentContainerStyle={styles.container} />
+      <AlltimeRankingList sortOption={sortOption} contentContainerStyle={styles.container} />
       <SortBottomSheet
+        sortOptions={ALLTIME_RANKING_SORT_OPTIONS}
         ref={bottomSheetModalRef}
-        sortOptions={DISCOUNTED_RANKING_SORT_OPTIONS}
         currentSort={sort}
         onSortChange={handleSortChange}
       />
@@ -45,4 +44,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default DiscountedRankingList;
+export default AlltimeRankingTabView;
