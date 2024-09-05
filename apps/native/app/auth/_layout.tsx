@@ -7,11 +7,12 @@ export const unstable_settings = {
 };
 
 export default function AuthLayout() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   return (
     <Stack
       screenOptions={{
         // headerShown: false,
+        headerTintColor: theme.colors.typography,
         contentStyle: styles.content,
         headerStyle: styles.header,
         gestureEnabled: false,
@@ -19,7 +20,12 @@ export default function AuthLayout() {
     >
       <Stack.Screen name="index" options={{ title: 'Welcome' }} />
       <Stack.Screen name="signin" options={{ title: '로그인' }} />
-      <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+      <Stack.Screen
+        name="signup"
+        options={{
+          title: '회원 가입',
+        }}
+      />
     </Stack>
   );
 }

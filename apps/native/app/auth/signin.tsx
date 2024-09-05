@@ -1,12 +1,14 @@
-import { login } from '@react-native-kakao/user';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useState } from 'react';
-import { Alert, Button, Platform, View } from 'react-native';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { Alert, Platform, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import CloseButton from '@/components/custom/button/close';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
+import Button from '@/components/ui/button';
+import Text from '@/components/ui/text';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -15,6 +17,7 @@ export default function SignInScreen() {
 
   const { styles } = useStyles(stylesheet);
   const { setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
+  const navigation = useNavigation();
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -41,6 +44,17 @@ export default function SignInScreen() {
     setLoading(false);
     router.dismiss();
   }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
+      headerRight: () => (
+        <Button onPress={() => router.push('/auth/signup')}>
+          <Text>회원 가입</Text>
+        </Button>
+      ),
+    } as any);
+  }, [navigation]);
 
   const handlePressKakaoLogin = useCallback(async () => {
     const result = await login();
