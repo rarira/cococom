@@ -44,6 +44,32 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm() {
 
   const { user, profile, setProfile, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
 
+  // async function signUpWithEmail() {
+  //   setLoading(true);
+  //   const {
+  //     data: { session, user },
+  //     error,
+  //   } = await supabase.signUpWithEmail({
+  //     email: email,
+  //     password: password,
+  //     options: {
+  //       data: { nickname },
+  //     },
+  //   });
+
+  //   if (error) Alert.alert(error.message);
+  //   if (!session) Alert.alert('Please check your inbox for email verification!');
+  //   if (user) {
+  //     setUser(user);
+  //     if (callbackAfterSignIn) {
+  //       callbackAfterSignIn(user);
+  //       setCallbackAfterSignIn(null);
+  //     }
+  //   }
+  //   setLoading(false);
+  //   router.dismiss();
+  // }
+
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {

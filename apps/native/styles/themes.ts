@@ -45,6 +45,8 @@ export const lightTheme = {
     lightShadow: '#DDDDDD',
     scrim: 'rgba(0, 0, 0, 0.5)',
     darkBackground: '#11181C',
+    googleBackground: '#FFFFFF',
+    appleBackground: '#000000',
   },
 } as const;
 
@@ -62,6 +64,8 @@ export const darkTheme = {
     shadow: '#333333',
     lightShadow: '#555555',
     scrim: 'rgba(26,26,26, 0.6)',
+    googleBackground: '#131314',
+    appleBackground: '#FFFFFF',
   },
 } as const;
 
