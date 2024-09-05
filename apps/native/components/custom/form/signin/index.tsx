@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
-import { memo, useCallback, useState } from 'react';
+import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -13,10 +13,12 @@ import { signInFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-interface SignInFormProps {}
+interface SignInFormProps {
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+}
 
-const SignInForm = memo(function SignInForm({}: SignInFormProps) {
-  const [loading, setLoading] = useState(false);
+const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormProps) {
   const { styles } = useStyles(stylesheet);
   const { setUser, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
 
@@ -44,7 +46,7 @@ const SignInForm = memo(function SignInForm({}: SignInFormProps) {
       setLoading(false);
       router.dismiss();
     },
-    [callbackAfterSignIn, setCallbackAfterSignIn, setUser],
+    [callbackAfterSignIn, setCallbackAfterSignIn, setLoading, setUser],
   );
 
   return (
