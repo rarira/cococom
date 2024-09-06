@@ -11,6 +11,7 @@ import Button from '@/components/ui/button';
 import Switch from '@/components/ui/switch';
 import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
+import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -42,33 +43,16 @@ const formSchema = z
 const SignUpConfirmForm = memo(function SignUpConfirmForm() {
   const { styles } = useStyles(stylesheet);
 
-  const { user, profile, setProfile, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
+  const session = useSession();
 
-  // async function signUpWithEmail() {
-  //   setLoading(true);
-  //   const {
-  //     data: { session, user },
-  //     error,
-  //   } = await supabase.signUpWithEmail({
-  //     email: email,
-  //     password: password,
-  //     options: {
-  //       data: { nickname },
-  //     },
-  //   });
-
-  //   if (error) Alert.alert(error.message);
-  //   if (!session) Alert.alert('Please check your inbox for email verification!');
-  //   if (user) {
-  //     setUser(user);
-  //     if (callbackAfterSignIn) {
-  //       callbackAfterSignIn(user);
-  //       setCallbackAfterSignIn(null);
-  //     }
-  //   }
-  //   setLoading(false);
-  //   router.dismiss();
-  // }
+  const {
+    profile,
+    setProfile,
+    setUser,
+    callbackAfterSignIn,
+    setCallbackAfterSignIn,
+    setAuthProcessing,
+  } = useUserStore();
 
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(formSchema),
@@ -90,15 +74,25 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm() {
     async (values: z.infer<typeof formSchema>) => {
       const newProfile = await updateProfileMutation.mutateAsync(values);
       setProfile(newProfile[0]);
+      setUser(session!.user);
       router.dismiss();
 
       if (callbackAfterSignIn) {
-        callbackAfterSignIn(user!);
+        callbackAfterSignIn(session!.user);
         setCallbackAfterSignIn(null);
       }
+      setAuthProcessing(false);
       Alert.alert('환영합니다! 가입이 완료되었습니다');
     },
-    [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, updateProfileMutation, user],
+    [
+      callbackAfterSignIn,
+      session,
+      setAuthProcessing,
+      setCallbackAfterSignIn,
+      setProfile,
+      setUser,
+      updateProfileMutation,
+    ],
   );
 
   return (

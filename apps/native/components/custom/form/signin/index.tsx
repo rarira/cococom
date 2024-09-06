@@ -60,6 +60,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
                 placeholder="이메일 주소를 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
+                autoCapitalize="none"
               />
             </TextInput.Root>
           );
@@ -74,6 +75,8 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
               placeholder="패스워드를 입력하세요"
               onBlur={onBlur}
               onChangeText={onChange}
+              textContentType="password"
+              secureTextEntry
             />
           </TextInput.Root>
         )}
@@ -91,7 +94,6 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     width: '100%',
   },
-
   passwordInput: {
     marginTop: theme.spacing.lg,
   },

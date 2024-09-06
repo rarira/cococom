@@ -11,7 +11,6 @@ export default function AuthLayout() {
   return (
     <Stack
       screenOptions={{
-        // headerShown: false,
         headerTintColor: theme.colors.typography,
         contentStyle: styles.content,
         headerStyle: styles.header,
@@ -21,11 +20,13 @@ export default function AuthLayout() {
       <Stack.Screen name="index" options={{ title: 'Welcome' }} />
       <Stack.Screen name="signin" options={{ title: '로그인' }} />
       <Stack.Screen
-        name="signup"
+        name="signup/index"
         options={{
-          title: '회원 가입',
+          headerBackVisible: true,
+          title: '회원가입',
         }}
       />
+      <Stack.Screen name="signup/confirm" options={{ title: '회원가입 확인' }} />
     </Stack>
   );
 }

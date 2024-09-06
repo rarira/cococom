@@ -6,7 +6,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import SignUpConfirmForm from '@/components/custom/form/signup/&confirm';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 
-export default function AuthSignUpConfirmScreen() {
+export default function SignUpConfirmScreen() {
   const { styles } = useStyles(stylesheet);
   const { provider } = useLocalSearchParams<{ provider: string }>();
   const { bottom } = useSafeAreaInsets();
