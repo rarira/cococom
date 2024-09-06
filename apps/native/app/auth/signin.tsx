@@ -1,3 +1,4 @@
+import { login } from '@react-native-kakao/user';
 import { Image } from 'expo-image';
 import { router, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -12,7 +13,7 @@ import ScreenTitleText from '@/components/custom/text/screen-title';
 import Button from '@/components/ui/button';
 import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
-import { supabase } from '@/libs/supabase';
+import { getProfile, supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 const LOGIN_IMAGE_HEIGHT = 36;
@@ -21,7 +22,8 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser, callbackAfterSignIn, setCallbackAfterSignIn, setProfile } = useUserStore();
+  const { setUser, setProfile, callbackAfterSignIn, setCallbackAfterSignIn, setAuthProcessing } =
+    useUserStore();
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
 
@@ -29,7 +31,7 @@ export default function SignInScreen() {
     navigation.setOptions({
       headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
       headerRight: () => (
-        <Button onPress={() => router.push('/auth/signup')}>
+        <Button onPress={() => router.replace('/auth/signup?from=signin')}>
           <Text>회원 가입</Text>
         </Button>
       ),
@@ -37,6 +39,8 @@ export default function SignInScreen() {
   }, [navigation]);
 
   const handlePressKakaoLogin = useCallback(async () => {
+    setAuthProcessing(true);
+
     const result = await login();
 
     const {
@@ -48,33 +52,23 @@ export default function SignInScreen() {
       access_token: result.accessToken,
     });
 
-    const profile = await supabase.fetchData<'profiles'>(
-      {
-        column: 'id',
-        value: user?.id!,
-      },
-      'profiles',
-    );
-
-    if (!error) {
-      if (user) {
-        setUser(user);
-        setProfile(profile);
-        if (!profile.confirmed) {
-          return router.replace({
-            pathname: '/auth/signup/confirm',
-            params: { provider: 'kakao' },
-          });
-        }
-
-        if (callbackAfterSignIn) {
-          callbackAfterSignIn(user);
-          setCallbackAfterSignIn(null);
-        }
-        router.dismiss();
+    if (!error && user) {
+      const profile = await getProfile(user.id);
+      setProfile(profile);
+      if (!profile?.confirmed) {
+        return router.replace({
+          pathname: '/auth/signup/confirm',
+          params: { provider: 'kakao' },
+        });
+      } else if (callbackAfterSignIn) {
+        callbackAfterSignIn(user);
+        setCallbackAfterSignIn(null);
       }
+      setUser(user);
+      setAuthProcessing(false);
+      router.dismiss();
     }
-  }, [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, setUser]);
+  }, [callbackAfterSignIn, setAuthProcessing, setCallbackAfterSignIn, setProfile, setUser]);
 
   const googleLogo = useMemo(
     () =>

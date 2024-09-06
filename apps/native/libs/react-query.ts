@@ -476,15 +476,6 @@ export const handleMutateOfAlltimeRanking = async ({
       isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
     };
 
-    console.log('handleMutateOfAlltimeRanking', {
-      updatedItem,
-      new: {
-        ...old.slice(0, itemIndex),
-        updatedItem,
-        ...old.slice(itemIndex + 1),
-      },
-    });
-
     return [
       ...old.slice(0, itemIndex),
       updatedItem,

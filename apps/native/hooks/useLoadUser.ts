@@ -6,21 +6,26 @@ import { useUserStore } from '@/store/user';
 
 export function useLoadUser() {
   const session = useSession();
-  const { user, setUser, setProfile } = useUserStore(state => ({
+  const { user, profile, setUser, setProfile, authProcessing } = useUserStore(state => ({
     user: state.user,
     setUser: state.setUser,
+    profile: state.profile,
     setProfile: state.setProfile,
+    authProcessing: state.authProcessing,
   }));
 
   useEffect(() => {
+    if (authProcessing) return;
     if (session) {
-      (async () => {
-        const profile = await getProfile(session.user.id);
-        setProfile(profile);
-      })();
       setUser(session.user);
+      if (!profile) {
+        (async () => {
+          const profile = await getProfile(session.user.id);
+          setProfile(profile);
+        })();
+      }
     }
-  }, [session, setProfile, setUser]);
+  }, [authProcessing, profile, session, setProfile, setUser]);
 
   return user;
 }

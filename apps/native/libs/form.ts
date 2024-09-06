@@ -18,3 +18,12 @@ export const signInFormSchema = z.object({
       message: '비밀번호는 영문 대소문자, 숫자, 특수문자를 각각 1자 이상 포함해야 합니다',
     }),
 });
+
+export const signUpFormSchema = signInFormSchema
+  .extend({
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.confirmPassword === data.password, {
+    message: '비밀번호가 일치하지 않습니다',
+    path: ['confirmPassword'],
+  });
