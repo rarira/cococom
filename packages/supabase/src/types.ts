@@ -326,7 +326,6 @@ export type Database = {
           itemName: string
           itemId: string
           created_at: string
-          updated_at: string
           bestDiscountRate: number
           lowestPrice: number
           bestDiscount: number
