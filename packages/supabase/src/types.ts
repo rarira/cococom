@@ -66,6 +66,57 @@ export type Database = {
           },
         ]
       }
+      dalins: {
+        Row: {
+          category_id: number | null
+          category_image: string | null
+          category_name: string | null
+          created_at: string
+          discount: number | null
+          discount_condition: string | null
+          from_date: string | null
+          id: number
+          normal_price: number | null
+          product_id: number | null
+          product_image: string | null
+          product_name: string | null
+          sale_price: number | null
+          to_date: string | null
+        }
+        Insert: {
+          category_id?: number | null
+          category_image?: string | null
+          category_name?: string | null
+          created_at?: string
+          discount?: number | null
+          discount_condition?: string | null
+          from_date?: string | null
+          id?: number
+          normal_price?: number | null
+          product_id?: number | null
+          product_image?: string | null
+          product_name?: string | null
+          sale_price?: number | null
+          to_date?: string | null
+        }
+        Update: {
+          category_id?: number | null
+          category_image?: string | null
+          category_name?: string | null
+          created_at?: string
+          discount?: number | null
+          discount_condition?: string | null
+          from_date?: string | null
+          id?: number
+          normal_price?: number | null
+          product_id?: number | null
+          product_image?: string | null
+          product_name?: string | null
+          sale_price?: number | null
+          to_date?: string | null
+        }
+        Relationships: []
+      }
       discounts: {
         Row: {
           created_at: string | null
