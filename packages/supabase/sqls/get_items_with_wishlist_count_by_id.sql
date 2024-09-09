@@ -11,6 +11,7 @@ BEGIN
     'itemName', i."itemName",
     'categoryId', i."categoryId",
     'bestDiscountRate', i."bestDiscountRate",
+    'bestDiscount', i."bestDiscount",
     'lowestPrice', i."lowestPrice",
     'categories', json_build_object(
         'id', c.id,
