@@ -19,7 +19,6 @@ export default function SignUpScreen() {
 
   const { from } = useLocalSearchParams<{ from: string }>();
 
-  console.log('sign up screen', { from });
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => {
