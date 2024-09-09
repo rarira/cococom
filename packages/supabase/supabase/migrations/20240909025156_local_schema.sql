@@ -1,7 +1,9 @@
-CREATE OR REPLACE FUNCTION get_items_with_wishlist_counts_by_id(item_id int4, user_id uuid, need_discounts boolean)
-RETURNS jsonb
-LANGUAGE plpgsql
-AS $$
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_items_with_wishlist_counts_by_id(item_id integer, user_id uuid, need_discounts boolean)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+AS $function$
 DECLARE
   item jsonb;
 BEGIN
@@ -62,4 +64,7 @@ BEGIN
   
   RETURN item;
 END;
-$$;
+$function$
+;
+
+
