@@ -24,7 +24,7 @@ const AlltimeRankingTabView = memo(function AlltimeRankingTabView() {
 
   return (
     <>
-      <RankingSortButton text={sortOption.text} onPress={handlePress} />
+      <RankingSortButton text={sortOption.text} onPress={handlePress} style={styles.container} />
       <AlltimeRankingList sortOption={sortOption} contentContainerStyle={styles.container} />
       <SortBottomSheet
         sortOptions={ALLTIME_RANKING_SORT_OPTIONS}
@@ -38,9 +38,7 @@ const AlltimeRankingTabView = memo(function AlltimeRankingTabView() {
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
-    paddingHorizontal: 0,
-    // paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.lg,
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
 }));
 
