@@ -7,13 +7,16 @@ import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
-import Button from '@/components/ui/button';
+import FormSubmitButton from '@/components/custom/button/form/submit';
 import Switch from '@/components/ui/switch';
-import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
+
+type SignUpConfirmFormProps = {
+  update?: boolean;
+};
 
 const formSchema = z
   .object({
@@ -40,7 +43,7 @@ const formSchema = z
     },
   );
 
-const SignUpConfirmForm = memo(function SignUpConfirmForm() {
+const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConfirmFormProps) {
   const { styles } = useStyles(stylesheet);
 
   const session = useSession();
@@ -101,13 +104,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm() {
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
           return (
-            <TextInput.Root
-              value={value}
-              error={error?.message}
-              label="닉네임"
-              maxLength={8}
-              style={styles.nicknameInput}
-            >
+            <TextInput.Root value={value} error={error?.message} label="닉네임" maxLength={8}>
               <TextInput.Field
                 placeholder="2 ~ 8 자로 입력하세요"
                 onBlur={onBlur}
@@ -148,9 +145,11 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm() {
         )}
         name="email_opted_in"
       />
-      <Button onPress={handleSubmit(onSubmit)} style={styles.submitButton}>
-        <Text style={styles.submitButtonText}>가입 완료</Text>
-      </Button>
+      <FormSubmitButton
+        text={update ? '프로필 변경' : '가입 완료'}
+        onPress={handleSubmit(onSubmit)}
+        style={styles.submitButton}
+      />
     </View>
   );
 });
@@ -159,21 +158,11 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     width: '100%',
   },
-  nicknameInput: {
-    marginTop: theme.spacing.md,
-  },
-  submitButton: {
-    backgroundColor: theme.colors.tint,
-    width: '100%',
-    marginTop: theme.spacing.xl * 3,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: theme.colors.background,
-    fontWeight: 'bold',
-  },
   switch: {
     marginTop: theme.spacing.sm,
+  },
+  submitButton: {
+    marginTop: theme.spacing.xl * 2,
   },
 }));
 

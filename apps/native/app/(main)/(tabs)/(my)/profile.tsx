@@ -2,8 +2,8 @@ import { router } from 'expo-router';
 import { useLayoutEffect } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import SignUpConfirmForm from '@/components/custom/form/signup/&confirm';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import Text from '@/components/ui/text';
 import { useUserStore } from '@/store/user';
 export default function ProfileScreen() {
   const { styles } = useStyles(stylesheet);
@@ -15,7 +15,7 @@ export default function ProfileScreen() {
 
   return (
     <ScreenContainerView withHeader>
-      <Text>profile</Text>
+      <SignUpConfirmForm update />
     </ScreenContainerView>
   );
 }
@@ -26,6 +26,5 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: theme.screenHorizontalPadding,
     backgroundColor: theme.colors.background,
     paddingTop: theme.spacing.lg,
-    // justifyContent: 'flex-start',
   }),
 }));
