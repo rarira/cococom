@@ -6,9 +6,8 @@ import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
-import Button from '@/components/ui/button';
+import FormSubmitButton from '@/components/custom/button/form/submit';
 import Dialog from '@/components/ui/dialog';
-import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
 import { PortalHostNames } from '@/constants';
 import { ErrorCode } from '@/libs/error';
@@ -72,11 +71,15 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
 
   const renderButtons = useCallback(() => {
     return (
-      <Button onPress={() => router.navigate('/auth/signin')} style={styles.submitButton}>
-        <Text style={styles.submitButtonText}>로그인하러 가기</Text>
-      </Button>
+      <FormSubmitButton
+        onPress={() => {
+          setShowDialog(false);
+        }}
+        style={styles.submitButton}
+        text="로그인하러 가기"
+      />
     );
-  }, [styles.submitButton, styles.submitButtonText]);
+  }, [styles.submitButton]);
 
   return (
     <>
@@ -130,13 +133,16 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
           )}
           name="confirmPassword"
         />
-
-        <Button onPress={handleSubmit(onSubmit)} style={styles.submitButton} disabled={loading}>
-          <Text style={styles.submitButtonText}>이메일로 가입하기</Text>
-        </Button>
+        <FormSubmitButton
+          text="이메일로 가입하기"
+          onPress={handleSubmit(onSubmit)}
+          disabled={loading}
+          style={styles.submitButton}
+        />
       </View>
       <Dialog
         portalHostName={PortalHostNames.SIGN_UP}
+        onDismiss={() => router.replace('/auth/signin')}
         visible={showDialog}
         setVisible={setShowDialog}
         title="이미 가입된 이메일"
@@ -155,14 +161,7 @@ const stylesheet = createStyleSheet(theme => ({
     marginTop: theme.spacing.lg,
   },
   submitButton: {
-    backgroundColor: theme.colors.tint,
-    width: '100%',
-    marginTop: theme.spacing.xl,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: theme.colors.background,
-    fontWeight: 'bold',
+    marginTop: theme.spacing.xl * 2,
   },
 }));
 

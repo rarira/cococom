@@ -6,12 +6,12 @@ import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
 import TextInput from '@/components/ui/text-input';
 import { signInFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
+
+import FormSubmitButton from '../../button/form/submit';
 
 interface SignInFormProps {
   loading: boolean;
@@ -82,10 +82,12 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
         )}
         name="password"
       />
-
-      <Button onPress={handleSubmit(onSubmit)} style={styles.submitButton} disabled={loading}>
-        <Text style={styles.submitButtonText}>이메일로 로그인</Text>
-      </Button>
+      <FormSubmitButton
+        onPress={handleSubmit(onSubmit)}
+        style={styles.submitButton}
+        disabled={loading}
+        text="이메일로 로그인"
+      />
     </View>
   );
 });
@@ -98,14 +100,7 @@ const stylesheet = createStyleSheet(theme => ({
     marginTop: theme.spacing.lg,
   },
   submitButton: {
-    backgroundColor: theme.colors.tint,
-    width: '100%',
     marginTop: theme.spacing.xl,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: theme.colors.background,
-    fontWeight: 'bold',
   },
 }));
 
