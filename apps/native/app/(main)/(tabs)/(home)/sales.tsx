@@ -7,7 +7,7 @@ import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
-import HeaderRightButton from '@/components/custom/button/header-right';
+import HeaderRightButton from '@/components/custom/button/header/right';
 import DiscountList from '@/components/custom/list/discount';
 import Chip from '@/components/ui/chip';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';

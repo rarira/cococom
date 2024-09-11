@@ -1,8 +1,9 @@
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { login } from '@react-native-kakao/user';
 import { Image } from 'expo-image';
 import { router, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
@@ -13,19 +14,29 @@ import ScreenTitleText from '@/components/custom/text/screen-title';
 import Button from '@/components/ui/button';
 import Divider from '@/components/ui/divider';
 import Text from '@/components/ui/text';
-import { getProfile, supabase } from '@/libs/supabase';
+import { useSingInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
 
 const LOGIN_IMAGE_HEIGHT = 36;
 
 export default function SignInScreen() {
+  useEffect(() => {
+    GoogleSignin.configure({
+      scopes: ['profile', 'email'],
+      webClientId: '786330080407-3rar2ftsuidv90h6pgq7g305349on0cc.apps.googleusercontent.com',
+      // iosClientId: '786330080407-0dob8g3i8jvrhbo4cu1sq716ggquqnlg.apps.googleusercontent.com',
+      offlineAccess: false,
+    });
+  }, []);
+
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setUser, setProfile, callbackAfterSignIn, setCallbackAfterSignIn, setAuthProcessing } =
-    useUserStore();
+  const { setAuthProcessing } = useUserStore();
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
+
+  const { handleSignInWithIdToken } = useSingInWithIdToken();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,37 +49,48 @@ export default function SignInScreen() {
     } as any);
   }, [navigation]);
 
+  const handlePressGoogleLogin = useCallback(async () => {
+    setAuthProcessing(true);
+
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { data: userInfo } = await GoogleSignin.signIn();
+      if (userInfo?.idToken) {
+        await handleSignInWithIdToken({
+          provider: 'google',
+          token: userInfo.idToken,
+        });
+      }
+    } catch (error: any) {
+      console.error('google sign in error', error);
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        setAuthProcessing(false);
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        setAuthProcessing(false);
+      } else {
+        setAuthProcessing(false);
+        // some other error happened
+      }
+    } finally {
+      setAuthProcessing(false);
+    }
+  }, [handleSignInWithIdToken, setAuthProcessing]);
+
   const handlePressKakaoLogin = useCallback(async () => {
     setAuthProcessing(true);
 
     const result = await login();
 
-    const {
-      data: { user },
-      error,
-    } = await supabase.signInWithIdToken({
+    await handleSignInWithIdToken({
       provider: 'kakao',
-      token: result.idToken!, // OpenID Connect 활성화 필요
+      token: result.idToken!,
       access_token: result.accessToken,
     });
 
-    if (!error && user) {
-      const profile = await getProfile(user.id);
-      setProfile(profile);
-      if (!profile?.confirmed) {
-        return router.replace({
-          pathname: '/auth/signup/confirm',
-          params: { provider: 'kakao' },
-        });
-      } else if (callbackAfterSignIn) {
-        callbackAfterSignIn(user);
-        setCallbackAfterSignIn(null);
-      }
-      setUser(user);
-      setAuthProcessing(false);
-      router.dismiss();
-    }
-  }, [callbackAfterSignIn, setAuthProcessing, setCallbackAfterSignIn, setProfile, setUser]);
+    setAuthProcessing(false);
+  }, [handleSignInWithIdToken, setAuthProcessing]);
 
   const googleLogo = useMemo(
     () =>
@@ -99,7 +121,11 @@ export default function SignInScreen() {
           <Button disabled={loading} style={styles.appleLoginButton}>
             <Image source={appleLogo} style={styles.appleLoginImage} contentFit="contain" />
           </Button>
-          <Button disabled={loading} style={styles.googleLoginButton}>
+          <Button
+            disabled={loading}
+            style={styles.googleLoginButton}
+            onPress={handlePressGoogleLogin}
+          >
             <Image source={googleLogo} style={styles.googleLoginImage} contentFit="contain" />
             <Text style={styles.googleLoginText}>Google 계정으로 로그인</Text>
           </Button>

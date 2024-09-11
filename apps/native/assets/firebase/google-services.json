@@ -12,7 +12,20 @@
           "package_name": "com.rariradev.cococom"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "786330080407-os89jf4k6s761eo16u9ga9drjgq7fu0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rariradev.cococom",
+            "certificate_hash": "0093cebec77f2881aa612dd181257ba141e6509f"
+          }
+        },
+        {
+          "client_id": "786330080407-3rar2ftsuidv90h6pgq7g305349on0cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAtiHC4sUJKjpipjjv_vbaqZurKVzzsOl8"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "786330080407-3rar2ftsuidv90h6pgq7g305349on0cc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "786330080407-0dob8g3i8jvrhbo4cu1sq716ggquqnlg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rariradev.cococom"
+              }
+            }
+          ]
         }
       }
     }
