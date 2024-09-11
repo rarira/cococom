@@ -6,7 +6,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import HeaderRightButton from '@/components/custom/button/header-right';
+import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
 import LinearProgress from '@/components/ui/progress/linear';
 import Text from '@/components/ui/text';

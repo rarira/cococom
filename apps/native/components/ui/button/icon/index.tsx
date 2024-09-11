@@ -1,4 +1,4 @@
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Button, { ButtonProps } from '@/components/ui/button';
@@ -41,7 +41,6 @@ const stylesheet = createStyleSheet(theme => ({
   },
   textContainer: {
     justifyContent: 'center',
-    ...(Platform.OS === 'ios' ? { paddingTop: (theme.fontSize.sm * 0.5) / 2 } : {}), // Adjust padding on iOS
   },
   text: {
     padding: 0,
