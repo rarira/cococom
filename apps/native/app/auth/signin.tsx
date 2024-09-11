@@ -24,8 +24,6 @@ export default function SignInScreen() {
     GoogleSignin.configure({
       scopes: ['profile', 'email'],
       webClientId: '786330080407-3rar2ftsuidv90h6pgq7g305349on0cc.apps.googleusercontent.com',
-      // iosClientId: '786330080407-0dob8g3i8jvrhbo4cu1sq716ggquqnlg.apps.googleusercontent.com',
-      offlineAccess: false,
     });
   }, []);
 
