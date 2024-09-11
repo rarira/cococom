@@ -24,13 +24,13 @@ const DiscountedRankingTabView = memo(function DiscountedRankingTabView() {
 
   return (
     <>
-      <RankingSortButton text={sortOption.text} onPress={handlePress} />
+      <RankingSortButton text={sortOption.text} onPress={handlePress} style={styles.container} />
       <DiscountList
         sortOption={sortOption}
         limit={50}
-        contentContainerStyle={styles.container}
         portalHostName={PortalHostNames.RANKING}
         refreshable
+        contentContainerStyle={styles.container}
       />
       <SortBottomSheet
         ref={bottomSheetModalRef}
@@ -44,9 +44,7 @@ const DiscountedRankingTabView = memo(function DiscountedRankingTabView() {
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
-    paddingHorizontal: 0,
-    // paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.lg,
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
 }));
 

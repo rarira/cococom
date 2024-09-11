@@ -148,8 +148,8 @@ const stylesheet = createStyleSheet(theme => ({
   container: (bottomInset: number) => ({
     flex: 1,
     paddingHorizontal: theme.screenHorizontalPadding,
-    paddingTop: theme.spacing.lg,
-    paddingBottom: bottomInset + theme.spacing.lg,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: bottomInset + theme.spacing.xl,
     backgroundColor: theme.colors.background,
   }),
   divider: {

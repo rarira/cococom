@@ -38,7 +38,7 @@ export default function DiscountList({
   const tabBarHeight = useBottomTabBarHeight();
 
   const renderItem = useCallback(
-    ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
+    ({ item }: { item: NonNullable<typeof data>[number] }) => {
       return (
         <DiscountListItemCard
           discount={item}

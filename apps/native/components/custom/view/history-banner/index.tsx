@@ -45,7 +45,7 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
-    backgroundColor: theme.colors.tint,
+    backgroundColor: theme.colors.tint3,
     width: '100%',
     borderRadius: theme.borderRadius.md,
     paddingHorizontal: theme.spacing.lg,
@@ -75,7 +75,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   infoText: {
     fontSize: theme.fontSize.sm,
-    color: theme.colors.link,
+    color: theme.colors.appleBackground,
     opacity: 0.8,
     fontWeight: 'semibold',
   },

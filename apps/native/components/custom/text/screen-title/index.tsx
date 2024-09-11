@@ -16,7 +16,7 @@ const ScreenTitleText = memo(function ScreenTitleText({
 
 const stylesheet = createStyleSheet(theme => ({
   title: {
-    fontSize: theme.fontSize.md,
+    fontSize: theme.fontSize.lg,
     fontWeight: 'bold',
     marginBottom: theme.spacing.xl,
   },
