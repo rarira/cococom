@@ -18,7 +18,8 @@
       "bundleIdentifier": "com.rariradev.cococom",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["cccom"]
-      }
+      },
+      "usesAppleSignIn": true
     },
     "android": {
       "versionCode": 1,

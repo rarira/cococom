@@ -6,10 +6,9 @@ import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import HeaderBackButton from '@/components/custom/button/header/back';
 import EmailSignUpForm from '@/components/custom/form/signup/email';
 import ScreenTitleText from '@/components/custom/text/screen-title';
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 
 export default function SignUpScreen() {
@@ -22,11 +21,8 @@ export default function SignUpScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => {
-        // TODO: 디자인 정교화 필요
         return from === 'signin' ? (
-          <Button onPress={() => router.replace('/auth/signin')}>
-            <Text>로그인</Text>
-          </Button>
+          <HeaderBackButton text="로그인" onPress={() => router.replace('/auth/signin')} />
         ) : null;
       },
     });

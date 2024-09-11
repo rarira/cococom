@@ -168,9 +168,17 @@ skip_nonce_check = false
 
 [auth.external.kakao]
 enabled = true
-client_id = "c3d9be463ed515d559dd50a2f6beb043"
+client_id = "env(KAKAO_CLIENT_ID)"
 secret = "env(KAKAO_SECRET)"
 redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_AUTH_SECRET)"
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+skip_nonce_check = true
 
 
 [edge_runtime]
