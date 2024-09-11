@@ -1,55 +1,42 @@
 import { Link } from 'expo-router';
-import { useCallback } from 'react';
-import { Button, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
-import { supabase } from '@/libs/supabase';
+import ScreenTitleText from '@/components/custom/text/screen-title';
+import ScreenContainerView from '@/components/custom/view/container/screen';
 import { useUserStore } from '@/store/user';
 
 export default function MyScreen() {
   const { styles } = useStyles(stylesheet);
 
-  const { user, setUser, setProfile } = useUserStore(state => ({
-    user: state.user,
-    setUser: state.setUser,
-    setProfile: state.setProfile,
-  }));
-
-  const { top } = useSafeAreaInsets();
-
-  const signOut = useCallback(async () => {
-    await supabase.signOut();
-    setUser(null);
-    setProfile(null);
-  }, [setProfile, setUser]);
+  const { user, profile } = useUserStore(state => ({ user: state.user, profile: state.profile }));
 
   return (
-    <View style={styles.container(top)}>
+    <ScreenContainerView withBottomTabBar>
       {!user ? (
-        <View>
-          <Text>Not logged in</Text>
-          <Link href="/auth/signin">
-            <Text>Sign In</Text>
-          </Link>
-        </View>
+        <Link href="/auth/signin" asChild>
+          <Pressable>
+            <ScreenTitleText>로그인하세요</ScreenTitleText>
+          </Pressable>
+        </Link>
       ) : (
-        <View>
-          <Text>Logged in</Text>
-          <Text>{user.user_metadata.nickname}</Text>
-          <Button title="Sign out" onPress={signOut} />
-        </View>
+        <Link href="/profile">
+          <View style={styles.welcomeTextContainer}>
+            <ScreenTitleText style={styles.nicknameText}>{profile?.nickname}</ScreenTitleText>
+            <ScreenTitleText>님 반갑습니다</ScreenTitleText>
+          </View>
+        </Link>
       )}
-    </View>
+    </ScreenContainerView>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (topInset: number) => ({
-    flex: 1,
-    paddingHorizontal: theme.screenHorizontalPadding,
-    backgroundColor: theme.colors.background,
-    paddingTop: topInset,
-  }),
+  welcomeTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nicknameText: {
+    color: theme.colors.tint3,
+  },
 }));

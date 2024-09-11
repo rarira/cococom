@@ -1,21 +1,17 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import AlltimeRankingTabView from '@/components/custom/tab-view/ranking/alltime';
 import DiscountedRankingTabView from '@/components/custom/tab-view/ranking/discounted';
 import ScreenTitleText from '@/components/custom/text/screen-title';
+import ScreenContainerView from '@/components/custom/view/container/screen';
 import Chip from '@/components/ui/chip';
 import Text from '@/components/ui/text';
 
 export default function RankingScreen() {
   const { styles } = useStyles(stylesheet);
-
-  const { top } = useSafeAreaInsets();
-  const tabBarHeight = useBottomTabBarHeight();
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -54,7 +50,7 @@ export default function RankingScreen() {
   );
 
   return (
-    <View style={styles.container(top)}>
+    <ScreenContainerView style={styles.container}>
       <View style={styles.header}>
         <ScreenTitleText style={styles.title}>Ranking Top 50</ScreenTitleText>
         <Text type="subtitle" style={styles.subTitle}>
@@ -66,27 +62,22 @@ export default function RankingScreen() {
         renderScene={renderScene}
         onIndexChange={setIndex}
         renderTabBar={renderTabBar}
-        sceneContainerStyle={styles.sceneContainer(tabBarHeight)}
+        sceneContainerStyle={styles.sceneContainer}
       />
-    </View>
+    </ScreenContainerView>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (topInset: number) => ({
-    flex: 1,
-    paddingTop: topInset + theme.spacing.lg,
-    paddingHorizontal: theme.screenHorizontalPadding - theme.spacing.md,
-    backgroundColor: theme.colors.background,
-  }),
-  header: {
-    paddingHorizontal: theme.spacing.md,
+  container: {
+    paddingHorizontal: 0,
   },
-  sceneContainer: (tabBarHeight: number) => ({
+  header: {
+    paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  sceneContainer: {
     flex: 1,
-    paddingBottom: tabBarHeight,
-    paddingHorizontal: theme.spacing.md,
-  }),
+  },
   title: {
     marginBottom: theme.spacing.md,
   },
@@ -96,6 +87,7 @@ const stylesheet = createStyleSheet(theme => ({
   tabBarContainer: {
     backgroundColor: theme.colors.lightShadow,
     borderRadius: theme.borderRadius.lg,
+    marginHorizontal: theme.screenHorizontalPadding - theme.spacing.md,
   },
   tabBarItem: {
     alignItems: undefined,
