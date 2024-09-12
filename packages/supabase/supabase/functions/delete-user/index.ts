@@ -5,7 +5,6 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 Deno.serve(async (req: Request) => {
   const { userId } = await req.json();
 
-  console.log('userId', userId);
   if (!userId) {
     return new Response('User ID is required', { status: 400 });
   }
@@ -18,7 +17,6 @@ Deno.serve(async (req: Request) => {
   const { data, error } = await supabaseClient.auth.admin.deleteUser(userId, false);
 
   if (error) {
-    console.error(error);
     return new Response(error.message, { status: 500 });
   }
 
