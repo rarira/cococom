@@ -12,6 +12,7 @@ import Switch from '@/components/ui/switch';
 import TextInput from '@/components/ui/text-input';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
+import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
 type SignUpConfirmFormProps = {
@@ -27,7 +28,10 @@ const formSchema = z
       })
       .optional()
       .or(z.literal('')),
-    nickname: z.string().min(2, { message: '닉네임은 최소 2자 이상으로 입력하세요' }).max(8),
+    nickname: z
+      .string()
+      .min(2, { message: '닉네임은 최소 2자 이상으로 입력하세요' })
+      .max(8, { message: '닉네임은 최대 8자까지 입력 가능합니다' }),
     email_opted_in: z.boolean(),
   })
   .refine(
@@ -70,7 +74,10 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
-      return await supabase.updateProfile({ ...data, confirmed: true }, profile!.id);
+      return await supabase.updateProfile(
+        { ...Util.trimObject(data), confirmed: true },
+        profile!.id,
+      );
     },
   });
 
