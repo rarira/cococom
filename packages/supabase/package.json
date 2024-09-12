@@ -8,7 +8,8 @@
     "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types --lang=typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts",
     "update-types:local": "supabase gen types --lang=typescript --local --schema public > src/types.ts",
     "sync:data": "supabase db dump --data-only -f supabase/seed.sql -s public && supabase db reset",
-    "sync:schema": "supabase db diff -f local_schema && supabase db push"
+    "sync:schema": "supabase db diff -f local_schema && supabase db push",
+    "sync:function": "supabase functions deploy"
   },
   "exports": {
     "./libs": {
