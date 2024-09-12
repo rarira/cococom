@@ -20,8 +20,12 @@ export function useLoadUser() {
       setUser(session.user);
       if (!profile) {
         (async () => {
-          const profile = await getProfile(session.user.id);
-          setProfile(profile);
+          try {
+            const profile = await getProfile(session.user.id);
+            setProfile(profile);
+          } catch (error) {
+            console.error('getProfile error', error);
+          }
         })();
       }
     }
