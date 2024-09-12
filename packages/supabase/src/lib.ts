@@ -415,4 +415,12 @@ export class Supabase {
   async signOut() {
     return await this.supabaseClient.auth.signOut();
   }
+
+  async deleteUser(userId: string) {
+    const response = await this.supabaseClient.functions.invoke('delete-user', {
+      body: { userId },
+    });
+
+    return response;
+  }
 }

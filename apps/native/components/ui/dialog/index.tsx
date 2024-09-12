@@ -8,6 +8,8 @@ import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 
+import Icon from '../icon';
+
 export interface DialogProps extends ModalProps {
   portalHostName: PortalHostNames;
   visible: boolean;
@@ -18,6 +20,7 @@ export interface DialogProps extends ModalProps {
   body: string;
   dismissButtonText?: string;
   renderButtons?: () => JSX.Element;
+  type?: 'alert' | 'normal';
 }
 
 function Dialog({
@@ -30,9 +33,10 @@ function Dialog({
   body,
   dismissButtonText = 'OK',
   renderButtons,
+  type = 'normal',
   ...restProps
 }: DialogProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   const handleDismiss = useCallback(() => setVisible(false), [setVisible]);
 
@@ -51,9 +55,21 @@ function Dialog({
         <View style={styles.scrim}>
           {backdropDismiss && <Button onPress={handleDismiss} style={styles.backdropButton} />}
           <View style={styles.modal}>
-            <Text type="title" style={styles.titleText}>
-              {title}
-            </Text>
+            <View style={styles.titleContainer}>
+              {type === 'alert' && (
+                <Icon
+                  font={{ type: 'Ionicon', name: 'alert-circle' }}
+                  color={theme.colors.alert}
+                  size={theme.fontSize.xxl}
+                />
+              )}
+              <Text
+                type="title"
+                style={styles.titleText(type === 'alert' ? theme.colors.alert : undefined)}
+              >
+                {title}
+              </Text>
+            </View>
             <Text style={styles.bodyText}>{body}</Text>
             {!!renderButtons && <View style={styles.modalButtonGroup}>{renderButtons()}</View>}
             <ModalCloseButton onPress={handleDismiss} show={needToShowCloseButton} />
@@ -88,10 +104,15 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
     padding: theme.spacing.lg * 2,
   },
-  titleText: {
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: theme.spacing.lg,
-    color: theme.colors.tint,
+    gap: theme.spacing.md,
   },
+  titleText: (color?: string) => ({
+    color: color || theme.colors.tint,
+  }),
   bodyText: {
     marginBottom: theme.spacing.xl,
   },

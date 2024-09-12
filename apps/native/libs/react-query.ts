@@ -485,3 +485,13 @@ export const handleMutateOfAlltimeRanking = async ({
 
   return { previousData };
 };
+
+export const findAllQueryKeysByUserId = (queryClient: QueryClient, userId: string) => {
+  const allQueries = queryClient.getQueriesData({ type: 'all' });
+  const allQueryKeys = allQueries.map(([queryKey]) => queryKey); // queryKey만 추출
+  return allQueryKeys.filter((queryKey: QueryKey) => {
+    return queryKey.some((key: any) => {
+      return key.userId === userId;
+    });
+  });
+};
