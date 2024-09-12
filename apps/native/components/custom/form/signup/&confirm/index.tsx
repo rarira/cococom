@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -44,6 +44,7 @@ const formSchema = z
   );
 
 const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConfirmFormProps) {
+  const [loading, setLoading] = useState(false);
   const { styles } = useStyles(stylesheet);
 
   const session = useSession();
@@ -62,7 +63,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
     defaultValues: {
       email: profile?.email || '',
       nickname: profile?.nickname || '',
-      email_opted_in: profile?.email_opted_in || true,
+      email_opted_in: profile?.email_opted_in ?? true,
     },
     mode: 'onSubmit',
   });
@@ -75,17 +76,19 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
 
   const onSubmit = useCallback(
     async (values: z.infer<typeof formSchema>) => {
+      setLoading(true);
       const newProfile = await updateProfileMutation.mutateAsync(values);
       setProfile(newProfile[0]);
-      setUser(session!.user);
+      !update && setUser(session!.user);
       router.dismiss();
 
-      if (callbackAfterSignIn) {
+      if (callbackAfterSignIn && !update) {
         callbackAfterSignIn(session!.user);
         setCallbackAfterSignIn(null);
       }
       setAuthProcessing(false);
-      Alert.alert('환영합니다! 가입이 완료되었습니다');
+      Alert.alert(update ? '프로필 변경이 완료되었습니다' : '환영합니다! 가입이 완료되었습니다');
+      setLoading(false);
     },
     [
       callbackAfterSignIn,
@@ -94,6 +97,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
       setCallbackAfterSignIn,
       setProfile,
       setUser,
+      update,
       updateProfileMutation,
     ],
   );
@@ -149,6 +153,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
         text={update ? '프로필 변경' : '가입 완료'}
         onPress={handleSubmit(onSubmit)}
         style={styles.submitButton}
+        disabled={loading}
       />
     </View>
   );
