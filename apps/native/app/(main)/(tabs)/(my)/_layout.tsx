@@ -5,6 +5,10 @@ import Button from '@/components/ui/button';
 import Text from '@/components/ui/text';
 import { useSignOut } from '@/hooks/auth/useSignOut';
 
+export const unstable_settings = {
+  initialRouteName: '(home)',
+};
+
 export default function MyLayout() {
   const { theme } = useStyles();
   const signOut = useSignOut();
@@ -23,6 +27,19 @@ export default function MyLayout() {
         options={{
           headerShown: true,
           headerTitle: '프로필',
+          headerBackTitleVisible: false,
+          headerRight: () => (
+            <Button onPress={signOut}>
+              <Text>로그아웃</Text>
+            </Button>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{
+          headerShown: true,
+          headerTitle: '설정',
           headerBackTitleVisible: false,
           headerRight: () => (
             <Button onPress={signOut}>
