@@ -4,8 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import Icon from '@/components/ui/icon';
-import Text from '@/components/ui/text';
+import IconButton from '@/components/ui/button/icon';
 import { useUserStore } from '@/store/user';
 
 export default function MyScreen() {
@@ -22,19 +21,31 @@ export default function MyScreen() {
           </Pressable>
         </Link>
       ) : (
-        <View style={styles.welcomeTextContainer}>
-          <ScreenTitleText style={styles.nicknameText}>{profile?.nickname}</ScreenTitleText>
-          <ScreenTitleText style={styles.suffixText}>님 반갑습니다</ScreenTitleText>
-          <Link href="/profile" asChild>
-            <Pressable style={styles.profileLinkContainer}>
-              <Text style={styles.profileText}>프로필</Text>
-              <Icon
-                font={{ type: 'MaterialIcon', name: 'chevron-right' }}
-                size={theme.fontSize.xl}
-                color={theme.colors.link}
+        <View style={styles.header}>
+          <View style={styles.welcomeTextContainer}>
+            <ScreenTitleText style={styles.nicknameText}>{profile?.nickname}</ScreenTitleText>
+            <ScreenTitleText style={styles.suffixText}>님 반갑습니다</ScreenTitleText>
+          </View>
+          <View style={styles.headerButtonContainer}>
+            <Link href="/profile" asChild>
+              <IconButton
+                iconProps={{
+                  font: { type: 'MaterialIcon', name: 'manage-accounts' },
+                  color: theme.colors.typography,
+                  size: theme.fontSize.xl,
+                }}
               />
-            </Pressable>
-          </Link>
+            </Link>
+            <Link href="/settings" asChild>
+              <IconButton
+                iconProps={{
+                  font: { type: 'MaterialIcon', name: 'menu' },
+                  color: theme.colors.typography,
+                  size: theme.fontSize.xl,
+                }}
+              />
+            </Link>
+          </View>
         </View>
       )}
     </ScreenContainerView>
@@ -42,10 +53,21 @@ export default function MyScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing.xl,
+  },
   welcomeTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.xl,
+  },
+  headerButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    // gap: theme.spacing.sm,
   },
   nicknameText: {
     color: theme.colors.tint3,
