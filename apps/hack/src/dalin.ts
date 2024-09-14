@@ -1,13 +1,17 @@
 // eslint-disable-next-line import/order
-import { supabase } from '../libs/supabase.js';
 import { loadEnv } from '../libs/util.js';
-
-loadEnv();
 
 import axios from 'axios';
 
+import { supabase } from '../libs/supabase.js';
+
+loadEnv();
+
 function makeDbData({ like_cnt, share_cnt, ...restData }: any) {
-  return restData;
+  return {
+    ...restData,
+    hash: `${restData.product_id}@${restData.from_date}-${restData.to_date}$${restData.discount}`,
+  };
 }
 
 async function getAllDiscountsByItem() {
@@ -22,7 +26,6 @@ async function getAllDiscountsByItem() {
     })
     .filter(Boolean);
 
-  console.log(idArray.length);
   for (const id of idArray) {
     // if (id !== 5402) continue;
     // console.log(`${process.env['2ND_API_URL']}/productView/${id}`);
@@ -36,7 +39,7 @@ async function getAllDiscountsByItem() {
     const { error } = await supabase.supabaseClient.from('dalins').insert(newData);
 
     if (error) {
-      console.error(id, error.message);
+      console.error(id, error);
       break;
     } else {
       productIdArray.push(id);
@@ -57,7 +60,7 @@ async function getAllDiscountsByItem() {
 }
 
 async function getAllDiscountsByCategory() {
-  const categoryArray = [];
+  const categorySet = new Set<number>();
   let addedDiscountCount = 0;
 
   const idArray = new Array<number>(20)
@@ -68,7 +71,6 @@ async function getAllDiscountsByCategory() {
     })
     .filter(Boolean);
 
-  console.log(idArray.length);
   for (const id of idArray) {
     // if (id !== 5402) continue;
     // console.log(`${process.env['2ND_API_URL']}/productView/${id}`);
@@ -79,29 +81,34 @@ async function getAllDiscountsByCategory() {
 
     const newData = data.map(makeDbData);
 
-    const { error } = await supabase.supabaseClient.from('dalins').insert(newData);
+    for (const item of newData) {
+      const { error } = await supabase.supabaseClient.from('dalins').insert(item);
 
-    if (error) {
-      console.error(id, error.message);
-      break;
-    } else {
-      categoryArray.push(id);
-      addedDiscountCount += data.length;
-      //   console.log(`Inserted ${id}: data.length=${data.length}`);
+      if (error?.code === '23505') {
+        console.log('duplicate', item.hash);
+        continue;
+      } else if (error) {
+        console.error(item.product_id, error);
+        break;
+      } else {
+        categorySet.add(id);
+        addedDiscountCount += 1;
+        //   console.log(`Inserted ${id}: data.length=${data.length}`);
+      }
     }
   }
 
   console.log('--- getAllDiscountsByCategory ---');
   console.log(
-    'categoryArrayLength:',
-    categoryArray.length,
+    'categorySetSize:',
+    categorySet.size,
     'lastProductId:',
-    categoryArray[categoryArray.length - 1],
+    Array.from(categorySet).pop(),
   );
   console.log('addedDiscountCount:', addedDiscountCount);
 }
 
 (async () => {
-  //  await getAllDiscountsByItem();
+  // await getAllDiscountsByItem();
   await getAllDiscountsByCategory();
 })();
