@@ -2,7 +2,7 @@ module.exports = {
   extends: ["expo", "prettier", "plugin:@tanstack/eslint-plugin-query/recommended"],
   plugins: ["prettier", "import"],
   rules: {
-    "prettier/prettier": "error",
+    "prettier/prettier": ['error'],
     "import/order": [
       "error",
       {
