@@ -102,6 +102,7 @@ async function createCategories() {
 async function updateDiscounts(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
 
+  console.log('discounts count', discounts.length);
   const newlyAddedItems = await supabase.upsertItem(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
