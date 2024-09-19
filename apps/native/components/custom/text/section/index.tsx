@@ -8,7 +8,6 @@ interface SectionTextProps extends TextProps {}
 const SectionText = memo(function SectionText({ style, children, ...restProps }: SectionTextProps) {
   const { styles } = useStyles(stylesheet);
 
-  console.log('SectionText', { style, children, restProps });
   return (
     <Text style={[styles.container, style]} {...restProps}>
       {children}
