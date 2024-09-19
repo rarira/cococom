@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import CloseButton from '@/components/custom/button/close';
 import ChangePasswordForm from '@/components/custom/form/change-password';
 import ScreenTitleText from '@/components/custom/text/screen-title';
+import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
 
 export default function PasswordChangeScreen() {
   const { styles } = useStyles(stylesheet);
@@ -22,10 +23,12 @@ export default function PasswordChangeScreen() {
   const handleCompleted = useCallback(() => router.dismiss(), []);
 
   return (
-    <View style={styles.container(bottom)}>
-      <ScreenTitleText>새로운 비밀번호로 변경합니다</ScreenTitleText>
-      <ChangePasswordForm onCompleted={handleCompleted} />
-    </View>
+    <ModalScreenContainer>
+      <View style={styles.container(bottom)}>
+        <ScreenTitleText>새로운 비밀번호로 변경합니다</ScreenTitleText>
+        <ChangePasswordForm onCompleted={handleCompleted} />
+      </View>
+    </ModalScreenContainer>
   );
 }
 

@@ -31,6 +31,10 @@ export default function AuthLayout() {
         name="password/change"
         options={{ title: '비밀번호 변경', headerBackVisible: true }}
       />
+      <Stack.Screen
+        name="password/reset"
+        options={{ title: '비밀번호 재설정', headerBackVisible: true }}
+      />
     </Stack>
   );
 }
