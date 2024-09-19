@@ -6,12 +6,12 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
 import InfoIconText from '@/components/custom/text/info-icon';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
-import Text from '@/components/ui/text';
 import { ITEM_DETAILS_MAX_COUNT } from '@/constants';
 import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';

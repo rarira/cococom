@@ -5,12 +5,12 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Chip from '@/components/core/chip';
+import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import { AlltimeRankingListItemCardProps } from '@/components/custom/card/list-item/alltime-ranking';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import Chip from '@/components/ui/chip';
-import Text from '@/components/ui/text';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { handleMutateOfAlltimeRanking } from '@/libs/react-query';
 import Util from '@/libs/util';

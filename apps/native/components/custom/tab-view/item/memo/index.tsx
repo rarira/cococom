@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/core/text';
 import LoginButton from '@/components/custom/button/login';
 import ItemMemoView from '@/components/custom/view/item-memo';
-import Text from '@/components/ui/text';
 import { useUserStore } from '@/store/user';
 
 export interface ItemMemoTabViewProps {

@@ -3,11 +3,11 @@ import { router } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import RowMenu from '@/components/core/menu/row';
 import DeleteUserDialog from '@/components/custom/dialog/delete-user';
 import SignUpConfirmForm from '@/components/custom/form/signup/&confirm';
 import SectionText from '@/components/custom/text/section';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import RowMenu from '@/components/ui/menu/row';
 import { PortalHostNames } from '@/constants';
 import { useUserStore } from '@/store/user';
 
@@ -21,7 +21,11 @@ export default function ProfileScreen() {
     if (!user) router.navigate('/(my)');
   }, [user]);
 
-  const handlePress = useCallback(() => setVisible(true), []);
+  const handlePressChangePassword = useCallback(() => {
+    router.push('/auth/password/change');
+  }, []);
+
+  const handlePressDeleteUser = useCallback(() => setVisible(true), []);
 
   console.log('ProfileScreen', user);
 
@@ -35,16 +39,12 @@ export default function ProfileScreen() {
       <SignUpConfirmForm update style={styles.form} />
       <SectionText style={styles.sectionText}>회원 관리</SectionText>
       {isEmailProvider && (
-        <RowMenu.Root
-          type="nav"
-          onPress={() => console.log('go change password')}
-          style={styles.menu}
-        >
+        <RowMenu.Root type="nav" onPress={handlePressChangePassword} style={styles.menu}>
           <RowMenu.Text>비밀번호 변경</RowMenu.Text>
           <RowMenu.NavButton />
         </RowMenu.Root>
       )}
-      <RowMenu.Root type="nav" onPress={handlePress} style={styles.menu}>
+      <RowMenu.Root type="nav" onPress={handlePressDeleteUser} style={styles.menu}>
         <RowMenu.Text>회원 탈퇴</RowMenu.Text>
         <RowMenu.NavButton />
       </RowMenu.Root>

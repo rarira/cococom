@@ -27,3 +27,13 @@ export const signUpFormSchema = signInFormSchema
     message: '비밀번호가 일치하지 않습니다',
     path: ['confirmPassword'],
   });
+
+export const changePasswordFormSchema = signInFormSchema
+  .omit({ email: true }) // email 필드를 제외
+  .extend({
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.confirmPassword === data.password, {
+    message: '비밀번호가 일치하지 않습니다',
+    path: ['confirmPassword'],
+  });

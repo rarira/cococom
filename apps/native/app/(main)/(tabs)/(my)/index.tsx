@@ -2,9 +2,9 @@ import { Link } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/core/button/icon';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import IconButton from '@/components/ui/button/icon';
 import { useUserStore } from '@/store/user';
 
 export default function MyScreen() {

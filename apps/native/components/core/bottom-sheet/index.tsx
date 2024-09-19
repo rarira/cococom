@@ -13,8 +13,8 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/core/text';
 import ModalCloseButton from '@/components/custom/button/modal-close';
-import Text from '@/components/ui/text';
 
 interface BottomSheetProps
   extends Omit<BottomSheetModalProps, 'children'>,

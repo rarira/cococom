@@ -6,8 +6,8 @@ import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/Reanim
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton from '@/components/ui/button/icon';
-import Text from '@/components/ui/text';
+import IconButton from '@/components/core/button/icon';
+import Text from '@/components/core/text';
 import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
 import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';

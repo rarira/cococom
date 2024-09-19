@@ -2,8 +2,8 @@ import { router } from 'expo-router';
 import { memo, useCallback } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button, { ButtonProps } from '@/components/ui/button';
-import Text from '@/components/ui/text';
+import Button, { ButtonProps } from '@/components/core/button';
+import Text from '@/components/core/text';
 
 interface LoginButtonProps extends Pick<ButtonProps, 'style'> {}
 

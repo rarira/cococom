@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;

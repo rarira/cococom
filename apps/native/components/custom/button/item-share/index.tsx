@@ -3,7 +3,7 @@ import { memo, useCallback } from 'react';
 import { Share } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
+import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 
 interface ItemShareButtonProps {
   item: JoinedItems;

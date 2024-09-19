@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
+import Dialog, { DialogProps } from '@/components/core/dialog';
 import LoginButton from '@/components/custom/button/login';
-import Dialog, { DialogProps } from '@/components/ui/dialog';
 
 interface NeedAuthDialogProps extends Omit<DialogProps, 'title'> {
   body: string;

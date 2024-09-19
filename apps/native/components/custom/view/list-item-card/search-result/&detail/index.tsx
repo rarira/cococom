@@ -4,11 +4,11 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Chip from '@/components/core/chip';
+import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import Chip from '@/components/ui/chip';
-import Text from '@/components/ui/text';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
