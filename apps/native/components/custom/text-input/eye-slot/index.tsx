@@ -14,20 +14,23 @@ const TextInputEyeSlot = memo(function TextInputEyeSlot({
   setShow,
   disabled,
 }: TextInputEyeSlotProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   const handlePress = useCallback(() => setShow(prev => !prev), []);
 
   return (
     <TextInput.Slot style={styles.textInputSlot} onPress={handlePress} disabled={disabled}>
-      <TextInput.Icon font={{ type: 'Ionicon', name: show ? 'eye' : 'eye-off' }} />
+      <TextInput.Icon
+        font={{ type: 'Ionicon', name: show ? 'eye' : 'eye-off' }}
+        size={theme.fontSize.md}
+      />
     </TextInput.Slot>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   textInputSlot: {
-    paddingRight: theme.spacing.sm,
+    paddingRight: theme.spacing.md,
   },
 }));
 
