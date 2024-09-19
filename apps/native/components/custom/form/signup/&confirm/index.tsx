@@ -7,9 +7,9 @@ import { Alert, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
+import Switch from '@/components/core/switch';
+import TextInput from '@/components/core/text-input';
 import FormSubmitButton from '@/components/custom/button/form/submit';
-import Switch from '@/components/ui/switch';
-import TextInput from '@/components/ui/text-input';
 import useSession from '@/hooks/useSession';
 import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';

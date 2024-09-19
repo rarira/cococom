@@ -2,9 +2,9 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button from '@/components/ui/button';
-import Dialog, { DialogProps } from '@/components/ui/dialog';
-import Text from '@/components/ui/text';
+import Button from '@/components/core/button';
+import Dialog, { DialogProps } from '@/components/core/dialog';
+import Text from '@/components/core/text';
 import { useDeleteUser } from '@/hooks/auth/useDeleteUser';
 
 interface DeleteUserDialogProps extends Omit<DialogProps, 'title' | 'body'> {}

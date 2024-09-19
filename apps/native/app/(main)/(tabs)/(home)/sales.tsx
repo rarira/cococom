@@ -6,10 +6,10 @@ import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Chip from '@/components/core/chip';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import DiscountList from '@/components/custom/list/discount';
-import Chip from '@/components/ui/chip';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';

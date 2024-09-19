@@ -2,9 +2,9 @@ import { router } from 'expo-router';
 import { useLayoutEffect } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import RowMenu from '@/components/core/menu/row';
 import SectionText from '@/components/custom/text/section';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import RowMenu from '@/components/ui/menu/row';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useUserStore } from '@/store/user';
 

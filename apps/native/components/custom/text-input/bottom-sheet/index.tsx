@@ -3,7 +3,7 @@ import { TextInputProps } from 'react-native';
 import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import TextInput from '@/components/ui/text-input';
+import TextInput from '@/components/core/text-input';
 
 import { useBottomSheetTextInput } from './__hooks/useBottomSheetTextInput';
 

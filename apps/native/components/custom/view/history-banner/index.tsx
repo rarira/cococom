@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 import { formatLongLocalizedDate } from '@/libs/date';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';

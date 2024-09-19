@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { useStyles } from 'react-native-unistyles';
 
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
+import Button from '@/components/core/button';
+import Text from '@/components/core/text';
 import { useSignOut } from '@/hooks/auth/useSignOut';
 
 export const unstable_settings = {

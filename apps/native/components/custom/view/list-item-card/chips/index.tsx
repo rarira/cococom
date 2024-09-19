@@ -5,8 +5,8 @@ import { View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
+import Chip from '@/components/core/chip';
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
-import Chip from '@/components/ui/chip';
 import { 할인마감임박잔여일수 } from '@/constants';
 
 type ChipsDiscount = Omit<Tables<'discounts'>, 'created_at' | 'discountHash' | 'itemId'>;

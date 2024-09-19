@@ -423,4 +423,10 @@ export class Supabase {
 
     return response;
   }
+
+  async changePassword(newPassword: string) {
+    return await this.supabaseClient.auth.updateUser({
+      password: newPassword,
+    });
+  }
 }

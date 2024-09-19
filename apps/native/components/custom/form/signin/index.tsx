@@ -1,18 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
-import { Dispatch, memo, SetStateAction, useCallback } from 'react';
+import { Dispatch, memo, SetStateAction, useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
-import TextInput from '@/components/ui/text-input';
+import TextInput from '@/components/core/text-input';
 import { AuthErrorCode } from '@/libs/error';
 import { signInFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 import FormSubmitButton from '../../button/form/submit';
+import TextInputEyeSlot from '../../text-input/eye-slot';
 
 interface SignInFormProps {
   loading: boolean;
@@ -26,6 +27,8 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
   const { control, handleSubmit, reset } = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = useCallback(
     async ({ email, password }: z.infer<typeof signInFormSchema>) => {
@@ -41,6 +44,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
             '사용자가 존재하지 않습니다. 다른 로그인 방법을 시도하시거나 회원가입해 주세요',
           );
           reset();
+          setShowPassword(false);
           setLoading(false);
           return;
         }
@@ -83,12 +87,13 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
           <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
             <TextInput.Field
-              placeholder="패스워드를 입력하세요"
+              placeholder="비밀번호를 입력하세요"
               onBlur={onBlur}
               onChangeText={onChange}
               textContentType="password"
               secureTextEntry
             />
+            <TextInputEyeSlot show={showPassword} setShow={setShowPassword} disabled={loading} />
           </TextInput.Root>
         )}
         name="password"
@@ -112,6 +117,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   submitButton: {
     marginTop: theme.spacing.xl,
+  },
+  textInputSlot: {
+    paddingRight: theme.spacing.sm,
   },
 }));
 

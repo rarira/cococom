@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
+import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 
 interface HeaderBackButtonProps extends Omit<IconButtonProps, 'iconProps'> {
   // iconProps: Omit<IconButtonProps['iconProps'], 'size' | 'color' | 'font'>;

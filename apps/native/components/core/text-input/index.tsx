@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Icon, { IconProps } from '@/components/core/icon';
+import Text, { TextProps } from '@/components/core/text';
 import TextInputCounterView from '@/components/custom/view/text-input-counter';
-import Icon, { IconProps } from '@/components/ui/icon';
-import Text, { TextProps } from '@/components/ui/text';
 import Util from '@/libs/util';
 
 type TextInputContextType = {

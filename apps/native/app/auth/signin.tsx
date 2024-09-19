@@ -8,12 +8,12 @@ import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
+import Button from '@/components/core/button';
+import Divider from '@/components/core/divider';
+import Text from '@/components/core/text';
 import CloseButton from '@/components/custom/button/close';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
-import Button from '@/components/ui/button';
-import Divider from '@/components/ui/divider';
-import Text from '@/components/ui/text';
 import { useSingInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
 

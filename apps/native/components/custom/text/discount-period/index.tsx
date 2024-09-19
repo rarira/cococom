@@ -1,7 +1,7 @@
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 import { convertDateString } from '@/libs/date';
 
 interface DiscountPeriodTextProps {
