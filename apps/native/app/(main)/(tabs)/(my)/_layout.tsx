@@ -41,11 +41,6 @@ export default function MyLayout() {
           headerShown: true,
           headerTitle: '설정',
           headerBackTitleVisible: false,
-          headerRight: () => (
-            <Button onPress={signOut}>
-              <Text>로그아웃</Text>
-            </Button>
-          ),
         }}
       />
     </Stack>
