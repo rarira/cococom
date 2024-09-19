@@ -23,11 +23,27 @@ export default function ProfileScreen() {
 
   const handlePress = useCallback(() => setVisible(true), []);
 
+  console.log('ProfileScreen', user);
+
+  const isEmailProvider = user?.app_metadata.provider === 'email';
+
   return (
     <ScreenContainerView withHeader style={styles.container}>
-      <SectionText style={styles.sectionText}>프로필 변경</SectionText>
+      <SectionText style={styles.sectionText} isFirstSection>
+        프로필 변경
+      </SectionText>
       <SignUpConfirmForm update style={styles.form} />
       <SectionText style={styles.sectionText}>회원 관리</SectionText>
+      {isEmailProvider && (
+        <RowMenu.Root
+          type="nav"
+          onPress={() => console.log('go change password')}
+          style={styles.menu}
+        >
+          <RowMenu.Text>비밀번호 변경</RowMenu.Text>
+          <RowMenu.NavButton />
+        </RowMenu.Root>
+      )}
       <RowMenu.Root type="nav" onPress={handlePress} style={styles.menu}>
         <RowMenu.Text>회원 탈퇴</RowMenu.Text>
         <RowMenu.NavButton />

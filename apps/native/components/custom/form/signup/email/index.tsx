@@ -10,7 +10,7 @@ import FormSubmitButton from '@/components/custom/button/form/submit';
 import Dialog from '@/components/ui/dialog';
 import TextInput from '@/components/ui/text-input';
 import { PortalHostNames } from '@/constants';
-import { ErrorCode } from '@/libs/error';
+import { AuthErrorCode } from '@/libs/error';
 import { signUpFormSchema } from '@/libs/form';
 import { getProfile, supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -49,7 +49,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
       if (error) {
         console.error(error);
 
-        if (error.code === ErrorCode.USER_ALERADY_EXISTS) {
+        if (error.code === AuthErrorCode.USER_ALERADY_EXISTS) {
           setShowDialog(true);
           return;
         } else {

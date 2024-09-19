@@ -36,7 +36,7 @@ export default function ProfileScreen() {
       <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
       <RowMenu.Root style={styles.withPaddingHorizontal}>
         <RowMenu.Text>할인 정보 업데이트 알림 수신</RowMenu.Text>
-        <RowMenu.ToggleSwitch checked={theme === null} onToggle={handleToggleAutoTheme} />
+        <RowMenu.ToggleSwitch checked={false} onToggle={() => console.log('노티 관련 구현 필요')} />
       </RowMenu.Root>
     </ScreenContainerView>
   );
