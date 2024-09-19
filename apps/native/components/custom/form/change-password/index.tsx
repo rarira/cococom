@@ -35,7 +35,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
   });
 
   const onSubmit = useCallback(
-    async ({ password, confirmPassword }: z.infer<typeof changePasswordFormSchema>) => {
+    async ({ password }: z.infer<typeof changePasswordFormSchema>) => {
       setAuthProcessing(true);
       setLoading(true);
       const { error } = await supabase.changePassword(password);
@@ -52,8 +52,6 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
     },
     [onCompleted, setAuthProcessing],
   );
-
-  const handlePress = useCallback(() => setShowPassword(prev => !prev), []);
 
   return (
     <View style={styles.container}>
