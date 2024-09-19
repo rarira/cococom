@@ -5,9 +5,9 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import DeleteUserDialog from '@/components/custom/dialog/delete-user';
 import SignUpConfirmForm from '@/components/custom/form/signup/&confirm';
+import SectionText from '@/components/custom/text/section';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import Divider from '@/components/ui/divider';
-import NavMenu from '@/components/ui/menu/nav';
+import RowMenu from '@/components/ui/menu/row';
 import { PortalHostNames } from '@/constants';
 import { useUserStore } from '@/store/user';
 
@@ -24,10 +24,14 @@ export default function ProfileScreen() {
   const handlePress = useCallback(() => setVisible(true), []);
 
   return (
-    <ScreenContainerView withHeader>
-      <SignUpConfirmForm update />
-      <Divider style={styles.divider} />
-      <NavMenu textProps={{ children: '회원 탈퇴' }} onPress={handlePress} />
+    <ScreenContainerView withHeader style={styles.container}>
+      <SectionText style={styles.sectionText}>프로필 변경</SectionText>
+      <SignUpConfirmForm update style={styles.form} />
+      <SectionText style={styles.sectionText}>회원 관리</SectionText>
+      <RowMenu.Root type="nav" onPress={handlePress} style={styles.menu}>
+        <RowMenu.Text>회원 탈퇴</RowMenu.Text>
+        <RowMenu.NavButton />
+      </RowMenu.Root>
       <PortalHost name={PortalHostNames.PROFILE} />
       <DeleteUserDialog
         portalHostName={PortalHostNames.PROFILE}
@@ -39,7 +43,16 @@ export default function ProfileScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  divider: {
-    marginVertical: theme.spacing.xl * 2,
+  container: { paddingHorizontal: 0 },
+  form: {
+    paddingHorizontal: theme.screenHorizontalPadding,
+    backgroundColor: theme.colors.modalBackground,
+    paddingVertical: theme.spacing.lg,
+  },
+  sectionText: {
+    paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  menu: {
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
 }));
