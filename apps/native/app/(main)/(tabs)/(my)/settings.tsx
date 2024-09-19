@@ -42,7 +42,4 @@ const stylesheet = createStyleSheet(theme => ({
   withPaddingHorizontal: {
     paddingHorizontal: theme.screenHorizontalPadding,
   },
-  divider: {
-    marginVertical: theme.spacing.xl * 2,
-  },
 }));

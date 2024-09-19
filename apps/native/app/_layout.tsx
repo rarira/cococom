@@ -21,13 +21,13 @@ import { isRunningInExpoGo } from 'expo';
 import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { UnistylesRuntime } from 'react-native-unistyles';
 
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
 LogBox.ignoreLogs([
@@ -86,8 +86,7 @@ function RootLayout() {
   });
 
   useLoadUser();
-
-  const themeName = useMemo(() => UnistylesRuntime.themeName, []);
+  const { theme } = useColorScheme(true);
 
   useEffect(() => {
     if (navigationRef) {
@@ -116,7 +115,7 @@ function RootLayout() {
       <GestureHandlerRootView>
         <SafeAreaProvider>
           <PortalProvider>
-            <ThemeProvider value={themeName === 'dark' ? DarkTheme : DefaultTheme}>
+            <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
               <BottomSheetModalProvider>
                 <Stack
                   screenOptions={{

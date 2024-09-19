@@ -3,7 +3,7 @@ import { UnistylesRuntime, UnistylesThemes } from 'react-native-unistyles';
 
 import { storage, STORAGE_KEYS } from '@/libs/mmkv';
 
-export function useColorScheme() {
+export function useColorScheme(loadOnly?: boolean) {
   const [theme, setTheme] = useState<keyof UnistylesThemes | null>(
     () => (storage.getString(STORAGE_KEYS.COLOR_SCHEME) as keyof UnistylesThemes) || null,
   );
@@ -22,6 +22,7 @@ export function useColorScheme() {
   }, []);
 
   useEffect(() => {
+    if (loadOnly) return;
     if (theme === null) {
       storage.delete(STORAGE_KEYS.COLOR_SCHEME);
       UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme as keyof UnistylesThemes);
@@ -29,7 +30,7 @@ export function useColorScheme() {
       storage.set(STORAGE_KEYS.COLOR_SCHEME, theme);
       UnistylesRuntime.setTheme(theme);
     }
-  }, [theme]);
+  }, [loadOnly, theme]);
 
   return {
     handleToggleAutoTheme,
