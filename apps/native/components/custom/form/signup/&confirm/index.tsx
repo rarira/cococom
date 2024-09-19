@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { memo, useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, View } from 'react-native';
+import { Alert, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
@@ -15,9 +15,9 @@ import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
-type SignUpConfirmFormProps = {
+interface SignUpConfirmFormProps extends ViewProps {
   update?: boolean;
-};
+}
 
 const formSchema = z
   .object({
@@ -47,7 +47,11 @@ const formSchema = z
     },
   );
 
-const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConfirmFormProps) {
+const SignUpConfirmForm = memo(function SignUpConfirmForm({
+  update,
+  style,
+  ...restProps
+}: SignUpConfirmFormProps) {
   const [loading, setLoading] = useState(false);
   const { styles } = useStyles(stylesheet);
 
@@ -110,7 +114,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]} {...restProps}>
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
@@ -157,7 +161,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({ update }: SignUpConf
         name="email_opted_in"
       />
       <FormSubmitButton
-        text={update ? '프로필 변경' : '가입 완료'}
+        text={update ? '업데이트' : '가입 완료'}
         onPress={handleSubmit(onSubmit)}
         style={styles.submitButton}
         disabled={loading}

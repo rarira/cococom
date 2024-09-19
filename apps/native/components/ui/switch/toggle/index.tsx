@@ -10,7 +10,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Icon, { IconProps } from '../../icon';
 
-interface ToggleSwitchProps extends PressableProps {
+export interface ToggleSwitchProps extends PressableProps {
   checked: boolean;
   onToggle: () => void;
   checkedColor?: string;

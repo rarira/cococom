@@ -104,7 +104,7 @@ export default function TabLayout() {
 
 const stylesheet = createStyleSheet(theme => ({
   tabBar: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.cardBackground,
   },
   tabBarContainer: (tabBarVisible: boolean) => ({
     height: tabBarVisible ? 'auto' : 0,
