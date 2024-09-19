@@ -3,9 +3,9 @@ import { Dispatch, SetStateAction, useCallback } from 'react';
 import { Modal, ModalProps, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Button from '@/components/core/button';
+import Text from '@/components/core/text';
 import ModalCloseButton from '@/components/custom/button/modal-close';
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 
 import Icon from '../icon';

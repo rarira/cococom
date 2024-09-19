@@ -3,12 +3,12 @@ import { View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Chip from '@/components/core/chip';
+import Text from '@/components/core/text';
 import AlltimeRankingTabView from '@/components/custom/tab-view/ranking/alltime';
 import DiscountedRankingTabView from '@/components/custom/tab-view/ranking/discounted';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import Chip from '@/components/ui/chip';
-import Text from '@/components/ui/text';
 
 export default function RankingScreen() {
   const { styles } = useStyles(stylesheet);

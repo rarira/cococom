@@ -3,8 +3,8 @@ import { memo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Divider from '@/components/ui/divider';
-import Text from '@/components/ui/text';
+import Divider from '@/components/core/divider';
+import Text from '@/components/core/text';
 
 import DiscountRateText from '../../text/discount-rate';
 import SuperscriptWonText from '../../text/superscript-won';

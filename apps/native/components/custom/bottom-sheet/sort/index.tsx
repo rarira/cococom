@@ -3,9 +3,9 @@ import { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import BottomSheet from '@/components/ui/bottom-sheet';
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
+import BottomSheet from '@/components/core/bottom-sheet';
+import Button from '@/components/core/button';
+import Text from '@/components/core/text';
 import { SortOptions } from '@/libs/sort';
 import { useUserStore } from '@/store/user';
 

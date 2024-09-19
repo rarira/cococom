@@ -2,8 +2,8 @@ import { memo, useCallback } from 'react';
 import { Pressable, View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Icon, { IconProps } from '@/components/ui/icon';
-import Text, { TextProps } from '@/components/ui/text';
+import Icon, { IconProps } from '@/components/core/icon';
+import Text, { TextProps } from '@/components/core/text';
 
 interface SwitchProps extends ViewProps {
   checked: boolean;

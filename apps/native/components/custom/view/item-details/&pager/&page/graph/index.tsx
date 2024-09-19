@@ -7,7 +7,7 @@ import { Circle } from 'react-native-svg';
 import { Grid, LineChart, XAxis, YAxis } from 'react-native-svg-charts';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 import { X_AXIS_HEIGHT } from '@/constants';
 import Util from '@/libs/util';
 

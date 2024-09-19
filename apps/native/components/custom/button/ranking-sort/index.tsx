@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
-import { IconProps } from '@/components/ui/icon';
+import IconButton, { IconButtonProps } from '@/components/core/button/icon';
+import { IconProps } from '@/components/core/icon';
 
 interface RankingSortButtonProps extends Omit<IconButtonProps, 'iconProps'> {
   iconProps?: Omit<IconProps, 'font'>;

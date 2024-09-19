@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button, { ButtonProps } from '@/components/ui/button';
-import Text from '@/components/ui/text';
+import Button, { ButtonProps } from '@/components/core/button';
+import Text from '@/components/core/text';
 
 interface FormSubmitButtonProps extends ButtonProps {
   text: string;

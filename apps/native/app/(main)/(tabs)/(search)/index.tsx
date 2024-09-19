@@ -4,12 +4,12 @@ import { View } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import CircularProgress from '@/components/core/progress/circular';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import ScreenContainerView from '@/components/custom/view/container/screen';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
-import CircularProgress from '@/components/ui/progress/circular';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { SearchOptionValue } from '@/libs/search';

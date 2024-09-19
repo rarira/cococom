@@ -5,8 +5,8 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import CircularProgress from '@/components/core/progress/circular';
 import DiscountListItemCard from '@/components/custom/card/list-item/discount';
-import CircularProgress from '@/components/ui/progress/circular';
 import { PortalHostNames } from '@/constants';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';

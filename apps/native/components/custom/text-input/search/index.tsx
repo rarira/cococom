@@ -2,7 +2,7 @@ import { memo, useCallback, useLayoutEffect, useState } from 'react';
 import { TextInputProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import TextInput from '@/components/ui/text-input';
+import TextInput from '@/components/core/text-input';
 
 interface SearchTextInputProps extends TextInputProps {
   // onPressSearch: () => void;

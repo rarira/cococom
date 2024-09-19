@@ -6,9 +6,10 @@ import { Alert, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
+import Dialog from '@/components/core/dialog';
+import TextInput from '@/components/core/text-input';
 import FormSubmitButton from '@/components/custom/button/form/submit';
-import Dialog from '@/components/ui/dialog';
-import TextInput from '@/components/ui/text-input';
+import TextInputEyeSlot from '@/components/custom/text-input/eye-slot';
 import { PortalHostNames } from '@/constants';
 import { AuthErrorCode } from '@/libs/error';
 import { signUpFormSchema } from '@/libs/form';
@@ -18,6 +19,9 @@ import { useUserStore } from '@/store/user';
 const EmailSignUpForm = memo(function EmailSignUpForm() {
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { styles } = useStyles(stylesheet);
   const { setAuthProcessing, setProfile } = useUserStore(store => ({
     setAuthProcessing: store.setAuthProcessing,
@@ -105,7 +109,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
           render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
             <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
               <TextInput.Field
-                placeholder="패스워드를 입력하세요"
+                placeholder="비밀번호를 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 textContentType="password"
@@ -114,6 +118,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
                   'minlength: 8; maxlength: 20; required: lower; required: upper; required: digit; required: special;'
                 }
               />
+              <TextInputEyeSlot show={showPassword} setShow={setShowPassword} />
             </TextInput.Root>
           )}
           name="password"
@@ -123,12 +128,13 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
           render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
             <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
               <TextInput.Field
-                placeholder="패스워드를 다시 입력하세요"
+                placeholder="비밀번호를 다시 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 textContentType="password"
                 secureTextEntry
               />
+              <TextInputEyeSlot show={showConfirmPassword} setShow={setShowConfirmPassword} />
             </TextInput.Root>
           )}
           name="confirmPassword"

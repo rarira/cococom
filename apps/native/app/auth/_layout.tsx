@@ -27,6 +27,10 @@ export default function AuthLayout() {
         }}
       />
       <Stack.Screen name="signup/confirm" options={{ title: '회원가입 확인' }} />
+      <Stack.Screen
+        name="password/change"
+        options={{ title: '비밀번호 변경', headerBackVisible: true }}
+      />
     </Stack>
   );
 }

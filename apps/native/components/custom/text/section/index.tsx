@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text, { TextProps } from '@/components/ui/text';
+import Text, { TextProps } from '@/components/core/text';
 
 interface SectionTextProps extends TextProps {
   isFirstSection?: boolean;

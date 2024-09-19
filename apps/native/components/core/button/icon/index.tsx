@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button, { ButtonProps } from '@/components/ui/button';
-import Icon, { IconProps } from '@/components/ui/icon';
-import Text, { TextProps } from '@/components/ui/text';
+import Button, { ButtonProps } from '@/components/core/button';
+import Icon, { IconProps } from '@/components/core/icon';
+import Text, { TextProps } from '@/components/core/text';
 
 export interface IconButtonProps extends Omit<ButtonProps, 'children'> {
   iconProps: IconProps;
