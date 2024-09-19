@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { ErrorCode } from '@/libs/error';
+import { AuthErrorCode } from '@/libs/error';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -14,7 +14,7 @@ export function useSignOut() {
     try {
       await supabase.signOut();
     } catch (error: any) {
-      if (error.code !== ErrorCode.USER_NOT_FOUND) {
+      if (error.code !== AuthErrorCode.USER_NOT_FOUND) {
         console.error('signOut error', error);
         throw error;
       }
