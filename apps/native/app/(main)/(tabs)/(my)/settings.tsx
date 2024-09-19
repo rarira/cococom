@@ -20,7 +20,9 @@ export default function ProfileScreen() {
 
   return (
     <ScreenContainerView withHeader style={styles.container}>
-      <SectionText style={styles.withPaddingHorizontal}>화면 테마</SectionText>
+      <SectionText style={styles.withPaddingHorizontal} isFirstSection>
+        화면 테마
+      </SectionText>
       <RowMenu.Root style={styles.withPaddingHorizontal}>
         <RowMenu.Text>자동 (시스템 설정)</RowMenu.Text>
         <RowMenu.ToggleSwitch checked={theme === null} onToggle={handleToggleAutoTheme} />
@@ -31,6 +33,11 @@ export default function ProfileScreen() {
           <RowMenu.ToggleSwitch checked={theme === 'dark'} onToggle={handleToggleTheme} />
         </RowMenu.Root>
       )}
+      <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
+      <RowMenu.Root style={styles.withPaddingHorizontal}>
+        <RowMenu.Text>할인 정보 업데이트 알림 수신</RowMenu.Text>
+        <RowMenu.ToggleSwitch checked={theme === null} onToggle={handleToggleAutoTheme} />
+      </RowMenu.Root>
     </ScreenContainerView>
   );
 }
