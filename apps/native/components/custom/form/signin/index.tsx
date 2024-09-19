@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
 import TextInput from '@/components/ui/text-input';
+import { AuthErrorCode } from '@/libs/error';
 import { signInFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -22,7 +23,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
   const { styles } = useStyles(stylesheet);
   const { setUser, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
 
-  const { control, handleSubmit } = useForm<z.infer<typeof signInFormSchema>>({
+  const { control, handleSubmit, reset } = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
   });
 
@@ -34,7 +35,17 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
         error,
       } = await supabase.signInWithEmail({ email, password });
 
-      if (error) Alert.alert(error.message);
+      if (error) {
+        if (error.code === AuthErrorCode.INVALID_CREDENTIALS) {
+          Alert.alert(
+            '사용자가 존재하지 않습니다. 다른 로그인 방법을 시도하시거나 회원가입해 주세요',
+          );
+          reset();
+          setLoading(false);
+          return;
+        }
+        console.error('email sign in error', error);
+      }
       if (user) {
         setUser(user);
         if (callbackAfterSignIn) {
@@ -46,7 +57,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
       setLoading(false);
       router.dismiss();
     },
-    [callbackAfterSignIn, setCallbackAfterSignIn, setLoading, setUser],
+    [callbackAfterSignIn, reset, setCallbackAfterSignIn, setLoading, setUser],
   );
 
   return (

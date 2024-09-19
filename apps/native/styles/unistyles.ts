@@ -27,7 +27,3 @@ UnistylesRegistry.addBreakpoints(breakpoints)
   .addConfig({
     initialTheme: 'light',
   });
-// .addConfig({
-//   // you can pass here optional config described below
-//   adaptiveThemes: true,
-// });
