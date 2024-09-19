@@ -429,4 +429,8 @@ export class Supabase {
       password: newPassword,
     });
   }
+
+  async resetPassword(email: string, redirectTo: string) {
+    return await this.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+  }
 }

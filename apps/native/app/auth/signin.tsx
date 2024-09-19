@@ -2,9 +2,8 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import { login } from '@react-native-kakao/user';
 import { Image } from 'expo-image';
 import { router, useNavigation } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
@@ -12,8 +11,10 @@ import Button from '@/components/core/button';
 import Divider from '@/components/core/divider';
 import Text from '@/components/core/text';
 import CloseButton from '@/components/custom/button/close';
+import ResetPasswordButton from '@/components/custom/button/reset-password';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
+import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
 import { useSingInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
 
@@ -109,11 +110,11 @@ export default function SignInScreen() {
   );
 
   return (
-    <>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+    <ModalScreenContainer>
       <View style={styles.container(bottom)}>
-        <ScreenTitleText>회원가입 시 입력한 정보를 입력하세요</ScreenTitleText>
+        <ScreenTitleText>이메일 혹은 소셜 로그인하세요</ScreenTitleText>
         <SignInForm loading={loading} setLoading={setLoading} />
+        <ResetPasswordButton />
         <Divider style={styles.divider} />
         <View style={styles.socialLogin}>
           <Button disabled={loading} style={styles.appleLoginButton}>
@@ -140,7 +141,7 @@ export default function SignInScreen() {
           </Button>
         </View>
       </View>
-    </>
+    </ModalScreenContainer>
   );
 }
 
