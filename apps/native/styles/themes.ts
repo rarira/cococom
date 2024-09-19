@@ -36,7 +36,7 @@ export const lightTheme = {
   colors: {
     ...commonTheme.colors,
     typography: '#11181C',
-    background: '#FAFAFA',
+    background: '#F8F8F8',
     cardBackground: '#FFFFFF',
     modalBackground: '#FFFFFF',
     tint: '#402E7A',
