@@ -37,3 +37,5 @@ export const changePasswordFormSchema = signInFormSchema
     message: '비밀번호가 일치하지 않습니다',
     path: ['confirmPassword'],
   });
+
+export const lostPasswordFormSchema = signInFormSchema.omit({ password: true });

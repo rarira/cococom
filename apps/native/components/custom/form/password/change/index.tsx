@@ -11,14 +11,16 @@ import { changePasswordFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-import TextInputEyeSlot from '../../text-input/eye-slot';
+import TextInputEyeSlot from '../../../text-input/eye-slot';
 
 interface ChangePasswordFormProps {
   onCompleted?: () => void;
+  isReset?: boolean;
 }
 
 const ChangePasswordForm = memo(function ChangePasswordForm({
   onCompleted,
+  isReset,
 }: ChangePasswordFormProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -43,14 +45,18 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
       if (error) {
         console.error(error);
       } else {
-        Alert.alert('비밀번호가 변경되었습니다.');
+        Alert.alert(
+          isReset
+            ? '비밀번호를 재설정하였습니다. 바뀐 비밀번호로 로그인해주세요.'
+            : '비밀번호가 변경되었습니다.',
+        );
       }
 
       setLoading(false);
       setAuthProcessing(false);
       onCompleted?.();
     },
-    [onCompleted, setAuthProcessing],
+    [isReset, onCompleted, setAuthProcessing],
   );
 
   return (
@@ -83,7 +89,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
               onBlur={onBlur}
               onChangeText={onChange}
               textContentType="password"
-              secureTextEntry={!showPassword}
+              secureTextEntry={!showConfirmPassword}
             />
             <TextInputEyeSlot
               show={showConfirmPassword}
@@ -95,7 +101,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
         name="confirmPassword"
       />
       <FormSubmitButton
-        text="비밀번호 변경"
+        text={isReset ? '비밀번호 재설정' : '비밀번호 변경'}
         onPress={handleSubmit(onSubmit)}
         disabled={loading}
         style={styles.submitButton}
