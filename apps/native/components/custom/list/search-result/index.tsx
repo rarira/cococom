@@ -6,10 +6,10 @@ import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import HeaderRightButton from '@/components/custom/button/header-right';
+import LinearProgress from '@/components/core/progress/linear';
+import Text from '@/components/core/text';
+import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
-import LinearProgress from '@/components/ui/progress/linear';
-import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';

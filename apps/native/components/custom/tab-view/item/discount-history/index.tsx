@@ -4,9 +4,9 @@ import { View } from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-reanimated-table';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/core/text';
 import DiscountRateText from '@/components/custom/text/discount-rate';
 import SuperscriptWonText from '@/components/custom/text/superscript-won';
-import Text from '@/components/ui/text';
 import { convertDateString } from '@/libs/date';
 
 interface ItemDiscountHistoryTabViewProps {

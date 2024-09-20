@@ -4,7 +4,7 @@ import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/re
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
+import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';

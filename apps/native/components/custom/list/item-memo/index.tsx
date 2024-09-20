@@ -5,11 +5,11 @@ import { Tabs } from 'react-native-collapsible-tab-view';
 import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/core/button/icon';
+import CircularProgress from '@/components/core/progress/circular';
+import LinearProgress from '@/components/core/progress/linear';
+import Text from '@/components/core/text';
 import { MemoTabViewProps } from '@/components/custom/tab-view/item/memo';
-import IconButton from '@/components/ui/button/icon';
-import CircularProgress from '@/components/ui/progress/circular';
-import LinearProgress from '@/components/ui/progress/linear';
-import Text from '@/components/ui/text';
 import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
 
 import ItemMemoListRow from './&row';

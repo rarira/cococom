@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 
 interface TextInputCounterViewProps {
   currentLength: number;

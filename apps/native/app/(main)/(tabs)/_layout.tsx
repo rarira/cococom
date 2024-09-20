@@ -60,6 +60,7 @@ export default function TabLayout() {
               />
             );
           },
+          tabBarStyle: styles.tabBar,
         };
       }}
       tabBar={props => {
@@ -102,10 +103,12 @@ export default function TabLayout() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  tabBar: {
+    backgroundColor: theme.colors.cardBackground,
+  },
   tabBarContainer: (tabBarVisible: boolean) => ({
     height: tabBarVisible ? 'auto' : 0,
     position: 'absolute',
-    backgroundColor: theme.colors.background,
     bottom: 0,
     left: 0,
     right: 0,

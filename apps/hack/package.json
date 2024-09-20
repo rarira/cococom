@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsx src/index.ts",
+    "start:dalin": "tsx src/dalin.ts",
     "migrate": "tsx src/migrate.ts"
   },
   "keywords": [],

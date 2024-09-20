@@ -412,7 +412,29 @@ export class Supabase {
     return await this.supabaseClient.auth.signInWithIdToken(credentials);
   }
 
+  async verifyOtp(email: string, token: string) {
+    return await this.supabaseClient.auth.verifyOtp({ email, token, type: 'recovery' });
+  }
+
   async signOut() {
     return await this.supabaseClient.auth.signOut();
+  }
+
+  async deleteUser(userId: string) {
+    const response = await this.supabaseClient.functions.invoke('delete-user', {
+      body: { userId },
+    });
+
+    return response;
+  }
+
+  async changePassword(newPassword: string) {
+    return await this.supabaseClient.auth.updateUser({
+      password: newPassword,
+    });
+  }
+
+  async resetPassword(email: string, redirectTo: string) {
+    return await this.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
   }
 }
