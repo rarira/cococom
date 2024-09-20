@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton, { IconButtonProps } from '@/components/ui/button/icon';
+import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 
 interface ArrowNavButtonProps {
   iconProps: Omit<IconButtonProps['iconProps'], 'font'>;

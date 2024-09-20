@@ -5,9 +5,9 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
-import Card from '@/components/ui/card';
 import { PortalHostNames } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';

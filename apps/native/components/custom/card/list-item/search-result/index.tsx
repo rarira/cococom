@@ -5,9 +5,9 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
-import Card from '@/components/ui/card';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';

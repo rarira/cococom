@@ -7,7 +7,7 @@ import { darkTheme, lightTheme } from './themes';
 type AppBreakpoints = typeof breakpoints;
 
 // if you defined themes
-type AppThemes = {
+export type AppThemes = {
   light: typeof lightTheme;
   dark: typeof darkTheme;
 };
@@ -25,6 +25,5 @@ UnistylesRegistry.addBreakpoints(breakpoints)
     // register other themes with unique names
   })
   .addConfig({
-    // you can pass here optional config described below
-    adaptiveThemes: true,
+    initialTheme: 'light',
   });

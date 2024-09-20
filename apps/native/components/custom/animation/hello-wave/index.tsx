@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/ui/text';
+import Text from '@/components/core/text';
 
 const HellowWave = memo(function HelloWave() {
   const { styles } = useStyles(stylesheet);

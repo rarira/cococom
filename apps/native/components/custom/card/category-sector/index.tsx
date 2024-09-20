@@ -4,8 +4,8 @@ import { Pressable, View } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Card from '@/components/ui/card';
-import Text from '@/components/ui/text';
+import Card from '@/components/core/card';
+import Text from '@/components/core/text';
 import { shadowPresets } from '@/libs/shadow';
 
 import { DiscountsByCategorySector } from '../../list/category-sector';

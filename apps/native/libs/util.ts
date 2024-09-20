@@ -40,6 +40,19 @@ const Util = {
     if (!value) return '0';
     return value > max ? `${max}+` : value.toString();
   },
+  trimObject(obj: Record<string, unknown>) {
+    const newObj = { ...obj };
+
+    Object.keys(newObj).forEach(key => {
+      if (typeof newObj[key] === 'string') {
+        newObj[key] = newObj[key].trim();
+      } else if (typeof newObj[key] === 'object') {
+        newObj[key] = this.trimObject(newObj[key] as Record<string, unknown>);
+      }
+    });
+
+    return newObj;
+  },
 };
 
 export default Util;

@@ -6,9 +6,9 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import AlltimeRankingListItemCardDetailView from '@/components/custom/view/list-item-card/alltime-ranking/&detail';
-import Card from '@/components/ui/card';
 import { shadowPresets } from '@/libs/shadow';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 

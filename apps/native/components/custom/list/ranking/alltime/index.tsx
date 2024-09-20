@@ -5,8 +5,8 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import CircularProgress from '@/components/core/progress/circular';
 import AlltimeRankingListItemCard from '@/components/custom/card/list-item/alltime-ranking';
-import CircularProgress from '@/components/ui/progress/circular';
 import { PortalHostNames } from '@/constants';
 import { useAlltimeRankingQuery } from '@/hooks/alltime-ranking/useAlltimeRankingQuery';
 import { AlltimeSortOption } from '@/libs/sort';

@@ -2,9 +2,9 @@ import { memo, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import IconButton from '@/components/ui/button/icon';
-import Chip from '@/components/ui/chip';
-import Divider from '@/components/ui/divider';
+import IconButton from '@/components/core/button/icon';
+import Chip from '@/components/core/chip';
+import Divider from '@/components/core/divider';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { SearchHistory, SearchItemsOptions } from '@/libs/search';
 
