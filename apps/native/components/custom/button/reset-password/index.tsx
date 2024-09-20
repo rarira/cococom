@@ -9,7 +9,7 @@ const ResetPasswordButton = memo(function ResetPasswordButton() {
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Link href={'/auth/password/reset'} asChild>
+    <Link href={'/auth/password/lost'} asChild>
       <Pressable style={styles.container}>
         <Text style={styles.text}>비밀번호 재설정</Text>
       </Pressable>

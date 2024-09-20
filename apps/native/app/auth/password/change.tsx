@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CloseButton from '@/components/custom/button/close';
-import ChangePasswordForm from '@/components/custom/form/change-password';
+import ChangePasswordForm from '@/components/custom/form/password/change';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
 

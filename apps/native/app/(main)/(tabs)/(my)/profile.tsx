@@ -27,8 +27,6 @@ export default function ProfileScreen() {
 
   const handlePressDeleteUser = useCallback(() => setVisible(true), []);
 
-  console.log('ProfileScreen', user);
-
   const isEmailProvider = user?.app_metadata.provider === 'email';
 
   return (
