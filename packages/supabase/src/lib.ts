@@ -412,6 +412,10 @@ export class Supabase {
     return await this.supabaseClient.auth.signInWithIdToken(credentials);
   }
 
+  async verifyOtp(email: string, token: string) {
+    return await this.supabaseClient.auth.verifyOtp({ email, token, type: 'recovery' });
+  }
+
   async signOut() {
     return await this.supabaseClient.auth.signOut();
   }
