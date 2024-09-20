@@ -476,15 +476,6 @@ export const handleMutateOfAlltimeRanking = async ({
       isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
     };
 
-    console.log('handleMutateOfAlltimeRanking', {
-      updatedItem,
-      new: {
-        ...old.slice(0, itemIndex),
-        updatedItem,
-        ...old.slice(itemIndex + 1),
-      },
-    });
-
     return [
       ...old.slice(0, itemIndex),
       updatedItem,
@@ -493,4 +484,14 @@ export const handleMutateOfAlltimeRanking = async ({
   });
 
   return { previousData };
+};
+
+export const findAllQueryKeysByUserId = (queryClient: QueryClient, userId: string) => {
+  const allQueries = queryClient.getQueriesData({ type: 'all' });
+  const allQueryKeys = allQueries.map(([queryKey]) => queryKey); // queryKey만 추출
+  return allQueryKeys.filter((queryKey: QueryKey) => {
+    return queryKey.some((key: any) => {
+      return key.userId === userId;
+    });
+  });
 };

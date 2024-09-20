@@ -6,9 +6,9 @@ import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Text from '@/components/core/text';
 import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
-import Text from '@/components/ui/text';
 import { PortalHostNames } from '@/constants';
 import {
   handleMutateOfAlltimeRanking,

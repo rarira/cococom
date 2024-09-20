@@ -6,10 +6,10 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import BottomSheet from '@/components/core/bottom-sheet';
+import Button from '@/components/core/button';
+import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
-import BottomSheet from '@/components/ui/bottom-sheet';
-import Button from '@/components/ui/button';
-import Text from '@/components/ui/text';
 import { MAX_MEMO_LENGTH } from '@/constants';
 import { handleMutateOfInsertComment, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';

@@ -3,23 +3,41 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'index',
+  initialRouteName: 'signin',
 };
 
 export default function AuthLayout() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerTintColor: theme.colors.typography,
         contentStyle: styles.content,
         headerStyle: styles.header,
         gestureEnabled: false,
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Welcome' }} />
-      <Stack.Screen name="signin" options={{ title: 'Sign In' }} />
-      <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+      <Stack.Screen name="signin" options={{ title: '로그인' }} />
+      <Stack.Screen
+        name="signup/index"
+        options={{
+          headerBackVisible: true,
+          title: '회원가입',
+        }}
+      />
+      <Stack.Screen name="signup/confirm" options={{ title: '회원가입 확인' }} />
+      <Stack.Screen
+        name="password/change"
+        options={{ title: '비밀번호 변경', headerBackVisible: true }}
+      />
+      <Stack.Screen
+        name="password/lost"
+        options={{ title: '비밀번호 재설정 요청', headerBackVisible: true }}
+      />
+      <Stack.Screen
+        name="password/reset"
+        options={{ title: '비밀번호 재설정', headerBackVisible: false }}
+      />
     </Stack>
   );
 }

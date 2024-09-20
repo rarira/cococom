@@ -2,8 +2,7 @@ import { memo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button from '@/components/ui/button';
-import Icon from '@/components/ui/icon';
+import CloseButton from '../close';
 
 interface ModalCloseButtonProps {
   onPress: () => void;
@@ -11,19 +10,13 @@ interface ModalCloseButtonProps {
 }
 
 const ModalCloseButton = memo(function ModalCloseButton({ onPress, show }: ModalCloseButtonProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   if (!show) return null;
 
   return (
     <View style={styles.container}>
-      <Button onPress={onPress}>
-        <Icon
-          font={{ type: 'MaterialIcon', name: 'close' }}
-          size={theme.fontSize.lg}
-          color={theme.colors.typography}
-        />
-      </Button>
+      <CloseButton onPress={onPress} />
     </View>
   );
 });

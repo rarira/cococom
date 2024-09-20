@@ -51,7 +51,7 @@ CREATE OR REPLACE FUNCTION increment_total_discount_count()
 RETURNS TRIGGER AS $$
 BEGIN
     -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
-    UPDATE items
+    UPDATE public.items
     SET "totalDiscountCount" = "totalDiscountCount" + 1
     WHERE "itemId" = NEW."itemId";
 
@@ -69,7 +69,7 @@ CREATE OR REPLACE FUNCTION increment_total_comment_count()
 RETURNS TRIGGER AS $$
 BEGIN
     -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
-    UPDATE items
+    UPDATE public.items
     SET "totalCommentCount" = "totalCommentCount" + 1
     WHERE id = NEW.item_id;
 
@@ -86,7 +86,7 @@ CREATE OR REPLACE FUNCTION increment_total_wishlist_count()
 RETURNS TRIGGER AS $$
 BEGIN
     -- 해당 itemId에 대한 totalDiscountCount를 1 증가시킵니다.
-    UPDATE items
+    UPDATE public.items
     SET "totalWishlistCount" = "totalWishlistCount" + 1
     WHERE id = NEW."itemId";
 
@@ -103,7 +103,7 @@ CREATE OR REPLACE FUNCTION decrement_total_comment_count()
 RETURNS TRIGGER AS $$
 BEGIN
     -- 해당 itemId에 대한 totalCommentCount를 1 감소시킵니다.
-    UPDATE items
+    UPDATE public.items
     SET "totalCommentCount" = "totalCommentCount" - 1
     WHERE id = OLD.item_id;
 
@@ -120,7 +120,7 @@ CREATE OR REPLACE FUNCTION decrement_total_wishlist_count()
 RETURNS TRIGGER AS $$
 BEGIN
     -- 해당 itemId에 대한 totalCommentCount를 1 감소시킵니다.
-    UPDATE items
+    UPDATE public.items
     SET "totalWishlistCount" = "totalWishlistCount" - 1
     WHERE id = OLD."itemId";    
 

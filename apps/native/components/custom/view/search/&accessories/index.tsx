@@ -2,9 +2,9 @@ import { memo, useLayoutEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/core/button/icon';
+import Checkbox, { CheckboxGroupViewProps } from '@/components/core/checkbox';
 import SearchHistoryView from '@/components/custom/view/search/&history';
-import IconButton from '@/components/ui/button/icon';
-import Checkbox, { CheckboxGroupViewProps } from '@/components/ui/checkbox';
 import { SearchItemOptionInfo, SearchItemsOptions, SearchOptionValue } from '@/libs/search';
 
 interface SearchAccessoriesViewProps {
