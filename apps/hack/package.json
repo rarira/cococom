@@ -27,6 +27,7 @@
     "@cococom/supabase": "workspace:*",
     "@prisma/client": "^5.13.0",
     "axios": "^1.6.8",
+    "cheerio": "^1.0.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5"
   }
