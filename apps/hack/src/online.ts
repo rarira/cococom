@@ -1,9 +1,10 @@
+// eslint-disable-next-line import/order
+import { loadEnv, writeJsonFile } from '../libs/util.js';
+
+loadEnv();
+
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-
-import { writeJsonFile } from '../libs/util.js';
-
-const SITEMAP_URL = 'https://www.costco.co.kr/CostcoKorea_Sitemap';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22'];
 
@@ -15,7 +16,8 @@ type SubCategoryLink = {
 async function getAllCategoryInfo() {
   const subCategoryLinks: SubCategoryLink[] = [];
   try {
-    const response = await axios.get(SITEMAP_URL);
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    const response = await axios.get(process.env['3RD_API_SITEMAP_URL']!);
 
     const $ = cheerio.load(response.data);
 
