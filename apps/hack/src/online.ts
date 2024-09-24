@@ -5,6 +5,8 @@ import { writeJsonFile } from '../libs/util.js';
 
 const SITEMAP_URL = 'https://www.costco.co.kr/CostcoKorea_Sitemap';
 
+const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22'];
+
 type SubCategoryLink = {
   fullLink: string;
   category: string;
@@ -22,8 +24,8 @@ async function getAllCategoryInfo() {
       if (!fullLink) {
         return;
       }
-      const category = fullLink.split('/').pop();
-      if (!category?.startsWith('cos')) {
+      const category = fullLink.split('/c/').pop();
+      if (!category?.startsWith('cos') || CATEGORY_EXCLUDE.includes(category)) {
         return;
       }
       const object = {
