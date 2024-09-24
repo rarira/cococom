@@ -1,7 +1,13 @@
+export type Category = {
+  id: number;
+  name: string;
+};
+
 export type OnlineSubCategoryLink = {
   fullLink: string;
   category: string;
   title: string;
+  categoryId?: number;
 };
 
 type OnlinePrice = {
