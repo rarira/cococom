@@ -6,9 +6,10 @@ loadEnv();
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
+import { updateSubCategoryLinks } from '../libs/openapi.js';
 import { OnlineProduct, OnlineSubCategoryLink, SearchApiResult } from '../libs/types.js';
 
-const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_17_all'];
+const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22'];
 
 async function getAllCategoryInfo() {
   const subCategoryLinks: OnlineSubCategoryLink[] = [];
@@ -24,7 +25,11 @@ async function getAllCategoryInfo() {
         return;
       }
       const category = fullLink.split('/c/').pop();
-      if (!category?.startsWith('cos') || CATEGORY_EXCLUDE.includes(category)) {
+      if (
+        !category?.startsWith('cos') ||
+        CATEGORY_EXCLUDE.includes(category) ||
+        category.startsWith('cos_17')
+      ) {
         return;
       }
       const object = {
@@ -99,4 +104,5 @@ async function getAllItems() {
 (async () => {
   await getAllCategoryInfo();
   //   await getAllItems();
+  await updateSubCategoryLinks();
 })();
