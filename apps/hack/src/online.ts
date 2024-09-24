@@ -84,14 +84,14 @@ async function getAllItems() {
 
   const allProducts: OnlineProduct[] = [];
 
-  const subCategoryLinks = await readJsonFile('temp/subCategoryLinks.json');
+  const subCategoryLinks = await readJsonFile('data/online_subCategoryLinks.json');
   for (const subCategoryLink of subCategoryLinks) {
     const { totalProducts, products } = await getAllItemsByCategory(subCategoryLink.category);
     allProducts.push(...products);
     productsCount += totalProducts;
   }
 
-  await writeJsonFile('temp/products.json', allProducts);
+  await writeJsonFile('data/online_products.json', allProducts);
 
   console.log('product  array count', allProducts.length, 'productsCount', productsCount);
 }
