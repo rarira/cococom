@@ -8,7 +8,7 @@ import * as cheerio from 'cheerio';
 
 import { OnlineProduct, OnlineSubCategoryLink, SearchApiResult } from '../libs/types.js';
 
-const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22'];
+const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,7 +40,7 @@ function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
 
   return [
     {
-      fullLink: !fullLink.startsWith('https') ? `https://www.cost.co.kr${fullLink}` : fullLink,
+      fullLink: !fullLink.startsWith('https') ? `https://www.costco.co.kr${fullLink}` : fullLink,
       category,
       title: $(element).text(),
     },
@@ -106,23 +106,33 @@ async function getAllCategoryInfo() {
   await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
 }
 
-async function getAllItemsByCategory(category: string) {
+async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
   const apiUrl = `${process.env['3RD_API_URL']}pageSize=100&category=${category}`;
 
   try {
     const response = await axios.get<SearchApiResult>(apiUrl);
+
+    const productsWithCategoryId = response.data.products.map(product => {
+      product.categoryId = categoryId;
+      return product;
+    });
+
     if (response.data.pagination.totalPages === 1) {
       return {
         totalProducts: response.data.pagination.totalResults,
-        products: response.data.products,
+        products: productsWithCategoryId,
       };
     }
 
-    const products = [...response.data.products];
+    const products = [...productsWithCategoryId];
     for (let i = 1; i < response.data.pagination.totalPages; i++) {
       const paginationResponse = await axios.get<SearchApiResult>(`${apiUrl}&currentPage=${i}`);
-      products.push(...paginationResponse.data.products);
+      const paginationProducts = paginationResponse.data.products.map(product => {
+        product.categoryId = categoryId;
+        return product;
+      });
+      products.push(...paginationProducts);
     }
 
     if (response.data.pagination.totalResults !== products.length) {
@@ -146,9 +156,15 @@ async function getAllItems() {
 
   const allProducts: OnlineProduct[] = [];
 
-  const subCategoryLinks = await readJsonFile('data/online_subCategoryLinks.json');
-  for (const subCategoryLink of subCategoryLinks) {
-    const { totalProducts, products } = await getAllItemsByCategory(subCategoryLink.category);
+  const updatedSubCategoryLinks = (await readJsonFile(
+    'data/online_updatedSubCategoryLinks.json',
+  )) as OnlineSubCategoryLink[];
+
+  for (const subCategoryLink of updatedSubCategoryLinks) {
+    const { totalProducts, products } = await getAllItemsByCategory(
+      subCategoryLink.category,
+      subCategoryLink.categoryId!,
+    );
     allProducts.push(...products);
     productsCount += totalProducts;
   }
@@ -158,8 +174,48 @@ async function getAllItems() {
   console.log('product  array count', allProducts.length, 'productsCount', productsCount);
 }
 
+async function compareLinks() {
+  const subCategoryLinks = (await readJsonFile(
+    'data/online_subCategoryLinks.json',
+  )) as OnlineSubCategoryLink[];
+  const updated = (await readJsonFile(
+    'data/online_updatedSubCategoryLinks.json',
+  )) as OnlineSubCategoryLink[];
+
+  const categorySet = new Set(subCategoryLinks.map(subCategoryLink => subCategoryLink.category));
+  const productCategorySet = new Set(updated.map(update => update.category));
+
+  console.log('categorySet', categorySet.size);
+  console.log('productCategorySet', productCategorySet.size);
+
+  const diff = [...categorySet].filter(category => !productCategorySet.has(category));
+  console.log('diff', diff);
+}
+
+async function findDuplicateCategory() {
+  const subCategoryLinks = (await readJsonFile(
+    'data/online_subCategoryLinks.json',
+  )) as OnlineSubCategoryLink[];
+
+  subCategoryLinks.forEach(subCategoryLink => {
+    const count = subCategoryLinks.filter(
+      link => link.category === subCategoryLink.category,
+    ).length;
+
+    if (count > 1) {
+      console.log('duplicate', subCategoryLink.category);
+    }
+  });
+}
+
 (async () => {
   await getAllCategoryInfo();
-  //   await getAllItems();
+  await getAllItems();
+
+  // 수동으로
   // await updateSubCategoryLinks();
+
+  // 검증용
+  // await findDuplicateCategory();
+  // await compareLinks();
 })();
