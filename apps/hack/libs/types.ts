@@ -63,6 +63,8 @@ export type OnlineProduct = {
   name: string;
   price: OnlinePrice;
   url: string;
+  groupId?: 'kr-grocery-cart';
+  deliveryName?: 'Same-Day';
 } & { [key: string]: unknown };
 
 export type SearchApiResult = {
