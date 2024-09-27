@@ -86,7 +86,7 @@ async function getAllDiscountsByCategory() {
       const { error } = await supabase.supabaseClient.from('dalins').insert(item);
 
       if (error?.code === '23505') {
-        console.log('duplicate', item.hash);
+        // console.log('duplicate', item.hash);
         continue;
       } else if (error) {
         console.error(item.product_id, error);
