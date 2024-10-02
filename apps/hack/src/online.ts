@@ -1,15 +1,29 @@
 // eslint-disable-next-line import/order
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
+import {
+  checkIfOnlyAlphabetUpperCase,
+  loadEnv,
+  readJsonFile,
+  writeJsonFile,
+} from '../libs/util.js';
 
 loadEnv();
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-import { OnlineProduct, OnlineSubCategoryLink, SearchApiResult } from '../libs/types.js';
+import { download } from '../libs/axios.js';
+import { supabase } from '../libs/supabase.js';
+import {
+  DownloadResultDb,
+  OnlineProduct,
+  OnlineSubCategoryLink,
+  SearchApiResult,
+} from '../libs/types.js';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
+
+const date = new Date().toISOString().split('T')[0];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
@@ -169,9 +183,64 @@ async function getAllItems() {
     productsCount += totalProducts;
   }
 
-  await writeJsonFile('data/online_products.json', allProducts);
+  await writeJsonFile(`data/online_products_${date}.json`, allProducts);
 
   console.log('product  array count', allProducts.length, 'productsCount', productsCount);
+}
+
+async function downloadImage(product: OnlineProduct, codedb: DownloadResultDb, jpg?: boolean) {
+  const productImage = product.images.find(
+    image => image.format === (jpg ? 'product' : 'product-webp'),
+  );
+
+  if (!productImage) {
+    codedb.noImage.push(product.code);
+    return;
+  }
+
+  try {
+    const data = await supabase.fetchData({ column: 'itemId', value: product.code }, 'items');
+
+    await download({
+      url: `https://www.costco.co.kr${productImage!.url}`,
+      localPath: '../downloads/online-images/in',
+      fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
+    });
+
+    if (data.itemName !== product.name) {
+      codedb.nameDiff.push({
+        code: product.code,
+        dbName: data.itemName!,
+        onlineName: product.name,
+      });
+    }
+  } catch (error) {
+    if (error.code === 'PGRST116') {
+      try {
+        await download({
+          url: `https://www.costco.co.kr${productImage!.url}`,
+          localPath: '../downloads/online-images/out',
+          fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
+        });
+        return;
+      } catch (error) {
+        codedb.downloadError.push(product.code);
+        return;
+      }
+    }
+    codedb.downloadError.push(product.code);
+  }
+}
+
+async function downloadImages() {
+  const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
+  const codedb: DownloadResultDb = { noImage: [], nameDiff: [], downloadError: [] };
+
+  for (const product of products) {
+    await downloadImage(product, codedb);
+  }
+
+  await writeJsonFile('data/online_downloadResult_${date}.json', codedb);
 }
 
 async function compareLinks() {
@@ -208,13 +277,77 @@ async function findDuplicateCategory() {
   });
 }
 
+async function updateDownloadResult() {
+  const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
+  const downloadResult = (await readJsonFile(
+    'data/online_downloadResult_${date}.json',
+  )) as DownloadResultDb;
+
+  // 이미지 에러 난 거 jpg로 다시 다운로드
+  for (const errorProductId of downloadResult.downloadError) {
+    const product = products.find(product => product.code === errorProductId);
+    if (product) {
+      try {
+        await downloadImage(product, downloadResult, true);
+        downloadResult.downloadError = downloadResult.downloadError.filter(
+          productId => productId !== errorProductId,
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  // TODO: 이름이 다른 것들 브랜드 뽑아내기
+  for (const nameDiff of downloadResult.nameDiff) {
+    nameDiff.dbName = nameDiff.dbName.replace(/\s+/g, ' ').trim();
+    nameDiff.onlineName = nameDiff.onlineName.replace(/\s+/g, ' ').trim();
+
+    const dbNameSplit = nameDiff.dbName.split(' ');
+    const onlineNameSplit = nameDiff.onlineName.split(' ');
+
+    const brandName = { db: dbNameSplit[0]!, online: onlineNameSplit[0]! };
+
+    if (brandName.db?.startsWith(brandName.online!) && brandName.db !== brandName.online) {
+      const brandNameDBRest = brandName.db.slice(brandName.online!.length);
+
+      if (checkIfOnlyAlphabetUpperCase(brandNameDBRest)) {
+        console.log('아르떼ARTE 케이스', brandName);
+      } else {
+        nameDiff.dbName =
+          brandName.online + ' ' + brandNameDBRest + nameDiff.dbName.slice(brandName.db.length);
+        brandName.online = brandName.online + ' ' + onlineNameSplit[1];
+      }
+    }
+
+    for (let i = 1; i < dbNameSplit.length; i++) {
+      if (dbNameSplit[i] === brandName.online) {
+        brandName.db = dbNameSplit.slice(0, i + 1).join(' ');
+      } else if (
+        checkIfOnlyAlphabetUpperCase(dbNameSplit[i]!) &&
+        checkIfOnlyAlphabetUpperCase(brandName.db)
+      ) {
+        console.log('IP TIME 케이스', brandName, dbNameSplit[i]);
+        brandName.db = dbNameSplit.slice(0, i + 1).join(' ');
+        brandName.online = onlineNameSplit.slice(0, i + 1).join(' ');
+        continue;
+      }
+    }
+
+    nameDiff.brandName = brandName;
+  }
+
+  await writeJsonFile(`data/online_updatedDownloadResult_${date}.json`, downloadResult);
+}
+
 (async () => {
-  await getAllCategoryInfo();
-  await getAllItems();
+  // await getAllCategoryInfo();
+  // await getAllItems();
+  await downloadImages();
+  await updateDownloadResult();
 
   // 수동으로
   // await updateSubCategoryLinks();
-
   // 검증용
   // await findDuplicateCategory();
   // await compareLinks();
