@@ -72,3 +72,17 @@ export type SearchApiResult = {
   products: OnlineProduct[];
   pagination: ApiResultPagination;
 } & { [key: string]: unknown };
+
+export type DownloadResultDb = {
+  noImage: Array<string>;
+  nameDiff: {
+    code: string;
+    dbName: string;
+    onlineName: string;
+    brandName?: {
+      db: string;
+      online: string;
+    };
+  }[];
+  downloadError: Array<string>;
+};
