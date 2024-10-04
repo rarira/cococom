@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line import/order
 import {
   checkIfOnlyAlphabetUpperCase,
@@ -12,7 +13,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 import { download } from '../libs/axios.js';
-import { supabase } from '../libs/supabase.js';
+import { supabase, updateItemHistory } from '../libs/supabase.js';
 import {
   DownloadResultDb,
   OnlineProduct,
@@ -24,6 +25,11 @@ const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
 
 const date = new Date().toISOString().split('T')[0];
+
+const newItems: string[] = [];
+const noPriceValue = new Set<string>();
+
+let newDiscountsCount = 0;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
@@ -100,8 +106,7 @@ function getSubSubCategories($: cheerio.CheerioAPI, element: any) {
 async function getAllCategoryInfo() {
   const subCategoryLinks: OnlineSubCategoryLink[] = [];
   try {
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    const response = await axios.get(process.env['3RD_API_SITEMAP_URL']!);
+    const response = await axios.get(`${process.env['3RD_API_SITEMAP_URL']!}`);
 
     const $ = cheerio.load(response.data);
 
@@ -122,7 +127,7 @@ async function getAllCategoryInfo() {
 
 async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
-  const apiUrl = `${process.env['3RD_API_URL']}pageSize=100&category=${category}`;
+  const apiUrl = `${process.env['3RD_API_URL']}/search?fields=FULL&query=&lang=ko&curr=KRW&pageSize=100&category=${category}`;
 
   try {
     const response = await axios.get<SearchApiResult>(apiUrl);
@@ -184,8 +189,44 @@ async function getAllItems() {
   }
 
   await writeJsonFile(`data/online_products_${date}.json`, allProducts);
-
   console.log('product  array count', allProducts.length, 'productsCount', productsCount);
+
+  const saleProducts: OnlineProduct[] = allProducts.filter(
+    product => product.couponDiscount?.discountValue,
+  );
+
+  if (!saleProducts?.length) {
+    console.log('no sale products');
+    return;
+  }
+
+  const codeSet = new Set<string>();
+
+  for (const product of saleProducts) {
+    if (!product.code) {
+      console.log('no code', product.name);
+    }
+    if (!product.name) {
+      console.log('no name', product.code);
+    }
+    if (!product.categoryId) {
+      console.log('no categoryId', product.code);
+    }
+
+    if (!product.basePrice?.value || !product.price?.value) {
+      console.log('no price or basePrice', product.code);
+    }
+
+    if (codeSet.has(product.code)) {
+      // console.log('duplicate code', product.code);
+    } else {
+      codeSet.add(product.code);
+    }
+  }
+
+  await writeJsonFile(`data/online_saleProducts_${date}.json`, saleProducts);
+
+  console.log('sales product count', saleProducts.length, 'unique saleProducts', codeSet.size);
 }
 
 async function downloadImage(product: OnlineProduct, codedb: DownloadResultDb, jpg?: boolean) {
@@ -240,7 +281,7 @@ async function downloadImages() {
     await downloadImage(product, codedb);
   }
 
-  await writeJsonFile('data/online_downloadResult_${date}.json', codedb);
+  await writeJsonFile(`data/online_downloadResult_${date}.json`, codedb);
 }
 
 async function compareLinks() {
@@ -280,7 +321,7 @@ async function findDuplicateCategory() {
 async function updateDownloadResult() {
   const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
   const downloadResult = (await readJsonFile(
-    'data/online_downloadResult_${date}.json',
+    `data/online_downloadResult_${date}.json`,
   )) as DownloadResultDb;
 
   // 이미지 에러 난 거 jpg로 다시 다운로드
@@ -293,7 +334,7 @@ async function updateDownloadResult() {
           productId => productId !== errorProductId,
         );
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     }
   }
@@ -340,12 +381,96 @@ async function updateDownloadResult() {
   await writeJsonFile(`data/online_updatedDownloadResult_${date}.json`, downloadResult);
 }
 
+async function uploadNewRecords() {
+  const salesProducts = (await readJsonFile(
+    `data/online_saleProducts_${date}.json`,
+  )) as OnlineProduct[];
+
+  salesProducts.forEach(async product => {
+    if (!product.code) {
+      console.log('no code', product.name);
+    }
+    if (!product.name) {
+      console.log('no name', product.code);
+    }
+    if (!product.categoryId) {
+      console.log('no categoryId', product.code);
+    }
+
+    if (!product.basePrice?.value) {
+      console.log('no basePrice', product.code);
+      noPriceValue.add(product.code);
+    }
+
+    if (!product.price?.value) {
+      console.log('no price value', product.code);
+      noPriceValue.add(product.code);
+    }
+  });
+
+  const newlyAddedItems = await supabase.upsertItem(
+    salesProducts.map(product => ({
+      itemId: product.code + '_online',
+      itemName: product.name,
+      categoryId: product.categoryId,
+      is_online: true,
+      online_url: product.url,
+    })),
+  );
+
+  if (newlyAddedItems?.length) {
+    newItems.push(...newlyAddedItems.map(item => item.itemId));
+  }
+
+  console.log(`${newlyAddedItems?.length ?? 0} new items added`);
+
+  try {
+    const newlyAddedDiscounts = await supabase.upsertDiscount(
+      salesProducts.map(product => {
+        return {
+          itemId: product.code + '_online',
+          startDate: product.couponDiscount!.discountStartDate,
+          endDate: product.couponDiscount!.discountEndDate,
+          discount: product.couponDiscount!.discountValue,
+          price: product.basePrice?.value || 0,
+          discountPrice: product.price?.value || 0,
+          discountHash: `${product.code}_online_${product.couponDiscount!.discountStartDate}_${product.couponDiscount!.discountEndDate}`,
+          discountRate: product.basePrice?.value
+            ? product.couponDiscount!.discountValue / product.basePrice?.value
+            : null,
+          is_online: true,
+        };
+      }),
+    );
+
+    if (newlyAddedDiscounts?.length) {
+      newDiscountsCount += newlyAddedDiscounts.length;
+      updateItemHistory(newlyAddedDiscounts);
+    }
+  } catch (error) {
+    console.error('upsert discount error', error);
+  }
+}
+
+async function createHistory() {
+  if (!newItems.length) return;
+
+  await supabase.insertHistory({
+    new_item_count: newItems.length,
+    added_discount_count: newDiscountsCount,
+    no_images: [],
+    no_price: Array.from(noPriceValue),
+    is_online: true,
+  });
+}
+
 (async () => {
   // await getAllCategoryInfo();
   // await getAllItems();
-  await downloadImages();
-  await updateDownloadResult();
-
+  // await updateDownloadResult();
+  // await downloadImages();
+  await uploadNewRecords();
+  await createHistory();
   // 수동으로
   // await updateSubCategoryLinks();
   // 검증용

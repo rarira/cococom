@@ -13,6 +13,7 @@ BEGIN
     'bestDiscountRate', i."bestDiscountRate",
     'bestDiscount', i."bestDiscount",
     'lowestPrice', i."lowestPrice",
+    'is_online', i.is_online,
     'categories', json_build_object(
         'id', c.id,
         'categoryName', c."categoryName",

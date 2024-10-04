@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
@@ -17,6 +17,10 @@ export function getISOTimeStringWithTimezone(date: string): string {
   return dayjs(date).tz('Asia/Seoul').toISOString();
 }
 
-export function addDays(date: Date, days: number): string {
-  return dayjs(date).add(days, 'day').toISOString();
+export function addDays(date: Date, days: number) {
+  return dayjs(date).add(days, 'day');
+}
+
+export function minus1MS(date: Dayjs): string {
+  return dayjs(date).subtract(1, 'ms').toISOString();
 }

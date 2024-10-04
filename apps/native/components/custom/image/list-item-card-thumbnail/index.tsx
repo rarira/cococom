@@ -8,6 +8,7 @@ interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;
   height: DimensionValue;
+  isOnline?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -16,6 +17,7 @@ function ListItemCardThumbnailImage({
   width,
   height,
   style,
+  isOnline,
 }: ListItemCardThumbnailImageProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -28,8 +30,13 @@ function ListItemCardThumbnailImage({
         style={styles.image}
       />
       <View style={styles.itemIdOverlay}>
-        <Text style={styles.itemIdText}>{product.itemId}</Text>
+        <Text style={styles.itemIdText}>{product.itemId?.split('_')[0]}</Text>
       </View>
+      {isOnline ? (
+        <View style={styles.onlineOverlay}>
+          <Text style={styles.onlineText}>온라인</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -57,6 +64,20 @@ const stylesheet = createStyleSheet(theme => ({
     color: theme.colors.typography,
     fontSize: theme.fontSize.xs,
     lineHeight: theme.fontSize.xs * 1.5,
+    fontWeight: 'bold',
+  },
+  onlineOverlay: {
+    position: 'absolute',
+    bottom: theme.spacing.sm,
+    right: theme.spacing.sm,
+    backgroundColor: theme.colors.alert,
+    paddingHorizontal: theme.spacing.sm,
+    borderRadius: theme.borderRadius.sm,
+  },
+  onlineText: {
+    color: 'white',
+    fontSize: theme.fontSize.md,
+    lineHeight: theme.fontSize.md * 1.5,
     fontWeight: 'bold',
   },
 }));

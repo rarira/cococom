@@ -11,6 +11,7 @@ RETURNS TABLE(
     "discountPrice" numeric(65, 30),
     "discountRate" numeric,
     "discount" numeric,
+    is_online boolean,
     items jsonb
 )
 LANGUAGE plpgsql
@@ -25,6 +26,7 @@ BEGIN
         d."discountPrice",
         d."discountRate",
         d."discount",
+        d.is_online,
         get_items_with_wishlist_counts(d."itemId", $1, false) AS items
     FROM
         discounts d
