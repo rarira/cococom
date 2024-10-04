@@ -60,6 +60,7 @@ BEGIN
                         i."lowestPrice",
                         i."totalCommentCount",
                         i."totalWishlistCount",
+                        i.is_online,
                         (
                             SELECT EXISTS (
                                 SELECT 1
@@ -170,6 +171,7 @@ BEGIN
                         i."lowestPrice",
                         i."totalCommentCount",
                         i."totalWishlistCount",
+                        i.is_online,
                         (
                             SELECT EXISTS (
                                 SELECT 1

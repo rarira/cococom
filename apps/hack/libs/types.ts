@@ -54,7 +54,7 @@ type ApiResultPagination = {
 
 export type OnlineProduct = {
   code: string;
-  baserice: OnlinePrice;
+  basePrice: OnlinePrice;
   couponDiscount: OnlineCouponDiscount;
   images: OnlineImage[];
   isBaseProduct: boolean;
@@ -65,6 +65,7 @@ export type OnlineProduct = {
   url: string;
   groupId?: 'kr-grocery-cart';
   deliveryName?: 'Same-Day';
+  categoryId?: number;
 } & { [key: string]: unknown };
 
 export type SearchApiResult = {

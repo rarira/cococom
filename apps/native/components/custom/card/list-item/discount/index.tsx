@@ -47,6 +47,7 @@ function DiscountListItemCard({
                 width={115}
                 height={115}
                 style={styles.thumbnail}
+                isOnline={discount.is_online}
               />
               <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
             </View>

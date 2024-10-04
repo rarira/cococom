@@ -17,7 +17,8 @@ RETURNS TABLE(
     "totalDiscountCount" int,
     "totalMemoCount" bigint,
     "isWishlistedByUser" boolean,
-    "isOnSaleNow" boolean
+    "isOnSaleNow" boolean,
+    is_online boolean
 )
 LANGUAGE plpgsql
 AS $$
@@ -60,7 +61,8 @@ BEGIN
                         ORDER BY d."startDate" DESC
                         LIMIT 1
                     )
-                ) as "isOnSaleNow"
+                ) as "isOnSaleNow",
+                i.is_online
             FROM
                 items i
         )

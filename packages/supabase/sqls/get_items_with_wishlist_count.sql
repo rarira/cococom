@@ -16,6 +16,7 @@ BEGIN
     'totalDiscountCount', i."totalDiscountCount",
     'totalWishlistCount', i."totalWishlistCount",
     'totalCommentCount', i."totalCommentCount",
+    'is_online', i.is_online,
     -- 'discounts', (
     --   CASE
     --     WHEN need_discounts THEN

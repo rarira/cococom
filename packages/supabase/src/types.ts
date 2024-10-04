@@ -75,9 +75,10 @@ export type Database = {
           discount: number | null
           discount_condition: string | null
           from_date: string | null
+          hash: string | null
           id: number
           normal_price: number | null
-          product_id: number | null
+          product_id: number
           product_image: string | null
           product_name: string | null
           sale_price: number | null
@@ -91,9 +92,10 @@ export type Database = {
           discount?: number | null
           discount_condition?: string | null
           from_date?: string | null
+          hash?: string | null
           id?: number
           normal_price?: number | null
-          product_id?: number | null
+          product_id: number
           product_image?: string | null
           product_name?: string | null
           sale_price?: number | null
@@ -107,9 +109,10 @@ export type Database = {
           discount?: number | null
           discount_condition?: string | null
           from_date?: string | null
+          hash?: string | null
           id?: number
           normal_price?: number | null
-          product_id?: number | null
+          product_id?: number
           product_image?: string | null
           product_name?: string | null
           sale_price?: number | null
@@ -126,6 +129,7 @@ export type Database = {
           discountRate: number | null
           endDate: string
           id: number
+          is_online: boolean
           itemId: string
           price: number
           startDate: string
@@ -138,6 +142,7 @@ export type Database = {
           discountRate?: number | null
           endDate: string
           id?: number
+          is_online?: boolean
           itemId: string
           price: number
           startDate: string
@@ -150,6 +155,7 @@ export type Database = {
           discountRate?: number | null
           endDate?: string
           id?: number
+          is_online?: boolean
           itemId?: string
           price?: number
           startDate?: string
@@ -169,26 +175,91 @@ export type Database = {
           added_discount_count: number | null
           created_at: string
           id: number
+          is_online: boolean
           new_item_count: number | null
           no_images: string[] | null
+          no_price: string[] | null
         }
         Insert: {
           added_discount_count?: number | null
           created_at?: string
           id?: number
+          is_online?: boolean
           new_item_count?: number | null
           no_images?: string[] | null
+          no_price?: string[] | null
         }
         Update: {
           added_discount_count?: number | null
           created_at?: string
           id?: number
+          is_online?: boolean
           new_item_count?: number | null
           no_images?: string[] | null
+          no_price?: string[] | null
         }
         Relationships: []
       }
       items: {
+        Row: {
+          bestDiscount: number | null
+          bestDiscountRate: number | null
+          categoryId: number | null
+          created_at: string | null
+          id: number
+          is_online: boolean
+          itemId: string
+          itemName: string | null
+          lowestPrice: number | null
+          online_url: string | null
+          totalCommentCount: number | null
+          totalDiscountCount: number | null
+          totalWishlistCount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          bestDiscount?: number | null
+          bestDiscountRate?: number | null
+          categoryId?: number | null
+          created_at?: string | null
+          id?: number
+          is_online?: boolean
+          itemId: string
+          itemName?: string | null
+          lowestPrice?: number | null
+          online_url?: string | null
+          totalCommentCount?: number | null
+          totalDiscountCount?: number | null
+          totalWishlistCount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          bestDiscount?: number | null
+          bestDiscountRate?: number | null
+          categoryId?: number | null
+          created_at?: string | null
+          id?: number
+          is_online?: boolean
+          itemId?: string
+          itemName?: string | null
+          lowestPrice?: number | null
+          online_url?: string | null
+          totalCommentCount?: number | null
+          totalDiscountCount?: number | null
+          totalWishlistCount?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_categoryId_fkey"
+            columns: ["categoryId"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items_duplicate: {
         Row: {
           bestDiscount: number | null
           bestDiscountRate: number | null
@@ -233,7 +304,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "items_categoryId_fkey"
+            foreignKeyName: "items_duplicate_categoryId_fkey"
             columns: ["categoryId"]
             isOneToOne: false
             referencedRelation: "categories"
@@ -386,6 +457,7 @@ export type Database = {
           totalMemoCount: number
           isWishlistedByUser: boolean
           isOnSaleNow: boolean
+          is_online: boolean
         }[]
       }
       get_current_discounts_by_category_sector: {
@@ -413,6 +485,7 @@ export type Database = {
           discountPrice: number
           discountRate: number
           discount: number
+          is_online: boolean
           items: Json
         }[]
       }
