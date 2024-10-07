@@ -457,7 +457,6 @@ export type Database = {
           totalMemoCount: number
           isWishlistedByUser: boolean
           isOnSaleNow: boolean
-          is_online: boolean
         }[]
       }
       get_current_discounts_by_category_sector: {
@@ -504,6 +503,16 @@ export type Database = {
           need_discounts: boolean
         }
         Returns: Json
+      }
+      get_latest_histories: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: number
+          created_at: string
+          new_item_count: number
+          added_discount_count: number
+          is_online: boolean
+        }[]
       }
       search_items_by_itemid: {
         Args: {

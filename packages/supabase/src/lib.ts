@@ -188,11 +188,7 @@ export class Supabase {
   }
 
   async fetchLatestHistory() {
-    const { data, error } = await this.supabaseClient
-      .from('histories')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(1);
+    const { data, error } = await this.supabaseClient.rpc('get_latest_histories');
 
     if (error) {
       console.log('fetchLatestHistory error', error);
