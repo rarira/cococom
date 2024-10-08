@@ -109,7 +109,7 @@ const stylesheet = createStyleSheet(theme => ({
     right: 0,
     bottom: 0,
     backgroundColor: theme.colors.background,
-    opacity: 0.75,
+    opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: theme.spacing.md,
