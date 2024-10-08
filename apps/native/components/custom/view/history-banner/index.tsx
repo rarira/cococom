@@ -29,8 +29,6 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 
   if (!data || error || isLoading) return null;
 
-  console.log('fetchHistory', { data });
-
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
