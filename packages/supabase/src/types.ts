@@ -467,7 +467,8 @@ export type Database = {
           id: number
           itemId: string
           categorySector: Database["public"]["Enums"]["CategorySectors"]
-          discountsCount: number
+          discountsCountOnline: number
+          discountsCountOffline: number
         }[]
       }
       get_discounts_with_wishlist_counts: {

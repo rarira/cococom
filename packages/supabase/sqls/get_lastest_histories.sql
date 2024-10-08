@@ -9,20 +9,19 @@ returns table (
 begin
     return query
     (
-        -- 최신의 is_online = true 레코드
-        select h.id, h.created_at, h.new_item_count, h.added_discount_count, h.is_online
-        from public.histories h
-        where h.is_online = true
-        order by h.created_at desc
-        limit 1
-    );
-    
-    return query
-    (
         -- 최신의 is_online = false 레코드
         select h.id, h.created_at, h.new_item_count, h.added_discount_count, h.is_online
         from public.histories h
         where h.is_online = false
+        order by h.created_at desc
+        limit 1
+    );
+    return query
+    (
+        -- 최신의 is_online = true 레코드
+        select h.id, h.created_at, h.new_item_count, h.added_discount_count, h.is_online
+        from public.histories h
+        where h.is_online = true
         order by h.created_at desc
         limit 1
     );
