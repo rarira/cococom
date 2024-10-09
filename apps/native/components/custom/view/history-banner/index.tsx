@@ -55,12 +55,12 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
   },
   title: {
-    color: theme.colors.background,
+    color: 'white',
     fontWeight: 'bold',
   },
   time: {
     fontSize: theme.fontSize.sm,
-    color: theme.colors.background,
+    color: 'white',
     opacity: 0.8,
     fontWeight: 'semibold',
   },
@@ -72,7 +72,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   infoText: {
     fontSize: theme.fontSize.normal,
-    color: theme.colors.background,
+    color: 'white',
     fontWeight: 'bold',
   },
 }));
