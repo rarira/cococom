@@ -6,10 +6,14 @@ import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Button from '@/components/core/button';
 import Chip from '@/components/core/chip';
+import Text from '@/components/core/text';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import DiscountList from '@/components/custom/list/discount';
+import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
+import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { DISCOUNT_SORT_OPTIONS } from '@/libs/sort';
@@ -52,20 +56,31 @@ export default function SalesScreen() {
     bottomSheetModalRef.current?.dismiss(),
   );
 
+  const { handlePress: handleChannelPress, option: channelOption } =
+    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
+
   const renderHeaderRightButton = useCallback(
     () => (
-      <HeaderRightButton
-        iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
-        onPress={() => bottomSheetModalRef.current?.present()}
-      />
+      <View style={styles.headerRightButtonContainer}>
+        <HeaderRightButton
+          iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
+          onPress={() => bottomSheetModalRef.current?.present()}
+          style={styles.sortButton}
+        />
+        <Button onPress={handleChannelPress} hitSlop={theme.spacing.md} style={styles.rotateButton}>
+          <Text style={styles.rotateButtonText}>{channelOption.text}</Text>
+        </Button>
+      </View>
     ),
-    [],
+    [channelOption.text, handleChannelPress, styles, theme.spacing.md],
   );
 
   const renderScene = useMemo(() => {
     if (!categorySectorsArray) return SceneMap({});
     const routeComponentArray = categorySectorsArray.map(categorySector => {
-      const Component = () => <DiscountList key={categorySector} sortOption={sortOption} />;
+      const Component = () => (
+        <DiscountList key={categorySector} sortOption={sortOption} channel={channelOption.value} />
+      );
       Component.displayName = `DiscountList${categorySector}`;
       return Component;
     });
@@ -78,7 +93,7 @@ export default function SalesScreen() {
       {} as Record<CategorySectors, ComponentType<unknown>>,
     );
     return SceneMap(sceneMap);
-  }, [categorySectorsArray, sortOption]);
+  }, [categorySectorsArray, channelOption.value, sortOption]);
 
   const renderTabBar = useCallback<NonNullable<TabViewProps<Route>['renderTabBar']>>(
     props => {
@@ -144,6 +159,26 @@ const stylesheet = createStyleSheet(theme => ({
   contentContainer: {
     flex: 1,
     alignItems: 'center',
+  },
+  headerRightButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 0,
+  },
+  sortButton: {
+    marginLeft: 0,
+  },
+  rotateButton: {
+    borderColor: theme.colors.typography,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rotateButtonText: {
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm,
+    fontWeight: 'bold',
+    color: theme.colors.typography,
   },
   tabViewContainer: {
     flex: 1,

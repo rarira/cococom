@@ -7,12 +7,13 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import DiscountListItemCard from '@/components/custom/card/list-item/discount';
-import { PortalHostNames } from '@/constants';
+import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
 
 interface DiscountListProps {
   sortOption: DiscountSortOption;
+  channel: DiscountChannels;
   limit?: number;
   contentContainerStyle?: ContentStyle;
   portalHostName?: PortalHostNames;
@@ -23,6 +24,7 @@ const NumberOfColumns = 1;
 
 export default function DiscountList({
   sortOption,
+  channel,
   limit,
   contentContainerStyle,
   portalHostName = PortalHostNames.HOME,
@@ -30,10 +32,11 @@ export default function DiscountList({
 }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useDiscountListQuery(
+  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useDiscountListQuery({
     sortOption,
     limit,
-  );
+    channel,
+  });
 
   const tabBarHeight = useBottomTabBarHeight();
 
