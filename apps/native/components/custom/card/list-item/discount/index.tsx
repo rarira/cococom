@@ -36,11 +36,13 @@ function DiscountListItemCard({
     setQueryKeyOfList(queryKeyOfList);
   }, [queryKeyOfList, setQueryKeyOfList]);
 
+  const isOnline = discount.is_online;
+
   return (
     <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild onPress={handlePress}>
       <Pressable>
         <Shadow {...shadowPresets.card(theme)} stretch>
-          <Card style={[styles.cardContainer(numColumns > 1), containerStyle]}>
+          <Card style={[styles.cardContainer(numColumns > 1, isOnline), containerStyle]}>
             <View style={styles.itemContainer(numColumns === 1)}>
               <ProductCardThumbnailImage
                 product={discount.items!}
@@ -59,9 +61,10 @@ function DiscountListItemCard({
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  cardContainer: (needMargin: boolean) => ({
+  cardContainer: (needMargin: boolean, isOnline: boolean) => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
+    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.background,
   }),
   itemContainer: (row: boolean) => ({
     flex: 1,

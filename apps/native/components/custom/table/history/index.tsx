@@ -51,13 +51,13 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'row',
     paddingVertical: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.background,
+    borderBottomColor: 'white',
     gap: theme.spacing.md,
   },
   headerText: {
     fontWeight: 'semibold',
     fontSize: theme.fontSize.normal,
-    color: theme.colors.background,
+    color: 'white',
     textAlign: 'center',
   },
   row: {
@@ -71,7 +71,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'center',
   },
   cellText: {
-    color: theme.colors.background,
+    color: 'white',
     fontSize: theme.fontSize.sm,
     lineHeight: theme.fontSize.sm,
     textAlign: 'center',

@@ -17,7 +17,7 @@ function ListItemCardThumbnailImage({
   width,
   height,
   style,
-  isOnline,
+  isOnline = false,
 }: ListItemCardThumbnailImageProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -29,14 +29,11 @@ function ListItemCardThumbnailImage({
         alt={`${product.itemName} thumbnail image`}
         style={styles.image}
       />
-      <View style={styles.itemIdOverlay}>
-        <Text style={styles.itemIdText}>{product.itemId?.split('_')[0]}</Text>
+      <View style={styles.itemIdOverlay(isOnline)}>
+        <Text style={styles.itemIdText(isOnline)}>
+          {(isOnline ? '온라인, ' : '') + product.itemId?.split('_')[0]}
+        </Text>
       </View>
-      {isOnline ? (
-        <View style={styles.onlineOverlay}>
-          <Text style={styles.onlineText}>온라인</Text>
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -51,21 +48,21 @@ const stylesheet = createStyleSheet(theme => ({
   image: {
     flex: 1,
   },
-  itemIdOverlay: {
+  itemIdOverlay: (isOnline: boolean) => ({
     position: 'absolute',
     top: theme.spacing.sm,
     left: theme.spacing.sm,
-    backgroundColor: theme.colors.background,
-    opacity: 0.8,
+    backgroundColor: isOnline ? theme.colors.tint3 : theme.colors.background,
+    opacity: isOnline ? 1 : 0.8,
     paddingHorizontal: theme.spacing.sm,
     borderRadius: theme.borderRadius.sm,
-  },
-  itemIdText: {
-    color: theme.colors.typography,
+  }),
+  itemIdText: (isOnline: boolean) => ({
+    color: isOnline ? 'white' : theme.colors.typography,
     fontSize: theme.fontSize.xs,
     lineHeight: theme.fontSize.xs * 1.5,
     fontWeight: 'bold',
-  },
+  }),
   onlineOverlay: {
     position: 'absolute',
     bottom: theme.spacing.sm,
