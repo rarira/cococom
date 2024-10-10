@@ -48,10 +48,13 @@ export class Supabase {
       .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
   }
 
-  async upsertItem(item: InsertItem | InsertItem[]) {
+  async upsertItem(
+    item: InsertItem | InsertItem[],
+    options?: { ignoreDuplicates?: boolean; onConflict?: string },
+  ) {
     const response = await this.supabaseClient
       .from('items')
-      .upsert(item as any, { ignoreDuplicates: true, onConflict: 'itemId' })
+      .upsert(item as any, options || { ignoreDuplicates: true, onConflict: 'itemId' })
       .select();
 
     if (response.error) {
