@@ -4,6 +4,7 @@ import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/core/text';
+import Util from '@/libs/util';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;
@@ -31,7 +32,7 @@ function ListItemCardThumbnailImage({
       />
       <View style={styles.itemIdOverlay(isOnline)}>
         <Text style={styles.itemIdText(isOnline)}>
-          {(isOnline ? '온라인, ' : '') + product.itemId?.split('_')[0]}
+          {(isOnline ? '온라인, ' : '') + Util.extractItemid(product.itemId!)}
         </Text>
       </View>
     </View>

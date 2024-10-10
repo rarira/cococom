@@ -17,6 +17,7 @@ import {
   handleMutateOfSearchResult,
   queryKeys,
 } from '@/libs/react-query';
+import Util from '@/libs/util';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
@@ -38,6 +39,8 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
   ]);
 
   const queryKey = queryKeys.items.byId(+itemId, user?.id);
+
+  const isOnline = item?.is_online;
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async () => {
@@ -68,6 +71,8 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
     [item.id, pageIndexOfInfinteList, queryKey, queryKeyOfList, user?.id],
   );
 
+  console.log('item', { item });
+
   return (
     <View style={styles.page} key="1" collapsable={false}>
       <Image source={`https://picsum.photos/500/500`} style={styles.image} />
@@ -92,7 +97,9 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
         </View>
       </View>
       <View style={styles.itemIdOverlay}>
-        <Text style={styles.itemIdText}>{item.itemId}</Text>
+        <Text style={styles.itemIdText}>
+          {(isOnline ? '온라인, ' : '') + Util.extractItemid(item.itemId)}
+        </Text>
       </View>
     </View>
   );
