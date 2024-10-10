@@ -1,11 +1,6 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line import/order
-import {
-  checkIfOnlyAlphabetUpperCase,
-  loadEnv,
-  readJsonFile,
-  writeJsonFile,
-} from '../libs/util.js';
+import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
@@ -234,7 +229,17 @@ async function getAllItems() {
   console.log('sales product count', saleProducts.length, 'unique saleProducts', codeSet.size);
 }
 
-async function downloadImage(product: OnlineProduct, codedb: DownloadResultDb, jpg?: boolean) {
+async function downloadImage({
+  product,
+  codedb,
+  itemIds,
+  jpg,
+}: {
+  product: OnlineProduct;
+  codedb: DownloadResultDb;
+  itemIds: { id: number; itemId: string; online_url: string }[];
+  jpg?: boolean;
+}) {
   const productImage = product.images.find(
     image => image.format === (jpg ? 'product' : 'product-webp'),
   );
@@ -246,6 +251,10 @@ async function downloadImage(product: OnlineProduct, codedb: DownloadResultDb, j
 
   try {
     const data = await supabase.fetchData({ column: 'itemId', value: product.code }, 'items');
+
+    if (!data.online_url) {
+      itemIds.push({ id: data.id, itemId: product.code, online_url: product.url });
+    }
 
     await download({
       url: `https://www.costco.co.kr${productImage!.url}`,
@@ -282,13 +291,19 @@ async function downloadImages() {
   const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
   const codedb: DownloadResultDb = { noImage: [], nameDiff: [], downloadError: [] };
 
+  const itemIds: { id: number; itemId: string; online_url: string }[] = [];
+
   for (const product of products) {
-    await downloadImage(product, codedb);
+    await downloadImage({ product, codedb, itemIds });
   }
+
+  console.log('products', products.length, 'itemIds', itemIds.length);
+
+  await supabase.upsertItem(itemIds, {});
 
   await writeJsonFile(`data/online_downloadResult_${date}.json`, codedb);
 }
-
+/** 
 async function compareLinks() {
   const subCategoryLinks = (await readJsonFile(
     'data/online_subCategoryLinks.json',
@@ -385,6 +400,7 @@ async function updateDownloadResult() {
 
   await writeJsonFile(`data/online_updatedDownloadResult_${date}.json`, downloadResult);
 }
+*/
 
 async function uploadNewRecords() {
   const salesProducts = (await readJsonFile(
