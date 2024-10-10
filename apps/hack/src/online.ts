@@ -179,15 +179,20 @@ async function getAllItems() {
     'data/online_updatedSubCategoryLinks.json',
   )) as OnlineSubCategoryLink[];
 
+  console.log('updatedSubCategoryLinks', updatedSubCategoryLinks.length);
+
   for (const subCategoryLink of updatedSubCategoryLinks) {
     const { totalProducts, products } = await getAllItemsByCategory(
       subCategoryLink.category,
       subCategoryLink.categoryId!,
     );
+
+    console.log('category', subCategoryLink.category, 'totalProducts', totalProducts);
     allProducts.push(...products);
     productsCount += totalProducts;
   }
 
+  console.log(allProducts.length, productsCount);
   await writeJsonFile(`data/online_products_${date}.json`, allProducts);
   console.log('product  array count', allProducts.length, 'productsCount', productsCount);
 
@@ -466,9 +471,9 @@ async function createHistory() {
 
 (async () => {
   // await getAllCategoryInfo();
-  // await getAllItems();
+  await getAllItems();
   // await updateDownloadResult();
-  // await downloadImages();
+  await downloadImages();
   await uploadNewRecords();
   await createHistory();
   // 수동으로
