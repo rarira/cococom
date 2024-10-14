@@ -1,28 +1,32 @@
 import { JoinedItems } from '@cococom/supabase/types';
+import * as WebBrowser from 'expo-web-browser';
 import { memo, useCallback } from 'react';
-import { Share } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 
-interface ItemShareButtonProps {
+interface OpenWebButtonProps {
   item: JoinedItems;
   iconProps?: Partial<Pick<IconButtonProps['iconProps'], 'size' | 'color'>>;
 }
 
-const ItemShareButton = memo(function ItemShareButton({ item, iconProps }: ItemShareButtonProps) {
+const OpenWebButton = memo(function OpenWebButton({ item, iconProps }: OpenWebButtonProps) {
   const { theme } = useStyles();
 
   const handlePress = useCallback(async () => {
-    if (item) {
-      Share.share({ message: item.itemName!, url: 'cccom://item?itemId=' + item.id });
+    if (item && process.env.EXPO_PUBLIC_ONLINE_HOST) {
+      console.log(process.env.EXPO_PUBLIC_ONLINE_HOST + item.online_url);
+      const result = await WebBrowser.openBrowserAsync(
+        process.env.EXPO_PUBLIC_ONLINE_HOST + item.online_url,
+      );
+      console.log('opneWebButton result', result);
     }
   }, [item]);
 
   return (
     <IconButton
       iconProps={{
-        font: { type: 'MaterialIcon', name: 'ios-share' },
+        font: { type: 'Ionicon', name: 'globe-outline' },
         size: theme.fontSize.lg,
         color: theme.colors.typography,
         ...iconProps,
@@ -32,4 +36,4 @@ const ItemShareButton = memo(function ItemShareButton({ item, iconProps }: ItemS
   );
 });
 
-export default ItemShareButton;
+export default OpenWebButton;
