@@ -55,7 +55,7 @@ export class Supabase {
     const response = await this.supabaseClient
       .from('items')
       .upsert(item as any, options || { ignoreDuplicates: true, onConflict: 'itemId' })
-      .select();
+      .select('id, itemId');
 
     if (response.error) {
       console.error(response.error);
@@ -63,14 +63,20 @@ export class Supabase {
     return response.data;
   }
 
-  async upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
+  async upsertDiscount(
+    discount: InsertDiscount | InsertDiscount[],
+    options?: { ignoreDuplicates?: boolean; onConflict?: string },
+  ) {
     const response = await this.supabaseClient
       .from('discounts')
-      .upsert(discount as any, {
-        ignoreDuplicates: true,
-        onConflict: 'discountHash',
-      })
-      .select();
+      .upsert(
+        discount as any,
+        options || {
+          ignoreDuplicates: true,
+          onConflict: 'discountHash',
+        },
+      )
+      .select('discountRate, discount, itemId, discountPrice');
 
     if (response.error) {
       console.error(response.error);
@@ -92,6 +98,21 @@ export class Supabase {
 
   async fetchAllDiscounts() {
     const { data, error } = await this.supabaseClient.from('discounts').select('*');
+    return data;
+  }
+
+  async fetchCurrentOnlineDiscounts(currentTimestamp: string) {
+    const { data, error } = await this.supabaseClient
+      .from('discounts')
+      .select('id, itemId, discountHash, startDate, discount, discountPrice, price')
+      .eq('is_online', true)
+      .lte('startDate', currentTimestamp)
+      .gte('endDate', currentTimestamp);
+
+    if (error) {
+      throw error;
+    }
+
     return data;
   }
 
@@ -154,6 +175,37 @@ export class Supabase {
     }
 
     return data as Tables<T>;
+  }
+
+  async fetchDataLike<T extends keyof Database['public']['Tables']>(
+    search: { value: string | number; column: string },
+    tableName: T,
+    columns?: string,
+  ): Promise<Tables<T>[]> {
+    const { data, error } = await this.supabaseClient
+      .from(tableName)
+      .select(columns || '*')
+      .like(search.column, `${search.value}%`);
+
+    if (error) {
+      // console.error(error);
+      throw error;
+    }
+
+    return data as Tables<T>[];
+  }
+
+  async nullifyOnlineUrl() {
+    const { data, error } = await this.supabaseClient
+      .from('items')
+      .update({ online_url: null })
+      .neq('id', -1);
+
+    if (error) {
+      console.error('Error updating items:', error);
+    } else {
+      console.log('Updated items:', data);
+    }
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
