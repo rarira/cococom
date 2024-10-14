@@ -41,8 +41,6 @@ export default function ItemScreen() {
     queryFn: queryFn(+itemId, user?.id),
   });
 
-  console.log('item', { data });
-
   useTransparentHeader({
     title: data?.itemName,
     headerBackTitleVisible: false,

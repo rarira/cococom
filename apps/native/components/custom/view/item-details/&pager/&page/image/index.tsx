@@ -72,8 +72,6 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
     [item.id, pageIndexOfInfinteList, queryKey, queryKeyOfList, user?.id],
   );
 
-  console.log('item', { item });
-
   return (
     <View style={styles.page} key="1" collapsable={false}>
       <Image source={`https://picsum.photos/500/500`} style={styles.image} />
@@ -84,14 +82,14 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
       </View>
       <View style={styles.buttonOverlay}>
         {item.online_url ? (
-          <View style={styles.buttonBackground}>
+          <View style={styles.buttonBackground(true)}>
             <OpenWebButton item={item} />
           </View>
         ) : null}
-        <View style={styles.buttonBackground}>
+        <View style={styles.buttonBackground()}>
           <ItemShareButton item={item} />
         </View>
-        <View style={styles.buttonBackground}>
+        <View style={styles.buttonBackground()}>
           <ListItemWishlistIconButton<JoinedItems>
             item={item}
             // noText
@@ -143,11 +141,13 @@ const stylesheet = createStyleSheet(theme => ({
     right: theme.spacing.md,
     gap: theme.spacing.md,
   },
-  buttonBackground: {
-    backgroundColor: `${theme.colors.background}88`,
+  buttonBackground: (hasOnlineUrl?: boolean) => ({
+    backgroundColor: `${hasOnlineUrl ? theme.colors.tint3 : theme.colors.background}88`,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
-  },
+    borderWidth: hasOnlineUrl ? 1 : 0,
+    borderColor: theme.colors.tint3,
+  }),
   itemIdOverlay: {
     position: 'absolute',
     top: theme.spacing.md,
