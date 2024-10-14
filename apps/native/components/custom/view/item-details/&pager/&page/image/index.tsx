@@ -9,6 +9,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Text from '@/components/core/text';
 import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import OpenWebButton from '@/components/custom/button/open-web';
 import { PortalHostNames } from '@/constants';
 import {
   handleMutateOfAlltimeRanking,
@@ -82,6 +83,11 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
         </Text>
       </View>
       <View style={styles.buttonOverlay}>
+        {item.online_url ? (
+          <View style={styles.buttonBackground}>
+            <OpenWebButton item={item} />
+          </View>
+        ) : null}
         <View style={styles.buttonBackground}>
           <ItemShareButton item={item} />
         </View>
