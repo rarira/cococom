@@ -15,11 +15,10 @@ const OpenWebButton = memo(function OpenWebButton({ item, iconProps }: OpenWebBu
 
   const handlePress = useCallback(async () => {
     if (item && process.env.EXPO_PUBLIC_ONLINE_HOST) {
-      console.log(process.env.EXPO_PUBLIC_ONLINE_HOST + item.online_url);
-      const result = await WebBrowser.openBrowserAsync(
-        process.env.EXPO_PUBLIC_ONLINE_HOST + item.online_url,
-      );
-      console.log('opneWebButton result', result);
+      await WebBrowser.openBrowserAsync(process.env.EXPO_PUBLIC_ONLINE_HOST + item.online_url, {
+        presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+        dismissButtonStyle: 'close',
+      });
     }
   }, [item]);
 
