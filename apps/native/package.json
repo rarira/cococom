@@ -70,7 +70,6 @@
     "react-native-unistyles": "^2.9.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.12",
-    "react-native-webview": "13.8.6",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"
   },
