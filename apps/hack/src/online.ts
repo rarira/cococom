@@ -6,8 +6,10 @@ loadEnv();
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import dayjs from 'dayjs';
 
 import { download } from '../libs/axios.js';
+import { minus1MS } from '../libs/date.js';
 import { supabase, updateItemHistory } from '../libs/supabase.js';
 import {
   DownloadResultDb,
@@ -15,6 +17,8 @@ import {
   OnlineSubCategoryLink,
   SearchApiResult,
 } from '../libs/types.js';
+
+import { InsertDiscount } from '@cococom/supabase/libs';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
@@ -25,6 +29,8 @@ const newItems: string[] = [];
 const noPriceValue = new Set<string>();
 
 let newDiscountsCount = 0;
+
+type ItemId = { id: number; itemId: string; online_url: string };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
@@ -187,9 +193,9 @@ async function getAllItems() {
     productsCount += totalProducts;
   }
 
-  console.log(allProducts.length, productsCount);
-  await writeJsonFile(`data/online_products_${date}.json`, allProducts);
-  console.log('product  array count', allProducts.length, 'productsCount', productsCount);
+  const uniqueProducts = removeDuplicateProducts(allProducts);
+
+  await writeJsonFile(`data/online_products_${date}.json`, uniqueProducts);
 
   const saleProducts: OnlineProduct[] = allProducts.filter(
     product => product.couponDiscount?.discountValue,
@@ -199,8 +205,6 @@ async function getAllItems() {
     console.log('no sale products');
     return;
   }
-
-  const codeSet = new Set<string>();
 
   for (const product of saleProducts) {
     if (!product.code) {
@@ -216,17 +220,28 @@ async function getAllItems() {
     if (!product.basePrice?.value || !product.price?.value) {
       console.log('no price or basePrice', product.code);
     }
-
-    if (codeSet.has(product.code)) {
-      // console.log('duplicate code', product.code);
-    } else {
-      codeSet.add(product.code);
-    }
   }
 
   await writeJsonFile(`data/online_saleProducts_${date}.json`, saleProducts);
 
-  console.log('sales product count', saleProducts.length, 'unique saleProducts', codeSet.size);
+  console.log('sales product count', saleProducts.length);
+}
+
+async function removeDuplicateProducts(products: OnlineProduct[]) {
+  const codeSet = new Set<string>();
+
+  const uniqueProducts = products.filter(product => {
+    if (codeSet.has(product.code)) {
+      return false;
+    } else {
+      codeSet.add(product.code);
+      return true;
+    }
+  });
+
+  console.log('all products', products.length, 'uniqueProducts', uniqueProducts.length);
+
+  return uniqueProducts;
 }
 
 async function downloadImage({
@@ -244,46 +259,51 @@ async function downloadImage({
     image => image.format === (jpg ? 'product' : 'product-webp'),
   );
 
-  if (!productImage) {
-    codedb.noImage.push(product.code);
-    return;
+  async function saveImage(exists: boolean) {
+    if (!productImage) {
+      codedb.noImage.push(product.code);
+      return;
+    }
+
+    try {
+      await download({
+        url: `https://www.costco.co.kr${productImage!.url}`,
+        localPath: `../downloads/online-images/${exists ? 'in' : 'out'}`,
+        fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
+      });
+    } catch (error) {
+      codedb.downloadError.push(product.code);
+    }
   }
 
   try {
-    const data = await supabase.fetchData({ column: 'itemId', value: product.code }, 'items');
+    const data = await supabase.fetchDataLike(
+      { column: 'itemId', value: product.code },
+      'items',
+      'id, itemId, itemName',
+    );
 
-    if (!data.online_url) {
-      itemIds.push({ id: data.id, itemId: product.code, online_url: product.url });
+    if (data.length === 0) {
+      await saveImage(false);
+      return;
     }
 
-    await download({
-      url: `https://www.costco.co.kr${productImage!.url}`,
-      localPath: '../downloads/online-images/in',
-      fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
-    });
+    for (const item of data) {
+      itemIds.push({ id: item.id, itemId: item.itemId, online_url: product.url });
 
-    if (data.itemName !== product.name) {
-      codedb.nameDiff.push({
-        code: product.code,
-        dbName: data.itemName!,
-        onlineName: product.name,
-      });
+      if (item.itemName !== product.name) {
+        codedb.nameDiff.push({
+          code: product.code,
+          dbName: item.itemName!,
+          onlineName: product.name,
+        });
+      }
+
+      await saveImage(true);
     }
   } catch (error) {
-    if (error.code === 'PGRST116') {
-      try {
-        await download({
-          url: `https://www.costco.co.kr${productImage!.url}`,
-          localPath: '../downloads/online-images/out',
-          fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
-        });
-        return;
-      } catch (error) {
-        codedb.downloadError.push(product.code);
-        return;
-      }
-    }
-    codedb.downloadError.push(product.code);
+    console.error('fetchDataLike error', error);
+    return;
   }
 }
 
@@ -291,116 +311,97 @@ async function downloadImages() {
   const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
   const codedb: DownloadResultDb = { noImage: [], nameDiff: [], downloadError: [] };
 
-  const itemIds: { id: number; itemId: string; online_url: string }[] = [];
+  const itemIds: ItemId[] = [];
 
   for (const product of products) {
     await downloadImage({ product, codedb, itemIds });
   }
 
-  console.log('products', products.length, 'itemIds', itemIds.length);
+  console.log(
+    'products',
+    products.length,
+    'itemIds',
+    itemIds.length,
+    'lastItemId',
+    itemIds[itemIds.length - 1],
+  );
 
-  await supabase.upsertItem(itemIds, {});
+  await writeJsonFile(`data/online_downloadResult_itemIds_${date}.json`, itemIds);
 
-  await writeJsonFile(`data/online_downloadResult_${date}.json`, codedb);
-}
-/** 
-async function compareLinks() {
-  const subCategoryLinks = (await readJsonFile(
-    'data/online_subCategoryLinks.json',
-  )) as OnlineSubCategoryLink[];
-  const updated = (await readJsonFile(
-    'data/online_updatedSubCategoryLinks.json',
-  )) as OnlineSubCategoryLink[];
-
-  const categorySet = new Set(subCategoryLinks.map(subCategoryLink => subCategoryLink.category));
-  const productCategorySet = new Set(updated.map(update => update.category));
-
-  console.log('categorySet', categorySet.size);
-  console.log('productCategorySet', productCategorySet.size);
-
-  const diff = [...categorySet].filter(category => !productCategorySet.has(category));
-  console.log('diff', diff);
+  await writeJsonFile(`data/online_downloadResult_codedb_${date}.json`, codedb);
 }
 
-async function findDuplicateCategory() {
-  const subCategoryLinks = (await readJsonFile(
-    'data/online_subCategoryLinks.json',
-  )) as OnlineSubCategoryLink[];
+async function upsertOnlineUrlToItem() {
+  const itemIds = (await readJsonFile(
+    `data/online_downloadResult_itemIds_${date}.json`,
+  )) as ItemId[];
+  // await supabase.nullifyOnlineUrl();
 
-  subCategoryLinks.forEach(subCategoryLink => {
-    const count = subCategoryLinks.filter(
-      link => link.category === subCategoryLink.category,
-    ).length;
+  // const uniqueItemIds = new Set();
 
-    if (count > 1) {
-      console.log('duplicate', subCategoryLink.category);
-    }
+  // itemIds.forEach(item => {
+  //   if (uniqueItemIds.has(item.itemId)) {
+  //     console.log('duplicate', item.itemId);
+  //   } else {
+  //     uniqueItemIds.add(item.itemId);
+  //   }
+  // });
+
+  // console.log(itemIds.length, uniqueItemIds.size);
+  const result = await supabase.upsertItem(itemIds, {
+    ignoreDuplicates: false,
+    onConflict: 'itemId',
   });
+
+  console.log('upsertOnlineUrlToItem', result?.length);
 }
 
-async function updateDownloadResult() {
-  const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
-  const downloadResult = (await readJsonFile(
-    `data/online_downloadResult_${date}.json`,
-  )) as DownloadResultDb;
+async function manageSoldOutDiscounts() {
+  const salesProducts = (await readJsonFile(
+    `data/online_saleProducts_${date}.json`,
+  )) as OnlineProduct[];
 
-  // 이미지 에러 난 거 jpg로 다시 다운로드
-  for (const errorProductId of downloadResult.downloadError) {
-    const product = products.find(product => product.code === errorProductId);
-    if (product) {
-      try {
-        await downloadImage(product, downloadResult, true);
-        downloadResult.downloadError = downloadResult.downloadError.filter(
-          productId => productId !== errorProductId,
-        );
-      } catch (error) {
-        // console.error(error);
-      }
+  const salesProductsCodeSet = new Set<string>(salesProducts.map(product => product.code));
+
+  console.log(date, 'will manage sold out discounts for', salesProducts.length, 'products');
+
+  try {
+    const result = await supabase.fetchCurrentOnlineDiscounts(date!);
+
+    if (!result?.length) {
+      console.error('no current online discounts');
+      return;
     }
+
+    const soldOutDiscounts = result.filter(
+      discount => !salesProductsCodeSet.has(discount.itemId.split('_')[0]!),
+    );
+
+    const discountsToUpsert = soldOutDiscounts.map(discount => {
+      return {
+        ...discount,
+        endDate: minus1MS(dayjs()),
+      };
+    });
+
+    const upsertDiscountResult = await supabase.upsertDiscount(
+      discountsToUpsert as InsertDiscount[],
+      {
+        ignoreDuplicates: false,
+        onConflict: 'discountHash',
+      },
+    );
+
+    console.log(
+      'soldOutDiscounts',
+      soldOutDiscounts.length,
+      'upsertDiscountResult',
+      upsertDiscountResult?.length,
+    );
+  } catch (error) {
+    console.error('fetchCurrentOnlineDiscounts error', error);
   }
-
-  // TODO: 이름이 다른 것들 브랜드 뽑아내기
-  for (const nameDiff of downloadResult.nameDiff) {
-    nameDiff.dbName = nameDiff.dbName.replace(/\s+/g, ' ').trim();
-    nameDiff.onlineName = nameDiff.onlineName.replace(/\s+/g, ' ').trim();
-
-    const dbNameSplit = nameDiff.dbName.split(' ');
-    const onlineNameSplit = nameDiff.onlineName.split(' ');
-
-    const brandName = { db: dbNameSplit[0]!, online: onlineNameSplit[0]! };
-
-    if (brandName.db?.startsWith(brandName.online!) && brandName.db !== brandName.online) {
-      const brandNameDBRest = brandName.db.slice(brandName.online!.length);
-
-      if (checkIfOnlyAlphabetUpperCase(brandNameDBRest)) {
-        console.log('아르떼ARTE 케이스', brandName);
-      } else {
-        nameDiff.dbName =
-          brandName.online + ' ' + brandNameDBRest + nameDiff.dbName.slice(brandName.db.length);
-        brandName.online = brandName.online + ' ' + onlineNameSplit[1];
-      }
-    }
-
-    for (let i = 1; i < dbNameSplit.length; i++) {
-      if (dbNameSplit[i] === brandName.online) {
-        brandName.db = dbNameSplit.slice(0, i + 1).join(' ');
-      } else if (
-        checkIfOnlyAlphabetUpperCase(dbNameSplit[i]!) &&
-        checkIfOnlyAlphabetUpperCase(brandName.db)
-      ) {
-        console.log('IP TIME 케이스', brandName, dbNameSplit[i]);
-        brandName.db = dbNameSplit.slice(0, i + 1).join(' ');
-        brandName.online = onlineNameSplit.slice(0, i + 1).join(' ');
-        continue;
-      }
-    }
-
-    nameDiff.brandName = brandName;
-  }
-
-  await writeJsonFile(`data/online_updatedDownloadResult_${date}.json`, downloadResult);
 }
-*/
 
 async function uploadNewRecords() {
   const salesProducts = (await readJsonFile(
@@ -490,11 +491,10 @@ async function createHistory() {
   await getAllItems();
   // await updateDownloadResult();
   await downloadImages();
+  await upsertOnlineUrlToItem();
+  await manageSoldOutDiscounts();
   await uploadNewRecords();
   await createHistory();
   // 수동으로
   // await updateSubCategoryLinks();
-  // 검증용
-  // await findDuplicateCategory();
-  // await compareLinks();
 })();

@@ -55,7 +55,7 @@ async function crawlAllDiscounts(noLowsetPrice = false) {
       discounts.map(discount => ({
         itemId: item.itemId,
         startDate: getISOTimeStringWithTimezone(discount.startdate),
-        endDate: addDays(getDateWithTimezone(discount.enddate), 1),
+        endDate: addDays(getDateWithTimezone(discount.enddate), 1).toISOString(),
         price: discount.price,
         discount: discount.discount,
         discountPrice: discount.discountprice,
