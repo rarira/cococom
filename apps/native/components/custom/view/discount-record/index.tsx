@@ -9,15 +9,17 @@ import Text from '@/components/core/text';
 import DiscountRateText from '../../text/discount-rate';
 import SuperscriptWonText from '../../text/superscript-won';
 
+export type DiscountType = 'wholeProduct' | 'memberOnly' | 'normal';
+
 interface DiscountRecordViewProps {
-  isWholeProduct: boolean;
+  discountType: DiscountType;
   item: Pick<Tables<'items'>, 'bestDiscount' | 'bestDiscountRate' | 'lowestPrice'>;
   style?: ViewProps['style'];
   infoDirection?: 'row' | 'column';
 }
 
 const DiscountRecordView = memo(function DiscountRecordView({
-  isWholeProduct,
+  discountType,
   item,
   style,
   infoDirection = 'column',
@@ -26,9 +28,11 @@ const DiscountRecordView = memo(function DiscountRecordView({
 
   return (
     <View style={[styles.container, style]}>
-      {isWholeProduct ? (
+      {discountType !== 'normal' ? (
         <View style={styles.infoBlock(infoDirection)}>
-          <Text style={styles.discountLabelText}>최대 단위당 할인 금액</Text>
+          <Text
+            style={styles.discountLabelText}
+          >{`최대${discountType === 'wholeProduct' ? ' 단위당  ' : ' '}할인 금액`}</Text>
           <SuperscriptWonText price={item.bestDiscount!} isMinus />
         </View>
       ) : (

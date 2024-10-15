@@ -13,6 +13,7 @@ import DiscountPeriodText from '@/components/custom/text/discount-period';
 import InfoIconText from '@/components/custom/text/info-icon';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import { ITEM_DETAILS_MAX_COUNT } from '@/constants';
+import { getDiscountTypeFromDiscount } from '@/libs/item';
 import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
@@ -28,7 +29,7 @@ function DiscountListItemCardDetailView({
 }: DiscountListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
   const user = useUserStore(store => store.user);
-  const isWholeProduct = discount.discountPrice === 0;
+  const discountType = getDiscountTypeFromDiscount(discount);
 
   const { categorySector: categorySectorParam } = useLocalSearchParams<{
     categorySector: CategorySectors;
@@ -57,14 +58,14 @@ function DiscountListItemCardDetailView({
       </Text>
       <View>
         <View style={styles.priceContainer}>
-          {isWholeProduct ? (
-            <DiscountPriceView discount={discount.discount} isWholeProduct={isWholeProduct} />
+          {discountType !== 'normal' ? (
+            <DiscountPriceView discount={discount.discount} discountType={discountType} />
           ) : (
             <DiscountPriceView
               price={discount.price}
               discountRate={discount.discountRate}
               discountPrice={discount.discountPrice}
-              isWholeProduct={isWholeProduct}
+              discountType={discountType}
             />
           )}
         </View>
