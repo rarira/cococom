@@ -212,6 +212,7 @@ export type Database = {
           itemName: string | null
           lowestPrice: number | null
           online_url: string | null
+          related_item_id: number | null
           totalCommentCount: number | null
           totalDiscountCount: number | null
           totalWishlistCount: number | null
@@ -228,6 +229,7 @@ export type Database = {
           itemName?: string | null
           lowestPrice?: number | null
           online_url?: string | null
+          related_item_id?: number | null
           totalCommentCount?: number | null
           totalDiscountCount?: number | null
           totalWishlistCount?: number | null
@@ -244,6 +246,7 @@ export type Database = {
           itemName?: string | null
           lowestPrice?: number | null
           online_url?: string | null
+          related_item_id?: number | null
           totalCommentCount?: number | null
           totalDiscountCount?: number | null
           totalWishlistCount?: number | null
@@ -643,4 +646,3 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
-
