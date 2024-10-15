@@ -11,7 +11,7 @@ import {
   getISOTimeStringWithTimezone,
   minus1MS,
 } from '../libs/date.js';
-import { supabase, updateItemHistory } from '../libs/supabase.js';
+import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
@@ -137,7 +137,8 @@ async function updateDiscounts(date?: string) {
         newItemsWithNoImage.push(item.itemId);
       }
       const data = await getItem(item.itemId);
-      await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+
+      await addReletedItemId(item, { categoryId: Number(data.category) });
     }
   }
 
