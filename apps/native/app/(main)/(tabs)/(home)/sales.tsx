@@ -6,10 +6,9 @@ import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Button from '@/components/core/button';
 import Chip from '@/components/core/chip';
-import Text from '@/components/core/text';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
+import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import DiscountList from '@/components/custom/list/discount';
 import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
@@ -67,12 +66,10 @@ export default function SalesScreen() {
           onPress={() => bottomSheetModalRef.current?.present()}
           style={styles.sortButton}
         />
-        <Button onPress={handleChannelPress} hitSlop={theme.spacing.md} style={styles.rotateButton}>
-          <Text style={styles.rotateButtonText}>{channelOption.text}</Text>
-        </Button>
+        <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
       </View>
     ),
-    [channelOption.text, handleChannelPress, styles, theme.spacing.md],
+    [channelOption, handleChannelPress, styles.headerRightButtonContainer, styles.sortButton],
   );
 
   const renderScene = useMemo(() => {
@@ -168,18 +165,7 @@ const stylesheet = createStyleSheet(theme => ({
   sortButton: {
     marginLeft: 0,
   },
-  rotateButton: {
-    borderColor: theme.colors.typography,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rotateButtonText: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm,
-    fontWeight: 'bold',
-    color: theme.colors.typography,
-  },
+
   tabViewContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
