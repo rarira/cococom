@@ -1,34 +1,11 @@
-DROP FUNCTION IF EXISTS get_alltime_top_items(
-    _user_id uuid,
-    _order_by_column text,
-    _order_by_direction text,
-    _limit_count int
-);
+drop function if exists "public"."get_alltime_top_items"(_user_id uuid, _order_by_column text, _order_by_direction text, _limit_count integer);
 
-CREATE OR REPLACE FUNCTION get_alltime_top_items(
-    _user_id uuid,
-    _order_by_column text,
-    _order_by_direction text,
-    _limit_count int
-)
-RETURNS TABLE(
-    id int,
-    "itemName" text,
-    "itemId" text,
-    created_at timestamp with time zone,
-    "bestDiscountRate" numeric,
-    "lowestPrice" numeric,
-    "bestDiscount" numeric,
-    "totalWishlistCount" int,
-    "totalCommentCount" int,
-    "totalDiscountCount" int,
-    "totalMemoCount" bigint,
-    "isWishlistedByUser" boolean,
-    "isOnSaleNow" boolean,
-    is_online boolean
-)
-LANGUAGE plpgsql
-AS $$
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_alltime_top_items(_user_id uuid, _order_by_column text, _order_by_direction text, _limit_count integer)
+ RETURNS TABLE(id integer, "itemName" text, "itemId" text, created_at timestamp with time zone, "bestDiscountRate" numeric, "lowestPrice" numeric, "bestDiscount" numeric, "totalWishlistCount" integer, "totalCommentCount" integer, "totalDiscountCount" integer, "totalMemoCount" bigint, "isWishlistedByUser" boolean, "isOnSaleNow" boolean, is_online boolean)
+ LANGUAGE plpgsql
+AS $function$
 BEGIN
     RETURN QUERY EXECUTE FORMAT(
         'WITH item_counts AS (
@@ -81,4 +58,7 @@ BEGIN
         _limit_count
     ) USING _user_id;
 END;
-$$;
+$function$
+;
+
+
