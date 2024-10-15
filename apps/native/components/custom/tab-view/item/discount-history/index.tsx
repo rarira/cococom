@@ -31,19 +31,33 @@ const ItemDiscountHistoryTabView = memo(function ItemDiscountHistoryTabView({
   );
 
   const renderPrice = useCallback(
-    (price: number, isMinus?: boolean, bold?: boolean) => {
+    ({
+      price,
+      isMinus,
+      bold,
+      isOnline,
+    }: {
+      price: number;
+      isMinus?: boolean;
+      bold?: boolean;
+      isOnline?: boolean;
+    }) => {
       return (
         <View style={styles.priceColumn}>
-          <SuperscriptWonText
-            price={price}
-            isMinus={isMinus}
-            bold={bold}
-            fontSize={theme.fontSize.sm}
-          />
+          {isOnline ? (
+            <Text style={styles.memberOnlyText}>회원전용</Text>
+          ) : (
+            <SuperscriptWonText
+              price={price}
+              isMinus={isMinus}
+              bold={bold}
+              fontSize={theme.fontSize.sm}
+            />
+          )}
         </View>
       );
     },
-    [styles.priceColumn, theme.fontSize.sm],
+    [styles.memberOnlyText, styles.priceColumn, theme.fontSize.sm],
   );
 
   const renderDiscount = useCallback(
@@ -81,12 +95,23 @@ const ItemDiscountHistoryTabView = memo(function ItemDiscountHistoryTabView({
               data={renderPeriod(discount.startDate, discount.endDate)}
               textStyle={styles.cellText}
             />
-            <Cell data={renderPrice(discount.price, false, false)} textStyle={styles.cellText} />
+            <Cell
+              data={renderPrice({
+                price: discount.price,
+                isMinus: false,
+                bold: false,
+                isOnline: discount.is_online,
+              })}
+              textStyle={styles.cellText}
+            />
             <Cell
               data={renderDiscount(discount.discount, discount.discountRate)}
               textStyle={styles.cellText}
             />
-            <Cell data={renderPrice(discount.discountPrice)} textStyle={styles.cellText} />
+            <Cell
+              data={renderPrice({ price: discount.discountPrice, isOnline: discount.is_online })}
+              textStyle={styles.cellText}
+            />
           </TableWrapper>
         ))}
       </Table>
@@ -150,6 +175,10 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'column',
     alignItems: 'flex-end',
     gap: theme.spacing.sm,
+  },
+  memberOnlyText: {
+    color: theme.colors.typography,
+    fontSize: theme.fontSize.sm,
   },
 }));
 

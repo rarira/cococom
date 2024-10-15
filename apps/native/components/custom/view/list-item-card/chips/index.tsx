@@ -8,6 +8,7 @@ import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types'
 import Chip from '@/components/core/chip';
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import { 할인마감임박잔여일수 } from '@/constants';
+import { getDiscountTypeFromDiscount } from '@/libs/item';
 
 type ChipsDiscount = Omit<Tables<'discounts'>, 'created_at' | 'discountHash' | 'itemId'>;
 type ListItemCardChipsViewProps = (
@@ -50,6 +51,12 @@ const chips = [
       isAfter(add(new Date(), { days: 할인마감임박잔여일수 }), new Date(discount.endDate)),
     color: (theme: UnistylesTheme) => theme.colors.alert,
   },
+  {
+    text: '회원전용할인',
+    checkFn: (discount: ChipsDiscount) =>
+      getDiscountTypeFromDiscount(discount as any) === 'memberOnly',
+    color: (theme: UnistylesTheme) => theme.colors.alert,
+  },
 ];
 
 function ListItemCardChipsView({ discount, item, style }: ListItemCardChipsViewProps) {
@@ -66,7 +73,9 @@ function ListItemCardChipsView({ discount, item, style }: ListItemCardChipsViewP
             style={{ backgroundColor: chip.color(theme) }}
             textProps={{
               style:
-                chip.text === '곧마감' || chip.text === '첫할인' ? styles.alertText : undefined,
+                chip.text === '곧마감' || chip.text === '첫할인' || chip.text === '회원전용할인'
+                  ? styles.alertText
+                  : undefined,
             }}
           />
         )),

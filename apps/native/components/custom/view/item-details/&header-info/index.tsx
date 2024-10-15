@@ -19,7 +19,7 @@ const ItemDetailsHeaderInfoView = memo(function ItemDetailsHeaderInfoView({
 }: ItemDetailsHeaderInfoViewProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { isOnSaleNow, discount, isWholeProduct } = getDiscountInfoFromItem(item);
+  const { isOnSaleNow, discount, discountType } = getDiscountInfoFromItem(item);
 
   return (
     <View style={styles.container}>
@@ -31,25 +31,25 @@ const ItemDetailsHeaderInfoView = memo(function ItemDetailsHeaderInfoView({
               <Text style={styles.onSaleText}>할인중</Text>
               <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
             </View>
-            {isWholeProduct ? (
+            {discountType === 'normal' ? (
               <DiscountPriceView
-                isWholeProduct
-                discount={discount.discount}
+                discountType={discountType}
+                price={discount.price}
+                discountPrice={discount.discountPrice}
+                discountRate={discount.discountRate!}
                 style={styles.priceViewContainer}
               />
             ) : (
               <DiscountPriceView
-                isWholeProduct={false}
-                price={discount.price}
-                discountPrice={discount.discountPrice}
-                discountRate={discount.discountRate!}
+                discountType={discountType}
+                discount={discount.discount}
                 style={styles.priceViewContainer}
               />
             )}
           </View>
         </>
       )}
-      <DiscountRecordView item={item} isWholeProduct={isWholeProduct} infoDirection="row" />
+      <DiscountRecordView item={item} discountType={discountType} infoDirection="row" />
     </View>
   );
 });
