@@ -1,13 +1,13 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Text from '@/components/core/text';
+import HeaderRightRelatedButton from '@/components/custom/button/header/right/related';
 import ItemCommentTabView from '@/components/custom/tab-view/item/comment';
 import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discount-history';
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
@@ -44,16 +44,8 @@ export default function ItemScreen() {
 
   const headerRight = useCallback(() => {
     if (!data?.related_item_id) return null;
-    return (
-      <Link href={`/item?itemId=${data.related_item_id}`} asChild>
-        <Pressable>
-          <Text style={styles.headerRightText} numberOfLines={2}>
-            {(data.is_online ? '오프라인' : '온라인') + '\n상품 보기'}
-          </Text>
-        </Pressable>
-      </Link>
-    );
-  }, [data?.is_online, data?.related_item_id, styles.headerRightText]);
+    return <HeaderRightRelatedButton item={data} />;
+  }, [data]);
 
   useTransparentHeader({
     title: data?.itemName,
@@ -154,12 +146,4 @@ const stylesheet = createStyleSheet(theme => ({
   tabBarLabel: { fontSize: theme.fontSize.normal, fontWeight: 'semibold' },
   tabBarIndictator: { backgroundColor: theme.colors.tint3 },
   headerContainer: { backgroundColor: theme.colors.background },
-  headerRightText: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm * 1.2,
-    maxWidth: 50,
-    textAlign: 'center',
-    color: theme.colors.tint3,
-    fontWeight: 'bold',
-  },
 }));
