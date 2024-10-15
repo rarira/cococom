@@ -322,6 +322,22 @@ export class Supabase {
     return data;
   }
 
+  async fetchOnlineItemsWithNullRelatedItem() {
+    const { data, error } = await this.supabaseClient
+      .from('items')
+      .select('id, itemId')
+      .eq('is_online', true)
+      .is('related_item_id', null)
+      .limit(2000);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
   async upsertMemo(memo: InsertMemo) {
     const { error } = await this.supabaseClient.from('memos').upsert(memo);
 

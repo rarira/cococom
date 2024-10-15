@@ -4,21 +4,20 @@ import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
+import { InsertDiscount } from '@cococom/supabase/libs';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
 
 import { download } from '../libs/axios.js';
 import { minus1MS } from '../libs/date.js';
-import { supabase, updateItemHistory } from '../libs/supabase.js';
+import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
 import {
   DownloadResultDb,
   OnlineProduct,
   OnlineSubCategoryLink,
   SearchApiResult,
 } from '../libs/types.js';
-
-import { InsertDiscount } from '@cococom/supabase/libs';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
@@ -408,7 +407,7 @@ async function uploadNewRecords() {
     `data/online_saleProducts_${date}.json`,
   )) as OnlineProduct[];
 
-  salesProducts.forEach(async product => {
+  salesProducts.forEach(product => {
     if (!product.code) {
       console.log('no code', product.name);
     }
@@ -442,6 +441,9 @@ async function uploadNewRecords() {
 
   if (newlyAddedItems?.length) {
     newItems.push(...newlyAddedItems.map(item => item.itemId));
+    for (const newlyAddedItem of newlyAddedItems) {
+      await addReletedItemId(newlyAddedItem);
+    }
   }
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
@@ -474,6 +476,19 @@ async function uploadNewRecords() {
   }
 }
 
+async function updateRelatedItemId() {
+  const data = await supabase.fetchOnlineItemsWithNullRelatedItem();
+
+  if (!data?.length) {
+    console.log('no data');
+    return;
+  }
+
+  for (const onlineItem of data) {
+    await addReletedItemId(onlineItem);
+  }
+}
+
 async function createHistory() {
   if (!newItems.length) return;
 
@@ -494,6 +509,7 @@ async function createHistory() {
   await upsertOnlineUrlToItem();
   await manageSoldOutDiscounts();
   await uploadNewRecords();
+  // await updateRelatedItemId();
   await createHistory();
   // 수동으로
   // await updateSubCategoryLinks();
