@@ -52,3 +52,29 @@ export async function updateItemHistory(
     }
   }
 }
+
+
+
+
+export async function addReletedItemId(item:  Pick<Tables<'items'>, "itemId" | 'id'>, update: Partial<Tables<'items'>> = {}) {
+
+  try {
+    const relatedItem = await supabase.fetchData(
+      { column: 'itemId', value: item.itemId.split('_')[0]! },
+      'items',
+      'id',
+    );
+
+    await supabase.updateItem({ related_item_id: relatedItem.id, ...update }, item.id);
+    await supabase.updateItem({ related_item_id: item.id }, relatedItem.id);
+  } catch (error) {
+    if(update) {
+      await supabase.updateItem(update, item.id);
+    }
+    
+    if (error.code === 'PGRST116') {
+      continue;
+    } else {
+      console.error('updateRelatedItemId error', error);
+    }
+  }
