@@ -442,9 +442,9 @@ export type Database = {
       get_alltime_top_items: {
         Args: {
           _user_id: string
-          _order_by_column?: string
-          _order_by_direction?: string
-          _limit_count?: number
+          _order_by_column: string
+          _order_by_direction: string
+          _limit_count: number
         }
         Returns: {
           id: number
@@ -460,6 +460,7 @@ export type Database = {
           totalMemoCount: number
           isWishlistedByUser: boolean
           isOnSaleNow: boolean
+          is_online: boolean
         }[]
       }
       get_current_discounts_by_category_sector: {
@@ -527,6 +528,7 @@ export type Database = {
           page_size: number
           order_field: string
           order_direction: string
+          channel: string
         }
         Returns: Json
       }
@@ -539,6 +541,7 @@ export type Database = {
           page_size: number
           order_field: string
           order_direction: string
+          channel: string
         }
         Returns: Json
       }

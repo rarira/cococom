@@ -12,6 +12,7 @@ import { AlltimeRankingListItemCardProps } from '@/components/custom/card/list-i
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { getDiscountTypeFromResult } from '@/libs/item';
 import { handleMutateOfAlltimeRanking } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
@@ -29,7 +30,7 @@ function AlltimeRankingListItemCardDetailView({
 
   const user = useUserStore(store => store.user);
 
-  const isWholeProduct = item.lowestPrice === 0;
+  const discountType = getDiscountTypeFromResult(item);
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
@@ -49,7 +50,7 @@ function AlltimeRankingListItemCardDetailView({
       </Text>
       <DiscountRecordView
         item={item}
-        isWholeProduct={isWholeProduct}
+        discountType={discountType}
         style={styles.discountRecordContainer}
       />
       <View style={styles.footer}>

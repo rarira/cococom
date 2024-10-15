@@ -10,6 +10,7 @@ import ListItemWishlistIconButton from '@/components/custom/button/list-item-wis
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { getDiscountTypeFromResult } from '@/libs/item';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -31,7 +32,7 @@ function SearchResultListItemCardDetailView({
 
   const user = useUserStore(store => store.user);
 
-  const isWholeProduct = item.lowestPrice === 0;
+  const discountType = getDiscountTypeFromResult(item);
 
   const queryKey = useMemo(() => {
     const isOnSaleNow = options.includes('on_sale');
@@ -64,7 +65,7 @@ function SearchResultListItemCardDetailView({
       </Text>
       <DiscountRecordView
         item={item}
-        isWholeProduct={isWholeProduct}
+        discountType={discountType}
         style={styles.discountRecordContainer}
       />
       <View style={styles.footer}>

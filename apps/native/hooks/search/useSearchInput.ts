@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
+import { DiscountChannels } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import {
   getSearchHistoryHash,
@@ -18,11 +19,16 @@ import { useUserStore } from '@/store/user';
 type UseSearchInputParams = {
   addSearchHistory: (searchHistory: SearchHistory) => void;
   callbackSortChange?: (sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS) => void;
+  channelOption: DiscountChannels;
 };
 
 const PAGE_SIZE = 10;
 
-export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSearchInputParams) {
+export function useSearchInput({
+  addSearchHistory,
+  callbackSortChange,
+  channelOption,
+}: UseSearchInputParams) {
   const [optionsToSearch, setOptionsToSearch] = useState<SearchOptionValue[]>([]);
   const [keywordToSearch, setKeywordToSearch] = useState<string>('');
   const [sortOption, setSortOption] =
@@ -57,6 +63,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
     isOnSaleSearch,
     SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
     SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+    channelOption,
     user?.id,
   );
 
@@ -67,6 +74,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
       queryFn: ({ pageParam }) => {
         if (isItemIdSearch) {
           return supabase.fullTextSearchItemsByItemId(
+            channelOption,
             keywordToSearch,
             !!isOnSaleSearch,
             user?.id,
@@ -77,6 +85,7 @@ export function useSearchInput({ addSearchHistory, callbackSortChange }: UseSear
           );
         }
         return supabase.fullTextSearchItemsByKeyword(
+          channelOption,
           keywordToSearch,
           !!isOnSaleSearch,
           user?.id,
