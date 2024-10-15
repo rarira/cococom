@@ -171,8 +171,6 @@ async function getAllItemsByCategory(category: string, categoryId: number) {
 }
 
 async function getAllItems() {
-  let productsCount = 0;
-
   const allProducts: OnlineProduct[] = [];
 
   const updatedSubCategoryLinks = (await readJsonFile(
@@ -189,10 +187,9 @@ async function getAllItems() {
 
     console.log('category', subCategoryLink.category, 'totalProducts', totalProducts);
     allProducts.push(...products);
-    productsCount += totalProducts;
   }
 
-  const uniqueProducts = removeDuplicateProducts(allProducts);
+  const uniqueProducts = await removeDuplicateProducts(allProducts);
 
   await writeJsonFile(`data/online_products_${date}.json`, uniqueProducts);
 
@@ -307,6 +304,7 @@ async function downloadImage({
 }
 
 async function downloadImages() {
+  console.log(date, 'will download images');
   const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
   const codedb: DownloadResultDb = { noImage: [], nameDiff: [], downloadError: [] };
 
@@ -469,6 +467,16 @@ async function uploadNewRecords() {
 
     if (newlyAddedDiscounts?.length) {
       newDiscountsCount += newlyAddedDiscounts.length;
+      const newlyAddedDiscountsItemIdsSet = new Set(
+        ...newlyAddedDiscounts.map(discount => discount.itemId),
+      );
+
+      for (const code of noPriceValue) {
+        if (!newlyAddedDiscountsItemIdsSet.has(code)) {
+          noPriceValue.delete(code);
+        }
+      }
+
       updateItemHistory(newlyAddedDiscounts);
     }
   } catch (error) {
