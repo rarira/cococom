@@ -22,6 +22,7 @@ function SuperscriptWonText({
   bold = true,
 }: SuperscriptWonTextProps) {
   const { styles } = useStyles(stylesheets);
+
   return (
     <View style={[styles.container, style]}>
       <Text style={styles.superscriptText(fontSize, isMinus)}>{superscript}</Text>
