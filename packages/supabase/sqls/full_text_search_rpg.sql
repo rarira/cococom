@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION search_items_by_keyword(
+DROP FUNCTION search_items_by_keyword(
     keyword text, 
     is_on_sale boolean, 
     user_id uuid, 
@@ -6,6 +6,17 @@ CREATE OR REPLACE FUNCTION search_items_by_keyword(
     page_size int, 
     order_field text, 
     order_direction text
+);
+
+CREATE OR REPLACE FUNCTION search_items_by_keyword(
+    keyword text, 
+    is_on_sale boolean, 
+    user_id uuid, 
+    page int, 
+    page_size int, 
+    order_field text, 
+    order_direction text,
+    channel text
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -14,6 +25,7 @@ DECLARE
     total_records INT := NULL;
     result JSONB;
     order_sql text;
+    channel_sql text;  -- 동적으로 조건을 구성할 변수
 BEGIN
     -- Validate order_direction
     IF order_direction NOT IN ('ASC', 'DESC') THEN
@@ -26,6 +38,13 @@ BEGIN
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
+
+    -- Build channel-specific SQL condition
+    channel_sql := CASE channel
+        WHEN 'online' THEN 'AND i.is_online = TRUE'
+        WHEN 'offline' THEN 'AND i.is_online = FALSE'
+        ELSE ''  -- 'all'일 경우 조건 없음
+    END;
 
     -- Calculate total records if page is 1
     IF page = 1 THEN
@@ -40,7 +59,8 @@ BEGIN
                     WHERE d."itemId" = i."itemId"
                     AND (CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate")
                 )
-            )')
+            )
+            %s', channel_sql)
         INTO total_records
         USING keyword, is_on_sale;
     END IF;
@@ -101,13 +121,23 @@ BEGIN
                     LIMIT $5 OFFSET ($6 - 1) * $5
                 ) t
             )
-        )', order_sql)
+        )', channel_sql,order_sql)
     INTO result
     USING total_records, keyword, is_on_sale, user_id, page_size, page;
 
     RETURN result;
 END;
 $$;
+
+DROP FUNCTION search_items_by_itemId(
+    item_id text, 
+    is_on_sale boolean, 
+    user_id uuid, 
+    page int, 
+    page_size int, 
+    order_field text, 
+    order_direction text
+);
 
 CREATE OR REPLACE FUNCTION search_items_by_itemId(
     item_id text, 
@@ -116,7 +146,8 @@ CREATE OR REPLACE FUNCTION search_items_by_itemId(
     page int, 
     page_size int, 
     order_field text, 
-    order_direction text
+    order_direction text,
+    channel text
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -125,6 +156,7 @@ DECLARE
     total_records INT := NULL;
     result JSONB;
     order_sql text;
+    channel_sql text;  -- 동적으로 조건을 구성할 변수
 BEGIN
     -- Validate order_direction
     IF order_direction NOT IN ('ASC', 'DESC') THEN
@@ -137,6 +169,13 @@ BEGIN
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
+
+    -- Build channel-specific SQL condition
+    channel_sql := CASE channel
+        WHEN 'online' THEN 'AND i.is_online = TRUE'
+        WHEN 'offline' THEN 'AND i.is_online = FALSE'
+        ELSE ''  -- 'all'일 경우 조건 없음
+    END;
 
     -- Calculate total records if page is 1
     IF page = 1 THEN
@@ -151,7 +190,8 @@ BEGIN
                     WHERE d."itemId" = i."itemId"
                     AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                 )
-            )')
+            )
+            %s', channel_sql) 
         INTO total_records
         USING item_id, is_on_sale;
     END IF;
@@ -212,7 +252,7 @@ BEGIN
                     LIMIT $5 OFFSET ($6 - 1) * $5
                 ) t
             )
-        )', order_sql)
+        )', channel_sql, order_sql)
     INTO result
     USING total_records, item_id, is_on_sale, user_id, page_size, page;
 

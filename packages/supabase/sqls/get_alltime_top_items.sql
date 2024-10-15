@@ -1,8 +1,15 @@
+DROP FUNCTION IF EXISTS get_alltime_top_items(
+    _user_id uuid,
+    _order_by_column text,
+    _order_by_direction text,
+    _limit_count int
+);
+
 CREATE OR REPLACE FUNCTION get_alltime_top_items(
     _user_id uuid,
-    _order_by_column text DEFAULT 'created_at',
-    _order_by_direction text DEFAULT 'DESC',
-    _limit_count int DEFAULT 50
+    _order_by_column text,
+    _order_by_direction text,
+    _limit_count int
 )
 RETURNS TABLE(
     id int,

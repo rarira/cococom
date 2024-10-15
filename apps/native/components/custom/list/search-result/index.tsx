@@ -11,7 +11,7 @@ import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
-import { DiscountChannels, DiscountRotateButtonOptions, PortalHostNames } from '@/constants';
+import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -24,6 +24,8 @@ interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRen
   onPressHeaderRightButton: () => void;
   queryKey: QueryKey;
   isFetchingNextPage: boolean;
+  handleChannelPress: ReturnType<typeof useDiscountRotateButton<DiscountChannels>>['handlePress'];
+  channelOption: ReturnType<typeof useDiscountRotateButton<DiscountChannels>>['option'];
 }
 
 const SearchResultList = memo(function SearchResultList({
@@ -34,6 +36,8 @@ const SearchResultList = memo(function SearchResultList({
   onPressHeaderRightButton,
   queryKey,
   isFetchingNextPage,
+  channelOption,
+  handleChannelPress,
   ...restProps
 }: SearchResultListProps) {
   const { styles } = useStyles(stylesheet);
@@ -54,9 +58,6 @@ const SearchResultList = memo(function SearchResultList({
     },
     [queryKey, searchQueryParams, sortOption],
   );
-
-  const { handlePress: handleChannelPress, option: channelOption } =
-    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
 
   const ListHeaderComponent = useMemo(() => {
     if (searchResult.length === 0) return null;

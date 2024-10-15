@@ -254,6 +254,7 @@ export class Supabase {
   }
 
   async fullTextSearchItemsByKeyword(
+    channelOption: string,
     keyword: string,
     isOnsale: boolean,
     userId?: string,
@@ -270,6 +271,7 @@ export class Supabase {
       page_size: pageSize,
       order_field: sortField,
       order_direction: sortDirection,
+      channel: channelOption,
     });
 
     if (error) {
@@ -281,6 +283,7 @@ export class Supabase {
   }
 
   async fullTextSearchItemsByItemId(
+    channelOption: string,
     itemId: string,
     isOnsale: boolean,
     userId?: string,
@@ -297,6 +300,7 @@ export class Supabase {
       page_size: pageSize,
       order_field: sortField,
       order_direction: sortDirection,
+      channel: channelOption,
     });
 
     if (error) {
@@ -453,9 +457,9 @@ export class Supabase {
   }) {
     const { data, error } = await this.supabaseClient.rpc('get_alltime_top_items', {
       _user_id: userId ?? null,
-      _order_by_column: orderByColumn,
-      _order_by_direction: orderByDirection,
-      _limit_count: limitCount,
+      _order_by_column: orderByColumn ?? 'created_at',
+      _order_by_direction: orderByDirection ?? 'DESC',
+      _limit_count: limitCount ?? 50,
     });
 
     if (error) {
