@@ -64,7 +64,7 @@ const stylesheet = createStyleSheet(theme => ({
   cardContainer: (needMargin: boolean, isOnline: boolean) => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
-    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.background,
+    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
   }),
   itemContainer: (row: boolean) => ({
     flex: 1,

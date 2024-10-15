@@ -8,9 +8,11 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
+import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
-import { PortalHostNames } from '@/constants';
+import { DiscountChannels, DiscountRotateButtonOptions, PortalHostNames } from '@/constants';
+import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 
@@ -53,6 +55,9 @@ const SearchResultList = memo(function SearchResultList({
     [queryKey, searchQueryParams, sortOption],
   );
 
+  const { handlePress: handleChannelPress, option: channelOption } =
+    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
+
   const ListHeaderComponent = useMemo(() => {
     if (searchResult.length === 0) return null;
 
@@ -63,16 +68,22 @@ const SearchResultList = memo(function SearchResultList({
         ) : (
           <View />
         )}
-        <HeaderRightButton
-          iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
-          onPress={onPressHeaderRightButton}
-        />
+        <View style={styles.resultHeaderRightContainer}>
+          <HeaderRightButton
+            iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
+            onPress={onPressHeaderRightButton}
+          />
+          <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
+        </View>
       </View>
     );
   }, [
+    channelOption,
+    handleChannelPress,
     onPressHeaderRightButton,
     searchResult.length,
     styles.resultHeader,
+    styles.resultHeaderRightContainer,
     styles.totalResultsText,
     totalResults,
   ]);
@@ -87,6 +98,14 @@ const SearchResultList = memo(function SearchResultList({
     return <Text style={styles.listEmptyText}>검색 결과가 없습니다</Text>;
   }, [styles.listEmptyText]);
 
+  const searchResultByChannel = useMemo(() => {
+    return searchResult.filter(result => {
+      if (channelOption.value === DiscountChannels.ALL) return true;
+      if (channelOption.value === DiscountChannels.ONLINE) return result.is_online;
+      return !result.is_online;
+    });
+  }, [searchResult, channelOption]);
+
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.seperator} />,
     [styles.seperator],
@@ -95,7 +114,7 @@ const SearchResultList = memo(function SearchResultList({
   return (
     <>
       <FlashList
-        data={searchResult}
+        data={searchResultByChannel}
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
         ListFooterComponentStyle={styles.fetchingNextProgress}
@@ -126,7 +145,12 @@ const stylesheet = createStyleSheet(theme => ({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+  },
+  resultHeaderRightContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: theme.spacing.md,
   },
   totalResultsText: {
     fontSize: theme.fontSize.sm,
