@@ -475,6 +475,25 @@ export type Database = {
           discountsCountOffline: number
         }[]
       }
+      get_discounted_ranking_with_wishlist_counts: {
+        Args: {
+          _current_time_stamp: string
+          _user_id: string
+          _channel: string
+          _limit: number
+        }
+        Returns: {
+          id: number
+          startDate: string
+          endDate: string
+          price: number
+          discountPrice: number
+          discountRate: number
+          discount: number
+          is_online: boolean
+          items: Json
+        }[]
+      }
       get_discounts_with_wishlist_counts: {
         Args: {
           _current_time_stamp: string

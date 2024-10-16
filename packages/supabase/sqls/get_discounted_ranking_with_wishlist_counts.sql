@@ -1,13 +1,15 @@
-DROP FUNCTION get_discounts_with_wishlist_counts(
+DROP FUNCTION get_discounted_ranking_with_wishlist_counts(
     _current_time_stamp timestamp, 
     _user_id uuid,
-    _category_sector public."CategorySectors"
+    _channel text,
+    _limit int
 );
 
-CREATE OR REPLACE FUNCTION get_discounts_with_wishlist_counts(
+CREATE OR REPLACE FUNCTION get_discounted_ranking_with_wishlist_counts(
     _current_time_stamp timestamp, 
     _user_id uuid,
-    _category_sector public."CategorySectors"
+    _channel text,
+    _limit int
 )
 RETURNS TABLE(
     id int,
@@ -37,17 +39,19 @@ BEGIN
     FROM
         discounts d
     LEFT JOIN items i ON d."itemId" = i."itemId"
-    LEFT JOIN categories c ON i."categoryId" = c.id
     WHERE
         d."startDate" <= $2
         AND d."endDate" >= $2' ||
     CASE
-        WHEN _category_sector IS NOT NULL THEN
-            ' AND c."categorySector" = $3'
+        WHEN _channel = 'online' THEN
+            ' AND d.is_online = TRUE'
+        WHEN _channel = 'offline' THEN
+            ' AND d.is_online = FALSE'
         ELSE
-            ''
+            ''  -- 'all'일 경우 조건 없음
     END ||
-    ' ORDER BY d."discountRate" DESC'
-    USING _user_id, _current_time_stamp, _category_sector;
+    ' ORDER BY d."discountRate" DESC' ||
+    ' LIMIT $3'
+    USING _user_id, _current_time_stamp, _limit;
 END;
 $$;

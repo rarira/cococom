@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import CircularProgress from '@/components/core/progress/circular';
 import DiscountListItemCard from '@/components/custom/card/list-item/discount';
 import { DiscountChannels, PortalHostNames } from '@/constants';
+import { useDiscountedRankingListQuery } from '@/hooks/discount/useDiscountedRankingListQuery';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
 
@@ -18,6 +19,7 @@ interface DiscountListProps {
   contentContainerStyle?: ContentStyle;
   portalHostName?: PortalHostNames;
   refreshable?: boolean;
+  ranked?: boolean;
 }
 
 const NumberOfColumns = 1;
@@ -29,10 +31,13 @@ export default function DiscountList({
   contentContainerStyle,
   portalHostName = PortalHostNames.HOME,
   refreshable,
+  ranked,
 }: DiscountListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useDiscountListQuery({
+  const hook = ranked ? useDiscountedRankingListQuery : useDiscountListQuery;
+
+  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = hook({
     sortOption,
     limit,
     channel,

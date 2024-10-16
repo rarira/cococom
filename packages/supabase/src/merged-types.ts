@@ -73,6 +73,25 @@ export type Database = MergeDeep<
             items: Omit<JoinedItems, 'discounts'>;
           }[];
         };
+        get_discounted_ranking_with_wishlist_counts: {
+          Args: {
+            _current_time_stamp: string;
+            _user_id: string | null;
+            _channel: string;
+            _limit: number;
+          };
+          Returns: {
+            id: number;
+            startDate: string;
+            endDate: string;
+            price: number;
+            discountPrice: number;
+            discountRate: number;
+            discount: number;
+            is_online: boolean;
+            items: Omit<JoinedItems, 'discounts'>;
+          }[];
+        };
         search_items_by_itemid: {
           Args: {
             item_id: string;
