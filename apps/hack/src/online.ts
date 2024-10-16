@@ -179,7 +179,7 @@ async function getAllItems() {
 
   console.log('updatedSubCategoryLinks', updatedSubCategoryLinks.length);
 
-  for (const subCategoryLink of updatedSubCategoryLinks) {
+  const promises = updatedSubCategoryLinks.map(async subCategoryLink => {
     const { totalProducts, products } = await getAllItemsByCategory(
       subCategoryLink.category,
       subCategoryLink.categoryId!,
@@ -187,7 +187,9 @@ async function getAllItems() {
 
     console.log('category', subCategoryLink.category, 'totalProducts', totalProducts);
     allProducts.push(...products);
-  }
+  });
+
+  await Promise.allSettled(promises);
 
   const uniqueProducts = await removeDuplicateProducts(allProducts);
 
@@ -332,19 +334,7 @@ async function upsertOnlineUrlToItem() {
   const itemIds = (await readJsonFile(
     `data/online_downloadResult_itemIds_${date}.json`,
   )) as ItemId[];
-  // await supabase.nullifyOnlineUrl();
 
-  // const uniqueItemIds = new Set();
-
-  // itemIds.forEach(item => {
-  //   if (uniqueItemIds.has(item.itemId)) {
-  //     console.log('duplicate', item.itemId);
-  //   } else {
-  //     uniqueItemIds.add(item.itemId);
-  //   }
-  // });
-
-  // console.log(itemIds.length, uniqueItemIds.size);
   const result = await supabase.upsertItem(itemIds, {
     ignoreDuplicates: false,
     onConflict: 'itemId',
