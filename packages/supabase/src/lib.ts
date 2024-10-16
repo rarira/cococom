@@ -153,6 +153,34 @@ export class Supabase {
     return data;
   }
 
+  async fetchCurrentDiscountedRankingWithWishlistCount({
+    currentTimestamp,
+    userId,
+    channel,
+    limit,
+  }: {
+    currentTimestamp: string;
+    userId?: string;
+    channel: string;
+    limit: number;
+  }) {
+    const { data, error } = await this.supabaseClient.rpc(
+      'get_discounted_ranking_with_wishlist_counts',
+      {
+        _current_time_stamp: currentTimestamp!,
+        _user_id: userId ?? null,
+        _channel: channel,
+        _limit: limit,
+      },
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
   async updateItem(item: Database['public']['Tables']['items']['Update'], id: number) {
     const { error } = await this.supabaseClient.from('items').update(item).eq('id', id);
     return error;
