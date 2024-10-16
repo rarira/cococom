@@ -31,6 +31,10 @@ export const queryKeys = {
       'discounts',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
     ],
+    rankedList: (channel: DiscountChannels, userId?: string | null, limit?: number) => [
+      'discounts',
+      { userId, currentTimestamp: new Date().toISOString().split('T')[0], channel, limit },
+    ],
   },
   histories: {
     latest: ['histories', 'latest'],
