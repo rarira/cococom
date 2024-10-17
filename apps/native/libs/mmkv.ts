@@ -5,4 +5,5 @@ export const storage = new MMKV();
 export const STORAGE_KEYS = {
   SEARCH_HISTORY: 'SEARCH_HISTORY',
   COLOR_SCHEME: 'COLOR_SCHEME',
+  DISCOUNT_CHANNELS: 'DISCOUNT_CHANNELS',
 };

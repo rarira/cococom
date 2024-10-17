@@ -26,6 +26,7 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
   item,
   containerStyle,
   queryKey,
+  channelOption,
   ...restProps
 }: SearchResultListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
