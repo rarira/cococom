@@ -5,8 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Icon, { IconProps } from '@/components/core/icon';
 import Text, { TextProps } from '@/components/core/text';
 
-import ToggleSwitch, { ToggleSwitchProps } from '../../switch/\btoggle';
-
+import ToggleSwitch, { ToggleSwitchProps } from '../../switch/toggle';
 interface DefaultRowMenuWrapperProps extends ViewProps {
   type?: 'default';
 }
@@ -15,7 +14,6 @@ interface NavRowMenuWrapperProps extends PressableProps {
   type: 'nav';
 }
 
-// 두 가지 타입을 합친 유니언 타입
 type RowMenuWrapperProps = DefaultRowMenuWrapperProps | NavRowMenuWrapperProps;
 
 const RowMenuWrapper = memo(function RowMenuWrapper({
