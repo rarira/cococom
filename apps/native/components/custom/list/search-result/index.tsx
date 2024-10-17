@@ -52,11 +52,12 @@ const SearchResultList = memo(function SearchResultList({
           item={item}
           sortOption={sortOption}
           queryKey={queryKey}
+          channelOption={channelOption.value}
           {...searchQueryParams}
         />
       );
     },
-    [queryKey, searchQueryParams, sortOption],
+    [channelOption, queryKey, searchQueryParams, sortOption],
   );
 
   const ListHeaderComponent = useMemo(() => {
