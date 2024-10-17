@@ -11,7 +11,7 @@ import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import DiscountList from '@/components/custom/list/discount';
-import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
+import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
@@ -56,7 +56,7 @@ export default function SalesScreen() {
   );
 
   const { handlePress: handleChannelPress, option: channelOption } =
-    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
+    useDiscountRotateButton<DiscountChannels>();
 
   const renderHeaderRightButton = useCallback(
     () => (

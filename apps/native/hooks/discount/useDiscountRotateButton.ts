@@ -1,21 +1,25 @@
 import { useCallback, useState } from 'react';
 
+import { useDiscountChannels } from '@/store/discount-channels';
+
 export type RotateButtonOption<T> = {
   text: string;
   value: T;
 };
 
-export function useDiscountRotateButton<T>(options: RotateButtonOption<T>[]) {
+export function useDiscountRotateButton<T>() {
+  const discountChannels = useDiscountChannels(state => state.discountChannels);
+
   const [option, setOption] = useState(0);
 
   const handlePress = useCallback(() => {
     setOption(prev => {
-      if (prev + 1 >= options.length) {
+      if (prev + 1 >= discountChannels.length) {
         return 0;
       }
       return prev + 1;
     });
-  }, [options]);
+  }, [discountChannels]);
 
-  return { option: options[option], handlePress };
+  return { option: discountChannels[option], handlePress };
 }

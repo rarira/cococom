@@ -7,7 +7,7 @@ import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import RankingSortButton from '@/components/custom/button/ranking-sort';
 import AlltimeRankingList from '@/components/custom/list/ranking/alltime';
-import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
+import { DiscountChannels } from '@/constants';
 import { useAlltimeRankingSort } from '@/hooks/alltime-ranking/useAlltimeRankingSort';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { ALLTIME_RANKING_SORT_OPTIONS } from '@/libs/sort';
@@ -23,7 +23,7 @@ const AlltimeRankingTabView = memo(function AlltimeRankingTabView() {
   );
 
   const { handlePress: handleChannelPress, option: channelOption } =
-    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
+    useDiscountRotateButton<DiscountChannels>();
 
   const handlePress = useCallback(() => {
     bottomSheetModalRef.current?.present();

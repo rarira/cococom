@@ -10,7 +10,7 @@ import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import ScreenContainerView from '@/components/custom/view/container/screen';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
-import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
+import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
@@ -31,7 +31,7 @@ export default function SearchScreen() {
   }, []);
 
   const { handlePress: handleChannelPress, option: channelOption } =
-    useDiscountRotateButton<DiscountChannels>(DiscountRotateButtonOptions);
+    useDiscountRotateButton<DiscountChannels>();
 
   const {
     isFetching,
