@@ -473,17 +473,20 @@ export class Supabase {
   }
 
   async fetchAlltimeRankingItems({
+    channel,
     userId,
     orderByColumn,
     orderByDirection,
     limitCount,
   }: {
+    channel: string;
     userId?: string;
     orderByColumn?: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
     orderByDirection?: 'asc' | 'desc';
     limitCount?: number;
   }) {
     const { data, error } = await this.supabaseClient.rpc('get_alltime_top_items', {
+      _channel: channel,
       _user_id: userId ?? null,
       _order_by_column: orderByColumn ?? 'created_at',
       _order_by_direction: orderByDirection ?? 'DESC',

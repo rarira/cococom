@@ -6,6 +6,7 @@ DROP FUNCTION IF EXISTS get_alltime_top_items(
 );
 
 CREATE OR REPLACE FUNCTION get_alltime_top_items(
+    _channel text,
     _user_id uuid,
     _order_by_column text,
     _order_by_direction text,
@@ -72,10 +73,16 @@ BEGIN
                 i.is_online
             FROM
                 items i
+            %s
         )
         SELECT * FROM item_counts
         ORDER BY %I %s
         LIMIT %L',
+        CASE
+            WHEN _channel = 'online' THEN 'WHERE i.is_online = TRUE'
+            WHEN _channel = 'offline' THEN 'WHERE i.is_online = FALSE'
+            ELSE ''  -- 'all'일 경우 WHERE 절 없음
+        END,
         _order_by_column,
         _order_by_direction,
         _limit_count

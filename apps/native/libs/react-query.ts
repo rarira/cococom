@@ -68,11 +68,12 @@ export const queryKeys = {
     byItem: (itemId: number) => ['comments', { itemId }],
   },
   alltimeRankings: (
+    channel: DiscountChannels,
     userId?: string | null,
     orderByColumn?: string,
     orderByDirection?: 'asc' | 'desc',
     limit?: number,
-  ) => ['alltimeRankings', { userId, orderByColumn, orderByDirection, limit }],
+  ) => ['alltimeRankings', { channel, userId, orderByColumn, orderByDirection, limit }],
 };
 
 export const handleMutateOfDiscountCurrentList = async ({

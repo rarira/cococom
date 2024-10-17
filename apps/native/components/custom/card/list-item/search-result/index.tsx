@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
+import { DiscountChannels } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -18,6 +19,7 @@ interface SearchResultListItemCardProps extends SearchQueryParams {
   containerStyle?: StyleProp<ViewStyle>;
   sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
   queryKey: QueryKey;
+  channelOption: DiscountChannels;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({
@@ -56,7 +58,11 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
                 style={styles.thumbnail}
                 isOnline={item.is_online}
               />
-              <SearchResultListItemCardDetailView item={item} {...restProps} />
+              <SearchResultListItemCardDetailView
+                item={item}
+                channelOption={channelOption}
+                {...restProps}
+              />
             </View>
           </Card>
         </Shadow>
