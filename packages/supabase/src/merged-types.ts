@@ -126,6 +126,7 @@ export type Database = MergeDeep<
         };
         get_alltime_top_items: {
           Args: {
+            _channel: string;
             _user_id: string | null;
             _order_by_column?: string;
             _order_by_direction?: string;
