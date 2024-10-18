@@ -6,3 +6,4 @@ downloads/
 download-errors.json
 
 data/**/*
+temp/**/*

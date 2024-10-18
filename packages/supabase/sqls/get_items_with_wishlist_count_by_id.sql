@@ -13,6 +13,9 @@ BEGIN
     'bestDiscountRate', i."bestDiscountRate",
     'bestDiscount', i."bestDiscount",
     'lowestPrice', i."lowestPrice",
+    'is_online', i.is_online,
+    'online_url', i.online_url,
+    'related_item_id', i.related_item_id,
     'categories', json_build_object(
         'id', c.id,
         'categoryName', c."categoryName",

@@ -75,6 +75,7 @@ async function getAllDiscountsByCategory() {
     // if (id !== 5402) continue;
     // console.log(`${process.env['2ND_API_URL']}/productView/${id}`);
 
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
     const { data } = await axios.get(`${process.env['2ND_API_URL']}/productList/${id}`);
 
     if (!data || data.length === 0) continue;
@@ -85,7 +86,7 @@ async function getAllDiscountsByCategory() {
       const { error } = await supabase.supabaseClient.from('dalins').insert(item);
 
       if (error?.code === '23505') {
-        console.log('duplicate', item.hash);
+        // console.log('duplicate', item.hash);
         continue;
       } else if (error) {
         console.error(item.product_id, error);

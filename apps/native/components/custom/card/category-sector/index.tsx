@@ -29,22 +29,41 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
         <Shadow {...shadowPresets.card(theme)}>
           <Card style={styles.cardContainer}>
             <View>
-              <View style={styles.imageContainer}>
-                <Image
-                  // TODO: 상품별 이미지로 변경
-                  source={`https://picsum.photos/150/150`}
-                  contentFit="cover"
-                  alt={`${discountInfo.categorySector} thumbnail image`}
-                  style={styles.image}
-                />
-              </View>
-              <View style={styles.infoContaier}>
+              <View>
+                <View style={styles.imageContainer}>
+                  <Image
+                    // TODO: 상품별 이미지로 변경
+                    source={`https://picsum.photos/150/150`}
+                    contentFit="cover"
+                    alt={`${discountInfo.categorySector} thumbnail image`}
+                    style={styles.image}
+                  />
+                </View>
                 <View style={styles.categoryNameContainer}>
-                  <Text style={styles.categoryName} numberOfLines={2}>
+                  <Text style={styles.categoryName} numberOfLines={3}>
                     {discountInfo.categorySector}
                   </Text>
                 </View>
-                <Text style={styles.count}>{discountInfo.discountsCount}개의 할인</Text>
+              </View>
+              <View style={styles.infoContaier}>
+                <View style={styles.countContainer}>
+                  <View style={styles.countRow}>
+                    <View style={styles.countCell}>
+                      <Text style={[styles.count, styles.countHeader]}>오프</Text>
+                    </View>
+                    <View style={styles.countCell}>
+                      <Text style={[styles.count, styles.countHeader]}>온</Text>
+                    </View>
+                  </View>
+                  <View style={styles.countRow}>
+                    <View style={styles.countCell}>
+                      <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
+                    </View>
+                    <View style={styles.countCell}>
+                      <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           </Card>
@@ -64,10 +83,12 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     width: '100%',
     height: '100%',
-    borderRadius: theme.borderRadius.md,
     overflow: 'hidden',
+    borderColor: theme.colors.lightShadow,
+    borderWidth: 1,
   },
   imageContainer: {
+    position: 'relative',
     width: '100%',
     aspectRatio: 1 / 1,
   },
@@ -78,22 +99,48 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
   },
   categoryNameContainer: {
-    flexGrow: 1,
+    position: 'absolute',
+    top: '50%',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: theme.colors.background,
+    opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 35,
+    paddingHorizontal: theme.spacing.md,
   },
   categoryName: {
-    fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.md,
+    fontSize: theme.fontSize.normal,
+    lineHeight: theme.fontSize.normal * 1.2,
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  countContainer: {
+    width: '100%',
+  },
+  countRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 1,
+  },
+  countCell: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  countHeader: {
+    opacity: 1,
+    fontWeight: 'bold',
+    color: theme.colors.tint3,
+  },
   count: {
     fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.5,
     textAlign: 'center',
     opacity: 0.8,
     color: theme.colors.tint3,

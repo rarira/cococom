@@ -1,12 +1,13 @@
 {
   "type": "module",
   "name": "@cococoom/data",
-  "version": "2.0.1-beta",
+  "version": "2.0.2-alpha.coc-14",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "tsx src/index.ts",
     "start:dalin": "tsx src/dalin.ts",
+    "start:online": "tsx src/online.ts",
     "migrate": "tsx src/migrate.ts"
   },
   "keywords": [],
@@ -27,7 +28,9 @@
     "@cococom/supabase": "workspace:*",
     "@prisma/client": "^5.13.0",
     "axios": "^1.6.8",
+    "cheerio": "^1.0.0",
     "dayjs": "^1.11.10",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "openai": "^4.63.0"
   }
 }

@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 
 // eslint-disable-next-line import/order
-import { Tables } from '@cococom/supabase/types';
 import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
@@ -10,8 +9,9 @@ import {
   getDateString,
   getDateWithTimezone,
   getISOTimeStringWithTimezone,
+  minus1MS,
 } from '../libs/date.js';
-import { supabase } from '../libs/supabase.js';
+import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
@@ -55,7 +55,7 @@ async function crawlAllDiscounts(noLowsetPrice = false) {
       discounts.map(discount => ({
         itemId: item.itemId,
         startDate: getISOTimeStringWithTimezone(discount.startdate),
-        endDate: addDays(getDateWithTimezone(discount.enddate), 1),
+        endDate: addDays(getDateWithTimezone(discount.enddate), 1).toISOString(),
         price: discount.price,
         discount: discount.discount,
         discountPrice: discount.discountprice,
@@ -116,7 +116,7 @@ async function updateDiscounts(date?: string) {
     discounts.map(discount => ({
       itemId: discount.productcode as string,
       startDate: getISOTimeStringWithTimezone(discount.startdate),
-      endDate: addDays(getDateWithTimezone(discount.enddate), 1),
+      endDate: minus1MS(addDays(getDateWithTimezone(discount.enddate), 1)),
       price: discount.price,
       discount: discount.discount,
       discountPrice: discount.discountprice,
@@ -137,57 +137,20 @@ async function updateDiscounts(date?: string) {
         newItemsWithNoImage.push(item.itemId);
       }
       const data = await getItem(item.itemId);
-      await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+
+      await addReletedItemId(item, { categoryId: Number(data.category) });
     }
   }
 
   if (newlyAddedDiscounts?.length) {
     newDiscountsCount += newlyAddedDiscounts.length;
-    for (const newlyAddedDiscount of newlyAddedDiscounts) {
-      try {
-        const data = await supabase.fetchData(
-          { value: newlyAddedDiscount.itemId, column: 'itemId' },
-          'items',
-        );
-        if (!data) throw new Error('no data');
-
-        const update: Partial<Tables<'items'>> = {
-          bestDiscountRate: newlyAddedDiscount.discountRate,
-          bestDiscount: newlyAddedDiscount.discount,
-        };
-
-        if (
-          newlyAddedDiscount.discountRate &&
-          data.bestDiscountRate &&
-          newlyAddedDiscount.discountRate > data.bestDiscountRate
-        ) {
-          update.bestDiscountRate = newlyAddedDiscount.discountRate;
-        }
-
-        if (!data.lowestPrice || newlyAddedDiscount.discountPrice < data.lowestPrice) {
-          update.lowestPrice = newlyAddedDiscount.discountPrice;
-        }
-
-        if (
-          newlyAddedDiscount.discount &&
-          data.bestDiscount &&
-          data.bestDiscount < newlyAddedDiscount.discount
-        ) {
-          update.bestDiscount = newlyAddedDiscount.discount;
-        }
-
-        if (Object.keys(update).length === 0) continue;
-
-        await supabase.updateItem(update, data.id);
-      } catch (e) {
-        console.error(e);
-        continue;
-      }
-    }
+    updateItemHistory(newlyAddedDiscounts);
   }
 }
 
 async function createHistory() {
+  if (!newItems.length) return;
+
   await supabase.insertHistory({
     new_item_count: newItems.length,
     added_discount_count: newDiscountsCount,

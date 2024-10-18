@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
+import { DiscountChannels } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -18,12 +19,14 @@ interface SearchResultListItemCardProps extends SearchQueryParams {
   containerStyle?: StyleProp<ViewStyle>;
   sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
   queryKey: QueryKey;
+  channelOption: DiscountChannels;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({
   item,
   containerStyle,
   queryKey,
+  channelOption,
   ...restProps
 }: SearchResultListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
@@ -45,16 +48,22 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
           {...shadowPresets.card(theme)}
           {...(item.isOnSaleNow && { startColor: `${theme.colors.tint}44` })}
           stretch
+          style={styles.container}
         >
-          <Card style={[styles.cardContainer(item.isOnSaleNow), containerStyle]}>
+          <Card style={[styles.cardContainer(item.isOnSaleNow, item.is_online), containerStyle]}>
             <View style={styles.itemContainer}>
               <ProductCardThumbnailImage
                 product={item}
                 width={120}
                 height={120}
                 style={styles.thumbnail}
+                isOnline={item.is_online}
               />
-              <SearchResultListItemCardDetailView item={item} {...restProps} />
+              <SearchResultListItemCardDetailView
+                item={item}
+                channelOption={channelOption}
+                {...restProps}
+              />
             </View>
           </Card>
         </Shadow>
@@ -64,9 +73,13 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  cardContainer: (onSale: boolean) => ({
+  container: {
+    backgroundColor: theme.colors.cardBackground,
+  },
+  cardContainer: (onSale: boolean, isOnline: boolean) => ({
     borderRadius: theme.borderRadius.lg,
     ...(onSale && { borderColor: `${theme.colors.tint}77`, borderWidth: 1 }),
+    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
   }),
   itemContainer: {
     flex: 1,

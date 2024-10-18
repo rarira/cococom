@@ -9,6 +9,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Text from '@/components/core/text';
 import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
+import OpenWebButton from '@/components/custom/button/open-web';
 import { PortalHostNames } from '@/constants';
 import {
   handleMutateOfAlltimeRanking,
@@ -17,6 +18,7 @@ import {
   handleMutateOfSearchResult,
   queryKeys,
 } from '@/libs/react-query';
+import Util from '@/libs/util';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
@@ -38,6 +40,8 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
   ]);
 
   const queryKey = queryKeys.items.byId(+itemId, user?.id);
+
+  const isOnline = item?.is_online;
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async () => {
@@ -77,10 +81,15 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
         </Text>
       </View>
       <View style={styles.buttonOverlay}>
-        <View style={styles.buttonBackground}>
+        {item.online_url ? (
+          <View style={styles.buttonBackground(true)}>
+            <OpenWebButton item={item} />
+          </View>
+        ) : null}
+        <View style={styles.buttonBackground()}>
           <ItemShareButton item={item} />
         </View>
-        <View style={styles.buttonBackground}>
+        <View style={styles.buttonBackground()}>
           <ListItemWishlistIconButton<JoinedItems>
             item={item}
             // noText
@@ -92,7 +101,9 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
         </View>
       </View>
       <View style={styles.itemIdOverlay}>
-        <Text style={styles.itemIdText}>{item.itemId}</Text>
+        <Text style={styles.itemIdText}>
+          {(isOnline ? '온라인, ' : '') + Util.extractItemid(item.itemId)}
+        </Text>
       </View>
     </View>
   );
@@ -130,11 +141,13 @@ const stylesheet = createStyleSheet(theme => ({
     right: theme.spacing.md,
     gap: theme.spacing.md,
   },
-  buttonBackground: {
-    backgroundColor: `${theme.colors.background}88`,
+  buttonBackground: (hasOnlineUrl?: boolean) => ({
+    backgroundColor: `${hasOnlineUrl ? theme.colors.tint3 : theme.colors.background}88`,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
-  },
+    borderWidth: hasOnlineUrl ? 1 : 0,
+    borderColor: theme.colors.tint3,
+  }),
   itemIdOverlay: {
     position: 'absolute',
     top: theme.spacing.md,

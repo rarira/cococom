@@ -10,6 +10,8 @@ import SearchResultList from '@/components/custom/list/search-result';
 import SearchTextInput from '@/components/custom/text-input/search';
 import ScreenContainerView from '@/components/custom/view/container/screen';
 import SearchAccessoriesView from '@/components/custom/view/search/&accessories';
+import { DiscountChannels } from '@/constants';
+import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { SearchOptionValue } from '@/libs/search';
@@ -28,6 +30,9 @@ export default function SearchScreen() {
     bottomSheetModalRef.current?.dismiss();
   }, []);
 
+  const { handlePress: handleChannelPress, option: channelOption } =
+    useDiscountRotateButton<DiscountChannels>();
+
   const {
     isFetching,
     keywordToSearch,
@@ -42,7 +47,11 @@ export default function SearchScreen() {
     handleSortChange,
     totalResults,
     queryKey,
-  } = useSearchInput({ addSearchHistory, callbackSortChange: handleDismissSortBottomSheet });
+  } = useSearchInput({
+    addSearchHistory,
+    callbackSortChange: handleDismissSortBottomSheet,
+    channelOption: channelOption.value,
+  });
 
   useLayoutEffect(() => {
     if (optionsToSearch) setOptions(optionsToSearch);
@@ -95,6 +104,8 @@ export default function SearchScreen() {
             onPressHeaderRightButton={handleSortBottomSheetPresent}
             queryKey={queryKey}
             isFetchingNextPage={isFetchingNextPage}
+            handleChannelPress={handleChannelPress}
+            channelOption={channelOption}
           />
         </View>
       )}

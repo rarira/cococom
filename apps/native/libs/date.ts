@@ -1,6 +1,9 @@
 import { JoinedItems } from '@cococom/supabase/types';
 import { format } from 'date-fns';
 
+export function formatDashedDate(date: string) {
+  return format(date, 'yyyy-MM-dd');
+}
 export function formatLongLocalizedDate(date: string) {
   return format(date, 'PPPP');
 }

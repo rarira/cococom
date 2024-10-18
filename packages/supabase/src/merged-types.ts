@@ -37,6 +37,7 @@ export type InfiniteSearchResultItem = {
   totalCommentCount: number;
   totalMemoCount: number | null;
   isWishlistedByUser: boolean;
+  is_online: boolean;
 };
 
 export type AlltimeRankingResultItem = InfiniteSearchResultItem & {
@@ -68,6 +69,26 @@ export type Database = MergeDeep<
             discountPrice: number;
             discountRate: number;
             discount: number;
+            is_online: boolean;
+            items: Omit<JoinedItems, 'discounts'>;
+          }[];
+        };
+        get_discounted_ranking_with_wishlist_counts: {
+          Args: {
+            _current_time_stamp: string;
+            _user_id: string | null;
+            _channel: string;
+            _limit: number;
+          };
+          Returns: {
+            id: number;
+            startDate: string;
+            endDate: string;
+            price: number;
+            discountPrice: number;
+            discountRate: number;
+            discount: number;
+            is_online: boolean;
             items: Omit<JoinedItems, 'discounts'>;
           }[];
         };
@@ -105,6 +126,7 @@ export type Database = MergeDeep<
         };
         get_alltime_top_items: {
           Args: {
+            _channel: string;
             _user_id: string | null;
             _order_by_column?: string;
             _order_by_direction?: string;

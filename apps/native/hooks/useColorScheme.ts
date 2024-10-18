@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Appearance } from 'react-native';
 import { UnistylesRuntime, UnistylesThemes } from 'react-native-unistyles';
 
 import { storage, STORAGE_KEYS } from '@/libs/mmkv';
@@ -22,7 +23,6 @@ export function useColorScheme(loadOnly?: boolean) {
   }, []);
 
   useEffect(() => {
-    if (loadOnly) return;
     if (theme === null) {
       storage.delete(STORAGE_KEYS.COLOR_SCHEME);
       UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme as keyof UnistylesThemes);
@@ -31,6 +31,15 @@ export function useColorScheme(loadOnly?: boolean) {
       UnistylesRuntime.setTheme(theme);
     }
   }, [loadOnly, theme]);
+
+  useEffect(() => {
+    const listener = Appearance.addChangeListener(({ colorScheme }) => {
+      setTheme(colorScheme as keyof UnistylesThemes);
+    });
+    return () => {
+      listener.remove();
+    };
+  }, []);
 
   return {
     handleToggleAutoTheme,

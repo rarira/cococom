@@ -46,6 +46,7 @@ const AlltimeRankingListItemCard = memo(function AlltimeRankingListItemCard({
                 width={120}
                 height={120}
                 style={styles.thumbnail}
+                isOnline={item.is_online}
               />
               <AlltimeRankingListItemCardDetailView item={item} queryKey={queryKey} />
             </View>

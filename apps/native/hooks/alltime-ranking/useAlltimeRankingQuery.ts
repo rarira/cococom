@@ -1,17 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 
+import { DiscountChannels } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { AlltimeSortOption } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-export function useAlltimeRankingQuery(sortOption: AlltimeSortOption, limit?: number) {
+export function useAlltimeRankingQuery(
+  channel: DiscountChannels,
+  sortOption: AlltimeSortOption,
+  limit?: number,
+) {
   const [refreshing, setRefreshing] = useState(false);
 
   const user = useUserStore(store => store.user);
 
   const queryKey = queryKeys.alltimeRankings(
+    channel,
     user?.id ?? null,
     sortOption.field,
     sortOption.orderBy,
@@ -23,6 +29,7 @@ export function useAlltimeRankingQuery(sortOption: AlltimeSortOption, limit?: nu
     queryKey,
     queryFn: () => {
       return supabase.fetchAlltimeRankingItems({
+        channel,
         userId: user?.id,
         orderByColumn: sortOption.field,
         orderByDirection: sortOption.orderBy,
