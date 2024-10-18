@@ -10,11 +10,13 @@ export function useDiscountChannelsArrange() {
   const { discountChannels, setDiscountChannels } = useDiscountChannels();
 
   useEffect(() => {
-    const stored = storage.getString(STORAGE_KEYS.DISCOUNT_CHANNELS);
-    if (stored) {
-      setDiscountChannels(JSON.parse(stored));
+    if (!discountChannels) {
+      const stored = storage.getString(STORAGE_KEYS.DISCOUNT_CHANNELS);
+      if (stored) {
+        setDiscountChannels(JSON.parse(stored));
+      }
     }
-  }, [setDiscountChannels]);
+  }, [discountChannels, setDiscountChannels]);
 
   const handleUpdate = useCallback(
     (newChannels: RotateButtonOption<DiscountChannels>[]) => {

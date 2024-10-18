@@ -1,11 +1,13 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, memo, useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import React, { ForwardedRef, forwardRef, memo, useCallback } from 'react';
+import DraggableFlatList, { RenderItem, ScaleDecorator } from 'react-native-draggable-flatlist';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import BottomSheet from '@/components/core/bottom-sheet';
-import Button from '@/components/core/button';
+import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
+import { DiscountChannels } from '@/constants';
+import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
 import { useDiscountChannelsArrange } from '@/hooks/settings/useDiscountChannelArrange';
 
 const DiscountChannelArrangeBottomSheet = memo(
@@ -13,69 +15,73 @@ const DiscountChannelArrangeBottomSheet = memo(
     _props,
     ref: ForwardedRef<BottomSheetModal>,
   ) {
-    const { styles } = useStyles(stylesheet);
+    const { styles, theme } = useStyles(stylesheet);
     const { handleUpdate, discountChannels } = useDiscountChannelsArrange();
 
-    const handlePress = useCallback(
-      (index: number, direction: 'up' | 'down') => {
-        const newDiscountChannels = [...discountChannels];
-        const temp = newDiscountChannels[index];
-        if (direction === 'up') {
-          newDiscountChannels[index] = newDiscountChannels[index - 1];
-          newDiscountChannels[index - 1] = temp;
-        } else {
-          newDiscountChannels[index] = newDiscountChannels[index + 1];
-          newDiscountChannels[index + 1] = temp;
-        }
-        handleUpdate(newDiscountChannels);
+    const renderItem: RenderItem<RotateButtonOption<DiscountChannels>> = useCallback(
+      ({ item, drag, isActive }) => {
+        return (
+          <ScaleDecorator>
+            <IconButton
+              onPressIn={drag}
+              key={item.value}
+              style={styles.listContainer}
+              disabled={isActive}
+              text={`${item.text}${item.fullText ? ` (${item.fullText})` : ''}`}
+              iconProps={{
+                font: { type: 'MaterialIcon', name: 'drag-handle' },
+                size: theme.fontSize.lg,
+              }}
+              textStyle={styles.text}
+            />
+          </ScaleDecorator>
+        );
       },
-      [discountChannels, handleUpdate],
+      [styles, theme.fontSize.lg],
     );
 
-    const discountChannelsArray = useMemo(() => {
-      return discountChannels.map((discountChannel, index) => {
-        return (
-          <View key={discountChannel.value} style={styles.listContainer}>
-            <Text style={styles.text}>{discountChannel.text}</Text>
-            <View style={styles.buttonContainer}>
-              {index !== 0 && (
-                <Button
-                  onPress={() => handlePress(index, 'up')}
-                  // style={({ pressed }) => styles.button({ selected: currentSort === key, pressed })}
-                >
-                  <Text>Up</Text>
-                </Button>
-              )}
-              {index !== discountChannels.length - 1 && (
-                <Button
-                  onPress={() => handlePress(index, 'down')}
-                  // style={({ pressed }) => styles.button({ selected: currentSort === key, pressed })}
-                >
-                  <Text>Down</Text>
-                </Button>
-              )}
-            </View>
-          </View>
-        );
-      });
-    }, [discountChannels, handlePress, styles]);
-
     return (
-      <BottomSheet ref={ref} index={1} title="채널 검색 순서 변경">
-        <View style={styles.container}>{discountChannelsArray}</View>
+      <BottomSheet ref={ref} snapPoints={['35%']} index={1} title="채널 검색 순서 변경">
+        <Text style={styles.subTitle}>
+          {`드래그하여 순서를 변경하세요.\n가장 위에 있는 채널이 기본값입니다.`}
+        </Text>
+        <DraggableFlatList
+          data={discountChannels}
+          onDragEnd={({ data }) => handleUpdate(data)}
+          keyExtractor={item => item.value}
+          renderItem={renderItem}
+          scrollEnabled={false}
+          containerStyle={styles.container}
+          onDragBegin={() => console.log('drag begin')}
+          onRelease={() => console.log('release')}
+        />
       </BottomSheet>
     );
   }),
 );
 
 const stylesheet = createStyleSheet(theme => ({
-  container: { flexDirection: 'column', gap: theme.spacing.sm, alignItems: 'center' },
-  listContainer: { flexDirection: 'row', justifyContent: 'space-between' },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  container: {
+    flexDirection: 'column',
     alignItems: 'center',
-    gap: theme.spacing.md,
+    width: '100%',
+    paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  listContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+    marginVertical: theme.spacing.md,
+    width: '100%',
+    borderColor: theme.colors.shadow,
+    borderWidth: 1,
+  },
+  subTitle: {
+    fontSize: theme.fontSize.normal,
+    color: theme.colors.typography,
+    textAlign: 'center',
+    marginBottom: theme.spacing.md,
   },
   text: {
     fontSize: theme.fontSize.md,
