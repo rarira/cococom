@@ -57,7 +57,7 @@ const RowMenuNavButton = memo(function RowMenuNavButton(props: Omit<IconProps, '
 
   return (
     <Icon
-      font={{ type: 'MaterialIcon', name: 'chevron-right' }}
+      font={{ type: 'Ionicon', name: 'chevron-forward' }}
       size={theme.fontSize.xl}
       color={theme.colors.typography}
       {...props}

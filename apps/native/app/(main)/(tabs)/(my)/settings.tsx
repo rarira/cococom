@@ -1,10 +1,9 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
-import { Pressable } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/core/button/icon';
 import RowMenu from '@/components/core/menu/row';
-import Text from '@/components/core/text';
 import DiscountChannelArrangeBottomSheet from '@/components/custom/bottom-sheet/discount-channel-arrange';
 import SectionText from '@/components/custom/text/section';
 import ScreenContainerView from '@/components/custom/view/container/screen';
@@ -13,7 +12,7 @@ import { useDiscountChannels } from '@/store/discount-channels';
 import { useUserStore } from '@/store/user';
 
 export default function ProfileScreen() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const user = useUserStore(state => state.user);
@@ -23,11 +22,7 @@ export default function ProfileScreen() {
     return discountChannels.map(channel => channel.text).join('/');
   }, [discountChannels]);
 
-  const { theme, handleToggleAutoTheme, handleToggleTheme } = useColorScheme();
-
-  // useLayoutEffect(() => {
-  //   if (!user) router.navigate('/(my)');
-  // }, [user]);
+  const { theme: colorTheme, handleToggleAutoTheme, handleToggleTheme } = useColorScheme();
 
   const handlePressDiscountChannelArrange = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -41,12 +36,12 @@ export default function ProfileScreen() {
         </SectionText>
         <RowMenu.Root style={styles.withPaddingHorizontal}>
           <RowMenu.Text>자동 (시스템 설정)</RowMenu.Text>
-          <RowMenu.ToggleSwitch checked={theme === null} onToggle={handleToggleAutoTheme} />
+          <RowMenu.ToggleSwitch checked={colorTheme === null} onToggle={handleToggleAutoTheme} />
         </RowMenu.Root>
-        {theme !== null && (
+        {colorTheme !== null && (
           <RowMenu.Root style={styles.withPaddingHorizontal}>
             <RowMenu.Text>다크 모드</RowMenu.Text>
-            <RowMenu.ToggleSwitch checked={theme === 'dark'} onToggle={handleToggleTheme} />
+            <RowMenu.ToggleSwitch checked={colorTheme === 'dark'} onToggle={handleToggleTheme} />
           </RowMenu.Root>
         )}
         {!!user && (
@@ -66,9 +61,15 @@ export default function ProfileScreen() {
         </SectionText>
         <RowMenu.Root style={styles.withPaddingHorizontal}>
           <RowMenu.Text>검색 채널 표시 순서</RowMenu.Text>
-          <Pressable onPress={handlePressDiscountChannelArrange}>
-            <Text>{stringifiedDiscountChannels}</Text>
-          </Pressable>
+          <IconButton
+            onPress={handlePressDiscountChannelArrange}
+            iconProps={{
+              font: { type: 'Ionicon', name: 'chevron-down' },
+              size: theme.fontSize.xl,
+            }}
+            textStyle={styles.channelText}
+            text={stringifiedDiscountChannels}
+          />
         </RowMenu.Root>
       </ScreenContainerView>
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
@@ -82,5 +83,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   withPaddingHorizontal: {
     paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  channelText: {
+    fontSize: theme.fontSize.md,
+    fontWeight: 'bold',
   },
 }));
