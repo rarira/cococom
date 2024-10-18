@@ -4,6 +4,7 @@ import { useDiscountChannels } from '@/store/discount-channels';
 
 export type RotateButtonOption<T> = {
   text: string;
+  fullText?: string;
   value: T;
 };
 
