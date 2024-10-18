@@ -28,6 +28,6 @@ export const enum DiscountChannels {
 
 export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[] = [
   { text: '모두', value: DiscountChannels.ALL },
-  { text: '오프', value: DiscountChannels.OFFLINE },
-  { text: '온', value: DiscountChannels.ONLINE },
+  { text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
+  { text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
 ];
