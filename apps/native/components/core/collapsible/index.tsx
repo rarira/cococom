@@ -36,7 +36,7 @@ function Collapsible({
         activeOpacity={0.8}
       >
         <Icon
-          font={{ type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward-outline' }}
+          font={{ type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward' }}
           size={18}
           color={theme.colors.typography}
           {...iconProps}
