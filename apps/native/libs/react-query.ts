@@ -15,7 +15,11 @@ import {
 } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
-import { COMMENT_INFINITE_QUERY_PAGE_SIZE, MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
+import {
+  COMMENT_INFINITE_QUERY_PAGE_SIZE,
+  DiscountChannels,
+  MEMO_INFINITE_QUERY_PAGE_SIZE,
+} from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
 
 export const queryKeys = {
@@ -27,6 +31,10 @@ export const queryKeys = {
       'discounts',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
     ],
+    rankedList: (channel: DiscountChannels, userId?: string | null, limit?: number) => [
+      'discounts',
+      { userId, currentTimestamp: new Date().toISOString().split('T')[0], channel, limit },
+    ],
   },
   histories: {
     latest: ['histories', 'latest'],
@@ -37,15 +45,17 @@ export const queryKeys = {
       isOnSaleSearch: boolean,
       sortField: SearchItemSortField,
       sortDirecntion: SearchItemSortDirection,
+      channelOption: DiscountChannels,
       userId?: string,
-    ) => ['search', { keyword, isOnSaleSearch, userId, sortField, sortDirecntion }],
+    ) => ['search', { keyword, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption }],
     itemId: (
       itemId: string,
       isOnSaleSearch: boolean,
       sortField: SearchItemSortField,
       sortDirecntion: SearchItemSortDirection,
+      channelOption: DiscountChannels,
       userId?: string,
-    ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion }],
+    ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption }],
   },
   items: {
     byId: (id: number, userId?: string) => ['items', { id, userId }],
@@ -58,11 +68,12 @@ export const queryKeys = {
     byItem: (itemId: number) => ['comments', { itemId }],
   },
   alltimeRankings: (
+    channel: DiscountChannels,
     userId?: string | null,
     orderByColumn?: string,
     orderByDirection?: 'asc' | 'desc',
     limit?: number,
-  ) => ['alltimeRankings', { userId, orderByColumn, orderByDirection, limit }],
+  ) => ['alltimeRankings', { channel, userId, orderByColumn, orderByDirection, limit }],
 };
 
 export const handleMutateOfDiscountCurrentList = async ({

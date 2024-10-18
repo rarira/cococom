@@ -7,17 +7,18 @@ import Util from '@/libs/util';
 
 import DiscountRateText from '../../text/discount-rate';
 import SuperscriptWonText from '../../text/superscript-won';
+import { DiscountType } from '../discount-record';
 
 type DiscountPriceViewProps = (
   | {
-      isWholeProduct: true;
+      discountType: Exclude<DiscountType, 'normal'>;
       price?: never;
       discountRate?: never;
       discountPrice?: never;
       discount: number;
     }
   | {
-      isWholeProduct: false;
+      discountType: Exclude<DiscountType, 'memberOnly' | 'wholeProduct'>;
       price: number;
       discountRate: number;
       discountPrice: number;
@@ -26,7 +27,7 @@ type DiscountPriceViewProps = (
 ) & { style?: ViewProps['style'] };
 
 const DiscountPriceView = memo(function DiscountPriceView({
-  isWholeProduct,
+  discountType,
   price,
   discount,
   discountPrice,
@@ -37,15 +38,15 @@ const DiscountPriceView = memo(function DiscountPriceView({
 
   return (
     <View style={[styles.container, style]}>
-      {isWholeProduct ? null : (
+      {discountType !== 'normal' ? null : (
         <>
           <Text style={styles.regularPriceText}>{`\u20A9${Util.toWonString(price)}`}</Text>
           <DiscountRateText discountRate={discountRate} />
         </>
       )}
       <SuperscriptWonText
-        price={isWholeProduct ? discount : discountPrice}
-        isMinus={isWholeProduct}
+        price={discountType === 'normal' ? discountPrice : discount}
+        isMinus={discountType !== 'normal'}
       />
     </View>
   );

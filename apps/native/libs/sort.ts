@@ -2,6 +2,7 @@ import { CategorySectors } from '@cococom/supabase/libs';
 import { AlltimeRankingResultItem, Database, JoinedItems } from '@cococom/supabase/types';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
+import { DiscountChannels } from '@/constants';
 
 import { queryKeys } from './react-query';
 import { SearchItemSortOption } from './search';
@@ -116,6 +117,27 @@ export function updateDiscountsByCategorySectorCache({
   const queryKey = queryKeys.discounts.currentList(userId, categorySector);
 
   queryClient.setQueryData(queryKey, (prevData: DiscountListItemCardProps['discount'][]) => {
+    return sortDiscounts(sortOption, prevData);
+  });
+}
+
+export function updateDiscountedRankedCache({
+  userId,
+  sortOption,
+  queryClient,
+  channel,
+  limit,
+}: {
+  userId?: string;
+  sortOption: DiscountSortOption;
+  queryClient: any;
+  channel: DiscountChannels;
+  limit: number;
+}) {
+  const queryKey = queryKeys.discounts.rankedList(channel, userId, limit);
+
+  queryClient.setQueryData(queryKey, (prevData: DiscountListItemCardProps['discount'][]) => {
+    if (!prevData) return;
     return sortDiscounts(sortOption, prevData);
   });
 }

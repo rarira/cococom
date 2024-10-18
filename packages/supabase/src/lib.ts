@@ -48,11 +48,14 @@ export class Supabase {
       .upsert(category as any, { ignoreDuplicates: true, onConflict: 'id' });
   }
 
-  async upsertItem(item: InsertItem | InsertItem[]) {
+  async upsertItem(
+    item: InsertItem | InsertItem[],
+    options?: { ignoreDuplicates?: boolean; onConflict?: string },
+  ) {
     const response = await this.supabaseClient
       .from('items')
-      .upsert(item as any, { ignoreDuplicates: true, onConflict: 'itemId' })
-      .select();
+      .upsert(item as any, options || { ignoreDuplicates: true, onConflict: 'itemId' })
+      .select('id, itemId');
 
     if (response.error) {
       console.error(response.error);
@@ -60,14 +63,20 @@ export class Supabase {
     return response.data;
   }
 
-  async upsertDiscount(discount: InsertDiscount | InsertDiscount[]) {
+  async upsertDiscount(
+    discount: InsertDiscount | InsertDiscount[],
+    options?: { ignoreDuplicates?: boolean; onConflict?: string },
+  ) {
     const response = await this.supabaseClient
       .from('discounts')
-      .upsert(discount as any, {
-        ignoreDuplicates: true,
-        onConflict: 'discountHash',
-      })
-      .select();
+      .upsert(
+        discount as any,
+        options || {
+          ignoreDuplicates: true,
+          onConflict: 'discountHash',
+        },
+      )
+      .select('discountRate, discount, itemId, discountPrice');
 
     if (response.error) {
       console.error(response.error);
@@ -89,6 +98,21 @@ export class Supabase {
 
   async fetchAllDiscounts() {
     const { data, error } = await this.supabaseClient.from('discounts').select('*');
+    return data;
+  }
+
+  async fetchCurrentOnlineDiscounts(currentTimestamp: string) {
+    const { data, error } = await this.supabaseClient
+      .from('discounts')
+      .select('id, itemId, discountHash, startDate, discount, discountPrice, price')
+      .eq('is_online', true)
+      .lte('startDate', currentTimestamp)
+      .gte('endDate', currentTimestamp);
+
+    if (error) {
+      throw error;
+    }
+
     return data;
   }
 
@@ -129,6 +153,34 @@ export class Supabase {
     return data;
   }
 
+  async fetchCurrentDiscountedRankingWithWishlistCount({
+    currentTimestamp,
+    userId,
+    channel,
+    limit,
+  }: {
+    currentTimestamp: string;
+    userId?: string;
+    channel: string;
+    limit: number;
+  }) {
+    const { data, error } = await this.supabaseClient.rpc(
+      'get_discounted_ranking_with_wishlist_counts',
+      {
+        _current_time_stamp: currentTimestamp!,
+        _user_id: userId ?? null,
+        _channel: channel,
+        _limit: limit,
+      },
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
   async updateItem(item: Database['public']['Tables']['items']['Update'], id: number) {
     const { error } = await this.supabaseClient.from('items').update(item).eq('id', id);
     return error;
@@ -146,11 +198,42 @@ export class Supabase {
       .single();
 
     if (error) {
-      console.error(error);
+      // console.error(error);
       throw error;
     }
 
     return data as Tables<T>;
+  }
+
+  async fetchDataLike<T extends keyof Database['public']['Tables']>(
+    search: { value: string | number; column: string },
+    tableName: T,
+    columns?: string,
+  ): Promise<Tables<T>[]> {
+    const { data, error } = await this.supabaseClient
+      .from(tableName)
+      .select(columns || '*')
+      .like(search.column, `${search.value}%`);
+
+    if (error) {
+      // console.error(error);
+      throw error;
+    }
+
+    return data as Tables<T>[];
+  }
+
+  async nullifyOnlineUrl() {
+    const { data, error } = await this.supabaseClient
+      .from('items')
+      .update({ online_url: null })
+      .neq('id', -1);
+
+    if (error) {
+      console.error('Error updating items:', error);
+    } else {
+      console.log('Updated items:', data);
+    }
   }
 
   async createWishlist(newWishlist: InsertWishlist) {
@@ -188,11 +271,7 @@ export class Supabase {
   }
 
   async fetchLatestHistory() {
-    const { data, error } = await this.supabaseClient
-      .from('histories')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(1);
+    const { data, error } = await this.supabaseClient.rpc('get_latest_histories');
 
     if (error) {
       console.log('fetchLatestHistory error', error);
@@ -203,6 +282,7 @@ export class Supabase {
   }
 
   async fullTextSearchItemsByKeyword(
+    channelOption: string,
     keyword: string,
     isOnsale: boolean,
     userId?: string,
@@ -219,6 +299,7 @@ export class Supabase {
       page_size: pageSize,
       order_field: sortField,
       order_direction: sortDirection,
+      channel: channelOption,
     });
 
     if (error) {
@@ -230,6 +311,7 @@ export class Supabase {
   }
 
   async fullTextSearchItemsByItemId(
+    channelOption: string,
     itemId: string,
     isOnsale: boolean,
     userId?: string,
@@ -246,6 +328,7 @@ export class Supabase {
       page_size: pageSize,
       order_field: sortField,
       order_direction: sortDirection,
+      channel: channelOption,
     });
 
     if (error) {
@@ -262,6 +345,22 @@ export class Supabase {
       user_id: userId ?? null,
       need_discounts: !!needDiscounts,
     });
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fetchOnlineItemsWithNullRelatedItem() {
+    const { data, error } = await this.supabaseClient
+      .from('items')
+      .select('id, itemId')
+      .eq('is_online', true)
+      .is('related_item_id', null)
+      .limit(2000);
 
     if (error) {
       console.error(error);
@@ -374,21 +473,24 @@ export class Supabase {
   }
 
   async fetchAlltimeRankingItems({
+    channel,
     userId,
     orderByColumn,
     orderByDirection,
     limitCount,
   }: {
+    channel: string;
     userId?: string;
     orderByColumn?: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
     orderByDirection?: 'asc' | 'desc';
     limitCount?: number;
   }) {
     const { data, error } = await this.supabaseClient.rpc('get_alltime_top_items', {
+      _channel: channel,
       _user_id: userId ?? null,
-      _order_by_column: orderByColumn,
-      _order_by_direction: orderByDirection,
-      _limit_count: limitCount,
+      _order_by_column: orderByColumn ?? 'created_at',
+      _order_by_direction: orderByDirection ?? 'DESC',
+      _limit_count: limitCount ?? 50,
     });
 
     if (error) {

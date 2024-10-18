@@ -1,7 +1,7 @@
 import { JoinedItems } from '@cococom/supabase/types';
 import { memo, useCallback } from 'react';
 import { Share } from 'react-native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 
@@ -11,7 +11,7 @@ interface ItemShareButtonProps {
 }
 
 const ItemShareButton = memo(function ItemShareButton({ item, iconProps }: ItemShareButtonProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useStyles();
 
   const handlePress = useCallback(async () => {
     if (item) {
@@ -31,9 +31,5 @@ const ItemShareButton = memo(function ItemShareButton({ item, iconProps }: ItemS
     />
   );
 });
-
-const stylesheet = createStyleSheet(theme => ({
-  container: {},
-}));
 
 export default ItemShareButton;

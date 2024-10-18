@@ -1,9 +1,10 @@
 import { CategorySectors } from '@cococom/supabase/libs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
+import { DiscountChannels } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { DiscountSortOption, updateDiscountsByCategorySectorCache } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
@@ -27,7 +28,15 @@ function fetchCurrentDiscounts({
 
 export type CurrentDiscounts = NonNullable<ReturnType<typeof fetchCurrentDiscounts>>;
 
-export function useDiscountListQuery(sortOption: DiscountSortOption, limit?: number) {
+export function useDiscountListQuery({
+  sortOption,
+  channel,
+  limit,
+}: {
+  sortOption: DiscountSortOption;
+  channel: DiscountChannels;
+  limit?: number;
+}) {
   const [refreshing, setRefreshing] = useState(false);
 
   const user = useUserStore(store => store.user);
@@ -70,5 +79,15 @@ export function useDiscountListQuery(sortOption: DiscountSortOption, limit?: num
     setRefreshing(false);
   }, [queryClient, queryKey, refetch]);
 
-  return { data: data?.slice(0, limit), error, isLoading, queryKey, refreshing, handleRefresh };
+  const dataToExport = useMemo(() => {
+    return data
+      ?.filter(item => {
+        if (channel === DiscountChannels.ONLINE) return item.is_online;
+        if (channel === DiscountChannels.OFFLINE) return !item.is_online;
+        return true;
+      })
+      .slice(0, limit);
+  }, [data, limit, channel]);
+
+  return { data: dataToExport, error, isLoading, queryKey, refreshing, handleRefresh };
 }

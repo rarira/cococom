@@ -1,8 +1,16 @@
-CREATE OR REPLACE FUNCTION get_alltime_top_items(
+DROP FUNCTION IF EXISTS get_alltime_top_items(
     _user_id uuid,
-    _order_by_column text DEFAULT 'created_at',
-    _order_by_direction text DEFAULT 'DESC',
-    _limit_count int DEFAULT 50
+    _order_by_column text,
+    _order_by_direction text,
+    _limit_count int
+);
+
+CREATE OR REPLACE FUNCTION get_alltime_top_items(
+    _channel text,
+    _user_id uuid,
+    _order_by_column text,
+    _order_by_direction text,
+    _limit_count int
 )
 RETURNS TABLE(
     id int,
@@ -17,7 +25,8 @@ RETURNS TABLE(
     "totalDiscountCount" int,
     "totalMemoCount" bigint,
     "isWishlistedByUser" boolean,
-    "isOnSaleNow" boolean
+    "isOnSaleNow" boolean,
+    is_online boolean
 )
 LANGUAGE plpgsql
 AS $$
@@ -60,13 +69,20 @@ BEGIN
                         ORDER BY d."startDate" DESC
                         LIMIT 1
                     )
-                ) as "isOnSaleNow"
+                ) as "isOnSaleNow",
+                i.is_online
             FROM
                 items i
+            %s
         )
         SELECT * FROM item_counts
         ORDER BY %I %s
         LIMIT %L',
+        CASE
+            WHEN _channel = 'online' THEN 'WHERE i.is_online = TRUE'
+            WHEN _channel = 'offline' THEN 'WHERE i.is_online = FALSE'
+            ELSE ''  -- 'all'일 경우 WHERE 절 없음
+        END,
         _order_by_column,
         _order_by_direction,
         _limit_count

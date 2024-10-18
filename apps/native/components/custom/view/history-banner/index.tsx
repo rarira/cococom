@@ -4,9 +4,10 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/core/text';
-import { formatLongLocalizedDate } from '@/libs/date';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+
+import HistoryTable from '../../table/history';
 
 interface HistoryInfoBannerProps {
   totalDiscounts: number;
@@ -30,15 +31,11 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
+      <View style={styles.rowContainer}>
         <Text style={styles.title}>최신 할인 정보 업데이트 </Text>
-        <Text style={styles.time}>{formatLongLocalizedDate(data?.[0].created_at!)}</Text>
+        <Text style={styles.infoText}>{totalDiscounts} 개 할인 중</Text>
       </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>총 할인 : {totalDiscounts} 개,</Text>
-        <Text style={styles.infoText}>신규 상품 : {data?.[0].new_item_count} 상품,</Text>
-        <Text style={styles.infoText}>신규 할인 : {data?.[0].added_discount_count} 개</Text>
-      </View>
+      <HistoryTable data={data} />
     </View>
   );
 });
@@ -52,18 +49,18 @@ const stylesheet = createStyleSheet(theme => ({
     paddingVertical: theme.spacing.md,
     marginBottom: theme.spacing.xl,
   },
-  titleContainer: {
+  rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   title: {
-    color: theme.colors.background,
+    color: 'white',
     fontWeight: 'bold',
   },
   time: {
     fontSize: theme.fontSize.sm,
-    color: theme.colors.background,
+    color: 'white',
     opacity: 0.8,
     fontWeight: 'semibold',
   },
@@ -74,10 +71,9 @@ const stylesheet = createStyleSheet(theme => ({
     gap: theme.spacing.md,
   },
   infoText: {
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.appleBackground,
-    opacity: 0.8,
-    fontWeight: 'semibold',
+    fontSize: theme.fontSize.normal,
+    color: 'white',
+    fontWeight: 'bold',
   },
 }));
 
