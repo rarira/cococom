@@ -29,7 +29,7 @@ const DiscountChannelArrangeBottomSheet = memo(
               disabled={isActive}
               text={`${item.text}${item.fullText ? ` (${item.fullText})` : ''}`}
               iconProps={{
-                font: { type: 'MaterialIcon', name: 'drag-handle' },
+                font: { type: 'MaterialIcon', name: 'drag-indicator' },
                 size: theme.fontSize.lg,
               }}
               textStyle={styles.text}
