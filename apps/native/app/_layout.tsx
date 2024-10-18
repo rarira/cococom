@@ -86,7 +86,7 @@ function RootLayout() {
   });
 
   useLoadUser();
-  const { theme } = useColorScheme(true);
+  const { theme } = useColorScheme();
 
   useEffect(() => {
     if (navigationRef) {

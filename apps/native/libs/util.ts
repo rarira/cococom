@@ -53,6 +53,9 @@ const Util = {
 
     return newObj;
   },
+  extractItemid(itemId: string): string {
+    return itemId.split('_')[0];
+  },
 };
 
 export default Util;

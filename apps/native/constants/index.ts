@@ -1,3 +1,5 @@
+import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
+
 export const enum PortalHostNames {
   HOME = 'HomePortalHost',
   SEARCH = 'SearchPortalHost',
@@ -17,3 +19,15 @@ export const COMMENT_INFINITE_QUERY_PAGE_SIZE = 20;
 export const 할인마감임박잔여일수 = 3;
 
 export const X_AXIS_HEIGHT = 40;
+
+export const enum DiscountChannels {
+  ONLINE = 'online',
+  OFFLINE = 'offline',
+  ALL = 'all',
+}
+
+export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[] = [
+  { text: '모두', value: DiscountChannels.ALL },
+  { text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
+  { text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
+];

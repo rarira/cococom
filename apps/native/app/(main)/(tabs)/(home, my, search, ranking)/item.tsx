@@ -7,6 +7,7 @@ import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import HeaderRightRelatedButton from '@/components/custom/button/header/right/related';
 import ItemCommentTabView from '@/components/custom/tab-view/item/comment';
 import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discount-history';
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
@@ -41,9 +42,15 @@ export default function ItemScreen() {
     queryFn: queryFn(+itemId, user?.id),
   });
 
+  const headerRight = useCallback(() => {
+    if (!data?.related_item_id) return null;
+    return <HeaderRightRelatedButton item={data} />;
+  }, [data]);
+
   useTransparentHeader({
     title: data?.itemName,
     headerBackTitleVisible: false,
+    headerRight,
   });
 
   useFocusEffect(

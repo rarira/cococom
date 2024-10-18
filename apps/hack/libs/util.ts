@@ -19,3 +19,7 @@ export function loadEnv() {
   const result = dotenv.config({ path: path.join(__dirname, '..', '.env') });
   if (result.parsed == undefined) throw new Error('Cannot loaded environment variables file.');
 }
+
+export function checkIfOnlyAlphabetUpperCase(str: string) {
+  return /^[A-Z\s]+$/.test(str);
+}

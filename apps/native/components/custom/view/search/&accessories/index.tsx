@@ -60,7 +60,7 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
         {searchHistoryProps.searchHistory.length > 0 ? (
           <IconButton
             iconProps={{
-              font: { type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward-outline' },
+              font: { type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward' },
               size: theme.fontSize.sm,
               color: theme.colors.typography,
               style: styles.collapsibleIcon,

@@ -9,7 +9,8 @@ import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { DiscountChannels, ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { getDiscountTypeFromResult } from '@/libs/item';
 import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -19,6 +20,7 @@ import { useUserStore } from '@/store/user';
 interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
   item: SearchResultToRender[number];
   sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
+  channelOption: DiscountChannels;
 }
 
 function SearchResultListItemCardDetailView({
@@ -26,12 +28,13 @@ function SearchResultListItemCardDetailView({
   keyword,
   options,
   sortOption,
+  channelOption,
 }: SearchResultListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
   const user = useUserStore(store => store.user);
 
-  const isWholeProduct = item.lowestPrice === 0;
+  const discountType = getDiscountTypeFromResult(item);
 
   const queryKey = useMemo(() => {
     const isOnSaleNow = options.includes('on_sale');
@@ -41,9 +44,10 @@ function SearchResultListItemCardDetailView({
       isOnSaleNow,
       SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
       SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+      channelOption,
       user?.id,
     );
-  }, [keyword, options, sortOption, user?.id]);
+  }, [channelOption, keyword, options, sortOption, user?.id]);
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
@@ -64,7 +68,7 @@ function SearchResultListItemCardDetailView({
       </Text>
       <DiscountRecordView
         item={item}
-        isWholeProduct={isWholeProduct}
+        discountType={discountType}
         style={styles.discountRecordContainer}
       />
       <View style={styles.footer}>
