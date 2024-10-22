@@ -49,6 +49,12 @@ export type InfiniteSearchResultPages = {
   totalRecords: number | null;
   items: InfiniteSearchResultItem[];
 };
+
+export type InfiniteWishlistResultPages = {
+  totalRecords: number | null;
+  items: Omit<InfiniteSearchResultItem, 'isWishlistedByUser'>[];
+};
+
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
   DatabaseGenerated,
@@ -133,6 +139,18 @@ export type Database = MergeDeep<
             _limit_count?: number;
           };
           Returns: AlltimeRankingResultItem[];
+        };
+        get_wishlist_items: {
+          Args: {
+            user_id: string;
+            is_on_sale: boolean | null;
+            page: number;
+            page_size: number;
+            order_field: string;
+            order_direction: string;
+            channel: string;
+          };
+          Returns: InfiniteWishlistResultPages;
         };
       };
     };

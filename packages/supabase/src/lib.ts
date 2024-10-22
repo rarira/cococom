@@ -281,16 +281,25 @@ export class Supabase {
     return data;
   }
 
-  async fullTextSearchItemsByKeyword(
-    channelOption: string,
-    keyword: string,
-    isOnsale: boolean,
-    userId?: string,
+  async fullTextSearchItemsByKeyword({
+    channelOption,
+    keyword,
+    isOnsale,
+    userId,
     page = 1,
     pageSize = 20,
-    sortField: SearchItemSortField = 'itemName',
-    sortDirection: SearchItemSortDirection = 'ASC',
-  ) {
+    sortField = 'itemName',
+    sortDirection = 'ASC',
+  }: {
+    channelOption: string;
+    keyword: string;
+    isOnsale: boolean;
+    userId?: string;
+    page?: number;
+    pageSize?: number;
+    sortField: SearchItemSortField;
+    sortDirection: SearchItemSortDirection;
+  }) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
       keyword,
       is_on_sale: isOnsale,
@@ -310,16 +319,25 @@ export class Supabase {
     return data;
   }
 
-  async fullTextSearchItemsByItemId(
-    channelOption: string,
-    itemId: string,
-    isOnsale: boolean,
-    userId?: string,
+  async fullTextSearchItemsByItemId({
+    channelOption,
+    itemId,
+    isOnsale,
+    userId,
     page = 1,
     pageSize = 20,
-    sortField: SearchItemSortField = 'itemName',
-    sortDirection: SearchItemSortDirection = 'ASC',
-  ) {
+    sortField = 'itemName',
+    sortDirection = 'ASC',
+  }: {
+    channelOption: string;
+    itemId: string;
+    isOnsale: boolean;
+    userId?: string;
+    page: number;
+    pageSize: number;
+    sortField: SearchItemSortField;
+    sortDirection: SearchItemSortDirection;
+  }) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_itemid', {
       item_id: itemId,
       is_on_sale: isOnsale,
@@ -492,6 +510,43 @@ export class Supabase {
       _order_by_direction: orderByDirection ?? 'DESC',
       _limit_count: limitCount ?? 50,
     });
+
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  async fetchMyWishlistItems({
+    userId,
+    channel,
+    sortField = 'itemId',
+    sortDirection = 'ASC',
+    page = 1,
+    pageSize = 50,
+    isOnSale,
+  }: {
+    userId: string;
+    channel: string;
+    sortField: SearchItemSortField;
+    sortDirection: SearchItemSortDirection;
+    page?: number;
+    pageSize?: number;
+    isOnSale?: boolean;
+  }) {
+    let query = this.supabaseClient.rpc('get_wishlist_items', {
+      user_id: userId,
+      channel,
+      page,
+      page_size: pageSize,
+      order_field: sortField,
+      order_direction: sortDirection,
+      is_on_sale: typeof isOnSale === 'boolean' ? isOnSale : null,
+    });
+
+    const { data, error } = await query.range((page - 1) * pageSize, page * pageSize - 1);
 
     if (error) {
       console.error('Error:', error);

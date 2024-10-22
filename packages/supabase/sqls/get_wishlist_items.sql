@@ -1,0 +1,114 @@
+DROP FUNCTION IF EXISTS get_wishlist_items(
+    user_id uuid, 
+    is_on_sale boolean, 
+    page int, 
+    page_size int, 
+    order_field text, 
+    order_direction text,
+    channel text
+);
+
+CREATE OR REPLACE FUNCTION get_wishlist_items(
+    user_id uuid, 
+    is_on_sale boolean, 
+    page int, 
+    page_size int, 
+    order_field text, 
+    order_direction text,
+    channel text
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    total_records INT := NULL;
+    result JSONB;
+    order_sql TEXT;
+    channel_sql TEXT;  
+    sale_condition_sql TEXT;
+BEGIN
+    -- Validate order_direction
+    IF order_direction NOT IN ('ASC', 'DESC') THEN
+        RAISE EXCEPTION 'Invalid order direction: %', order_direction;
+    END IF;
+
+    -- Build dynamic order by clause with casting for itemId if needed
+    IF order_field = 'itemId' THEN
+        order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
+    ELSE
+        order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
+    END IF;
+
+    -- Build channel-specific SQL condition
+    channel_sql := CASE channel
+        WHEN 'online' THEN 'AND i.is_online = TRUE'
+        WHEN 'offline' THEN 'AND i.is_online = FALSE'
+        ELSE ''  -- 'all'일 경우 조건 없음
+    END;
+
+    -- Build sale condition SQL dynamically
+    sale_condition_sql := 
+        CASE 
+            WHEN is_on_sale IS TRUE THEN 
+                'AND EXISTS (
+                    SELECT 1
+                    FROM discounts d
+                    WHERE d."itemId" = i."itemId"
+                    AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                )'
+            ELSE ''
+        END;
+
+    -- Calculate total records if page is 1
+    IF page = 1 THEN
+        EXECUTE format('
+            SELECT COUNT(*)
+            FROM wishlists w
+            WHERE w."userId" = $1
+            %s
+            %s', 
+            sale_condition_sql, channel_sql) 
+        INTO total_records
+        USING user_id;
+    END IF;
+
+    -- Fetch paginated results with dynamic order
+    EXECUTE format('
+        SELECT jsonb_build_object(
+            ''totalRecords'', $1,
+            ''items'', (
+                SELECT jsonb_agg(row_to_json(t))
+                FROM (
+                    SELECT i.id,
+                           i."itemId",
+                           i."itemName",
+                           i."bestDiscountRate",
+                           i."bestDiscount",
+                           i."lowestPrice",
+                           i.is_online,
+                           (
+                               SELECT EXISTS (
+                                   SELECT 1
+                                   FROM discounts d
+                                   WHERE d."itemId" = i."itemId"
+                                   AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                                   ORDER BY d."startDate" DESC
+                                   LIMIT 1
+                               )
+                           ) AS "isOnSaleNow"
+                    FROM items i
+                    LEFT JOIN wishlists w ON i.id = w."itemId"
+                    WHERE w."userId" = $2
+                    %s
+                    %s
+                    LIMIT $3 OFFSET ($4 - 1) * $3
+                ) t
+            )
+        )', 
+        sale_condition_sql, channel_sql, order_sql)
+    INTO result
+    USING total_records, user_id, page_size, page;
+
+    RETURN result;
+END;
+$$;

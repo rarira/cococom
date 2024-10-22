@@ -5,6 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import IconButton from '@/components/core/button/icon';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ScreenContainerView from '@/components/custom/view/container/screen';
+import AuthedMyContentView from '@/components/custom/view/my-content/authed';
 import { useUserStore } from '@/store/user';
 
 /* TODO: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
@@ -15,15 +16,7 @@ export default function MyScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const { user, profile } = useUserStore(state => ({ user: state.user, profile: state.profile }));
-  {
-    /* {!user ? (
-        <Link href="/auth/signin" asChild>
-          <Pressable>
-            <ScreenTitleText>로그인하세요</ScreenTitleText>
-          </Pressable>
-        </Link>
-      ) : ( */
-  }
+
   return (
     <ScreenContainerView withBottomTabBar>
       <View style={styles.header}>
@@ -64,6 +57,7 @@ export default function MyScreen() {
           </Link>
         </View>
       </View>
+      {user ? <AuthedMyContentView /> : null}
     </ScreenContainerView>
   );
 }
