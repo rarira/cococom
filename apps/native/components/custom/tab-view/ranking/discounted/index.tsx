@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
-import RankingSortButton from '@/components/custom/button/ranking-sort';
+import SortWithTextButton from '@/components/custom/button/sort-with-text';
 import DiscountList from '@/components/custom/list/discount';
 import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
@@ -31,7 +31,7 @@ const DiscountedRankingTabView = memo(function DiscountedRankingTabView() {
   return (
     <>
       <View style={styles.headerRowContainer}>
-        <RankingSortButton text={sortOption.text} onPress={handlePress} />
+        <SortWithTextButton text={sortOption.text} onPress={handlePress} />
         <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
       </View>
       <DiscountList

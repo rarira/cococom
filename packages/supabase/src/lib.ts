@@ -8,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database, JoinedComments, Tables } from './merged-types';
+import { Database, JoinedComments, Tables, WishlistResultItem } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -530,7 +530,7 @@ export class Supabase {
   }: {
     userId: string;
     channel: string;
-    sortField: SearchItemSortField;
+    sortField: keyof WishlistResultItem;
     sortDirection: SearchItemSortDirection;
     page?: number;
     pageSize?: number;
