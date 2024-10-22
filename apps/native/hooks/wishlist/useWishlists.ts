@@ -3,25 +3,28 @@ import { useCallback } from 'react';
 
 import { DiscountChannels } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
+import { WishlistSortOption } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 import { InfiniteWishlistResultPages } from '@cococom/supabase/types';
 
 type UseWishlistsParams = {
   channel: DiscountChannels;
+  sortOption: WishlistSortOption;
+  isOnSale?: boolean;
 };
 
 const PAGE_SIZE = 50;
 
-export function useWishlists({ channel }: UseWishlistsParams) {
+export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsParams) {
   const user = useUserStore(store => store.user);
 
   const queryKey = queryKeys.wishlists.byUserId({
     userId: user!.id,
     channel,
-    sortField: 'itemId',
-    sortDirection: 'ASC',
-    isOnSale: undefined,
+    sortField: sortOption.field,
+    sortDirection: sortOption.orderBy,
+    isOnSale,
   });
 
   const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
@@ -34,8 +37,9 @@ export function useWishlists({ channel }: UseWishlistsParams) {
           channel,
           page: pageParam as number,
           pageSize: PAGE_SIZE,
-          sortField: 'itemId',
-          sortDirection: 'ASC',
+          sortField: sortOption.field,
+          sortDirection: sortOption.orderBy,
+          isOnSale,
         });
       },
       initialPageParam: 1,
@@ -60,6 +64,7 @@ export function useWishlists({ channel }: UseWishlistsParams) {
 
   // // NOTE: DEBUG
   console.log('useWishlists', {
+    sortOption,
     data,
     isFetching,
     isSuccess,

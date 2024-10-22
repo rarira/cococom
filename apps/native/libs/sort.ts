@@ -1,5 +1,10 @@
 import { CategorySectors } from '@cococom/supabase/libs';
-import { AlltimeRankingResultItem, Database, JoinedItems } from '@cococom/supabase/types';
+import {
+  AlltimeRankingResultItem,
+  Database,
+  JoinedItems,
+  WishlistResultItem,
+} from '@cococom/supabase/types';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 import { DiscountChannels } from '@/constants';
@@ -9,7 +14,7 @@ import { SearchItemSortOption } from './search';
 
 export type SortOptions = Record<
   string,
-  DiscountSortOption | SearchItemSortOption | AlltimeSortOption
+  DiscountSortOption | SearchItemSortOption | AlltimeSortOption | WishlistSortOption
 >;
 
 export type DiscountSortOption = {
@@ -26,6 +31,12 @@ export type AlltimeSortOption = {
   orderBy: 'asc' | 'desc';
   text: string;
   authRequired?: boolean;
+};
+
+export type WishlistSortOption = {
+  field: keyof WishlistResultItem;
+  orderBy: 'ASC' | 'DESC';
+  text: string;
 };
 
 export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
@@ -229,5 +240,53 @@ export const ALLTIME_RANKING_SORT_OPTIONS: Record<string, AlltimeSortOption> = {
     field: 'totalDiscountCount',
     orderBy: 'desc',
     text: '할인 빈도 많은 순',
+  },
+};
+
+export const WISHLIST_SORT_OPTIONS: Record<string, WishlistSortOption> = {
+  recent: {
+    field: 'wishlistCreatedAt',
+    orderBy: 'DESC',
+    text: '관심 등록 최신순',
+  },
+  old: {
+    field: 'wishlistCreatedAt',
+    orderBy: 'ASC',
+    text: '관심 등록 오래된 순',
+  },
+  itemIdAsc: {
+    field: 'itemId',
+    orderBy: 'ASC',
+    text: '상품번호 낮은 순',
+  },
+  itemIdDesc: {
+    field: 'itemId',
+    orderBy: 'DESC',
+    text: '상품번호 높은 순',
+  },
+  itemNameAsc: {
+    field: 'itemName',
+    orderBy: 'ASC',
+    text: '상품명 A-Z순',
+  },
+  itemNameDesc: {
+    field: 'itemName',
+    orderBy: 'DESC',
+    text: '상품명 Z-A순',
+  },
+  popular: {
+    field: 'totalWishlistCount',
+    orderBy: 'DESC',
+    text: '인기순',
+  },
+  trend: {
+    field: 'totalCommentCount',
+    orderBy: 'DESC',
+    text: '댓글 많은 순',
+  },
+  rare: {
+    field: 'totalDiscountCount',
+    orderBy: 'ASC',
+    text: '할인 빈도 적은 순',
   },
 };

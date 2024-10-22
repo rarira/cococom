@@ -4,18 +4,18 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { IconProps } from '@/components/core/icon';
 
-interface RankingSortButtonProps extends Omit<IconButtonProps, 'iconProps'> {
+interface SortWithTextButtonProps extends Omit<IconButtonProps, 'iconProps'> {
   iconProps?: Omit<IconProps, 'font'>;
 }
 
-const RankingSortButton = memo(function RankingSortButton({
+const SortWithTextButton = memo(function SortWithTextButton({
   text,
   onPress,
   style,
   textStyle,
   iconProps,
   ...restProps
-}: RankingSortButtonProps) {
+}: SortWithTextButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
@@ -47,4 +47,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default RankingSortButton;
+export default SortWithTextButton;

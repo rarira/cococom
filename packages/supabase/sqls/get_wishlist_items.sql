@@ -32,9 +32,11 @@ BEGIN
         RAISE EXCEPTION 'Invalid order direction: %', order_direction;
     END IF;
 
-    -- Build dynamic order by clause with casting for itemId if needed
+    -- Build dynamic order by clause
     IF order_field = 'itemId' THEN
         order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
+    ELSIF order_field = 'wishlistCreatedAt' THEN
+        order_sql := format('ORDER BY w."created_at" %s', order_direction);
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
@@ -64,10 +66,11 @@ BEGIN
         EXECUTE format('
             SELECT COUNT(*)
             FROM wishlists w
+            LEFT JOIN items i ON i.id = w."itemId"
             WHERE w."userId" = $1
-            %s
-            %s', 
-            sale_condition_sql, channel_sql) 
+            %s  -- Sale condition
+            %s  -- Channel condition
+        ', sale_condition_sql, channel_sql) 
         INTO total_records
         USING user_id;
     END IF;
@@ -85,7 +88,11 @@ BEGIN
                            i."bestDiscountRate",
                            i."bestDiscount",
                            i."lowestPrice",
+                           i."totalWishlistCount",
+                           i."totalCommentCount",
+                           i."totalDiscountCount",
                            i.is_online,
+                           w."created_at" AS "wishlistCreatedAt",
                            (
                                SELECT EXISTS (
                                    SELECT 1
@@ -96,15 +103,16 @@ BEGIN
                                    LIMIT 1
                                )
                            ) AS "isOnSaleNow"
-                    FROM items i
-                    LEFT JOIN wishlists w ON i.id = w."itemId"
+                    FROM wishlists w
+                    LEFT JOIN items i ON i.id = w."itemId"
                     WHERE w."userId" = $2
-                    %s
-                    %s
+                    %s  -- Sale condition
+                    %s  -- Channel condition
+                    %s  -- Order by clause
                     LIMIT $3 OFFSET ($4 - 1) * $3
                 ) t
             )
-        )', 
+        )',
         sale_condition_sql, channel_sql, order_sql)
     INTO result
     USING total_records, user_id, page_size, page;
