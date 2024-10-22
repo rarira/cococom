@@ -539,6 +539,18 @@ export type Database = {
           is_online: boolean
         }[]
       }
+      get_wishlist_items: {
+        Args: {
+          user_id: string
+          is_on_sale: boolean
+          page: number
+          page_size: number
+          order_field: string
+          order_direction: string
+          channel: string
+        }
+        Returns: Json
+      }
       search_items_by_itemid: {
         Args: {
           item_id: string
