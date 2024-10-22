@@ -50,9 +50,14 @@ export type InfiniteSearchResultPages = {
   items: InfiniteSearchResultItem[];
 };
 
+export type WishlistResultItem = Omit<InfiniteSearchResultItem, 'isWishlistedByUser'> & {
+  totalDiscountCount: number;
+  wishlistCreatedAt: string;
+};
+
 export type InfiniteWishlistResultPages = {
   totalRecords: number | null;
-  items: Omit<InfiniteSearchResultItem, 'isWishlistedByUser'>[];
+  items: WishlistResultItem[];
 };
 
 // Override the type for a specific column in a view:

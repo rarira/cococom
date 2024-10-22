@@ -21,6 +21,7 @@ import {
   MEMO_INFINITE_QUERY_PAGE_SIZE,
 } from '@/constants';
 import { InfiniteSearchResultData } from '@/libs/search';
+import { WishlistSortOption } from './sort';
 
 export const queryKeys = {
   category: {
@@ -67,8 +68,8 @@ export const queryKeys = {
     }: {
       userId: string;
       channel: DiscountChannels;
-      sortField: SearchItemSortField;
-      sortDirection: SearchItemSortDirection;
+      sortField: WishlistSortOption['field'];
+      sortDirection: WishlistSortOption['orderBy'];
       isOnSale?: boolean;
     }) => ['wishlists', { userId, channel, sortField, sortDirection, isOnSale }],
   },

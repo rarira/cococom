@@ -118,6 +118,7 @@ BEGIN
                         )
                     )
                     %s
+                    %s
                     LIMIT $5 OFFSET ($6 - 1) * $5
                 ) t
             )
@@ -248,6 +249,7 @@ BEGIN
                             AND CURRENT_TIMESTAMP BETWEEN discounts."startDate" AND discounts."endDate"
                         )
                     )
+                    %s
                     %s
                     LIMIT $5 OFFSET ($6 - 1) * $5
                 ) t
