@@ -57,6 +57,21 @@ export const queryKeys = {
       userId?: string,
     ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption }],
   },
+  wishlists: {
+    byUserId: ({
+      userId,
+      channel,
+      sortField,
+      sortDirection,
+      isOnSale,
+    }: {
+      userId: string;
+      channel: DiscountChannels;
+      sortField: SearchItemSortField;
+      sortDirection: SearchItemSortDirection;
+      isOnSale?: boolean;
+    }) => ['wishlists', { userId, channel, sortField, sortDirection, isOnSale }],
+  },
   items: {
     byId: (id: number, userId?: string) => ['items', { id, userId }],
   },

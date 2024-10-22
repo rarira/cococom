@@ -72,28 +72,26 @@ export function useSearchInput({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
-        if (isItemIdSearch) {
-          return supabase.fullTextSearchItemsByItemId(
-            channelOption,
-            keywordToSearch,
-            !!isOnSaleSearch,
-            user?.id,
-            pageParam as number,
-            PAGE_SIZE,
-            SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-            SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-          );
-        }
-        return supabase.fullTextSearchItemsByKeyword(
+        const commonParams = {
           channelOption,
-          keywordToSearch,
-          !!isOnSaleSearch,
-          user?.id,
-          pageParam as number,
-          PAGE_SIZE,
-          SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-          SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-        );
+          isOnsale: !!isOnSaleSearch,
+          userId: user?.id,
+          page: pageParam as number,
+          pageSize: PAGE_SIZE,
+          sortField: SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+        };
+
+        if (isItemIdSearch) {
+          return supabase.fullTextSearchItemsByItemId({
+            ...commonParams,
+            itemId: keywordToSearch,
+          });
+        }
+        return supabase.fullTextSearchItemsByKeyword({
+          keyword: keywordToSearch,
+          ...commonParams,
+        });
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
