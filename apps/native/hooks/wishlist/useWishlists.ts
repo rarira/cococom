@@ -89,5 +89,6 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     hasNextPage,
     handleEndReached,
     queryKey,
+    totalResults: data?.pages[0].totalRecords ?? null,
   };
 }
