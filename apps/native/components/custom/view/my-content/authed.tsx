@@ -67,7 +67,7 @@ const stylesheet = createStyleSheet(theme => ({
   tabBarContainer: {
     backgroundColor: theme.colors.lightShadow,
     borderRadius: theme.borderRadius.lg,
-    // marginHorizontal: theme.screenHorizontalPadding - theme.sp
+    marginHorizontal: theme.screenHorizontalPadding - theme.spacing.md,
   },
   tabBarItem: {
     alignItems: undefined,

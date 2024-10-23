@@ -59,6 +59,7 @@ const MyWishlistTabView = memo(function MyWishlistTabView() {
           handleChannelPress={handleChannelPress}
           channelOption={channelOption}
           onEndReached={handleEndReached}
+          contentContainerStyle={styles.container}
         />
       )}
       <SortBottomSheet
@@ -72,6 +73,9 @@ const MyWishlistTabView = memo(function MyWishlistTabView() {
 });
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    paddingHorizontal: theme.screenHorizontalPadding,
+  },
   loadingProgress: {
     marginTop: theme.spacing.xl * 3,
   },
