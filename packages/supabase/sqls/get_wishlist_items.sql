@@ -52,12 +52,7 @@ BEGIN
     sale_condition_sql := 
         CASE 
             WHEN is_on_sale IS TRUE THEN 
-                'AND EXISTS (
-                    SELECT 1
-                    FROM discounts d
-                    WHERE d."itemId" = i."itemId"
-                    AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
-                )'
+                'AND d.id IS NOT NULL'  -- 할인이 있는 경우에만 반환
             ELSE ''
         END;
 
@@ -67,6 +62,8 @@ BEGIN
             SELECT COUNT(*)
             FROM wishlists w
             LEFT JOIN items i ON i.id = w."itemId"
+            LEFT JOIN discounts d ON d."itemId" = i."itemId"
+                AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
             WHERE w."userId" = $1
             %s  -- Sale condition
             %s  -- Channel condition
@@ -93,18 +90,27 @@ BEGIN
                            i."totalDiscountCount",
                            i.is_online,
                            w."created_at" AS "wishlistCreatedAt",
-                           (
-                               SELECT EXISTS (
-                                   SELECT 1
-                                   FROM discounts d
-                                   WHERE d."itemId" = i."itemId"
-                                   AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
-                                   ORDER BY d."startDate" DESC
-                                   LIMIT 1
-                               )
-                           ) AS "isOnSaleNow"
+                           CASE 
+                               WHEN d.id IS NOT NULL THEN TRUE 
+                               ELSE FALSE 
+                           END AS "isOnSaleNow",
+                           -- Create discount object
+                           CASE 
+                               WHEN d.id IS NOT NULL THEN 
+                                   jsonb_build_object(
+                                       ''discount'', d.discount,
+                                       ''discountRate'', d."discountRate",
+                                       ''discountPrice'', d."discountPrice",
+                                       ''price'', d.price,
+                                       ''endDate'', d."endDate"
+                                       
+                                   )
+                               ELSE NULL
+                           END AS discount
                     FROM wishlists w
                     LEFT JOIN items i ON i.id = w."itemId"
+                    LEFT JOIN discounts d ON d."itemId" = i."itemId"
+                        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
                     WHERE w."userId" = $2
                     %s  -- Sale condition
                     %s  -- Channel condition

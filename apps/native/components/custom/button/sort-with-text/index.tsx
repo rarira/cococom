@@ -30,19 +30,17 @@ const SortWithTextButton = memo(function SortWithTextButton({
       onPress={onPress}
       style={state => [styles.button, typeof style === 'function' ? style(state) : style]}
       textStyle={[styles.buttonText, textStyle]}
+      {...restProps}
     />
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   button: {
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
     alignSelf: 'flex-end',
   },
   buttonText: {
     fontSize: theme.fontSize.normal,
-    lineHeight: theme.fontSize.normal * 1.5,
     color: theme.colors.typography,
   },
 }));

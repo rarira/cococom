@@ -136,7 +136,6 @@ const stylesheet = createStyleSheet(theme => ({
     height: theme.spacing.md * 2,
   },
   resultHeader: {
-    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: theme.spacing.md,
