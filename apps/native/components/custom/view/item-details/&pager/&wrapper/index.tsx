@@ -11,27 +11,16 @@ import ItemDetailsPagerGraphPageView from '../&page/graph';
 import ItemDetailsPagerImagePageView from '../&page/image';
 
 interface ItemDetailsPagerWrapperViewProps {
-  onScrollY?: (value: boolean) => void;
   item: JoinedItems;
 }
 
 const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
-  // onScrollY,
   item,
 }: ItemDetailsPagerWrapperViewProps) {
   const { styles } = useStyles(stylesheet);
 
   const { pagerViewRef, handlePageSelected, activePage, handleNavigateToPage } =
     usePagerViewNavigation();
-
-  // useAnimatedReaction(
-  //   () => scrollY.value > 0,
-  //   (currentValue, previousValue) => {
-  //     if (previousValue !== null && currentValue !== previousValue) {
-  //       runOnJS(onScrollY)(currentValue);
-  //     }
-  //   },
-  // );
 
   const GraphPages = useMemo(() => {
     const graphValueFieldArray =
