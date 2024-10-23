@@ -20,7 +20,8 @@ import {
   DiscountChannels,
   MEMO_INFINITE_QUERY_PAGE_SIZE,
 } from '@/constants';
-import { InfiniteSearchResultData } from '@/libs/search';
+
+import { InfiniteSearchResultData } from './search';
 import { WishlistSortOption } from './sort';
 
 export const queryKeys = {

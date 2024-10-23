@@ -166,7 +166,6 @@ export function useSearchInput({
     isFetchingNextPage,
     handlePressSearchHistory,
     searchResult,
-    hasNextPage,
     handleEndReached,
     sortOption,
     handleSortChange,

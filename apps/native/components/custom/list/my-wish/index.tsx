@@ -1,4 +1,3 @@
-import { PortalHost } from '@gorhom/portal';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { QueryKey } from '@tanstack/react-query';
@@ -6,20 +5,25 @@ import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import Checkbox from '@/components/core/checkbox';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
-import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
-import { DiscountChannels, PortalHostNames } from '@/constants';
+import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
-import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
-import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
+import { SearchItemsOptions } from '@/libs/search';
+import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
 
-interface MyWishListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
-  searchResult: SearchResultToRender;
-  searchQueryParams: SearchQueryParams;
-  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
+import WishlistItemCard from '../../card/list-item/wishlist';
+import SearchOptionCheckbox from '../../checkbox/search-option';
+
+interface MyWishListProps extends Partial<FlashListProps<WishlistToRender[number]>> {
+  wishlistResult: WishlistToRender;
+  options: string[];
+  setOptions: (value: string[]) => void;
+  sortOption: keyof typeof WISHLIST_SORT_OPTIONS;
   totalResults: number | null;
   onPressHeaderRightButton: () => void;
   queryKey: QueryKey;
@@ -29,8 +33,9 @@ interface MyWishListProps extends Partial<FlashListProps<SearchResultToRender[nu
 }
 
 const MyWishList = memo(function MyWishList({
-  searchResult,
-  searchQueryParams,
+  wishlistResult,
+  options,
+  setOptions,
   sortOption,
   totalResults,
   onPressHeaderRightButton,
@@ -45,32 +50,42 @@ const MyWishList = memo(function MyWishList({
   const tabBarHeight = useBottomTabBarHeight();
 
   const renderItem = useCallback(
-    ({ item }: { item: SearchResultToRender[number]; index: number }) => {
+    ({ item }: { item: WishlistToRender[number]; index: number }) => {
       return (
-        <SearchResultListItemCard
+        <WishlistItemCard
           key={item.id}
           item={item}
           sortOption={sortOption}
           queryKey={queryKey}
           channelOption={channelOption.value}
-          {...searchQueryParams}
+          options={options}
         />
       );
     },
-    [channelOption, queryKey, searchQueryParams, sortOption],
+    [channelOption.value, options, queryKey, sortOption],
   );
 
   const ListHeaderComponent = useMemo(() => {
-    if (searchResult.length === 0) return null;
+    if (wishlistResult.length === 0) return null;
 
     return (
-      <View style={styles.resultHeader}>
+      <View style={styles.headerRowContainer}>
         {totalResults ? (
           <Text style={styles.totalResultsText}>{`총 ${totalResults} 개`}</Text>
         ) : (
           <View />
         )}
-        <View style={styles.resultHeaderRightContainer}>
+        <View style={styles.headerRightContainer}>
+          <Checkbox.Group value={options} onChange={setOptions}>
+            <SearchOptionCheckbox
+              option="on_sale"
+              value={{
+                label: '할인 중인 상품만',
+                iconColor: 'white',
+              }}
+              indicatorStyle={styles.checkboxOnSaleIndicator}
+            />
+          </Checkbox.Group>
           <HeaderRightButton
             iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
             onPress={onPressHeaderRightButton}
@@ -83,11 +98,11 @@ const MyWishList = memo(function MyWishList({
     channelOption,
     handleChannelPress,
     onPressHeaderRightButton,
-    searchResult.length,
-    styles.resultHeader,
-    styles.resultHeaderRightContainer,
-    styles.totalResultsText,
+    wishlistResult.length,
+    styles,
     totalResults,
+    options,
+    setOptions,
   ]);
 
   const ListFooterComponent = useMemo(() => {
@@ -97,16 +112,12 @@ const MyWishList = memo(function MyWishList({
   }, [isFetchingNextPage]);
 
   const ListEmptyComponent = useMemo(() => {
-    return <Text style={styles.listEmptyText}>검색 결과가 없습니다</Text>;
+    return (
+      <Text style={styles.listEmptyText}>
+        {`등록된 관심 상품이 없습니다.\n상품 목록 화면에서 하트 모양 아이콘을 눌러\n관심 상품을 등록하세요.`}
+      </Text>
+    );
   }, [styles.listEmptyText]);
-
-  const searchResultByChannel = useMemo(() => {
-    return searchResult.filter(result => {
-      if (channelOption.value === DiscountChannels.ALL) return true;
-      if (channelOption.value === DiscountChannels.ONLINE) return result.is_online;
-      return !result.is_online;
-    });
-  }, [searchResult, channelOption]);
 
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.seperator} />,
@@ -114,46 +125,50 @@ const MyWishList = memo(function MyWishList({
   );
 
   return (
-    <>
-      <FlashList
-        data={searchResultByChannel}
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={ListFooterComponent}
-        ListFooterComponentStyle={styles.fetchingNextProgress}
-        ListEmptyComponent={ListEmptyComponent}
-        renderItem={renderItem}
-        estimatedItemSize={200}
-        keyExtractor={item => item?.id.toString()}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        contentContainerStyle={styles.flashListContainer(tabBarHeight)}
-        onEndReachedThreshold={0.5}
-        {...restProps}
-      />
-      <PortalHost name={PortalHostNames.SEARCH} />
-    </>
+    <FlashList
+      data={wishlistResult}
+      ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={ListFooterComponent}
+      ListFooterComponentStyle={styles.fetchingNextProgress}
+      ListEmptyComponent={ListEmptyComponent}
+      renderItem={renderItem}
+      estimatedItemSize={200}
+      keyExtractor={item => item?.id.toString()}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      contentContainerStyle={styles.flashListContainer(tabBarHeight)}
+      onEndReachedThreshold={0.5}
+      {...restProps}
+    />
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   flashListContainer: (tabBarHeight: number) => ({
-    paddingTop: theme.spacing.lg * 1.5,
-    paddingHorizontal: theme.screenHorizontalPadding,
+    paddingTop: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.sm,
     paddingBottom: tabBarHeight + theme.spacing.xl,
   }),
   seperator: {
     height: theme.spacing.md * 2,
   },
-  resultHeader: {
-    width: '100%',
+  headerRowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: theme.spacing.md,
+    alignItems: 'center',
+    paddingVertical: theme.spacing.md,
   },
-  resultHeaderRightContainer: {
+  headerRightContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     gap: theme.spacing.md,
   },
+  checkboxOnSaleIndicator: (checked: boolean) => ({
+    backgroundColor: checked ? SearchItemsOptions(theme)['on_sale'].indicatorColor : 'transparent',
+    borderColor: checked
+      ? SearchItemsOptions(theme)['on_sale'].indicatorColor
+      : theme.colors.typography,
+  }),
   totalResultsText: {
     fontSize: theme.fontSize.sm,
     fontWeight: 'bold',
@@ -163,7 +178,8 @@ const stylesheet = createStyleSheet(theme => ({
   },
   listEmptyText: {
     fontSize: theme.fontSize.normal,
-    alignSelf: 'center',
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: theme.spacing.xl * 3,
   },
 }));
