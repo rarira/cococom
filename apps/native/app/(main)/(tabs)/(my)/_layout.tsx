@@ -43,6 +43,7 @@ export default function MyLayout() {
           headerBackTitleVisible: false,
         }}
       />
+      <Stack.Screen name="item" options={{ headerShown: true }} />
     </Stack>
   );
 }
