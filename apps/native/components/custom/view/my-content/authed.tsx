@@ -1,9 +1,10 @@
-import Chip from '@/components/core/chip';
-import MyWishlistTabView from '@/components/custom/tab-view/my/wishlist';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+
+import Chip from '@/components/core/chip';
+import MyWishlistTabView from '@/components/custom/tab-view/my/wishlist';
 
 interface AuthedMyContentViewProps {}
 

@@ -11,6 +11,7 @@ interface ListItemCardThumbnailImageProps {
   height: DimensionValue;
   isOnline?: boolean;
   style?: StyleProp<ViewStyle>;
+  small?: boolean;
 }
 
 function ListItemCardThumbnailImage({
@@ -19,6 +20,7 @@ function ListItemCardThumbnailImage({
   height,
   style,
   isOnline = false,
+  small,
 }: ListItemCardThumbnailImageProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -32,7 +34,7 @@ function ListItemCardThumbnailImage({
       />
       <View style={styles.itemIdOverlay(isOnline)}>
         <Text style={styles.itemIdText(isOnline)}>
-          {(isOnline ? '온라인, ' : '') + Util.extractItemid(product.itemId!)}
+          {(isOnline ? `온라인,${small ? '\n' : ' '} ` : '') + Util.extractItemid(product.itemId!)}
         </Text>
       </View>
     </View>
