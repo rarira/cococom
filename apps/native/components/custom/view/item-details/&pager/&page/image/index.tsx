@@ -100,8 +100,8 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
           />
         </View>
       </View>
-      <View style={styles.itemIdOverlay}>
-        <Text style={styles.itemIdText}>
+      <View style={styles.itemIdOverlay(isOnline)}>
+        <Text style={styles.itemIdText(isOnline)}>
           {(isOnline ? '온라인, ' : '') + Util.extractItemid(item.itemId)}
         </Text>
       </View>
@@ -148,19 +148,19 @@ const stylesheet = createStyleSheet(theme => ({
     borderWidth: hasOnlineUrl ? 1 : 0,
     borderColor: theme.colors.tint3,
   }),
-  itemIdOverlay: {
+  itemIdOverlay: (isOnline: boolean) => ({
     position: 'absolute',
     top: theme.spacing.md,
     left: theme.spacing.md,
-    backgroundColor: `${theme.colors.background}88`,
+    backgroundColor: `${isOnline ? theme.colors.tint3 : theme.colors.background}88`,
     paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.md,
-  },
-  itemIdText: {
-    color: theme.colors.typography,
+  }),
+  itemIdText: (isOnline: boolean) => ({
+    color: isOnline ? 'white' : theme.colors.typography,
     fontSize: theme.fontSize.sm,
     fontWeight: 'semibold',
-  },
+  }),
 }));
 
 export default ItemDetailsPagerImagePageView;

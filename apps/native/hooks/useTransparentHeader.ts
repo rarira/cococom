@@ -4,13 +4,13 @@ import { useLayoutEffect } from 'react';
 import { Platform } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
-
 export function useTransparentHeader(options: Record<string, any>) {
   const { theme } = useStyles();
   const headerHeight = useHeaderHeight();
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
+    console.log('useTransparentHeader', headerHeight);
     navigation.setOptions({
       ...(Platform.OS === 'ios'
         ? {
