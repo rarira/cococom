@@ -39,7 +39,6 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     isLoading,
     isFetchingNextPage,
     refetch,
-    isStale,
     isSuccess,
     fetchNextPage,
     hasNextPage,

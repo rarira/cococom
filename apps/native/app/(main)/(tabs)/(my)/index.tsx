@@ -18,7 +18,7 @@ export default function MyScreen() {
   const { user, profile } = useUserStore(state => ({ user: state.user, profile: state.profile }));
 
   return (
-    <ScreenContainerView withBottomTabBar>
+    <ScreenContainerView withBottomTabBar style={styles.container}>
       <View style={styles.header}>
         <View style={styles.welcomeTextContainer}>
           {!user ? (
@@ -63,11 +63,15 @@ export default function MyScreen() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    paddingHorizontal: 0,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: theme.spacing.xl,
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
   welcomeTextContainer: {
     flexDirection: 'row',

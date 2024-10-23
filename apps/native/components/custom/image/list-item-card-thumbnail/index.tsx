@@ -34,7 +34,7 @@ function ListItemCardThumbnailImage({
       />
       <View style={styles.itemIdOverlay(isOnline)}>
         <Text style={styles.itemIdText(isOnline)}>
-          {(isOnline ? `온라인,${small ? '\n' : ' '} ` : '') + Util.extractItemid(product.itemId!)}
+          {(isOnline ? `온라인,${small ? '\n' : ' '}` : '') + Util.extractItemid(product.itemId!)}
         </Text>
       </View>
     </View>

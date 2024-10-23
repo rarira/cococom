@@ -8,7 +8,6 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Checkbox from '@/components/core/checkbox';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
 import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
@@ -16,6 +15,7 @@ import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { SearchItemsOptions } from '@/libs/search';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
 
+import DiscountChannelRotateButton from '../../button/discount-channel-rotate';
 import WishlistItemCard from '../../card/list-item/wishlist';
 import SearchOptionCheckbox from '../../checkbox/search-option';
 
@@ -144,7 +144,6 @@ const MyWishList = memo(function MyWishList({
 
 const stylesheet = createStyleSheet(theme => ({
   flashListContainer: (tabBarHeight: number) => ({
-    paddingTop: theme.spacing.sm,
     paddingHorizontal: theme.spacing.sm,
     paddingBottom: tabBarHeight + theme.spacing.xl,
   }),
@@ -156,6 +155,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: theme.spacing.md,
+    marginTop: theme.spacing.md,
   },
   headerRightContainer: {
     flexDirection: 'row',

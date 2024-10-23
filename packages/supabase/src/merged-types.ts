@@ -53,6 +53,10 @@ export type InfiniteSearchResultPages = {
 export type WishlistResultItem = Omit<InfiniteSearchResultItem, 'isWishlistedByUser'> & {
   totalDiscountCount: number;
   wishlistCreatedAt: string;
+  discount: Pick<
+    Tables<'discounts'>,
+    'price' | 'discount' | 'discountPrice' | 'discountRate' | 'endDate'
+  > | null;
 };
 
 export type InfiniteWishlistResultPages = {
