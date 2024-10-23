@@ -100,14 +100,6 @@ const SearchResultList = memo(function SearchResultList({
     return <Text style={styles.listEmptyText}>검색 결과가 없습니다</Text>;
   }, [styles.listEmptyText]);
 
-  const searchResultByChannel = useMemo(() => {
-    return searchResult.filter(result => {
-      if (channelOption.value === DiscountChannels.ALL) return true;
-      if (channelOption.value === DiscountChannels.ONLINE) return result.is_online;
-      return !result.is_online;
-    });
-  }, [searchResult, channelOption]);
-
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.seperator} />,
     [styles.seperator],
@@ -116,7 +108,7 @@ const SearchResultList = memo(function SearchResultList({
   return (
     <>
       <FlashList
-        data={searchResultByChannel}
+        data={searchResult}
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
         ListFooterComponentStyle={styles.fetchingNextProgress}
