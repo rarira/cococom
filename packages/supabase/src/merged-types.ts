@@ -25,34 +25,24 @@ export type InfiniteQueryResult<T> = {
   pages: T[];
 };
 
-export type InfiniteSearchResultItem = {
-  id: number;
-  itemId: string;
-  itemName: string;
-  bestDiscountRate: number;
-  bestDiscount: number;
-  lowestPrice: number;
+export type InfiniteResultItem = Omit<JoinedItems, 'discounts' | 'categories' | 'online_url'> & {
   isOnSaleNow: boolean;
-  totalWishlistCount: number;
-  totalCommentCount: number;
-  totalMemoCount: number | null;
-  isWishlistedByUser: boolean;
-  is_online: boolean;
 };
 
-export type AlltimeRankingResultItem = InfiniteSearchResultItem & {
+export type AlltimeRankingResultItem = InfiniteResultItem & {
   created_at: string;
   totalDiscountCount: number;
 };
 
 export type InfiniteSearchResultPages = {
   totalRecords: number | null;
-  items: InfiniteSearchResultItem[];
+  items: InfiniteResultItem[];
 };
 
-export type WishlistResultItem = Omit<InfiniteSearchResultItem, 'isWishlistedByUser'> & {
+export type WishlistResultItem = Omit<InfiniteResultItem, 'isWishlistedByUser'> & {
   totalDiscountCount: number;
   wishlistCreatedAt: string;
+  wishlistId: string;
   discount: Pick<
     Tables<'discounts'>,
     'discount' | 'discountPrice' | 'discountRate' | 'endDate'

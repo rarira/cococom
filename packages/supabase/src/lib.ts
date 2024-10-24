@@ -8,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database, JoinedComments, Tables, WishlistResultItem } from './merged-types';
+import { Database, JoinedComments, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -253,6 +253,15 @@ export class Supabase {
       .eq('itemId', deleteWishlist.itemId)
       .eq('userId', deleteWishlist.userId);
 
+    if (error) {
+      throw error;
+    }
+
+    return;
+  }
+
+  async deleteWishlistById(wishlistId: string) {
+    const { error } = await this.supabaseClient.from('wishlists').delete().eq('id', wishlistId);
     if (error) {
       throw error;
     }
@@ -530,13 +539,13 @@ export class Supabase {
   }: {
     userId: string;
     channel: string;
-    sortField: keyof WishlistResultItem;
+    sortField: string;
     sortDirection: SearchItemSortDirection;
     page?: number;
     pageSize?: number;
     isOnSale?: boolean;
   }) {
-    let query = this.supabaseClient.rpc('get_wishlist_items', {
+    const query = this.supabaseClient.rpc('get_wishlist_items', {
       user_id: userId,
       channel,
       page,

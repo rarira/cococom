@@ -49,11 +49,17 @@ function ListItemWishlistIconButton<
       if (item.isWishlistedByUser) {
         return supabase.deleteWishlist(newWishlist);
       }
+
       return supabase.createWishlist(newWishlist);
     },
     onMutate: onMutate ? onMutate(queryClient) : undefined,
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: () => {
+      if (item.isWishlistedByUser) return;
+      console.log('invalidateQueries wishlist');
+      queryClient.invalidateQueries({ queryKey: ['wishlists'] });
     },
   });
 

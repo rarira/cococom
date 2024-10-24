@@ -1,6 +1,6 @@
 import { Tables } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { forwardRef, memo, MutableRefObject, useCallback } from 'react';
+import { memo, MutableRefObject, useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -97,44 +97,40 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemMemoListRow = memo(
-  forwardRef<SwipeableMethods, ItemMemoListRowProps>(function ItemMemoListRow(
-    { memo },
-    previousSwipeableRef,
-  ) {
-    const { styles } = useStyles(stylesheet);
+const ItemMemoListRow = memo(function ItemMemoListRow({ memo }: ItemMemoListRowProps) {
+  const { styles } = useStyles(stylesheet);
+  const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
-    const renderRightActions = useCallback(
-      (
-        _progress: any,
-        translation: SharedValue<number>,
-        swipeableRef: React.RefObject<SwipeableMethods>,
-      ) => <RightAction dragX={translation} swipeableRef={swipeableRef} memo={memo} />,
-      [memo],
-    );
+  const renderRightActions = useCallback(
+    (
+      _progress: any,
+      translation: SharedValue<number>,
+      swipeableRef: React.RefObject<SwipeableMethods>,
+    ) => <RightAction dragX={translation} swipeableRef={swipeableRef} memo={memo} />,
+    [memo],
+  );
 
-    const swipeableProps = useOnlyOneSwipeable(
-      previousSwipeableRef as MutableRefObject<SwipeableMethods>,
-    );
+  const swipeableProps = useOnlyOneSwipeable(
+    previousSwipeableRef as MutableRefObject<SwipeableMethods>,
+  );
 
-    return (
-      <Swipeable
-        friction={2}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={40}
-        renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableProps.ref)}
-        {...swipeableProps}
-      >
-        <View style={styles.container}>
-          <Text style={styles.timeText}>
-            {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
-          </Text>
-          <Text style={styles.contentText}>{memo.content}</Text>
-        </View>
-      </Swipeable>
-    );
-  }),
-);
+  return (
+    <Swipeable
+      friction={2}
+      enableTrackpadTwoFingerGesture
+      rightThreshold={40}
+      renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableProps.ref)}
+      {...swipeableProps}
+    >
+      <View style={styles.container}>
+        <Text style={styles.timeText}>
+          {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
+        </Text>
+        <Text style={styles.contentText}>{memo.content}</Text>
+      </View>
+    </Swipeable>
+  );
+});
 
 const stylesheet = createStyleSheet(theme => ({
   container: {

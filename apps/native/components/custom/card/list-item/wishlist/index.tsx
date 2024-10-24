@@ -1,17 +1,21 @@
-import { QueryKey } from '@tanstack/react-query';
+import { QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import React, { memo, useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import IconButton from '@/components/core/button/icon';
 import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import WishlistItemCardDetailView from '@/components/custom/view/list-item-card/wishlist/&detail';
 import { DiscountChannels } from '@/constants';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
+import { handleMutateOfWishlist } from '@/libs/react-query';
 import { shadowPresets } from '@/libs/shadow';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
+import { supabase } from '@/libs/supabase';
 import { useListQueryKeyStore } from '@/store/list-query-key';
 
 interface WishlistItemCardProps {
@@ -23,6 +27,63 @@ interface WishlistItemCardProps {
   options: string[];
 }
 
+const ACTION_BUTTON_WIDTH = 50;
+
+const RightAction = memo(({ dragX, queryKey, wishlistId, itemId, pageIndexOfItem }: any) => {
+  const { theme, styles } = useStyles(stylesheet);
+
+  const queryClient = useQueryClient();
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: dragX.value + ACTION_BUTTON_WIDTH,
+        },
+      ],
+    };
+  });
+
+  const deleteWishlistMutation = useMutation({
+    mutationFn: () => supabase.deleteWishlistById(wishlistId),
+    onMutate: () => {
+      return handleMutateOfWishlist({
+        queryClient,
+        queryKey,
+        newWishlist: { itemId },
+        pageIndexOfItem,
+      });
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+  });
+
+  const handlePress = useCallback(async () => {
+    try {
+      await deleteWishlistMutation.mutateAsync();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [deleteWishlistMutation]);
+
+  return (
+    <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
+      <IconButton
+        onPress={handlePress}
+        iconProps={{
+          font: { type: 'FontAwesomeIcon', name: 'trash-o' },
+          size: theme.fontSize.lg,
+          color: 'white',
+        }}
+        style={styles.actionButton(theme.colors.alert)}
+      />
+    </Animated.View>
+  );
+});
+
+RightAction.displayName = 'RightAction';
+
 const WishlistItemCard = memo(function WishlistItemCard({
   item,
   containerStyle,
@@ -32,6 +93,7 @@ const WishlistItemCard = memo(function WishlistItemCard({
   options,
 }: WishlistItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
+  const queryClient = useQueryClient();
 
   const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
     state.setQueryKeyOfList,
@@ -43,8 +105,37 @@ const WishlistItemCard = memo(function WishlistItemCard({
     setPageIndexOfInfinteList(item.pageIndex);
   }, [item.pageIndex, queryKey, setPageIndexOfInfinteList, setQueryKeyOfList]);
 
+  const deleteWishlistMutation = useMutation({
+    mutationFn: () => supabase.deleteWishlistById(item.wishlistId),
+    onMutate: () => {
+      return handleMutateOfWishlist({
+        queryClient,
+        queryKey,
+        newWishlist: { itemId: item.id },
+        pageIndexOfItem: item.pageIndex,
+      });
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+  });
+
+  const handleLongPress = useCallback(async () => {
+    try {
+      console.log('deleteWishlistMutation.mutateAsync()');
+      await deleteWishlistMutation.mutateAsync();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [deleteWishlistMutation]);
+
   return (
-    <Link href={`/(my)/item?itemId=${item.id}` as Href<string>} asChild onPress={handlePress}>
+    <Link
+      href={`/(my)/item?itemId=${item.id}` as Href<string>}
+      asChild
+      onPress={handlePress}
+      onLongPress={handleLongPress}
+    >
       <Pressable>
         <Shadow
           {...shadowPresets.card(theme)}
@@ -95,6 +186,18 @@ const stylesheet = createStyleSheet(theme => ({
   thumbnail: {
     borderRadius: theme.borderRadius.md,
   },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    marginLeft: theme.spacing.xl,
+    paddingLeft: theme.spacing.xl,
+    width: ACTION_BUTTON_WIDTH,
+  },
+  actionButton: (backgroundColor: string) => ({
+    backgroundColor,
+    width: ACTION_BUTTON_WIDTH,
+    height: '100%',
+    borderRadius: 0,
+  }),
 }));
 
 export default WishlistItemCard;

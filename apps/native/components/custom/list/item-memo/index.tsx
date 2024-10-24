@@ -1,8 +1,7 @@
 import { Tables } from '@cococom/supabase/types';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
@@ -29,8 +28,6 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
     refreshing,
     handleRefresh,
   } = useInfiniteMemos(itemId);
-
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
     return <ItemMemoListRow memo={item} key={item.id} ref={previousSwipeableRef} />;
