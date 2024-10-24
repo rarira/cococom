@@ -1,8 +1,7 @@
 import { JoinedComments } from '@cococom/supabase/types';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
@@ -36,10 +35,8 @@ const ItemCommentList = memo(function ItemCommentList({
 
   useRealtimeComments(itemId);
 
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
-
   const renderItem = useCallback(({ item }: { item: NonNullable<JoinedComments> }) => {
-    return <ItemCommentListRow comment={item} key={item.id} ref={previousSwipeableRef} />;
+    return <ItemCommentListRow comment={item} key={item.id} />;
   }, []);
 
   const ListHeaderComponent = useMemo(() => {

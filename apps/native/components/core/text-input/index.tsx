@@ -233,6 +233,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     gap: theme.spacing.md,
+    marginTop: theme.spacing.md,
   },
   error: {
     color: theme.colors.alert,

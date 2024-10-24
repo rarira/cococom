@@ -53,7 +53,7 @@ const MyWishList = memo(function MyWishList({
     ({ item }: { item: WishlistToRender[number]; index: number }) => {
       return (
         <WishlistItemCard
-          key={item.id}
+          key={item.itemId}
           item={item}
           sortOption={sortOption}
           queryKey={queryKey}
@@ -132,7 +132,7 @@ const MyWishList = memo(function MyWishList({
       ListFooterComponentStyle={styles.fetchingNextProgress}
       ListEmptyComponent={ListEmptyComponent}
       renderItem={renderItem}
-      estimatedItemSize={200}
+      estimatedItemSize={80}
       keyExtractor={item => item?.id.toString()}
       ItemSeparatorComponent={ItemSeparatorComponent}
       contentContainerStyle={styles.flashListContainer(tabBarHeight)}
