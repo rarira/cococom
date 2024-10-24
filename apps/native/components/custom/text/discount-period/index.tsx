@@ -5,12 +5,11 @@ import Text from '@/components/core/text';
 import { convertDateString } from '@/libs/date';
 
 interface DiscountPeriodTextProps {
-  startDate: string;
   endDate: string;
   style?: StyleProp<ViewStyle>;
 }
 
-function DiscountPeriodText({ startDate, endDate, style }: DiscountPeriodTextProps) {
+function DiscountPeriodText({ endDate, style }: DiscountPeriodTextProps) {
   const { styles } = useStyles(stylesheet);
 
   return (

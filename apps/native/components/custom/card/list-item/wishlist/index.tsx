@@ -56,8 +56,8 @@ const WishlistItemCard = memo(function WishlistItemCard({
             <View style={styles.itemContainer}>
               <ProductCardThumbnailImage
                 product={item}
-                width={70}
-                height={70}
+                width={80}
+                height={80}
                 style={styles.thumbnail}
                 isOnline={item.is_online}
                 small

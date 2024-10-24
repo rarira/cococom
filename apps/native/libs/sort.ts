@@ -34,7 +34,7 @@ export type AlltimeSortOption = {
 };
 
 export type WishlistSortOption = {
-  field: keyof WishlistResultItem;
+  field: keyof WishlistResultItem | 'endDate';
   orderBy: 'ASC' | 'DESC';
   text: string;
 };
@@ -288,5 +288,10 @@ export const WISHLIST_SORT_OPTIONS: Record<string, WishlistSortOption> = {
     field: 'totalDiscountCount',
     orderBy: 'ASC',
     text: '할인 빈도 적은 순',
+  },
+  approaching: {
+    field: 'endDate',
+    orderBy: 'ASC',
+    text: '할인 마감 임박 순',
   },
 };
