@@ -155,7 +155,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: theme.spacing.md,
-    marginTop: theme.spacing.md,
+    marginVertical: theme.spacing.md,
   },
   headerRightContainer: {
     flexDirection: 'row',

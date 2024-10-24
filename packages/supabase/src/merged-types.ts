@@ -55,7 +55,7 @@ export type WishlistResultItem = Omit<InfiniteSearchResultItem, 'isWishlistedByU
   wishlistCreatedAt: string;
   discount: Pick<
     Tables<'discounts'>,
-    'price' | 'discount' | 'discountPrice' | 'discountRate' | 'endDate'
+    'discount' | 'discountPrice' | 'discountRate' | 'endDate'
   > | null;
 };
 

@@ -71,7 +71,7 @@ function DiscountListItemCardDetailView({
         </View>
         <View style={styles.miscInfoContainer}>
           <ListItemCardChipsView discount={discount} />
-          <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
+          <DiscountPeriodText endDate={discount.endDate} />
         </View>
         <View style={styles.actionButtonContainer}>
           <View style={styles.infoContainer}>
