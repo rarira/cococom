@@ -36,7 +36,9 @@ BEGIN
     IF order_field = 'itemId' THEN
         order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
     ELSIF order_field = 'wishlistCreatedAt' THEN
-        order_sql := format('ORDER BY w."created_at" %s', order_direction);
+        order_sql := format('ORDER BY w.created_at %s', order_direction);
+    ELSIF order_field = 'endDate' THEN
+        order_sql := format('ORDER BY d."endDate" %s', order_direction);
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
@@ -101,7 +103,6 @@ BEGIN
                                        ''discount'', d.discount,
                                        ''discountRate'', d."discountRate",
                                        ''discountPrice'', d."discountPrice",
-                                       ''price'', d.price,
                                        ''endDate'', d."endDate"
                                        
                                    )

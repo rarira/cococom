@@ -10,11 +10,19 @@ import { DiscountListItemCardProps } from '@/components/custom/card/list-item/di
 import { 할인마감임박잔여일수 } from '@/constants';
 import { getDiscountTypeFromDiscount } from '@/libs/item';
 
-type ChipsDiscount = Omit<Tables<'discounts'>, 'created_at' | 'discountHash' | 'itemId'>;
+type ChipsDiscount = Pick<
+  Tables<'discounts'>,
+  'discount' | 'discountPrice' | 'discountRate' | 'endDate'
+>;
+
+type ChipsItem = Pick<
+  JoinedItems,
+  'totalDiscountCount' | 'lowestPrice' | 'bestDiscount' | 'bestDiscountRate'
+>;
 type ListItemCardChipsViewProps = (
   | {
       discount: ChipsDiscount;
-      item: JoinedItems;
+      item: ChipsItem;
     }
   | {
       discount: DiscountListItemCardProps['discount'];
@@ -25,12 +33,12 @@ type ListItemCardChipsViewProps = (
 const chips = [
   {
     text: '첫할인',
-    checkFn: (discount: ChipsDiscount, item: JoinedItems) => item.totalDiscountCount === 1,
+    checkFn: (_discount: ChipsDiscount, item: ChipsItem) => item.totalDiscountCount === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
     text: '최저가',
-    checkFn: (discount: ChipsDiscount, item: JoinedItems) =>
+    checkFn: (discount: ChipsDiscount, item: ChipsItem) =>
       discount.discountPrice !== 0 &&
       item.totalDiscountCount > 1 &&
       discount.discountPrice === item?.lowestPrice,
@@ -38,7 +46,7 @@ const chips = [
   },
   {
     text: '최대할인',
-    checkFn: (discount: ChipsDiscount, item: JoinedItems) =>
+    checkFn: (discount: ChipsDiscount, item: ChipsItem) =>
       item.totalDiscountCount > 1 &&
       (discount.discountPrice === 0
         ? discount.discount === item?.bestDiscount
@@ -65,7 +73,7 @@ function ListItemCardChipsView({ discount, item, style }: ListItemCardChipsViewP
   const chipsToRender = useMemo(
     () =>
       chips
-        .filter(chip => chip.checkFn(discount, item || discount.items))
+        .filter(chip => chip.checkFn(discount, item ?? discount.items))
         .map(chip => (
           <Chip
             key={chip.text}
