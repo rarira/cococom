@@ -9,6 +9,7 @@ import {
 import {
   AlltimeRankingResultItem,
   InfiniteQueryResult,
+  InfiniteWishlistResultPages,
   JoinedComments,
   JoinedItems,
   Tables,
@@ -522,4 +523,39 @@ export const findAllQueryKeysByUserId = (queryClient: QueryClient, userId: strin
       return key.userId === userId;
     });
   });
+};
+
+export const handleMutateOfWishlist = async ({
+  queryClient,
+  queryKey,
+  newWishlist,
+  pageIndexOfItem,
+}: {
+  queryClient: QueryClient;
+  newWishlist: Pick<InsertWishlist, 'itemId'>;
+  queryKey: QueryKey;
+  pageIndexOfItem: number;
+}) => {
+  await queryClient.cancelQueries({ queryKey });
+  const previousData = queryClient.getQueryData(
+    queryKey,
+  ) as unknown as InfiniteQueryResult<InfiniteWishlistResultPages>;
+
+  queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<InfiniteWishlistResultPages>) => {
+    const { items, ...restPages } = old.pages[pageIndexOfItem];
+
+    const updatedPage = {
+      ...restPages,
+      items: items.filter(item => item.id !== newWishlist.itemId),
+    };
+
+    const { pages, ...restOld } = old;
+
+    return {
+      ...restOld,
+      pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
+    };
+  });
+
+  return { previousData };
 };

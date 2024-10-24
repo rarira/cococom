@@ -16,6 +16,7 @@ import {
   handleMutateOfDiscountCurrentList,
   handleMutateOfItems,
   handleMutateOfSearchResult,
+  handleMutateOfWishlist,
   queryKeys,
 } from '@/libs/react-query';
 import Util from '@/libs/util';
@@ -65,6 +66,14 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
           queryClient,
           queryKey: queryKeyOfList,
           newWishlist: { itemId: item.id, userId: user?.id ?? '' },
+        });
+      }
+      if (queryKeyOfList?.[0] === 'wishlists') {
+        handleMutateOfWishlist({
+          queryClient,
+          queryKey: queryKeyOfList,
+          newWishlist: { itemId: item.id },
+          pageIndexOfItem: pageIndexOfInfinteList!,
         });
       }
       return await handleMutateOfItems({ queryClient, queryKey });

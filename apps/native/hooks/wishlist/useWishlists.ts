@@ -1,6 +1,5 @@
 import { Database, InfiniteWishlistResultPages } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useFocusEffect } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 
 import { DiscountChannels } from '@/constants';
@@ -33,41 +32,27 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     isOnSale,
   });
 
-  const {
-    data,
-    isFetching,
-    isLoading,
-    isFetchingNextPage,
-    refetch,
-    isSuccess,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery<InfiniteWishlistResultPages>({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey,
-    queryFn: ({ pageParam }) => {
-      return supabase.fetchMyWishlistItems({
-        userId: user!.id,
-        channel,
-        page: pageParam as number,
-        pageSize: PAGE_SIZE,
-        sortField: sortOption.field,
-        sortDirection: sortOption.orderBy,
-        isOnSale,
-      });
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
-      return allPages.length + 1;
-    },
-  });
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+  const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
+    useInfiniteQuery<InfiniteWishlistResultPages>({
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryKey,
+      queryFn: ({ pageParam }) => {
+        return supabase.fetchMyWishlistItems({
+          userId: user!.id,
+          channel,
+          page: pageParam as number,
+          pageSize: PAGE_SIZE,
+          sortField: sortOption.field,
+          sortDirection: sortOption.orderBy,
+          isOnSale,
+        });
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
+        return allPages.length + 1;
+      },
+    });
 
   const handleEndReached = useCallback(() => {
     if (hasNextPage && !isFetching) fetchNextPage();

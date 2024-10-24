@@ -10,7 +10,6 @@ export function useTransparentHeader(options: Record<string, any>) {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
-    console.log('useTransparentHeader', headerHeight);
     navigation.setOptions({
       ...(Platform.OS === 'ios'
         ? {

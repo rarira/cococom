@@ -1,6 +1,6 @@
 import { JoinedComments } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { forwardRef, memo, MutableRefObject, useCallback } from 'react';
+import { memo, MutableRefObject, useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -38,7 +38,7 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
   const queryKey = queryKeys.comments.byItem(comment.item_id);
 
-  const deleteMemoMutation = useMutation({
+  const deleteCommentMutation = useMutation({
     mutationFn: () => supabase.deleteComment(comment.id),
     onMutate: () => {
       return handleMutateOfDeleteComment({
@@ -55,11 +55,11 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
   const handleDeletePress = useCallback(async () => {
     try {
-      await deleteMemoMutation.mutateAsync();
+      await deleteCommentMutation.mutateAsync();
     } catch (e) {
       console.error(e);
     }
-  }, [deleteMemoMutation]);
+  }, [deleteCommentMutation]);
 
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
@@ -78,46 +78,42 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemCommentListRow = memo(
-  forwardRef<SwipeableMethods, ItemCommentListRowProps>(function ItemCommentListRow(
-    { comment },
-    previousSwipeableRef,
-  ) {
-    const { styles } = useStyles(stylesheet);
-    const user = useUserStore(store => store.user);
+const ItemCommentListRow = memo(function ItemCommentListRow({ comment }: ItemCommentListRowProps) {
+  const { styles } = useStyles(stylesheet);
+  const user = useUserStore(store => store.user);
+  const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
-    const renderRightActions = useCallback(
-      (_progress: any, translation: SharedValue<number>) => (
-        <RightAction dragX={translation} comment={comment} />
-      ),
-      [comment],
-    );
+  const renderRightActions = useCallback(
+    (_progress: any, translation: SharedValue<number>) => (
+      <RightAction dragX={translation} comment={comment} />
+    ),
+    [comment],
+  );
 
-    const swipeableProps = useOnlyOneSwipeable(
-      previousSwipeableRef as MutableRefObject<SwipeableMethods>,
-    );
+  const swipeableProps = useOnlyOneSwipeable(
+    previousSwipeableRef as MutableRefObject<SwipeableMethods>,
+  );
 
-    return (
-      <Swipeable
-        friction={2}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={40}
-        renderRightActions={(_, progress) => renderRightActions(_, progress)}
-        {...swipeableProps}
-      >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.authorText(comment.author.id === user?.id)}>
-              {comment.author.nickname}
-            </Text>
-            <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
-          </View>
-          <Text style={styles.contentText}>{comment.content}</Text>
+  return (
+    <Swipeable
+      friction={2}
+      enableTrackpadTwoFingerGesture
+      rightThreshold={40}
+      renderRightActions={(_, progress) => renderRightActions(_, progress)}
+      {...swipeableProps}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.authorText(comment.author.id === user?.id)}>
+            {comment.author.nickname}
+          </Text>
+          <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
         </View>
-      </Swipeable>
-    );
-  }),
-);
+        <Text style={styles.contentText}>{comment.content}</Text>
+      </View>
+    </Swipeable>
+  );
+});
 
 const stylesheet = createStyleSheet(theme => ({
   container: {

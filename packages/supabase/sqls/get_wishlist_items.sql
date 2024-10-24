@@ -92,6 +92,7 @@ BEGIN
                            i."totalDiscountCount",
                            i.is_online,
                            w."created_at" AS "wishlistCreatedAt",
+                           w.id AS "wishlistId",
                            CASE 
                                WHEN d.id IS NOT NULL THEN TRUE 
                                ELSE FALSE 
