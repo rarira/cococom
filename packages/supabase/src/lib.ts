@@ -22,7 +22,10 @@ import { Database, JoinedComments, Tables } from './merged-types';
 export type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
 export type InsertItem = Database['public']['Tables']['items']['Insert'];
 export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
-export type InsertWishlist = Database['public']['Tables']['wishlists']['Insert'];
+export type InsertWishlist = Omit<
+  Database['public']['Tables']['wishlists']['Insert'],
+  'wishlist_hash'
+>;
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
 export type InsertComment = Database['public']['Tables']['comments']['Insert'];
@@ -236,8 +239,10 @@ export class Supabase {
     }
   }
 
-  async createWishlist(newWishlist: InsertWishlist) {
-    const { error } = await this.supabaseClient.from('wishlists').insert(newWishlist);
+  async createWishlist(newWishlist: Omit<InsertWishlist, 'wishlist_hash'>) {
+    const { error } = await this.supabaseClient
+      .from('wishlists')
+      .insert({ ...newWishlist, wishlist_hash: newWishlist.itemId + newWishlist.userId });
 
     if (error) {
       throw error;

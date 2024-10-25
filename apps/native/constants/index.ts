@@ -13,9 +13,6 @@ export const MAX_MEMO_LENGTH = 140;
 
 export const ITEM_DETAILS_MAX_COUNT = 999;
 
-export const MEMO_INFINITE_QUERY_PAGE_SIZE = 20;
-export const COMMENT_INFINITE_QUERY_PAGE_SIZE = 20;
-
 export const 할인마감임박잔여일수 = 3;
 
 export const X_AXIS_HEIGHT = 40;
@@ -31,3 +28,8 @@ export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[]
   { text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
   { text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
 ];
+
+export const INFINITE_SEARCH_PAGE_SIZE = 10;
+export const INFINITE_WISHLIST_PAGE_SIZE = 50;
+export const INFINITE_MEMO_PAGE_SIZE = 20;
+export const INFINITE_COMMENT_PAGE_SIZE = 20;

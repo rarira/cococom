@@ -6,6 +6,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { updateWishlistInCache } from '@/libs/react-query';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
@@ -53,10 +54,8 @@ function ListItemWishlistIconButton<
       return supabase.createWishlist(newWishlist);
     },
     onMutate: onMutate ? onMutate(queryClient) : undefined,
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previousData);
-    },
     onSuccess: () => {
+      updateWishlistInCache({ itemId: item.id, queryClient });
       queryClient.invalidateQueries({ queryKey: ['wishlists'] });
     },
   });

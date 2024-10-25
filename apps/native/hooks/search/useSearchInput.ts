@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
-import { DiscountChannels } from '@/constants';
+import { DiscountChannels, INFINITE_SEARCH_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import {
   getSearchHistoryHash,
@@ -22,7 +22,7 @@ type UseSearchInputParams = {
   channelOption: DiscountChannels;
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = INFINITE_SEARCH_PAGE_SIZE;
 
 export function useSearchInput({
   addSearchHistory,

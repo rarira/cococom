@@ -20,7 +20,11 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
   author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
 };
 
-export type InfiniteQueryResult<T> = {
+export type InfiniteQueryResultPageArray =
+  | { id: number }[]
+  | InfinitResultPagesWithTotalRecords<{ id: number }>;
+
+export type InfiniteQueryResult<T extends InfiniteQueryResultPageArray> = {
   pageParams: number[];
   pages: T[];
 };
@@ -34,10 +38,12 @@ export type AlltimeRankingResultItem = InfiniteResultItem & {
   totalDiscountCount: number;
 };
 
-export type InfiniteSearchResultPages = {
+export type InfinitResultPagesWithTotalRecords<T extends { id: number }> = {
   totalRecords: number | null;
-  items: InfiniteResultItem[];
+  items: T[];
 };
+
+export type InfiniteSearchResultPages = InfinitResultPagesWithTotalRecords<InfiniteResultItem>;
 
 export type WishlistResultItem = Omit<InfiniteResultItem, 'isWishlistedByUser'> & {
   totalDiscountCount: number;
@@ -49,10 +55,7 @@ export type WishlistResultItem = Omit<InfiniteResultItem, 'isWishlistedByUser'> 
   > | null;
 };
 
-export type InfiniteWishlistResultPages = {
-  totalRecords: number | null;
-  items: WishlistResultItem[];
-};
+export type InfiniteWishlistResultPages = InfinitResultPagesWithTotalRecords<WishlistResultItem>;
 
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<

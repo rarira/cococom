@@ -404,18 +404,21 @@ export type Database = {
           id: string
           itemId: number
           userId: string
+          wishlist_hash: string
         }
         Insert: {
           created_at?: string
           id?: string
           itemId: number
           userId: string
+          wishlist_hash: string
         }
         Update: {
           created_at?: string
           id?: string
           itemId?: number
           userId?: string
+          wishlist_hash?: string
         }
         Relationships: [
           {

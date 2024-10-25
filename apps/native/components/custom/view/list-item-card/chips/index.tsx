@@ -12,12 +12,12 @@ import { getDiscountTypeFromDiscount } from '@/libs/item';
 
 type ChipsDiscount = Pick<
   Tables<'discounts'>,
-  'discount' | 'discountPrice' | 'discountRate' | 'endDate'
+  'discount' | 'discountPrice' | 'discountRate' | 'endDate' | 'is_online'
 >;
 
 type ChipsItem = Pick<
   JoinedItems,
-  'totalDiscountCount' | 'lowestPrice' | 'bestDiscount' | 'bestDiscountRate'
+  'totalDiscountCount' | 'lowestPrice' | 'bestDiscount' | 'bestDiscountRate' | 'is_online'
 >;
 type ListItemCardChipsViewProps = (
   | {
@@ -33,7 +33,8 @@ type ListItemCardChipsViewProps = (
 const chips = [
   {
     text: '첫할인',
-    checkFn: (_discount: ChipsDiscount, item: ChipsItem) => item.totalDiscountCount === 1,
+    checkFn: (discount: ChipsDiscount, item: ChipsItem) =>
+      !item.is_online && !discount.is_online && item.totalDiscountCount === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {
@@ -63,7 +64,7 @@ const chips = [
     text: '회원전용할인',
     checkFn: (discount: ChipsDiscount) =>
       getDiscountTypeFromDiscount(discount as any) === 'memberOnly',
-    color: (theme: UnistylesTheme) => theme.colors.alert,
+    color: (theme: UnistylesTheme) => theme.colors.background,
   },
 ];
 
@@ -78,16 +79,22 @@ function ListItemCardChipsView({ discount, item, style }: ListItemCardChipsViewP
           <Chip
             key={chip.text}
             text={chip.text}
-            style={{ backgroundColor: chip.color(theme) }}
+            style={{
+              backgroundColor: chip.color(theme),
+              borderColor: chip.text === '회원전용할인' ? theme.colors.typography : undefined,
+              borderWidth: chip.text === '회원전용할인' ? 1 : 0,
+            }}
             textProps={{
               style:
-                chip.text === '곧마감' || chip.text === '첫할인' || chip.text === '회원전용할인'
+                chip.text === '곧마감' || chip.text === '첫할인'
                   ? styles.alertText
-                  : undefined,
+                  : chip.text === '회원전용할인'
+                    ? styles.memberOnlyText
+                    : undefined,
             }}
           />
         )),
-    [discount, item, styles.alertText, theme],
+    [discount, item, styles.alertText, styles.memberOnlyText, theme],
   );
 
   return <View style={[styles.container, style]}>{chipsToRender}</View>;
@@ -103,6 +110,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   alertText: {
     color: 'white',
+  },
+  memberOnlyText: {
+    color: theme.colors.typography,
   },
 }));
 

@@ -8,12 +8,12 @@ import IconButton from '@/components/core/button/icon';
 import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import { MemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
 import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
 
 import ItemMemoListRow from './&row';
 
-interface ItemMemoListProps extends MemoTabViewProps {
+interface ItemMemoListProps extends ItemMemoTabViewProps {
   onAddMemoPress?: () => void;
 }
 
@@ -30,7 +30,7 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
   } = useInfiniteMemos(itemId);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
-    return <ItemMemoListRow memo={item} key={item.id} ref={previousSwipeableRef} />;
+    return <ItemMemoListRow memo={item} key={item.id} />;
   }, []);
 
   const ListHeaderComponent = useMemo(() => {

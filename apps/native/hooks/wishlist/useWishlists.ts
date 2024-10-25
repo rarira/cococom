@@ -2,7 +2,7 @@ import { Database, InfiniteWishlistResultPages } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 
-import { DiscountChannels } from '@/constants';
+import { DiscountChannels, INFINITE_WISHLIST_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { WishlistSortOption } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
@@ -19,7 +19,7 @@ type UseWishlistsParams = {
   isOnSale?: boolean;
 };
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = INFINITE_WISHLIST_PAGE_SIZE;
 
 export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsParams) {
   const user = useUserStore(store => store.user);
@@ -32,7 +32,7 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     isOnSale,
   });
 
-  const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery<InfiniteWishlistResultPages>({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,

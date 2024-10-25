@@ -56,6 +56,17 @@ const Util = {
   extractItemid(itemId: string): string {
     return itemId.split('_')[0];
   },
+  compareArray(arr1: readonly unknown[], arr2: readonly unknown[], finalIndex?: number) {
+    let check = true;
+    for (let i = 0; i <= (finalIndex ?? arr1.length - 1); i++) {
+      check =
+        typeof arr1[i] === 'object'
+          ? JSON.stringify(arr1[i]) === JSON.stringify(arr2[i])
+          : arr1[i] === arr2[i];
+    }
+
+    return check;
+  },
 };
 
 export default Util;

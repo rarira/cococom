@@ -12,7 +12,6 @@ import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { handleMutateOfWishlist } from '@/libs/react-query';
 import { shadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 
 interface WishlistItemCardProps {
   item: WishlistToRender[number];
@@ -29,16 +28,6 @@ const WishlistItemCard = memo(function WishlistItemCard({
 }: WishlistItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
   const queryClient = useQueryClient();
-
-  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.setQueryKeyOfList,
-    state.setPageIndexOfInfinteList,
-  ]);
-
-  const handlePress = useCallback(() => {
-    setQueryKeyOfList(queryKey);
-    setPageIndexOfInfinteList(item.pageIndex);
-  }, [item.pageIndex, queryKey, setPageIndexOfInfinteList, setQueryKeyOfList]);
 
   const deleteWishlistMutation = useMutation({
     mutationFn: () => supabase.deleteWishlistById(item.wishlistId),
@@ -68,7 +57,6 @@ const WishlistItemCard = memo(function WishlistItemCard({
     <Link
       href={`/(my)/item?itemId=${item.id}` as Href<string>}
       asChild
-      onPress={handlePress}
       onLongPress={handleLongPress}
     >
       <Pressable>
