@@ -2,7 +2,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { QueryKey } from '@tanstack/react-query';
 import { memo, useCallback, useMemo, useRef } from 'react';
-import { View } from 'react-native';
+import { LayoutAnimation, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Checkbox from '@/components/core/checkbox';
@@ -55,6 +55,7 @@ const MyWishList = memo(function MyWishList({
     ({ item }: { item: WishlistToRender[number]; index: number }) => {
       const handleMutate = () => {
         listRef.current?.prepareForLayoutAnimationRender();
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       };
       return (
         <WishlistItemCard
