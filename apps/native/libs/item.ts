@@ -37,7 +37,7 @@ export const getDiscountTypeFromResult = (
 
   if (item.lowestPrice === 0 && !item.is_online) {
     discountType = 'wholeProduct';
-  } else if (item.is_online && item.lowestPrice === 0 && item.bestDiscountRate === 0) {
+  } else if (item.is_online && item.lowestPrice === 0 && !item.bestDiscountRate) {
     discountType = 'memberOnly';
   }
 
