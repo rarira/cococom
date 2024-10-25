@@ -9,12 +9,13 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
-import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
 import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
+
+import SortWithTextButton from '../../button/sort-with-text';
 
 interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
   searchResult: SearchResultToRender;
@@ -62,8 +63,8 @@ const SearchResultList = memo(function SearchResultList({
           <View />
         )}
         <View style={styles.resultHeaderRightContainer}>
-          <HeaderRightButton
-            iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
+          <SortWithTextButton
+            text={SEARCH_ITEM_SORT_OPTIONS[sortOption].text}
             onPress={onPressHeaderRightButton}
           />
           <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
@@ -75,6 +76,7 @@ const SearchResultList = memo(function SearchResultList({
     handleChannelPress,
     onPressHeaderRightButton,
     searchResult.length,
+    sortOption,
     styles.resultHeader,
     styles.resultHeaderRightContainer,
     styles.totalResultsText,
