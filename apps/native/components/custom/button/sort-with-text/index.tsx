@@ -40,7 +40,7 @@ const stylesheet = createStyleSheet(theme => ({
     alignSelf: 'flex-end',
   },
   buttonText: {
-    fontSize: theme.fontSize.normal,
+    fontSize: theme.fontSize.sm,
     color: theme.colors.typography,
   },
 }));
