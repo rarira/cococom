@@ -26,7 +26,7 @@ export default function AlltimeRankingList({
 }: AlltimeRankingListProps) {
   const { styles } = useStyles(stylesheet);
 
-  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = useAlltimeRankingQuery(
+  const { data, error, isLoading, refreshing, handleRefresh } = useAlltimeRankingQuery(
     channel,
     sortOption,
     limit,
@@ -36,9 +36,9 @@ export default function AlltimeRankingList({
 
   const renderItem = useCallback(
     ({ item }: { item: NonNullable<typeof data>[number]; index: number }) => {
-      return <AlltimeRankingListItemCard item={item} key={item.id} queryKey={queryKey} />;
+      return <AlltimeRankingListItemCard item={item} key={item.id} />;
     },
-    [queryKey],
+    [],
   );
 
   const ItemSeparatorComponent = useCallback(

@@ -1,5 +1,4 @@
 import { AlltimeRankingResultItem } from '@cococom/supabase/types';
-import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
@@ -14,13 +13,11 @@ import { shadowPresets } from '@/libs/shadow';
 export interface AlltimeRankingListItemCardProps {
   item: AlltimeRankingResultItem;
   containerStyle?: StyleProp<ViewStyle>;
-  queryKey: QueryKey;
 }
 
 const AlltimeRankingListItemCard = memo(function AlltimeRankingListItemCard({
   item,
   containerStyle,
-  queryKey,
 }: AlltimeRankingListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
@@ -41,7 +38,7 @@ const AlltimeRankingListItemCard = memo(function AlltimeRankingListItemCard({
                 style={styles.thumbnail}
                 isOnline={item.is_online}
               />
-              <AlltimeRankingListItemCardDetailView item={item} queryKey={queryKey} />
+              <AlltimeRankingListItemCardDetailView item={item} />
             </View>
           </Card>
         </Shadow>

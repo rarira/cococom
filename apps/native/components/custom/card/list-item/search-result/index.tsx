@@ -1,4 +1,3 @@
-import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
@@ -8,25 +7,17 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
-import { DiscountChannels } from '@/constants';
-import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
+import { SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
-import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 
-interface SearchResultListItemCardProps extends SearchQueryParams {
+interface SearchResultListItemCardProps {
   item: SearchResultToRender[number];
   containerStyle?: StyleProp<ViewStyle>;
-  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
-  queryKey: QueryKey;
-  channelOption: DiscountChannels;
 }
 
 const SearchResultListItemCard = memo(function SearchResultListItemCard({
   item,
   containerStyle,
-  queryKey,
-  channelOption,
-  ...restProps
 }: SearchResultListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
@@ -48,11 +39,7 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
                 style={styles.thumbnail}
                 isOnline={item.is_online}
               />
-              <SearchResultListItemCardDetailView
-                item={item}
-                channelOption={channelOption}
-                {...restProps}
-              />
+              <SearchResultListItemCardDetailView item={item} />
             </View>
           </Card>
         </Shadow>
