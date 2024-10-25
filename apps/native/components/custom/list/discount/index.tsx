@@ -37,7 +37,7 @@ export default function DiscountList({
 
   const hook = ranked ? useDiscountedRankingListQuery : useDiscountListQuery;
 
-  const { data, error, isLoading, queryKey, refreshing, handleRefresh } = hook({
+  const { data, error, isLoading, refreshing, handleRefresh } = hook({
     sortOption,
     limit,
     channel,
@@ -52,12 +52,11 @@ export default function DiscountList({
           discount={item}
           numColumns={NumberOfColumns}
           key={item.id}
-          queryKeyOfList={queryKey}
           portalHostName={portalHostName}
         />
       );
     },
-    [portalHostName, queryKey],
+    [portalHostName],
   );
 
   if (error) return null;

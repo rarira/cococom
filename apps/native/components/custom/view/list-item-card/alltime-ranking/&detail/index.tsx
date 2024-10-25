@@ -18,10 +18,7 @@ type AlltimeRankingListItemCardDetailViewProps = Omit<
   'containerStyle'
 >;
 
-function AlltimeRankingListItemCardDetailView({
-  item,
-  queryKey,
-}: AlltimeRankingListItemCardDetailViewProps) {
+function AlltimeRankingListItemCardDetailView({ item }: AlltimeRankingListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
   const user = useUserStore(store => store.user);

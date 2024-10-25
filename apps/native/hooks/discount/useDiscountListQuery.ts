@@ -89,5 +89,5 @@ export function useDiscountListQuery({
       .slice(0, limit);
   }, [data, limit, channel]);
 
-  return { data: dataToExport, error, isLoading, queryKey, refreshing, handleRefresh };
+  return { data: dataToExport, error, isLoading, refreshing, handleRefresh };
 }
