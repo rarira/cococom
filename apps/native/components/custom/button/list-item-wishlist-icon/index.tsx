@@ -57,8 +57,6 @@ function ListItemWishlistIconButton<
       queryClient.setQueryData(queryKey, context?.previousData);
     },
     onSuccess: () => {
-      if (item.isWishlistedByUser) return;
-      console.log('invalidateQueries wishlist');
       queryClient.invalidateQueries({ queryKey: ['wishlists'] });
     },
   });

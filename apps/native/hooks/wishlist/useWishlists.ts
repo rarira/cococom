@@ -58,17 +58,6 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     if (hasNextPage && !isFetching) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetching]);
 
-  // // NOTE: DEBUG
-  console.log('useWishlists', {
-    sortOption,
-    data,
-    isFetching,
-    isSuccess,
-    pages: data?.pages,
-    hasNextPage,
-    pagaParams: data?.pageParams,
-  });
-
   const wishlistResult: WishlistToRender = useMemo(
     () =>
       data?.pages.flatMap(
