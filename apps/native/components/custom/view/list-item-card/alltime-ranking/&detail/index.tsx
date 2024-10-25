@@ -66,7 +66,6 @@ function AlltimeRankingListItemCardDetailView({
           <ListItemWishlistIconButton<AlltimeRankingResultItem>
             item={item}
             portalHostName={PortalHostNames.RANKING}
-            queryKey={queryKey}
           />
         </View>
       </View>

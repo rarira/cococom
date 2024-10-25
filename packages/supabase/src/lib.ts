@@ -161,11 +161,15 @@ export class Supabase {
     userId,
     channel,
     limit,
+    sortField = 'discoutRate',
+    sortDirection = 'desc',
   }: {
     currentTimestamp: string;
     userId?: string;
     channel: string;
     limit: number;
+    sortField: string;
+    sortDirection: 'desc' | 'asc';
   }) {
     const { data, error } = await this.supabaseClient.rpc(
       'get_discounted_ranking_with_wishlist_counts',
@@ -174,6 +178,8 @@ export class Supabase {
         _user_id: userId ?? null,
         _channel: channel,
         _limit: limit,
+        _order_field: sortField,
+        _order_direction: sortDirection,
       },
     );
 

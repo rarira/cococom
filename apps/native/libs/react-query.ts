@@ -24,7 +24,7 @@ import {
 } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 
-import { WishlistSortOption } from './sort';
+import { DiscountSortOption, WishlistSortOption } from './sort';
 
 export const queryKeys = {
   category: {
@@ -36,10 +36,29 @@ export const queryKeys = {
       'currentList',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
     ],
-    rankedList: (channel: DiscountChannels, userId?: string | null, limit?: number) => [
+    rankedList: ({
+      channel,
+      userId,
+      limit,
+      sortField,
+      sortDirection,
+    }: {
+      channel: DiscountChannels;
+      userId?: string | null;
+      limit?: number;
+      sortField: DiscountSortOption['field'];
+      sortDirection: DiscountSortOption['orderBy'];
+    }) => [
       'discounts',
       'rankedList',
-      { userId, currentTimestamp: new Date().toISOString().split('T')[0], channel, limit },
+      {
+        userId,
+        currentTimestamp: new Date().toISOString().split('T')[0],
+        channel,
+        limit,
+        sortField,
+        sortDirection,
+      },
     ],
   },
   histories: {
@@ -102,7 +121,10 @@ export const queryKeys = {
     orderByColumn?: string,
     orderByDirection?: 'asc' | 'desc',
     limit?: number,
-  ) => ['alltimeRankings', { channel, userId, orderByColumn, orderByDirection, limit }],
+  ) => [
+    'alltimeRankings',
+    { channel, userId, sortField: orderByColumn, sortDirection: orderByDirection, limit },
+  ],
 };
 
 const setQueryDataForDiscounts = (
@@ -594,7 +616,6 @@ export const updateWishlistInCache = ({
       if (!QueryWithWishlist.hasOwnProperty((query.queryKey as (keyof typeof queryKeys)[])[0]))
         return;
 
-      // 자기 optimistic update도 수행
       // if (Util.compareArray(queryKey, query.queryKey)) return;
 
       queryClient.setQueryData(query.queryKey, (oldData: unknown) => {
