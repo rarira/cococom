@@ -530,11 +530,13 @@ export const handleMutateOfWishlist = async ({
   queryKey,
   newWishlist,
   pageIndexOfItem,
+  callback,
 }: {
   queryClient: QueryClient;
   newWishlist: Pick<InsertWishlist, 'itemId'>;
   queryKey: QueryKey;
   pageIndexOfItem: number;
+  callback?: () => void;
 }) => {
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(
@@ -556,6 +558,7 @@ export const handleMutateOfWishlist = async ({
       pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
     };
   });
+  callback?.();
 
   return { previousData };
 };
