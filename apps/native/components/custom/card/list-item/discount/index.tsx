@@ -1,6 +1,5 @@
 import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
-import { useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -11,7 +10,6 @@ import DiscountListItemCardDetailView from '@/components/custom/view/list-item-c
 import { PortalHostNames } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 import { shadowPresets } from '@/libs/shadow';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 
 export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
@@ -30,16 +28,10 @@ function DiscountListItemCard({
 }: DiscountListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  const setQueryKeyOfList = useListQueryKeyStore(state => state.setQueryKeyOfList);
-
-  const handlePress = useCallback(() => {
-    setQueryKeyOfList(queryKeyOfList);
-  }, [queryKeyOfList, setQueryKeyOfList]);
-
   const isOnline = discount.is_online;
 
   return (
-    <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild onPress={handlePress}>
+    <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild>
       <Pressable>
         <Shadow {...shadowPresets.card(theme)} stretch>
           <Card style={[styles.cardContainer(numColumns > 1, isOnline), containerStyle]}>
@@ -51,7 +43,11 @@ function DiscountListItemCard({
                 style={styles.thumbnail}
                 isOnline={discount.is_online}
               />
-              <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
+              <DiscountListItemCardDetailView
+                discount={discount}
+                portalHostName={portalHostName}
+                queryKey={queryKeyOfList}
+              />
             </View>
           </Card>
         </Shadow>

@@ -1,7 +1,7 @@
 import { AlltimeRankingResultItem } from '@cococom/supabase/types';
 import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -10,7 +10,6 @@ import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import AlltimeRankingListItemCardDetailView from '@/components/custom/view/list-item-card/alltime-ranking/&detail';
 import { shadowPresets } from '@/libs/shadow';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 
 export interface AlltimeRankingListItemCardProps {
   item: AlltimeRankingResultItem;
@@ -25,14 +24,8 @@ const AlltimeRankingListItemCard = memo(function AlltimeRankingListItemCard({
 }: AlltimeRankingListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  const setQueryKeyOfList = useListQueryKeyStore(state => state.setQueryKeyOfList);
-
-  const handlePress = useCallback(() => {
-    setQueryKeyOfList(queryKey);
-  }, [queryKey, setQueryKeyOfList]);
-
   return (
-    <Link href={`/(ranking)/item?itemId=${item.id}` as Href<string>} asChild onPress={handlePress}>
+    <Link href={`/(ranking)/item?itemId=${item.id}` as Href<string>} asChild>
       <Pressable>
         <Shadow
           {...shadowPresets.card(theme)}

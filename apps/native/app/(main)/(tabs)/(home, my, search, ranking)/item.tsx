@@ -1,6 +1,6 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { Platform, View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
@@ -18,7 +18,6 @@ import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
 const queryFn = (itemId: number, userId?: string) => () =>
@@ -27,10 +26,7 @@ const queryFn = (itemId: number, userId?: string) => () =>
 export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
-  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.setQueryKeyOfList,
-    state.setPageIndexOfInfinteList,
-  ]);
+
   const { itemId } = useLocalSearchParams();
 
   const { bottom } = useSafeAreaInsets();
@@ -52,15 +48,6 @@ export default function ItemScreen() {
     headerBackTitleVisible: false,
     headerRight,
   });
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        setQueryKeyOfList(null);
-        setPageIndexOfInfinteList(null);
-      };
-    }, [setPageIndexOfInfinteList, setQueryKeyOfList]),
-  );
 
   const renderTabBar = useCallback(
     (props: TabBarProps) => {

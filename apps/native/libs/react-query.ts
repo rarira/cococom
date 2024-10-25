@@ -7,9 +7,9 @@ import {
   SearchItemSortField,
 } from '@cococom/supabase/libs';
 import {
-  AlltimeRankingResultItem,
   InfiniteQueryResult,
   InfiniteWishlistResultPages,
+  InfinitResultPagesWithTotalRecords,
   JoinedComments,
   JoinedItems,
   Tables,
@@ -17,25 +17,28 @@ import {
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import {
-  COMMENT_INFINITE_QUERY_PAGE_SIZE,
   DiscountChannels,
-  MEMO_INFINITE_QUERY_PAGE_SIZE,
+  INFINITE_COMMENT_PAGE_SIZE,
+  INFINITE_MEMO_PAGE_SIZE,
+  INFINITE_SEARCH_PAGE_SIZE,
 } from '@/constants';
+import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 
-import { InfiniteSearchResultData } from './search';
 import { WishlistSortOption } from './sort';
 
 export const queryKeys = {
   category: {
-    all: () => ['categories', { currentTimestamp: new Date().toISOString().split('T')[0] }],
+    all: () => ['category', { currentTimestamp: new Date().toISOString().split('T')[0] }],
   },
   discounts: {
     currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
+      'currentList',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
     ],
     rankedList: (channel: DiscountChannels, userId?: string | null, limit?: number) => [
       'discounts',
+      'rankedList',
       { userId, currentTimestamp: new Date().toISOString().split('T')[0], channel, limit },
     ],
   },
@@ -50,7 +53,11 @@ export const queryKeys = {
       sortDirecntion: SearchItemSortDirection,
       channelOption: DiscountChannels,
       userId?: string,
-    ) => ['search', { keyword, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption }],
+    ) => [
+      'search',
+      'keyword',
+      { keyword, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption },
+    ],
     itemId: (
       itemId: string,
       isOnSaleSearch: boolean,
@@ -58,7 +65,11 @@ export const queryKeys = {
       sortDirecntion: SearchItemSortDirection,
       channelOption: DiscountChannels,
       userId?: string,
-    ) => ['search', { itemId, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption }],
+    ) => [
+      'search',
+      'itemId',
+      { itemId, isOnSaleSearch, userId, sortField, sortDirecntion, channelOption },
+    ],
   },
   wishlists: {
     byUserId: ({
@@ -94,37 +105,25 @@ export const queryKeys = {
   ) => ['alltimeRankings', { channel, userId, orderByColumn, orderByDirection, limit }],
 };
 
-export const handleMutateOfDiscountCurrentList = async ({
-  queryClient,
-  queryKey,
-  newWishlist,
-}: {
-  queryClient: QueryClient;
-  newWishlist: InsertWishlist;
-  queryKey: QueryKey;
-}) => {
-  await queryClient.cancelQueries({ queryKey });
-  const previousData = queryClient.getQueryData(queryKey) as unknown as JoinedItems[];
+const setQueryDataForDiscounts = (
+  old: Awaited<CurrentDiscounts>,
+  newWishlist: Pick<InsertWishlist, 'itemId'>,
+) => {
+  const discountIndex = old.findIndex((d: any) => d.items.id === newWishlist.itemId);
 
-  const discountIndex = previousData?.findIndex((d: any) => d.items.id === newWishlist.itemId);
+  if (discountIndex === -1) return old;
+  const updatedDiscount = {
+    ...old[discountIndex],
+    items: {
+      ...old[discountIndex].items,
+      totalWishlistCount: old[discountIndex].items.isWishlistedByUser
+        ? old[discountIndex].items.totalWishlistCount - 1
+        : old[discountIndex].items.totalWishlistCount + 1,
+      isWishlistedByUser: !old[discountIndex].items.isWishlistedByUser,
+    },
+  };
 
-  queryClient.setQueryData(queryKey, (old: any) => {
-    if (discountIndex === -1) return old;
-    const updatedDiscount = {
-      ...old[discountIndex],
-      items: {
-        ...old[discountIndex].items,
-        totalWishlistCount: old[discountIndex].items.isWishlistedByUser
-          ? old[discountIndex].items.totalWishlistCount - 1
-          : old[discountIndex].items.totalWishlistCount + 1,
-        isWishlistedByUser: !old[discountIndex].items.isWishlistedByUser,
-      },
-    };
-
-    return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
-  });
-
-  return { previousData };
+  return [...old.slice(0, discountIndex), updatedDiscount, ...old.slice(discountIndex + 1)];
 };
 
 export const handleMutateOfItems = async ({
@@ -150,59 +149,51 @@ export const handleMutateOfItems = async ({
   return { previousData };
 };
 
-export const handleMutateOfSearchResult = async ({
-  queryClient,
-  queryKey,
-  newWishlist,
+const setQueryDataForInfiniteResults = ({
   pageIndexOfItem,
+  itemIndex,
+  old,
 }: {
-  queryClient: QueryClient;
-  newWishlist: InsertWishlist;
-  queryKey: QueryKey;
   pageIndexOfItem: number;
+  itemIndex: number;
+  old: InfiniteQueryResult<
+    InfinitResultPagesWithTotalRecords<
+      Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
+    >
+  >;
+  newWishlist: Pick<InsertWishlist, 'itemId'>;
 }) => {
-  await queryClient.cancelQueries({ queryKey });
-  const previousData = queryClient.getQueryData(queryKey) as unknown as InfiniteSearchResultData;
+  if (itemIndex === -1) return old;
+  const updatedItem = {
+    ...old.pages[pageIndexOfItem].items[itemIndex],
+    totalWishlistCount: old.pages[pageIndexOfItem].items[itemIndex].isWishlistedByUser
+      ? old.pages[pageIndexOfItem].items[itemIndex].totalWishlistCount - 1
+      : old.pages[pageIndexOfItem].items[itemIndex].totalWishlistCount + 1,
+    isWishlistedByUser: !old.pages[pageIndexOfItem].items[itemIndex].isWishlistedByUser,
+  };
 
-  const itemIndex = previousData.pages[pageIndexOfItem].items.findIndex(
-    item => item.id === newWishlist.itemId,
-  );
+  const { items, ...restPages } = old.pages[pageIndexOfItem];
 
-  queryClient.setQueryData(queryKey, (old: InfiniteSearchResultData) => {
-    if (itemIndex === -1) return old;
-    const updatedItem = {
-      ...old.pages[pageIndexOfItem].items[itemIndex],
-      totalWishlistCount: old.pages[pageIndexOfItem].items[itemIndex].isWishlistedByUser
-        ? old.pages[pageIndexOfItem].items[itemIndex].totalWishlistCount - 1
-        : old.pages[pageIndexOfItem].items[itemIndex].totalWishlistCount + 1,
-      isWishlistedByUser: !old.pages[pageIndexOfItem].items[itemIndex].isWishlistedByUser,
-    };
+  const updatedPage = {
+    ...restPages,
+    items: [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)],
+  };
 
-    const { items, ...restPages } = old.pages[pageIndexOfItem];
+  const { pages, ...restOld } = old;
 
-    const updatedPage = {
-      ...restPages,
-      items: [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)],
-    };
-
-    const { pages, ...restOld } = old;
-
-    return {
-      ...restOld,
-      pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
-    };
-  });
-
-  return { previousData };
+  return {
+    ...restOld,
+    pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
+  };
 };
 
-const findInfinteIndexFromPreviousData = <T extends { id: number }>({
+const findInfinteIndexFromPreviousData = <T extends { id: number }[]>({
   previousData,
   queryPageSizeConstant,
   resourceId,
   noNeedToFindIndex,
 }: {
-  previousData: InfiniteQueryResult<T[]>;
+  previousData: InfiniteQueryResult<T>;
   queryPageSizeConstant: number;
   resourceId?: number;
   noNeedToFindIndex?: boolean;
@@ -212,7 +203,48 @@ const findInfinteIndexFromPreviousData = <T extends { id: number }>({
 
   const flatPages = previousData?.pages.flat();
 
-  const flatIndex = resourceId ? flatPages.findIndex(memo => memo.id === resourceId) : -1;
+  const flatIndex = resourceId
+    ? flatPages.findIndex(resource => (resource as { id: number }).id === resourceId)
+    : -1;
+
+  if (noNeedToFindIndex) {
+    return { flatPages, flatIndex };
+  }
+
+  if (flatIndex === -1) {
+    return { flatPages, pageIndex, resourceIndex };
+  }
+
+  pageIndex = Math.floor(flatIndex / queryPageSizeConstant);
+  resourceIndex = flatIndex % queryPageSizeConstant;
+
+  return { pageIndex, resourceIndex, flatPages };
+};
+
+const findInfinteIndexFromPreviousDataWithTotalRecords = <T extends { id: number }>({
+  previousData,
+  queryPageSizeConstant,
+  resourceId,
+  noNeedToFindIndex,
+}: {
+  previousData: InfiniteQueryResult<InfinitResultPagesWithTotalRecords<T>>;
+  queryPageSizeConstant: number;
+  resourceId?: number;
+  noNeedToFindIndex?: boolean;
+}) => {
+  let pageIndex = undefined;
+  let resourceIndex = undefined;
+
+  const flatPages = previousData?.pages.flat();
+
+  const flatItemsPages = flatPages.reduce((acc, page) => {
+    acc.push(...page.items);
+    return acc;
+  }, [] as T[]);
+
+  const flatIndex = resourceId
+    ? flatItemsPages.findIndex(resource => resource.id === resourceId)
+    : -1;
 
   if (noNeedToFindIndex) {
     return { flatPages, flatIndex };
@@ -229,19 +261,11 @@ const findInfinteIndexFromPreviousData = <T extends { id: number }>({
 };
 
 const makeNewInfiniteQueryResult = <T>(newFlatPages: T[], queryPageSize: number) => {
-  const newPages = newFlatPages.reduce((acc, resource, index) => {
-    if (index % queryPageSize === 0) {
-      acc.push([resource]);
-    } else {
-      acc[acc.length - 1].push(resource);
-    }
-    return acc;
-  }, [] as T[][]);
-
-  return {
-    pageParams: Array.from({ length: newPages.length }, (_, i) => i + 1),
-    pages: newPages,
-  };
+  const pages = [];
+  for (let i = 0; i < newFlatPages.length; i += queryPageSize) {
+    pages.push(newFlatPages.slice(i, i + queryPageSize));
+  }
+  return { pages };
 };
 
 const makeNewInfiniteObjectForOptimisticUpdate = <
@@ -283,21 +307,21 @@ export const handleMutateOfUpsertMemo = async ({
     resourceIndex: memoIndex,
   } = findInfinteIndexFromPreviousData({
     previousData,
-    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    queryPageSizeConstant: INFINITE_MEMO_PAGE_SIZE,
     resourceId: newMemo.id,
   });
 
   queryClient.setQueryData(queryKey, (old: InfiniteQueryResult<Tables<'memos'>[]>) => {
     if (typeof pageIndex === 'undefined') {
       const newFlatPages = [
-        makeNewInfiniteObjectForOptimisticUpdate(
+        makeNewInfiniteObjectForOptimisticUpdate<InsertMemo>(
           newMemo,
           (flatPages[0]?.id ?? Infinity - 1) + 1,
           true,
         ),
         ...flatPages,
       ];
-      return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+      return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
     }
 
     newMemo.updated_at = new Date().toISOString();
@@ -344,7 +368,7 @@ export const handleMutateOfDeleteMemo = async ({
 
   const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
     previousData,
-    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    queryPageSizeConstant: INFINITE_MEMO_PAGE_SIZE,
     resourceId: memoId,
     noNeedToFindIndex: true,
   });
@@ -355,7 +379,7 @@ export const handleMutateOfDeleteMemo = async ({
       ...flatPages.slice(flatMemoIndex! + 1),
     ];
 
-    return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+    return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
   });
 
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
@@ -392,7 +416,7 @@ export const handleMutateOfInsertComment = async ({
     resourceIndex: commentIndex,
   } = findInfinteIndexFromPreviousData({
     previousData,
-    queryPageSizeConstant: COMMENT_INFINITE_QUERY_PAGE_SIZE,
+    queryPageSizeConstant: INFINITE_COMMENT_PAGE_SIZE,
     resourceId: newComment.id,
   });
 
@@ -412,7 +436,7 @@ export const handleMutateOfInsertComment = async ({
         );
       }
 
-      return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+      return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
     }
 
     return {
@@ -458,7 +482,7 @@ export const handleMutateOfDeleteComment = async ({
 
   const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
     previousData,
-    queryPageSizeConstant: MEMO_INFINITE_QUERY_PAGE_SIZE,
+    queryPageSizeConstant: INFINITE_COMMENT_PAGE_SIZE,
     resourceId: commentId,
     noNeedToFindIndex: true,
   });
@@ -469,7 +493,7 @@ export const handleMutateOfDeleteComment = async ({
       ...flatPages.slice(flatMemoIndex! + 1),
     ];
 
-    return makeNewInfiniteQueryResult(newFlatPages as any, MEMO_INFINITE_QUERY_PAGE_SIZE);
+    return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
   });
 
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
@@ -482,37 +506,21 @@ export const handleMutateOfDeleteComment = async ({
   return { previousData };
 };
 
-export const handleMutateOfAlltimeRanking = async ({
-  queryClient,
-  queryKey,
-  newWishlist,
-}: {
-  queryClient: QueryClient;
-  newWishlist: InsertWishlist;
-  queryKey: QueryKey;
-}) => {
-  await queryClient.cancelQueries({ queryKey });
-  const previousData = queryClient.getQueryData(queryKey) as unknown as AlltimeRankingResultItem[];
+const setQueryDataForJoinedItems = (
+  old: Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>[],
+  newWishlist: Pick<InsertWishlist, 'itemId'>,
+) => {
+  const itemIndex = old.findIndex(d => d.id === newWishlist.itemId);
 
-  queryClient.setQueryData(queryKey, (old: AlltimeRankingResultItem[]) => {
-    const itemIndex = old.findIndex(d => d.id === newWishlist.itemId);
+  const updatedItem = {
+    ...old[itemIndex],
+    totalWishlistCount: old[itemIndex].isWishlistedByUser
+      ? old[itemIndex].totalWishlistCount - 1
+      : old[itemIndex].totalWishlistCount + 1,
+    isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
+  };
 
-    const updatedItem = {
-      ...old[itemIndex],
-      totalWishlistCount: old[itemIndex].isWishlistedByUser
-        ? old[itemIndex].totalWishlistCount - 1
-        : old[itemIndex].totalWishlistCount + 1,
-      isWishlistedByUser: !old[itemIndex].isWishlistedByUser,
-    };
-
-    return [
-      ...old.slice(0, itemIndex),
-      updatedItem,
-      ...old.slice(itemIndex + 1),
-    ] as AlltimeRankingResultItem[];
-  });
-
-  return { previousData };
+  return [...old.slice(0, itemIndex), updatedItem, ...old.slice(itemIndex + 1)] as JoinedItems[];
 };
 
 export const findAllQueryKeysByUserId = (queryClient: QueryClient, userId: string) => {
@@ -560,5 +568,74 @@ export const handleMutateOfWishlist = async ({
   });
   callback?.();
 
+  updateWishlistInCache({ itemId: newWishlist.itemId, queryClient });
+
   return { previousData };
+};
+
+const QueryWithWishlist: { [property in keyof Partial<typeof queryKeys>]: number } = {
+  discounts: 0,
+  search: INFINITE_SEARCH_PAGE_SIZE,
+  alltimeRankings: 0,
+};
+
+export const updateWishlistInCache = ({
+  itemId,
+  queryClient,
+}: {
+  itemId: number;
+  queryClient: QueryClient;
+}) => {
+  // queryCache의 모든 쿼리 항목을 순회
+  queryClient
+    .getQueryCache()
+    .findAll({ type: 'active' })
+    .forEach(query => {
+      if (!QueryWithWishlist.hasOwnProperty((query.queryKey as (keyof typeof queryKeys)[])[0]))
+        return;
+
+      // 자기 optimistic update도 수행
+      // if (Util.compareArray(queryKey, query.queryKey)) return;
+
+      queryClient.setQueryData(query.queryKey, (oldData: unknown) => {
+        if (!oldData) return oldData; // 캐시가 비어있으면 스킵
+
+        if (Array.isArray(oldData)) {
+          if (query.queryKey[0] === 'discounts') {
+            return setQueryDataForDiscounts(oldData, { itemId });
+          }
+
+          return setQueryDataForJoinedItems(oldData, { itemId });
+        }
+
+        if (typeof oldData === 'object') {
+          const { pageIndex, resourceIndex } = findInfinteIndexFromPreviousDataWithTotalRecords({
+            previousData: oldData as InfiniteQueryResult<
+              InfinitResultPagesWithTotalRecords<
+                Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
+              >
+            >,
+            queryPageSizeConstant:
+              QueryWithWishlist[query.queryKey[0] as keyof Partial<typeof queryKeys>] ?? 0,
+            resourceId: itemId,
+          });
+
+          if (typeof pageIndex === 'undefined' || typeof resourceIndex === 'undefined')
+            return oldData;
+
+          return setQueryDataForInfiniteResults({
+            pageIndexOfItem: pageIndex,
+            itemIndex: resourceIndex,
+            old: oldData as InfiniteQueryResult<
+              InfinitResultPagesWithTotalRecords<
+                Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
+              >
+            >,
+            newWishlist: { itemId },
+          });
+        }
+
+        return oldData;
+      });
+    });
 };
