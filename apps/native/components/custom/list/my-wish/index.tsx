@@ -1,7 +1,7 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { QueryKey } from '@tanstack/react-query';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -49,20 +49,23 @@ const MyWishList = memo(function MyWishList({
 
   const tabBarHeight = useBottomTabBarHeight();
 
+  const listRef = useRef<FlashList<WishlistToRender[number]>>(null);
+
   const renderItem = useCallback(
     ({ item }: { item: WishlistToRender[number]; index: number }) => {
+      const handleMutate = () => {
+        listRef.current?.prepareForLayoutAnimationRender();
+      };
       return (
         <WishlistItemCard
           key={item.itemId}
           item={item}
-          sortOption={sortOption}
           queryKey={queryKey}
-          channelOption={channelOption.value}
-          options={options}
+          onMutate={handleMutate}
         />
       );
     },
-    [channelOption.value, options, queryKey, sortOption],
+    [queryKey],
   );
 
   const ListHeaderComponent = useMemo(() => {
@@ -126,6 +129,7 @@ const MyWishList = memo(function MyWishList({
 
   return (
     <FlashList
+      ref={listRef}
       data={wishlistResult}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={ListFooterComponent}

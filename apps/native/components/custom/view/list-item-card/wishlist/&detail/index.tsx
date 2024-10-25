@@ -1,61 +1,19 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
-import { QueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Chip from '@/components/core/chip';
 import Text from '@/components/core/text';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
-import { DiscountChannels } from '@/constants';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
-import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
-import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
-import { useUserStore } from '@/store/user';
 
 import ListItemCardChipsView from '../../chips';
 
 interface WishlistItemCardDetailViewProps {
   item: WishlistToRender[number];
-  sortOption: keyof typeof WISHLIST_SORT_OPTIONS;
-  channelOption: DiscountChannels;
-  options: string[];
 }
 
-function WishlistItemCardDetailView({
-  item,
-  options,
-  sortOption,
-  channelOption,
-}: WishlistItemCardDetailViewProps) {
-  const { styles, theme } = useStyles(stylesheets);
-
-  const user = useUserStore(store => store.user);
-
-  // const discountType = getDiscountTypeFromResult(item);
-
-  const queryKey = useMemo(() => {
-    const isOnSaleNow = options.includes('on_sale');
-    return queryKeys.wishlists.byUserId({
-      isOnSale: isOnSaleNow,
-      sortField: WISHLIST_SORT_OPTIONS[sortOption].field,
-      sortDirection: WISHLIST_SORT_OPTIONS[sortOption].orderBy,
-      channel: channelOption,
-      userId: user!.id,
-    });
-  }, [channelOption, options, sortOption, user]);
-
-  const handleMutate = useCallback(
-    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      return await handleMutateOfSearchResult({
-        queryClient,
-        queryKey,
-        newWishlist,
-        pageIndexOfItem: item.pageIndex,
-      });
-    },
-    [item.pageIndex, queryKey],
-  );
+function WishlistItemCardDetailView({ item }: WishlistItemCardDetailViewProps) {
+  const { styles } = useStyles(stylesheets);
 
   return (
     <View style={styles.container}>
