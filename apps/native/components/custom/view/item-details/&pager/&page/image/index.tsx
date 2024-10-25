@@ -61,7 +61,6 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
             // noText
             iconProps={{ size: theme.fontSize.lg }}
             portalHostName={PortalHostNames.ITEM_DETAILS}
-            queryKey={queryKey}
             onMutate={handleMutate}
           />
         </View>

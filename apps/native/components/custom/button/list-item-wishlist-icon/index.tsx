@@ -1,6 +1,6 @@
 import { InsertWishlist } from '@cococom/supabase/libs';
 import { JoinedItems } from '@cococom/supabase/types';
-import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -19,7 +19,6 @@ interface ListItemWishlistIconButtonProps<
 > {
   item: T;
   portalHostName: PortalHostNames;
-  queryKey: QueryKey;
   onMutate?: (queryClient: QueryClient) => (newWishlist: InsertWishlist) => Promise<{
     previousData: T | T[] | InfiniteSearchResultData;
   }>;
@@ -33,7 +32,6 @@ function ListItemWishlistIconButton<
 >({
   item,
   portalHostName,
-  queryKey,
   onMutate,
   noText,
   iconProps,
@@ -53,7 +51,7 @@ function ListItemWishlistIconButton<
 
       return supabase.createWishlist(newWishlist);
     },
-    onMutate: onMutate ? onMutate(queryClient) : undefined,
+    onMutate: onMutate?.(queryClient),
     onSuccess: () => {
       updateWishlistInCache({ itemId: item.id, queryClient });
       queryClient.invalidateQueries({ queryKey: ['wishlists'] });

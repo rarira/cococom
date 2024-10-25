@@ -34,7 +34,12 @@ BEGIN
 
     -- Build dynamic order by clause
     IF order_field = 'itemId' THEN
-        order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
+        order_sql := format(
+            'ORDER BY 
+                COALESCE(NULLIF(regexp_replace(i."itemId", ''[^0-9]'', '''', ''g''), '''')::bigint, 0) %s,
+                (i."itemId" LIKE ''%%_online%%'') ASC',
+            order_direction
+        );
     ELSIF order_field = 'wishlistCreatedAt' THEN
         order_sql := format('ORDER BY w.created_at %s', order_direction);
     ELSIF order_field = 'endDate' THEN

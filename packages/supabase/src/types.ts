@@ -485,6 +485,8 @@ export type Database = {
           _user_id: string
           _channel: string
           _limit: number
+          _order_field: string
+          _order_direction: string
         }
         Returns: {
           id: number
