@@ -2,7 +2,6 @@ import { QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import React, { memo, useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
-import Animated, { FadeOut } from 'react-native-reanimated';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -21,8 +20,6 @@ interface WishlistItemCardProps {
   queryKey: QueryKey;
   onMutate: () => void;
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const WishlistItemCard = memo(function WishlistItemCard({
   item,
@@ -51,13 +48,11 @@ const WishlistItemCard = memo(function WishlistItemCard({
         queryKey,
         newWishlist: { itemId: item.id },
         pageIndexOfItem: item.pageIndex,
+        callback: onMutate,
       });
     },
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
-    },
-    onSuccess: () => {
-      onMutate();
     },
   });
 
@@ -76,7 +71,7 @@ const WishlistItemCard = memo(function WishlistItemCard({
       onPress={handlePress}
       onLongPress={handleLongPress}
     >
-      <AnimatedPressable exiting={FadeOut}>
+      <Pressable>
         <Shadow
           {...shadowPresets.card(theme)}
           {...(item.isOnSaleNow && { startColor: `${theme.colors.tint}44` })}
@@ -97,7 +92,7 @@ const WishlistItemCard = memo(function WishlistItemCard({
             </View>
           </Card>
         </Shadow>
-      </AnimatedPressable>
+      </Pressable>
     </Link>
   );
 });
