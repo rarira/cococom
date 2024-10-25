@@ -1,12 +1,12 @@
-DROP FUNCTION search_items_by_keyword(
-    keyword text, 
-    is_on_sale boolean, 
-    user_id uuid, 
-    page int, 
-    page_size int, 
-    order_field text, 
-    order_direction text
-);
+-- DROP FUNCTION search_items_by_keyword(
+--     keyword text, 
+--     is_on_sale boolean, 
+--     user_id uuid, 
+--     page int, 
+--     page_size int, 
+--     order_field text, 
+--     order_direction text
+-- );
 
 CREATE OR REPLACE FUNCTION search_items_by_keyword(
     keyword text, 
@@ -34,7 +34,12 @@ BEGIN
 
    -- Build dynamic order by clause with casting for itemId if needed
     IF order_field = 'itemId' THEN
-        order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
+        order_sql := format(
+            'ORDER BY 
+                COALESCE(NULLIF(regexp_replace(i."itemId", ''[^0-9]'', '''', ''g''), '''')::bigint, 0) %s,
+                (i."itemId" LIKE ''%%_online%%'') ASC',
+            order_direction
+        );
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;
@@ -130,15 +135,15 @@ BEGIN
 END;
 $$;
 
-DROP FUNCTION search_items_by_itemId(
-    item_id text, 
-    is_on_sale boolean, 
-    user_id uuid, 
-    page int, 
-    page_size int, 
-    order_field text, 
-    order_direction text
-);
+-- DROP FUNCTION search_items_by_itemId(
+--     item_id text, 
+--     is_on_sale boolean, 
+--     user_id uuid, 
+--     page int, 
+--     page_size int, 
+--     order_field text, 
+--     order_direction text
+-- );
 
 CREATE OR REPLACE FUNCTION search_items_by_itemId(
     item_id text, 
@@ -164,9 +169,14 @@ BEGIN
         RAISE EXCEPTION 'Invalid order direction: %', order_direction;
     END IF;
 
-    -- Build dynamic order by clause with casting for itemId if needed
+   -- Build dynamic order by clause with casting for itemId if needed
     IF order_field = 'itemId' THEN
-        order_sql := format('ORDER BY i."itemId"::int4 %s', order_direction);
+        order_sql := format(
+            'ORDER BY 
+                COALESCE(NULLIF(regexp_replace(i."itemId", ''[^0-9]'', '''', ''g''), '''')::bigint, 0) %s,
+                (i."itemId" LIKE ''%%_online%%'') ASC',
+            order_direction
+        );
     ELSE
         order_sql := format('ORDER BY i.%I %s', order_field, order_direction);
     END IF;

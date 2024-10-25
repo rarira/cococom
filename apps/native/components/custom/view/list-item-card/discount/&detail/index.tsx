@@ -85,7 +85,6 @@ function DiscountListItemCardDetailView({
           <ListItemWishlistIconButton<JoinedItems>
             item={discount.items}
             portalHostName={portalHostName}
-            queryKey={queryKey}
           />
         </View>
       </View>

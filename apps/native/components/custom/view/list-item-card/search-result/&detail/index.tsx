@@ -1,6 +1,4 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
-import { QueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -11,7 +9,7 @@ import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
 import { DiscountChannels, ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { getDiscountTypeFromResult } from '@/libs/item';
-import { handleMutateOfSearchResult, queryKeys } from '@/libs/react-query';
+import { queryKeys } from '@/libs/react-query';
 import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 import Util from '@/libs/util';
@@ -48,18 +46,6 @@ function SearchResultListItemCardDetailView({
       user?.id,
     );
   }, [channelOption, keyword, options, sortOption, user?.id]);
-
-  const handleMutate = useCallback(
-    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      return await handleMutateOfSearchResult({
-        queryClient,
-        queryKey,
-        newWishlist,
-        pageIndexOfItem: item.pageIndex,
-      });
-    },
-    [item.pageIndex, queryKey],
-  );
 
   return (
     <View style={styles.container}>
@@ -100,8 +86,6 @@ function SearchResultListItemCardDetailView({
           <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
             item={item}
             portalHostName={PortalHostNames.SEARCH}
-            queryKey={queryKey}
-            onMutate={handleMutate}
           />
         </View>
       </View>

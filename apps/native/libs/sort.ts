@@ -7,7 +7,6 @@ import {
 } from '@cococom/supabase/types';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
-import { DiscountChannels } from '@/constants';
 
 import { queryKeys } from './react-query';
 import { SearchItemSortOption } from './search';
