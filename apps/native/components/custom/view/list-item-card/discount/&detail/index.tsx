@@ -1,8 +1,5 @@
-import { CategorySectors, InsertWishlist } from '@cococom/supabase/libs';
 import { JoinedItems } from '@cococom/supabase/types';
-import { QueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { QueryKey } from '@tanstack/react-query';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -14,42 +11,24 @@ import InfoIconText from '@/components/custom/text/info-icon';
 import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 import { ITEM_DETAILS_MAX_COUNT } from '@/constants';
 import { getDiscountTypeFromDiscount } from '@/libs/item';
-import { handleMutateOfDiscountCurrentList, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
 import DiscountPriceView from '../../../discount-price';
 
 interface DiscountListItemCardDetailViewProps
-  extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {}
+  extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {
+  queryKey: QueryKey;
+}
 
 function DiscountListItemCardDetailView({
   discount,
   portalHostName,
+  queryKey,
 }: DiscountListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
   const user = useUserStore(store => store.user);
   const discountType = getDiscountTypeFromDiscount(discount);
-
-  const { categorySector: categorySectorParam } = useLocalSearchParams<{
-    categorySector: CategorySectors;
-  }>();
-
-  const queryKey = useMemo(
-    () => queryKeys.discounts.currentList(user?.id, categorySectorParam),
-    [user?.id, categorySectorParam],
-  );
-
-  const handleMutate = useCallback(
-    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      return await handleMutateOfDiscountCurrentList({
-        queryClient,
-        queryKey,
-        newWishlist,
-      });
-    },
-    [queryKey],
-  );
 
   return (
     <View style={styles.container}>
@@ -107,7 +86,6 @@ function DiscountListItemCardDetailView({
             item={discount.items}
             portalHostName={portalHostName}
             queryKey={queryKey}
-            onMutate={handleMutate}
           />
         </View>
       </View>

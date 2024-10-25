@@ -1,6 +1,6 @@
 import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -12,7 +12,6 @@ import { DiscountChannels } from '@/constants';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { shadowPresets } from '@/libs/shadow';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 
 interface SearchResultListItemCardProps extends SearchQueryParams {
   item: SearchResultToRender[number];
@@ -31,18 +30,8 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
 }: SearchResultListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.setQueryKeyOfList,
-    state.setPageIndexOfInfinteList,
-  ]);
-
-  const handlePress = useCallback(() => {
-    setQueryKeyOfList(queryKey);
-    setPageIndexOfInfinteList(item.pageIndex);
-  }, [item.pageIndex, queryKey, setPageIndexOfInfinteList, setQueryKeyOfList]);
-
   return (
-    <Link href={`/(search)/item?itemId=${item.id}` as Href<string>} asChild onPress={handlePress}>
+    <Link href={`/(search)/item?itemId=${item.id}` as Href<string>} asChild>
       <Pressable>
         <Shadow
           {...shadowPresets.card(theme)}

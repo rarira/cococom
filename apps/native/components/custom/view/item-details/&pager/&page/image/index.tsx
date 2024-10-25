@@ -11,16 +11,8 @@ import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import OpenWebButton from '@/components/custom/button/open-web';
 import { PortalHostNames } from '@/constants';
-import {
-  handleMutateOfAlltimeRanking,
-  handleMutateOfDiscountCurrentList,
-  handleMutateOfItems,
-  handleMutateOfSearchResult,
-  handleMutateOfWishlist,
-  queryKeys,
-} from '@/libs/react-query';
+import { handleMutateOfItems, queryKeys } from '@/libs/react-query';
 import Util from '@/libs/util';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
 interface ItemDetailsPagerImagePageViewProps {
@@ -35,50 +27,15 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
 
   const user = useUserStore(store => store.user);
 
-  const [queryKeyOfList, pageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.queryKeyOfList,
-    state.pageIndexOfInfinteList,
-  ]);
-
   const queryKey = queryKeys.items.byId(+itemId, user?.id);
 
   const isOnline = item?.is_online;
 
   const handleMutate = useCallback(
     (queryClient: QueryClient) => async () => {
-      if (queryKeyOfList?.[0] === 'discounts') {
-        handleMutateOfDiscountCurrentList({
-          queryClient,
-          queryKey: queryKeyOfList,
-          newWishlist: { itemId: item.id, userId: user?.id ?? '' },
-        });
-      }
-      if (queryKeyOfList?.[0] === 'search') {
-        handleMutateOfSearchResult({
-          queryClient,
-          queryKey: queryKeyOfList,
-          newWishlist: { itemId: item.id, userId: user?.id ?? '' },
-          pageIndexOfItem: pageIndexOfInfinteList!,
-        });
-      }
-      if (queryKeyOfList?.[0] === 'alltimeRankings') {
-        handleMutateOfAlltimeRanking({
-          queryClient,
-          queryKey: queryKeyOfList,
-          newWishlist: { itemId: item.id, userId: user?.id ?? '' },
-        });
-      }
-      if (queryKeyOfList?.[0] === 'wishlists') {
-        handleMutateOfWishlist({
-          queryClient,
-          queryKey: queryKeyOfList,
-          newWishlist: { itemId: item.id },
-          pageIndexOfItem: pageIndexOfInfinteList!,
-        });
-      }
       return await handleMutateOfItems({ queryClient, queryKey });
     },
-    [item.id, pageIndexOfInfinteList, queryKey, queryKeyOfList, user?.id],
+    [queryKey],
   );
 
   return (
