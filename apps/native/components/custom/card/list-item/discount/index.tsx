@@ -1,4 +1,3 @@
-import { QueryKey } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
@@ -15,7 +14,6 @@ export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
   numColumns?: number;
   containerStyle?: StyleProp<ViewStyle>;
-  queryKeyOfList: QueryKey;
   portalHostName: PortalHostNames;
 }
 
@@ -23,7 +21,6 @@ function DiscountListItemCard({
   discount,
   numColumns = 1,
   containerStyle,
-  queryKeyOfList,
   portalHostName,
 }: DiscountListItemCardProps) {
   const { styles, theme } = useStyles(stylesheet);
@@ -43,11 +40,7 @@ function DiscountListItemCard({
                 style={styles.thumbnail}
                 isOnline={discount.is_online}
               />
-              <DiscountListItemCardDetailView
-                discount={discount}
-                portalHostName={portalHostName}
-                queryKey={queryKeyOfList}
-              />
+              <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
             </View>
           </Card>
         </Shadow>

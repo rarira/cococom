@@ -44,5 +44,5 @@ export function useAlltimeRankingQuery(
     setRefreshing(false);
   }, [refetch]);
 
-  return { data, error, isLoading, queryKey, refreshing, handleRefresh };
+  return { data, error, isLoading, refreshing, handleRefresh };
 }

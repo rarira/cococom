@@ -12,7 +12,7 @@ import { getDiscountTypeFromDiscount } from '@/libs/item';
 
 type ChipsDiscount = Pick<
   Tables<'discounts'>,
-  'discount' | 'discountPrice' | 'discountRate' | 'endDate' | 'is_online'
+  'discount' | 'discountPrice' | 'discountRate' | 'endDate'
 >;
 
 type ChipsItem = Pick<
@@ -33,8 +33,9 @@ type ListItemCardChipsViewProps = (
 const chips = [
   {
     text: '첫할인',
-    checkFn: (discount: ChipsDiscount, item: ChipsItem) =>
-      !item.is_online && !discount.is_online && item.totalDiscountCount === 1,
+    checkFn: (discount: ChipsDiscount | DiscountListItemCardProps['discount'], item: ChipsItem) =>
+      (!!item ? !item.is_online : !(discount as DiscountListItemCardProps['discount']).is_online) &&
+      item.totalDiscountCount === 1,
     color: (theme: UnistylesTheme) => theme.colors.tint3,
   },
   {

@@ -46,18 +46,9 @@ const SearchResultList = memo(function SearchResultList({
 
   const renderItem = useCallback(
     ({ item }: { item: SearchResultToRender[number]; index: number }) => {
-      return (
-        <SearchResultListItemCard
-          key={item.id}
-          item={item}
-          sortOption={sortOption}
-          queryKey={queryKey}
-          channelOption={channelOption.value}
-          {...searchQueryParams}
-        />
-      );
+      return <SearchResultListItemCard key={item.id} item={item} />;
     },
-    [channelOption, queryKey, searchQueryParams, sortOption],
+    [],
   );
 
   const ListHeaderComponent = useMemo(() => {

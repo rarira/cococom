@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -7,45 +6,22 @@ import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import { DiscountChannels, ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { getDiscountTypeFromResult } from '@/libs/item';
-import { queryKeys } from '@/libs/react-query';
-import { InfiniteSearchResultData, SearchQueryParams, SearchResultToRender } from '@/libs/search';
-import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
+import { InfiniteSearchResultData, SearchResultToRender } from '@/libs/search';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
-interface SearchResultListItemCardDetailViewProps extends SearchQueryParams {
+interface SearchResultListItemCardDetailViewProps {
   item: SearchResultToRender[number];
-  sortOption: keyof typeof SEARCH_ITEM_SORT_OPTIONS;
-  channelOption: DiscountChannels;
 }
 
-function SearchResultListItemCardDetailView({
-  item,
-  keyword,
-  options,
-  sortOption,
-  channelOption,
-}: SearchResultListItemCardDetailViewProps) {
+function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
   const user = useUserStore(store => store.user);
 
   const discountType = getDiscountTypeFromResult(item);
-
-  const queryKey = useMemo(() => {
-    const isOnSaleNow = options.includes('on_sale');
-    const isItemIdSearch = options.includes('item_id');
-    return queryKeys.search[isItemIdSearch ? 'itemId' : 'keyword'](
-      keyword,
-      isOnSaleNow,
-      SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-      SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-      channelOption,
-      user?.id,
-    );
-  }, [channelOption, keyword, options, sortOption, user?.id]);
 
   return (
     <View style={styles.container}>

@@ -76,5 +76,5 @@ export function useDiscountedRankingListQuery({
     setRefreshing(false);
   }, [queryClient, queryKey, refetch]);
 
-  return { data, error, isLoading, queryKey, refreshing, handleRefresh };
+  return { data, error, isLoading, refreshing, handleRefresh };
 }

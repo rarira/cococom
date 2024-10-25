@@ -1,5 +1,4 @@
 import { JoinedItems } from '@cococom/supabase/types';
-import { QueryKey } from '@tanstack/react-query';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -17,14 +16,11 @@ import { useUserStore } from '@/store/user';
 import DiscountPriceView from '../../../discount-price';
 
 interface DiscountListItemCardDetailViewProps
-  extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {
-  queryKey: QueryKey;
-}
+  extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {}
 
 function DiscountListItemCardDetailView({
   discount,
   portalHostName,
-  queryKey,
 }: DiscountListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
   const user = useUserStore(store => store.user);
