@@ -17,9 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.rariradev.cococom",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "cccom"
-        ]
+        "LSApplicationQueriesSchemes": ["cccom"]
       },
       "usesAppleSignIn": true
     },
@@ -47,46 +45,6 @@
         "projectId": "aad6f74a-0f9e-4ef0-9fb3-2a19791cb1ec"
       }
     },
-    "owner": "rariradev",
-    "plugins": [
-      "expo-router",
-      "@react-native-firebase/app",
-      [
-        "@sentry/react-native/expo",
-        {
-          "organization": "rarira-studio-q9",
-          "project": "cococom-app"
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          },
-          "android": {
-            "extraMavenRepos": [
-              "https://devrepo.kakao.com/nexus/content/groups/public/"
-            ]
-          }
-        }
-      ],
-      [
-        "@react-native-kakao/core",
-        {
-          "nativeAppKey": "c3d9be463ed515d559dd50a2f6beb043",
-          "android": {
-            "authCodeHandlerActivity": true
-          },
-          "ios": {
-            "handleKakaoOpenUrl": true
-          }
-        }
-      ],
-      "@react-native-google-signin/google-signin",
-      "expo-apple-authentication",
-      "./plugins",
-      "expo-font"
-    ]
+    "owner": "rariradev"
   }
 }
