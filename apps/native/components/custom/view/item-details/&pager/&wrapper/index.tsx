@@ -7,8 +7,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { usePagerViewNavigation } from '@/hooks/usePagerViewNavigation';
 
 import ItemDetailsPagerNavView from '../&nav';
-import ItemDetailsPagerChartPageView from '../&page/chart';
 import ItemDetailsPagerImagePageView from '../&page/image';
+import ItemDetailsPagerVictoryChartPageView from '../&page/victory-chart';
 
 interface ItemDetailsPagerWrapperViewProps {
   item: JoinedItems;
@@ -29,9 +29,9 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
 
     return graphValueFieldArray.map((valueField, index) => (
       <View style={styles.page} key={index + 1} collapsable={false}>
-        <ItemDetailsPagerChartPageView
+        <ItemDetailsPagerVictoryChartPageView
           discountsData={item.discounts!}
-          valueField={valueField as any}
+          valueField={valueField as 'discount' | 'discountPrice' | 'discountRate'}
         />
       </View>
     ));
@@ -54,7 +54,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
       <ItemDetailsPagerNavView
         activePage={activePage}
         handleNavigateToPage={handleNavigateToPage}
-        totalPages={GraphPages.length + 1}
+        totalPages={GraphPages?.length ?? 0 + 1}
       />
     </View>
   );
