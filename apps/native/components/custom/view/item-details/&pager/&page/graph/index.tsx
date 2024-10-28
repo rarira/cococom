@@ -13,7 +13,7 @@ import Util from '@/libs/util';
 
 interface ItemDetailsPagerGraphPageViewProps {
   valueField: keyof Pick<
-    NonNullable<JoinedItems['discounts']>[number],
+    NonNullable<JoinedItems['discounts']>[0],
     'discount' | 'discountPrice' | 'discountRate'
   >;
   discountsData: NonNullable<JoinedItems['discounts']>;
@@ -40,9 +40,9 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
   const xAxisData = useMemo(() => dataToShow.map(item => new Date(item.startDate)), [dataToShow]);
 
   const Decorator = useCallback(
-    ({ x, y }: { x: (value: number) => number; y: (value: number) => number }) => {
+    ({ x, y }: any) => {
       return (
-        dataToShow?.map((value: NonNullable<JoinedItems['discounts']>[number], index: number) => (
+        dataToShow?.map((value, index) => (
           <Circle
             key={index}
             cx={x(parseISO(value.startDate).getTime())}
