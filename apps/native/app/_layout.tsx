@@ -77,6 +77,7 @@ function RootLayout() {
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Inter: require('../assets/fonts/Inter_18pt-Medium.ttf'),
   });
 
   useLoadUser();
