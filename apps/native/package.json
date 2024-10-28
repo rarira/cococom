@@ -34,6 +34,7 @@
     "@react-navigation/native": "^6.1.18",
     "@sentry/react-native": "~5.33.2",
     "@shopify/flash-list": "1.7.1",
+    "@shopify/react-native-skia": "^1.5.0",
     "@tanstack/react-query": "^5.51.11",
     "date-fns": "^3.6.0",
     "expo": "~51.0.37",
@@ -71,6 +72,7 @@
     "react-native-unistyles": "^2.9.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.12",
+    "victory-native": "^41.8.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"
   },
