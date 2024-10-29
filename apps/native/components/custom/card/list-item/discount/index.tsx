@@ -1,6 +1,5 @@
 import { Href, Link } from 'expo-router';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
-import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
@@ -8,7 +7,7 @@ import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-
 import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
 import { PortalHostNames } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
-import { shadowPresets } from '@/libs/shadow';
+import { ShadowPresets } from '@/libs/shadow';
 
 export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
@@ -30,20 +29,18 @@ function DiscountListItemCard({
   return (
     <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild>
       <Pressable>
-        <Shadow {...shadowPresets.card(theme)} stretch>
-          <Card style={[styles.cardContainer(numColumns > 1, isOnline), containerStyle]}>
-            <View style={styles.itemContainer(numColumns === 1)}>
-              <ProductCardThumbnailImage
-                product={discount.items!}
-                width={115}
-                height={115}
-                style={styles.thumbnail}
-                isOnline={discount.is_online}
-              />
-              <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
-            </View>
-          </Card>
-        </Shadow>
+        <Card style={[styles.cardContainer(numColumns > 1, isOnline), containerStyle]}>
+          <View style={styles.itemContainer(numColumns === 1)}>
+            <ProductCardThumbnailImage
+              product={discount.items!}
+              width={115}
+              height={115}
+              style={styles.thumbnail}
+              isOnline={discount.is_online}
+            />
+            <DiscountListItemCardDetailView discount={discount} portalHostName={portalHostName} />
+          </View>
+        </Card>
       </Pressable>
     </Link>
   );
@@ -54,6 +51,7 @@ const stylesheet = createStyleSheet(theme => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
     backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
+    ...ShadowPresets.card(theme),
   }),
   itemContainer: (row: boolean) => ({
     flex: 1,

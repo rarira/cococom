@@ -1,12 +1,11 @@
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, View } from 'react-native';
-import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
 import Text from '@/components/core/text';
-import { shadowPresets } from '@/libs/shadow';
+import { ShadowPresets } from '@/libs/shadow';
 
 import { DiscountsByCategorySector } from '../../list/category-sector';
 
@@ -26,48 +25,46 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
       asChild
     >
       <Pressable>
-        <Shadow {...shadowPresets.card(theme)}>
-          <Card style={styles.cardContainer}>
+        <Card style={styles.cardContainer}>
+          <View>
             <View>
-              <View>
-                <View style={styles.imageContainer}>
-                  <Image
-                    // TODO: 상품별 이미지로 변경
-                    source={`https://picsum.photos/150/150`}
-                    contentFit="cover"
-                    alt={`${discountInfo.categorySector} thumbnail image`}
-                    style={styles.image}
-                  />
-                </View>
-                <View style={styles.categoryNameContainer}>
-                  <Text style={styles.categoryName} numberOfLines={3}>
-                    {discountInfo.categorySector}
-                  </Text>
-                </View>
+              <View style={styles.imageContainer}>
+                <Image
+                  // TODO: 상품별 이미지로 변경
+                  source={`https://picsum.photos/150/150`}
+                  contentFit="cover"
+                  alt={`${discountInfo.categorySector} thumbnail image`}
+                  style={styles.image}
+                />
               </View>
-              <View style={styles.infoContaier}>
-                <View style={styles.countContainer}>
-                  <View style={styles.countRow}>
-                    <View style={styles.countCell}>
-                      <Text style={[styles.count, styles.countHeader]}>오프</Text>
-                    </View>
-                    <View style={styles.countCell}>
-                      <Text style={[styles.count, styles.countHeader]}>온</Text>
-                    </View>
+              <View style={styles.categoryNameContainer}>
+                <Text style={styles.categoryName} numberOfLines={3}>
+                  {discountInfo.categorySector}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.infoContaier}>
+              <View style={styles.countContainer}>
+                <View style={styles.countRow}>
+                  <View style={styles.countCell}>
+                    <Text style={[styles.count, styles.countHeader]}>오프</Text>
                   </View>
-                  <View style={styles.countRow}>
-                    <View style={styles.countCell}>
-                      <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
-                    </View>
-                    <View style={styles.countCell}>
-                      <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
-                    </View>
+                  <View style={styles.countCell}>
+                    <Text style={[styles.count, styles.countHeader]}>온</Text>
+                  </View>
+                </View>
+                <View style={styles.countRow}>
+                  <View style={styles.countCell}>
+                    <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
+                  </View>
+                  <View style={styles.countCell}>
+                    <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
                   </View>
                 </View>
               </View>
             </View>
-          </Card>
-        </Shadow>
+          </View>
+        </Card>
       </Pressable>
     </Link>
   );
@@ -78,6 +75,7 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     width: '100%',
     height: '100%',
+    ...ShadowPresets.card(theme),
   },
   cardContainer: {
     flex: 1,

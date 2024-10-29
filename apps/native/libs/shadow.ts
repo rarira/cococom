@@ -1,19 +1,16 @@
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
-export const shadowPresets = {
+export const ShadowPresets = {
   card: (theme: UnistylesTheme) => ({
-    offset: [theme.spacing.sm / 2, theme.spacing.sm / 2] as [x: number, y: number],
-    startColor: `${theme.colors.shadow}22`,
-    distance: theme.spacing.sm,
-    sides: { start: false, top: false, bottom: true, end: true },
-    corners: { topStart: false, topEnd: true, bottomStart: true, bottomEnd: true },
+    shadowColor: theme.colors.shadow,
+    shadowOpacity: 0.2,
+    shadowRadius: theme.spacing.sm,
+    shadowOffset: { width: theme.spacing.sm, height: theme.spacing.sm },
   }),
   down: (theme: UnistylesTheme) => ({
-    offset: [0, theme.spacing.sm / 2] as [x: number, y: number],
-    startColor: `${theme.colors.shadow}22`,
-    distance: theme.spacing.sm,
-    sides: { start: false, top: false, bottom: true, end: false },
-    corners: { topStart: false, topEnd: false, bottomStart: false, bottomEnd: false },
-    stretch: true,
+    shadowColor: theme.colors.shadow,
+    shadowOpacity: 0.2,
+    shadowRadius: theme.spacing.sm,
+    shadowOffset: { width: 0, height: theme.spacing.sm },
   }),
 };

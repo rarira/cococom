@@ -56,7 +56,6 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
     discountRate: '%',
   }[valueField];
 
-  console.log('chartData', valueField, chartData);
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>

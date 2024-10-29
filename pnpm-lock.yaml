@@ -218,9 +218,6 @@ importers:
       react-native-screens:
         specifier: 4.0.0-beta.14
         version: 4.0.0-beta.14(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
-      react-native-shadow-2:
-        specifier: ^7.1.0
-        version: 7.1.0(react-native-svg@15.8.0(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))
       react-native-svg:
         specifier: 15.8.0
         version: 15.8.0(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
@@ -3377,9 +3374,6 @@ packages:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
 
-  colord@2.9.2:
-    resolution: {integrity: sha512-Uqbg+J445nc1TKn4FoDPS6ZZqAvEDnwrH42yo8B40JSOgSLxMZ/gt3h4nmCtPLQeXhjJJkqBx7SCY35WnIixaQ==}
-
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
@@ -6256,12 +6250,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  react-native-shadow-2@7.1.0:
-    resolution: {integrity: sha512-Ph7/E8XuM7QQJ0fNTPC0Xp+8ezntVnCF0XnOQBvmQIDTrYLq/fzQSOdqTC4dzs+pXtZ7Yis2ewjVaDc5URUCAg==}
-    peerDependencies:
-      react-native: '*'
-      react-native-svg: '>=12.1.0'
 
   react-native-svg-charts@5.4.0:
     resolution: {integrity: sha512-5TaIGSihJaHCGFj32Tc07hZrqqTpvdyAx89PIrW2nLf2tijd61+3UE3jtsiHOvfeAyDgSTWjv6s9qG9d2di7Pw==}
@@ -11719,8 +11707,6 @@ snapshots:
       color-convert: 2.0.1
       color-string: 1.9.1
 
-  colord@2.9.2: {}
-
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
@@ -15268,12 +15254,6 @@ snapshots:
       react-freeze: 1.0.4(react@18.3.1)
       react-native: 0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)
       warn-once: 0.1.1
-
-  react-native-shadow-2@7.1.0(react-native-svg@15.8.0(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)):
-    dependencies:
-      colord: 2.9.2
-      react-native: 0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)
-      react-native-svg: 15.8.0(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
 
   react-native-svg-charts@5.4.0(react-native-svg@15.8.0(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-native@0.76.0(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1):
     dependencies:
