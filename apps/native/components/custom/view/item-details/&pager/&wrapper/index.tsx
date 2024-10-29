@@ -23,13 +23,14 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
     usePagerViewNavigation();
 
   const GraphPages = useMemo(() => {
+    if (!item.discounts) return null;
     const graphValueFieldArray =
       item.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
 
     return graphValueFieldArray.map((valueField, index) => (
       <View style={styles.page} key={index + 1} collapsable={false}>
         <ItemDetailsPagerGraphPageView
-          discountsData={item.discounts}
+          discountsData={item.discounts!}
           valueField={valueField as any}
         />
       </View>
