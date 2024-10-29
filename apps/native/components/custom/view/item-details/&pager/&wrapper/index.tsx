@@ -54,7 +54,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
       <ItemDetailsPagerNavView
         activePage={activePage}
         handleNavigateToPage={handleNavigateToPage}
-        totalPages={GraphPages?.length ?? 0 + 1}
+        totalPages={(GraphPages?.length ?? 0) + 1}
       />
     </View>
   );
