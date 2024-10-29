@@ -29,10 +29,9 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
 LogBox.ignoreLogs([
-  'Support for defaultProps will be removed from',
-  'A props object containing',
   'Failed prop type',
   '[Reanimated] Tried to modify key',
+  '[Reanimated] Reading from `value` during component render.',
 ]);
 
 setDefaultOptions({ locale: ko });
