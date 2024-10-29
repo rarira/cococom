@@ -1,11 +1,13 @@
 import { JoinedItems } from '@cococom/supabase/types';
-import { useFont } from '@shopify/react-native-skia';
+import { Circle, Paint, Text as SKText, useFont } from '@shopify/react-native-skia';
 import { memo, useMemo } from 'react';
 import { View } from 'react-native';
+import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { CartesianChart, Line } from 'victory-native';
+import { CartesianChart, Line, Scatter, useChartPressState } from 'victory-native';
 
 import Text from '@/components/core/text';
+import { formatXAxisDate } from '@/libs/date';
 interface ItemDetailsPagerVictoryChartPageViewProps {
   discountsData: NonNullable<JoinedItems['discounts']>;
   valueField: keyof Pick<
@@ -21,8 +23,12 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
   maxRecordsToShow = 10,
 }: ItemDetailsPagerVictoryChartPageViewProps) {
   const { styles, theme } = useStyles(stylesheet);
-  const font = useFont(require('../../../../../../../assets/fonts/Inter_18pt-Medium.ttf'), 12);
 
+  const font = useFont(require('@/assets/fonts/Inter_18pt-Medium.ttf'), theme.fontSize.xs);
+
+  const { state, isActive } = useChartPressState({ x: 0, y: { value: 0 } });
+
+  console.log('font', font);
   const dataToShow = useMemo(
     () => discountsData.slice(-maxRecordsToShow),
     [discountsData, maxRecordsToShow],
@@ -30,27 +36,18 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
 
   const chartData = useMemo(() => {
     return dataToShow.map((discount: NonNullable<JoinedItems['discounts']>[number]) => ({
-      x: discount.startDate,
-      y: discount[valueField]!,
+      x: new Date(discount.startDate).getTime(),
+      value: discount[valueField]!,
     }));
   }, [dataToShow, valueField]);
 
-  const yAxisLabel = useMemo(() => {
-    switch (valueField) {
-      case 'discount':
-        return '할인가격';
-      case 'discountPrice':
-        return '판매가격';
-      case 'discountRate':
-        return '할인율(%)';
-      default:
-        return '';
-    }
-  }, [valueField]);
+  const discountInfo = useDerivedValue(() => {
+    return state.y.value.value.value + '@' + state.x;
+  }, [state]);
 
   const titleText = {
-    discount: '할인 금액 변화',
-    discountPrice: '할인 후 가격 변화',
+    discount: '할인액 변화',
+    discountPrice: '판매가 변화',
     discountRate: '할인율 변화',
   }[valueField];
 
@@ -72,33 +69,91 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
         <CartesianChart
           data={chartData}
           xKey={'x'}
-          yKeys={['y']}
-          padding={theme.spacing.lg}
-          axisOptions={{ font }}
-          xAxis={{
-            font,
-            formatXLabel: label => {
-              return label?.split('T')[0] ?? '';
-            },
-            labelColor: theme.colors.typography,
+          yKeys={['value']}
+          domainPadding={{
+            top: theme.spacing.xl,
+            bottom: theme.spacing.xl,
+            left: theme.spacing.xl,
+            right: theme.spacing.xl,
           }}
+          chartPressState={state}
+          yAxis={[
+            {
+              font,
+            },
+          ]}
         >
-          {({ points, xScale }) => {
-            console.log('data', points.y, xScale);
+          {({ points, canvasSize }) => {
             return (
-              // 👇 and we'll use the Line component to render a line path.
-              <Line
-                points={points.y}
-                color="red"
-                strokeWidth={3}
-                animate={{ type: 'timing', duration: 300 }}
-              />
+              <>
+                {/* <SKText
+                  x={chartBounds.left + 10}
+                  y={chartBounds.bottom}
+                  font={font}
+                  text={discountInfo}
+                  color={theme.colors.typography}
+                  style={'fill'}
+                /> */}
+                <Line
+                  points={points.value}
+                  color={theme.colors.graphStroke}
+                  strokeWidth={3}
+                  animate={{ type: 'timing', duration: 300 }}
+                />
+                <Scatter
+                  points={points.value}
+                  color={theme.colors.background}
+                  shape="circle"
+                  radius={theme.spacing.md}
+                  style={'fill'}
+                >
+                  <Paint color={theme.colors.graphStroke} style="stroke" strokeWidth={3} />
+                </Scatter>
+                {points.value.map(point => {
+                  const isYAtBottomCanvas = point.y! > canvasSize.height / 2;
+                  return (
+                    <SKText
+                      x={point.x}
+                      y={point.y!}
+                      font={font}
+                      text={formatXAxisDate(new Date(point.xValue))}
+                      color={theme.colors.typography}
+                      style={'fill'}
+                      transform={[
+                        {
+                          translate: [
+                            point.x - theme.spacing.md / 2,
+                            isYAtBottomCanvas
+                              ? point.y! -
+                                (font!.measureText(formatXAxisDate(new Date(point.xValue))).width +
+                                  theme.spacing.xl)
+                              : point.y! + theme.spacing.xl,
+                          ],
+                        },
+                        { rotate: (90 * Math.PI) / 180 }, // 45도 회전 (라디안 단위로 변환)
+                        { translate: [-point.x, -point.y!] },
+                      ]}
+                    />
+                  );
+                })}
+                {isActive && <ToolTip x={state.x.position} y={state.y.value.position} />}
+              </>
             );
           }}
         </CartesianChart>
       </View>
     </View>
   );
+});
+
+const ToolTip = memo(function ToolTip({
+  x,
+  y,
+}: {
+  x: SharedValue<number>;
+  y: SharedValue<number>;
+}) {
+  return <Circle cx={x} cy={y} r={8} color="black" />;
 });
 
 const stylesheet = createStyleSheet(theme => ({
@@ -127,8 +182,6 @@ const stylesheet = createStyleSheet(theme => ({
   graphContainer: {
     flex: 1,
     width: '100%',
-    borderWidth: 1,
-    borderColor: 'red',
   },
 }));
 
