@@ -13,7 +13,7 @@ export function formatLongLocalizedDateTime(date: string) {
 }
 
 export function formatXAxisDate(date: Date) {
-  return format(date, 'yy-M-d');
+  return format(date, 'yy-MM');
 }
 
 export function isItemOnSaleNow(item: JoinedItems) {
