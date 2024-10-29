@@ -28,7 +28,6 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
 
   const { state, isActive } = useChartPressState({ x: 0, y: { value: 0 } });
 
-  console.log('font', font);
   const dataToShow = useMemo(
     () => discountsData.slice(-maxRecordsToShow),
     [discountsData, maxRecordsToShow],
@@ -57,6 +56,7 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
     discountRate: '%',
   }[valueField];
 
+  console.log('chartData', valueField, chartData);
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -111,6 +111,7 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
                 </Scatter>
                 {points.value.map(point => {
                   const isYAtBottomCanvas = point.y! > canvasSize.height / 2;
+                  if (!font) return null;
                   return (
                     <SKText
                       x={point.x}
@@ -125,7 +126,7 @@ const ItemDetailsPagerVictoryChartPageView = memo(function ItemDetailsPagerVicto
                             point.x - theme.spacing.md / 2,
                             isYAtBottomCanvas
                               ? point.y! -
-                                (font!.measureText(formatXAxisDate(new Date(point.xValue))).width +
+                                (font.measureText(formatXAxisDate(new Date(point.xValue))).width +
                                   theme.spacing.xl)
                               : point.y! + theme.spacing.xl,
                           ],
