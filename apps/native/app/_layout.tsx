@@ -1,8 +1,6 @@
 import type { AppStateStatus } from 'react-native';
 
 import '@/styles/unistyles';
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -77,9 +75,6 @@ function onAppStateChange(status: AppStateStatus) {
 
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
-
-  useReactNavigationDevTools(navigationRef);
-  useReactQueryDevTools(queryClient);
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
