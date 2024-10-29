@@ -1,75 +1,52 @@
 import { JoinedItems } from '@cococom/supabase/types';
+import { Circle, Paint, Text as SKText, useFont } from '@shopify/react-native-skia';
 import { memo, useMemo } from 'react';
 import { View } from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
+import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { CartesianChart, Line, Scatter, useChartPressState } from 'victory-native';
 
 import Text from '@/components/core/text';
-import { X_AXIS_HEIGHT } from '@/constants';
-
+import { formatXAxisDate } from '@/libs/date';
 interface ItemDetailsPagerChartPageViewProps {
+  discountsData: NonNullable<JoinedItems['discounts']>;
   valueField: keyof Pick<
     NonNullable<JoinedItems['discounts']>[number],
     'discount' | 'discountPrice' | 'discountRate'
   >;
-  discountsData: NonNullable<JoinedItems['discounts']>;
   maxRecordsToShow?: number;
 }
 
 const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageView({
-  valueField,
   discountsData,
+  valueField,
   maxRecordsToShow = 10,
 }: ItemDetailsPagerChartPageViewProps) {
   const { styles, theme } = useStyles(stylesheet);
+
+  const font = useFont(require('@/assets/fonts/Inter_18pt-Medium.ttf'), theme.fontSize.xs);
+
+  const { state, isActive } = useChartPressState({ x: 0, y: { value: 0 } });
 
   const dataToShow = useMemo(
     () => discountsData.slice(-maxRecordsToShow),
     [discountsData, maxRecordsToShow],
   );
 
-  const data = useMemo(
-    () =>
-      dataToShow.map(item => ({
-        value: item[valueField] ?? 0,
-        label: item.startDate.split('T')[0],
-      })),
-    [dataToShow, valueField],
-  );
+  const chartData = useMemo(() => {
+    return dataToShow.map((discount: NonNullable<JoinedItems['discounts']>[number]) => ({
+      x: new Date(discount.startDate).getTime(),
+      value: discount[valueField]!,
+    }));
+  }, [dataToShow, valueField]);
 
-  const xAxisData = useMemo(() => dataToShow.map(item => item.startDate), [dataToShow]);
-
-  // const Decorator = useCallback(
-  //   ({ x, y }: any) => {
-  //     return (
-  //       dataToShow?.map((value, index) => (
-  //         <Circle
-  //           key={index}
-  //           cx={x(parseISO(value.startDate).getTime())}
-  //           cy={y(value[valueField])}
-  //           r={theme.fontSize.xxs / 2}
-  //           stroke={theme.colors.graphStroke}
-  //           fill={theme.colors.background}
-  //         />
-  //       )) ?? null
-  //     );
-  //   },
-  //   [dataToShow, theme.colors.background, theme.colors.graphStroke, theme.fontSize.xxs, valueField],
-  // );
-
-  // const verticalContentInset = useMemo(
-  //   () => ({
-  //     top: theme.spacing.lg,
-  //     bottom: theme.spacing.lg,
-  //     left: theme.spacing.lg,
-  //     right: theme.spacing.lg,
-  //   }),
-  //   [theme.spacing.lg],
-  // );
+  const discountInfo = useDerivedValue(() => {
+    return state.y.value.value.value + '@' + state.x;
+  }, [state]);
 
   const titleText = {
-    discount: '할인 금액 변화',
-    discountPrice: '할인 후 가격 변화',
+    discount: '할인액 변화',
+    discountPrice: '판매가 변화',
     discountRate: '할인율 변화',
   }[valueField];
 
@@ -78,8 +55,6 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
     discountPrice: '원',
     discountRate: '%',
   }[valueField];
-
-  if (!dataToShow) return null;
 
   return (
     <View style={styles.container}>
@@ -90,16 +65,100 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
         >{`(최근 최대 ${maxRecordsToShow} 건, 단위 ${unitText})`}</Text>
       </View>
       <View style={styles.graphContainer}>
-        <LineChart data={data} yAxisOffset={5000} />
+        <CartesianChart
+          data={chartData}
+          xKey={'x'}
+          yKeys={['value']}
+          domainPadding={{
+            top: theme.spacing.xl,
+            bottom: theme.spacing.xl,
+            left: theme.spacing.xl,
+            right: theme.spacing.xl,
+          }}
+          chartPressState={state}
+          yAxis={[
+            {
+              font,
+            },
+          ]}
+        >
+          {({ points, canvasSize }) => {
+            return (
+              <>
+                {/* <SKText
+                  x={chartBounds.left + 10}
+                  y={chartBounds.bottom}
+                  font={font}
+                  text={discountInfo}
+                  color={theme.colors.typography}
+                  style={'fill'}
+                /> */}
+                <Line
+                  points={points.value}
+                  color={theme.colors.graphStroke}
+                  strokeWidth={3}
+                  animate={{ type: 'timing', duration: 300 }}
+                />
+                <Scatter
+                  points={points.value}
+                  color={theme.colors.background}
+                  shape="circle"
+                  radius={theme.spacing.md}
+                  style={'fill'}
+                >
+                  <Paint color={theme.colors.graphStroke} style="stroke" strokeWidth={3} />
+                </Scatter>
+                {points.value.map(point => {
+                  const isYAtBottomCanvas = point.y! > canvasSize.height / 2;
+                  if (!font) return null;
+                  return (
+                    <SKText
+                      x={point.x}
+                      y={point.y!}
+                      font={font}
+                      text={formatXAxisDate(new Date(point.xValue))}
+                      color={theme.colors.typography}
+                      style={'fill'}
+                      transform={[
+                        {
+                          translate: [
+                            point.x - theme.spacing.md / 2,
+                            isYAtBottomCanvas
+                              ? point.y! -
+                                (font.measureText(formatXAxisDate(new Date(point.xValue))).width +
+                                  theme.spacing.xl)
+                              : point.y! + theme.spacing.xl,
+                          ],
+                        },
+                        { rotate: (90 * Math.PI) / 180 }, // 45도 회전 (라디안 단위로 변환)
+                        { translate: [-point.x, -point.y!] },
+                      ]}
+                    />
+                  );
+                })}
+                {isActive && <ToolTip x={state.x.position} y={state.y.value.position} />}
+              </>
+            );
+          }}
+        </CartesianChart>
       </View>
     </View>
   );
 });
 
+const ToolTip = memo(function ToolTip({
+  x,
+  y,
+}: {
+  x: SharedValue<number>;
+  y: SharedValue<number>;
+}) {
+  return <Circle cx={x} cy={y} r={8} color="black" />;
+});
+
 const stylesheet = createStyleSheet(theme => ({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     paddingHorizontal: theme.spacing.xl,
     justifyContent: 'center',
     alignItems: 'center',
@@ -122,26 +181,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   graphContainer: {
     flex: 1,
-    // width: '100%',
-    borderWidth: 1,
-    borderColor: 'red',
-    // flexDirection: 'row',
-    // paddingVertical: theme.spacing.lg,
-  },
-  yAxis: {
-    marginBottom: X_AXIS_HEIGHT,
-  },
-  chartContainer: {
-    flex: 1,
-    width: 'auto',
-  },
-  lineChart: {
-    flex: 1,
-    marginLeft: theme.spacing.lg,
-  },
-  XAxis: {
-    height: X_AXIS_HEIGHT,
-    marginLeft: theme.spacing.lg,
+    width: '100%',
   },
 }));
 
