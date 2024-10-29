@@ -16,7 +16,7 @@ interface ItemDetailsPagerGraphPageViewProps {
     NonNullable<JoinedItems['discounts']>[0],
     'discount' | 'discountPrice' | 'discountRate'
   >;
-  discountsData?: JoinedItems['discounts'];
+  discountsData: NonNullable<JoinedItems['discounts']>;
   maxRecordsToShow?: number;
 }
 
@@ -28,16 +28,16 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
   const { styles, theme } = useStyles(stylesheet);
 
   const dataToShow = useMemo(
-    () => discountsData?.slice(-maxRecordsToShow),
+    () => discountsData.slice(-maxRecordsToShow),
     [discountsData, maxRecordsToShow],
   );
 
   const yAxisData = useMemo(
-    () => dataToShow?.map(item => item[valueField]),
+    () => dataToShow.map(item => item[valueField]),
     [dataToShow, valueField],
   );
 
-  const xAxisData = useMemo(() => dataToShow?.map(item => item.startDate), [dataToShow]);
+  const xAxisData = useMemo(() => dataToShow.map(item => new Date(item.startDate)), [dataToShow]);
 
   const Decorator = useCallback(
     ({ x, y }: any) => {
@@ -91,7 +91,7 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
       </View>
       <View style={styles.graphContainer}>
         <YAxis
-          data={yAxisData!}
+          data={yAxisData}
           style={styles.yAxis}
           contentInset={verticalContentInset}
           svg={{ fontSize: theme.fontSize.xxs, fill: theme.colors.typography }}
@@ -115,14 +115,14 @@ const ItemDetailsPagerGraphPageView = memo(function ItemDetailsPagerGraphPageVie
             <Decorator />
           </LineChart>
           <XAxis
-            data={xAxisData!}
+            data={xAxisData}
             svg={{
               fill: theme.colors.typography,
               fontSize: theme.fontSize.xxs,
               rotation: 90,
               originY: 20,
             }}
-            xAccessor={({ item }) => parseISO(item)}
+            xAccessor={({ item }) => item}
             scale={scale.scaleTime}
             style={styles.XAxis}
             contentInset={{ left: -4, right: 28 }}

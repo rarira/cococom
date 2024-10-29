@@ -24,7 +24,6 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
 
   const GraphPages = useMemo(() => {
     if (!item.discounts) return null;
-
     const graphValueFieldArray =
       item.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
 
