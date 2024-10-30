@@ -45,20 +45,23 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     mutationFn: (newMemo: InsertMemo) => {
       return supabase.upsertMemo(newMemo);
     },
-    onMutate: (newMemo: InsertMemo) => {
+    onMutate: () => {
+      return { previousData: queryClient.getQueryData(queryKey) };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: (data, variables) => {
+      const newMemo = {
+        ...data[0],
+        ...variables,
+      };
       return handleMutateOfUpsertMemo({
         queryClient,
         queryKey,
         newMemo,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
-    },
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previousData);
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.id) return;
-      queryClient.invalidateQueries({ queryKey });
     },
   });
 

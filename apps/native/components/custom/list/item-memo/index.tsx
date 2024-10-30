@@ -9,7 +9,9 @@ import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemDetailsTabNames } from '@/constants';
 import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
+import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemMemoListRow from './&row';
 
@@ -18,6 +20,8 @@ interface ItemMemoListProps extends ItemMemoTabViewProps {
 }
 
 const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: ItemMemoListProps) {
+  const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.MEMO);
+
   const { styles, theme } = useStyles(stylesheet);
   const {
     memos,
@@ -30,7 +34,9 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
   } = useInfiniteMemos(itemId);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
-    return <ItemMemoListRow memo={item} key={item.id} />;
+    return (
+      <ItemMemoListRow memo={item} key={item.id} previousSwipeableRef={previousSwipeableRef} />
+    );
   }, []);
 
   const ListHeaderComponent = useMemo(() => {

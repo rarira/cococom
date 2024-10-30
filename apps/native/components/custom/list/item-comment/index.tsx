@@ -9,8 +9,10 @@ import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemDetailsTabNames } from '@/constants';
 import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
 import { useRealtimeComments } from '@/hooks/comment/useRealtimeComments';
+import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemCommentListRow from './&row';
 
@@ -22,6 +24,8 @@ const ItemCommentList = memo(function ItemCommentList({
   itemId,
   onAddCommentPress,
 }: ItemCommentListProps) {
+  const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.COMMENT);
+
   const { styles, theme } = useStyles(stylesheet);
   const {
     comments,
@@ -36,7 +40,13 @@ const ItemCommentList = memo(function ItemCommentList({
   useRealtimeComments(itemId);
 
   const renderItem = useCallback(({ item }: { item: NonNullable<JoinedComments> }) => {
-    return <ItemCommentListRow comment={item} key={item.id} />;
+    return (
+      <ItemCommentListRow
+        comment={item}
+        key={item.id}
+        previousSwipeableRef={previousSwipeableRef}
+      />
+    );
   }, []);
 
   const ListHeaderComponent = useMemo(() => {

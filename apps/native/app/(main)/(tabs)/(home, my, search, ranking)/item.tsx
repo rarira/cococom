@@ -13,7 +13,7 @@ import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discou
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
-import { PortalHostNames } from '@/constants';
+import { ItemDetailsTabNames, PortalHostNames } from '@/constants';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
@@ -88,19 +88,19 @@ export default function ItemScreen() {
         allowHeaderOverscroll
         lazy={Platform.OS === 'ios'}
       >
-        <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
+        <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
             <ItemDiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab
-          name="comment"
+          name={ItemDetailsTabNames.COMMENT}
           label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
           <ItemCommentTabView itemId={+itemId} />
         </Tabs.Tab>
         <Tabs.Tab
-          name="memo"
+          name={ItemDetailsTabNames.MEMO}
           label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
         >
           <ItemMemoTabView itemId={+itemId} />
