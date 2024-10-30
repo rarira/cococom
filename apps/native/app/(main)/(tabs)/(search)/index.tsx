@@ -21,7 +21,7 @@ export default function SearchScreen() {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
 

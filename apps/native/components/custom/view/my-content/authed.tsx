@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useStyles } from 'react-native-unistyles';
 
 import Chip from '@/components/core/chip';
 import MyWishlistTabView from '@/components/custom/tab-view/my/wishlist';
@@ -39,7 +39,10 @@ const AuthedMyContentView = memo(function AuthedMyContentView({}: AuthedMyConten
               textProps={{ style: styles.tabBarLabelText(focused) }}
             />
           )}
-          renderTabBarItem={props => <TabBarItem {...props} style={styles.tabBarItem} />} // scrollEnabled
+          renderTabBarItem={props => {
+            const { key, ...restProps } = props;
+            return <TabBarItem key={key} {...restProps} style={styles.tabBarItem} />;
+          }} // scrollEnabled
           style={styles.tabBarContainer}
           pressOpacity={0.5}
           bounces
@@ -59,40 +62,5 @@ const AuthedMyContentView = memo(function AuthedMyContentView({}: AuthedMyConten
     />
   );
 });
-
-const stylesheet = createStyleSheet(theme => ({
-  sceneContainer: {
-    flex: 1,
-  },
-  tabBarContainer: {
-    backgroundColor: theme.colors.lightShadow,
-    borderRadius: theme.borderRadius.lg,
-    marginHorizontal: theme.screenHorizontalPadding - theme.spacing.md,
-  },
-  tabBarItem: {
-    alignItems: undefined,
-    height: '100%',
-    padding: theme.spacing.md,
-  },
-  tabBarIndicatorContainer: {
-    display: 'none',
-  },
-  tabBarLabelContainer: (focused: boolean) => ({
-    backgroundColor: focused ? 'white' : 'transparent',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.5,
-    borderColor: focused ? 'white' : 'transparent',
-    borderRadius: theme.borderRadius.md,
-    opacity: focused ? 1 : 0.5,
-  }),
-  tabBarLabelText: (focused: boolean) => ({
-    color: focused ? 'black' : theme.colors.typography,
-    fontWeight: focused ? 'bold' : 'normal',
-    fontSize: theme.fontSize.normal,
-    lineHeight: theme.fontSize.md * 1.5,
-  }),
-}));
 
 export default AuthedMyContentView;
