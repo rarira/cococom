@@ -3,7 +3,7 @@
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
-import { MEMO_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
+import { INFINITE_MEMO_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -25,11 +25,11 @@ export function useInfiniteMemos(itemId: number) {
           itemId,
           userId: user!.id,
           page: pageParam,
-          pageSize: MEMO_INFINITE_QUERY_PAGE_SIZE,
+          pageSize: INFINITE_MEMO_PAGE_SIZE,
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < MEMO_INFINITE_QUERY_PAGE_SIZE) return undefined;
+        if (lastPage.length < INFINITE_MEMO_PAGE_SIZE) return undefined;
         return allPages.length + 1;
       },
       enabled: !!user,

@@ -1,6 +1,6 @@
 import { Tables } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { memo, MutableRefObject, useCallback, useRef } from 'react';
+import { memo, MutableRefObject, useCallback } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -8,7 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
-import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
+import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
 import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
@@ -16,6 +16,7 @@ import { useMemoEditStore } from '@/store/memo-edit';
 
 interface ItemMemoListRowProps {
   memo: Tables<'memos'>;
+  previousSwipeableRef: MutableRefObject<SwipeableMethods | null>;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
@@ -97,9 +98,11 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemMemoListRow = memo(function ItemMemoListRow({ memo }: ItemMemoListRowProps) {
+const ItemMemoListRow = memo(function ItemMemoListRow({
+  memo,
+  previousSwipeableRef,
+}: ItemMemoListRowProps) {
   const { styles } = useStyles(stylesheet);
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
   const renderRightActions = useCallback(
     (
@@ -110,9 +113,7 @@ const ItemMemoListRow = memo(function ItemMemoListRow({ memo }: ItemMemoListRowP
     [memo],
   );
 
-  const swipeableProps = useOnlyOneSwipeable(
-    previousSwipeableRef as MutableRefObject<SwipeableMethods>,
-  );
+  const swipeableProps = useOnlyOneSwipeable(previousSwipeableRef);
 
   return (
     <Swipeable
@@ -141,7 +142,6 @@ const stylesheet = createStyleSheet(theme => ({
   timeText: {
     fontSize: theme.fontSize.sm,
     color: `${theme.colors.typography}BB`,
-    alignSelf: 'flex-end',
   },
   contentText: {
     fontSize: theme.fontSize.normal,
@@ -152,6 +152,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginLeft: theme.spacing.xl,
+    paddingLeft: theme.spacing.xl,
     width: ACTION_BUTTON_WIDTH * 2,
   },
   actionButton: (backgroundColor: string) => ({

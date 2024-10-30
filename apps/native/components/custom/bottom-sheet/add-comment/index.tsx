@@ -37,9 +37,16 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
     mutationFn: (newComment: InsertComment) => {
       return supabase.insertComment(newComment);
     },
-    onMutate: (newComment: InsertComment) => {
+    onMutate: () => {
+      return { previousData: queryClient.getQueryData(queryKey) };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: (data, variables) => {
       const newCommentWithAuthor = {
-        ...newComment,
+        ...data[0],
+        ...variables,
         user_id: undefined,
         author: {
           id: user?.id,
@@ -52,14 +59,6 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
         newComment: newCommentWithAuthor,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
-    },
-    onError: (_error, _variables, context) => {
-      console.error('insertCommentMutation error', _error);
-      queryClient.setQueryData(queryKey, context?.previousData);
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.id) return;
-      queryClient.invalidateQueries({ queryKey });
     },
   });
 

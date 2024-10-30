@@ -1,6 +1,6 @@
 import { JoinedComments } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { memo, MutableRefObject, useCallback, useRef } from 'react';
+import { memo, MutableRefObject, useCallback } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -8,7 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
-import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
+import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
 import { handleMutateOfDeleteComment, queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
@@ -16,6 +16,7 @@ import { useUserStore } from '@/store/user';
 
 interface ItemCommentListRowProps {
   comment: JoinedComments;
+  previousSwipeableRef: MutableRefObject<SwipeableMethods | null>;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
@@ -78,10 +79,12 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemCommentListRow = memo(function ItemCommentListRow({ comment }: ItemCommentListRowProps) {
+const ItemCommentListRow = memo(function ItemCommentListRow({
+  comment,
+  previousSwipeableRef,
+}: ItemCommentListRowProps) {
   const { styles } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
 
   const renderRightActions = useCallback(
     (_progress: any, translation: SharedValue<number>) => (

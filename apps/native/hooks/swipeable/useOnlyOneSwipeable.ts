@@ -1,11 +1,13 @@
 import { MutableRefObject, useCallback, useRef } from 'react';
 import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 
-export function useOnlyOneSwipeable(previousSwipeableRef: MutableRefObject<SwipeableMethods>) {
+export function useOnlyOneSwipeable(
+  previousSwipeableRef: MutableRefObject<SwipeableMethods | null>,
+) {
   const swipeRef = useRef<SwipeableMethods>(null);
 
   const handleSwipeableWillOpen = useCallback(() => {
-    if (previousSwipeableRef && previousSwipeableRef.current !== null) {
+    if (!!previousSwipeableRef.current) {
       if (previousSwipeableRef.current !== swipeRef.current) {
         previousSwipeableRef.current?.close();
       }
