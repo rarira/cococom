@@ -25,7 +25,7 @@ const WishlistItemCard = memo(function WishlistItemCard({
   queryKey,
   onMutate,
 }: WishlistItemCardProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
   const queryClient = useQueryClient();
 
   const deleteWishlistMutation = useMutation({
@@ -81,13 +81,11 @@ const stylesheet = createStyleSheet(theme => ({
   cardContainer: (onSale: boolean, isOnline: boolean) => ({
     borderRadius: theme.borderRadius.lg,
     backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
-    ...ShadowPresets.card(theme),
     ...(onSale && {
       borderColor: `${theme.colors.tint}77`,
       borderWidth: 1,
-      shadowColor: `${theme.colors.tint}44`,
-      shadowOpacity: 1,
     }),
+    ...ShadowPresets.card(theme, onSale ? `${theme.colors.tint}22` : undefined),
   }),
   itemContainer: {
     flex: 1,

@@ -39,7 +39,10 @@ export default function RankingScreen() {
               textProps={{ style: styles.tabBarLabelText(focused) }}
             />
           )}
-          renderTabBarItem={props => <TabBarItem {...props} style={styles.tabBarItem} />} // scrollEnabled
+          renderTabBarItem={props => {
+            const { key, ...restProps } = props;
+            return <TabBarItem key={key} {...restProps} style={styles.tabBarItem} />;
+          }}
           style={styles.tabBarContainer}
           pressOpacity={0.5}
           bounces

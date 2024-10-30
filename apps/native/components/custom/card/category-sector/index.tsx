@@ -14,7 +14,7 @@ interface CategorySectorCardProps {
 }
 
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   if (discountInfo === null) return <View style={styles.cardContainer} />;
 
@@ -27,39 +27,37 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
       <Pressable>
         <Card style={styles.cardContainer}>
           <View>
-            <View>
-              <View style={styles.imageContainer}>
-                <Image
-                  // TODO: 상품별 이미지로 변경
-                  source={`https://picsum.photos/150/150`}
-                  contentFit="cover"
-                  alt={`${discountInfo.categorySector} thumbnail image`}
-                  style={styles.image}
-                />
-              </View>
-              <View style={styles.categoryNameContainer}>
-                <Text style={styles.categoryName} numberOfLines={3}>
-                  {discountInfo.categorySector}
-                </Text>
-              </View>
+            <View style={styles.imageContainer}>
+              <Image
+                // TODO: 상품별 이미지로 변경
+                source={`https://picsum.photos/150/150`}
+                contentFit="cover"
+                alt={`${discountInfo.categorySector} thumbnail image`}
+                style={styles.image}
+              />
             </View>
-            <View style={styles.infoContaier}>
-              <View style={styles.countContainer}>
-                <View style={styles.countRow}>
-                  <View style={styles.countCell}>
-                    <Text style={[styles.count, styles.countHeader]}>오프</Text>
-                  </View>
-                  <View style={styles.countCell}>
-                    <Text style={[styles.count, styles.countHeader]}>온</Text>
-                  </View>
+            <View style={styles.categoryNameContainer}>
+              <Text style={styles.categoryName} numberOfLines={3}>
+                {discountInfo.categorySector}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.infoContaier}>
+            <View style={styles.countContainer}>
+              <View style={styles.countRow}>
+                <View style={styles.countCell}>
+                  <Text style={[styles.count, styles.countHeader]}>오프</Text>
                 </View>
-                <View style={styles.countRow}>
-                  <View style={styles.countCell}>
-                    <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
-                  </View>
-                  <View style={styles.countCell}>
-                    <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
-                  </View>
+                <View style={styles.countCell}>
+                  <Text style={[styles.count, styles.countHeader]}>온</Text>
+                </View>
+              </View>
+              <View style={styles.countRow}>
+                <View style={styles.countCell}>
+                  <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
+                </View>
+                <View style={styles.countCell}>
+                  <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
                 </View>
               </View>
             </View>
@@ -75,15 +73,16 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     width: '100%',
     height: '100%',
-    ...ShadowPresets.card(theme),
   },
   cardContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
     overflow: 'hidden',
+    borderRadius: theme.borderRadius.md,
     borderColor: theme.colors.lightShadow,
     borderWidth: 1,
+    ...ShadowPresets.card(theme),
   },
   imageContainer: {
     position: 'relative',
