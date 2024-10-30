@@ -25,6 +25,10 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
   const { styles, theme } = useStyles(stylesheet);
 
   const font = useFont(require('@/assets/fonts/Inter_18pt-Medium.ttf'), theme.fontSize.xs);
+  const discountInfoFont = useFont(
+    require('@/assets/fonts/Inter_18pt-Medium.ttf'),
+    theme.fontSize.lg,
+  );
 
   const { state, isActive } = useChartPressState({ x: 0, y: { value: 0 } });
 
@@ -41,7 +45,10 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
   }, [dataToShow, valueField]);
 
   const discountInfo = useDerivedValue(() => {
-    return state.y.value.value.value + '@' + state.x;
+    if (valueField === 'discountRate') {
+      return (state.y.value.value.value * 100).toFixed() + '%';
+    }
+    return '\u20A9' + state.y.value.value.value.toLocaleString();
   }, [state]);
 
   const titleText = {
@@ -79,20 +86,26 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
           yAxis={[
             {
               font,
+              formatYLabel: (value: number) => {
+                if (valueField === 'discountRate') {
+                  return (value * 100).toFixed();
+                }
+                return value.toLocaleString();
+              },
             },
           ]}
         >
-          {({ points, canvasSize }) => {
+          {({ points, canvasSize, chartBounds }) => {
             return (
               <>
-                {/* <SKText
-                  x={chartBounds.left + 10}
-                  y={chartBounds.bottom}
-                  font={font}
+                <SKText
+                  x={chartBounds.left + theme.spacing.lg * 2}
+                  y={chartBounds.top + theme.spacing.xl * 2}
+                  font={discountInfoFont}
                   text={discountInfo}
-                  color={theme.colors.typography}
+                  color={theme.colors.tint}
                   style={'fill'}
-                /> */}
+                />
                 <Line
                   points={points.value}
                   color={theme.colors.graphStroke}
