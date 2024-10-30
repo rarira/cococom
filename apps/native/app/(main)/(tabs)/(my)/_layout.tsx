@@ -27,7 +27,7 @@ export default function MyLayout() {
         options={{
           headerShown: true,
           headerTitle: '프로필',
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerRight: () => (
             <Button onPress={signOut}>
               <Text>로그아웃</Text>
@@ -40,7 +40,7 @@ export default function MyLayout() {
         options={{
           headerShown: true,
           headerTitle: '설정',
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen name="item" options={{ headerShown: true }} />
