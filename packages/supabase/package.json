@@ -1,6 +1,7 @@
 {
   "name": "@cococom/supabase",
   "scripts": {
+    "prepare": "pnpm build",
     "dev": "tsc --watch",
     "build": "tsc",
     "start": "supabase start",
@@ -23,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.44.3",
+    "@supabase/supabase-js": "^2.46.0",
     "dotenv": "^16.4.5",
     "type-fest": "^4.21.0"
   },
@@ -33,6 +34,6 @@
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
     "supabase": "^1.207.9",
-    "typescript": "latest"
+    "typescript": "^5.4.2"
   }
 }
