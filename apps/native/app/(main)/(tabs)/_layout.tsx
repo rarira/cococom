@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { BottomTabBar } from '@react-navigation/bottom-tabs';
+import { RouteProp } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
 import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
@@ -44,12 +45,12 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={({ route }) => {
+      screenOptions={({ route }: { route: RouteProp<any, any> }) => {
         return {
           tabBarActiveTintColor: theme.colors.tint,
           headerShown: false,
           freezeOnBlur: true,
-          tabBarIcon: ({ color, focused }) => {
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => {
             return (
               <TabBarIcon
                 name={
@@ -61,6 +62,7 @@ export default function TabLayout() {
             );
           },
           tabBarStyle: styles.tabBar,
+          tabBarHideOnKeyboard: true,
         };
       }}
       tabBar={props => {
