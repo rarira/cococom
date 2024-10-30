@@ -100,12 +100,15 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
       keyExtractor={item => item[0].itemId.toString()}
       numColumns={1}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
+      contentContainerStyle={styles.container}
     />
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: { padding: theme.screenHorizontalPadding },
+  container: {
+    paddingRight: theme.spacing.sm,
+  },
   seperatorStyle: {
     height: theme.spacing.lg,
   },

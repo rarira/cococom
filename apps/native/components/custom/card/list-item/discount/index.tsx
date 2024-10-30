@@ -22,7 +22,7 @@ function DiscountListItemCard({
   containerStyle,
   portalHostName,
 }: DiscountListItemCardProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const isOnline = discount.is_online;
 
