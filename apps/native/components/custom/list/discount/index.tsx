@@ -89,6 +89,7 @@ const stylesheet = createStyleSheet(theme => ({
   flashListContainer: (isMultiColumn: boolean, tabBarheight: number) => ({
     paddingHorizontal: isMultiColumn ? theme.screenHorizontalPadding : theme.spacing.lg,
     paddingBottom: tabBarheight + theme.spacing.xl,
+    paddingTop: theme.spacing.md,
   }),
   seperatorStyle: {
     height: theme.spacing.md * 2,

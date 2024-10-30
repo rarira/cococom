@@ -28,7 +28,7 @@ const HistoryTable = memo(function HistoryTable({ data }: HistoryTableProps) {
   return (
     <Table style={styles.table}>
       <Row
-        data={['구분', '신규 할인 수', '신규 싱품 수', '업데이트일']}
+        data={['구분', '신규 할인', '신규 상품', '업데이트일']}
         flexArr={[2, 2, 2, 3]}
         style={styles.headerRow}
         textStyle={styles.headerText}
@@ -73,7 +73,7 @@ const stylesheet = createStyleSheet(theme => ({
   cellText: {
     color: 'white',
     fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.2,
     textAlign: 'center',
   },
 }));

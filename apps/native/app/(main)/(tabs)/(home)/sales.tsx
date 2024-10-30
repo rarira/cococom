@@ -165,15 +165,15 @@ const stylesheet = createStyleSheet(theme => ({
   sortButton: {
     marginLeft: 0,
   },
-
   tabViewContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
   },
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
+    width: '100%',
     backgroundColor: theme.colors.background,
-    marginHorizontal: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
   },
   tabBarContentContainer: {
     width: undefined,
@@ -189,7 +189,7 @@ const stylesheet = createStyleSheet(theme => ({
   }),
   tabBarLabelText: (focused: boolean) => ({
     color: focused ? theme.colors.background : theme.colors.typography,
-    fontWeight: focused ? 'bold' : 'normal',
+    fontWeight: focused ? 'semibold' : 'normal',
     fontSize: theme.fontSize.sm,
     lineHeight: theme.fontSize.md,
   }),
