@@ -45,7 +45,7 @@ export default function ItemScreen() {
 
   useTransparentHeader({
     title: data?.itemName,
-    headerBackTitleVisible: false,
+    headerBackButtonDisplayMode: 'minimal',
     headerRight,
   });
 
