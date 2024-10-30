@@ -12,9 +12,10 @@
         "key": "expo:51:1719554338"
       },
       "env": {
+        "NODE_ENV": "development",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "APP_VARIANT": "development-simulator",
+        "APP_VARIANT": "development-simulator"
       }
     },
     "development": {
@@ -24,10 +25,10 @@
         "key": "expo:51:1719554338"
       },
       "env": {
+        "NODE_ENV": "development",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
         "APP_VARIANT": "development"
-
       }
     },
     "preview": {
@@ -36,6 +37,7 @@
         "key": "expo:51:1719554338"
       },
       "env": {
+        "NODE_ENV": "preview",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
         "APP_VARIANT": "preview"
@@ -46,6 +48,7 @@
         "key": "expo:51:1719554338"
       },
       "env": {
+        "NODE_ENV": "production",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
         "APP_VARIANT": "production"
