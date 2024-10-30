@@ -27,7 +27,7 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
   const font = useFont(require('@/assets/fonts/Inter_18pt-Medium.ttf'), theme.fontSize.xs);
   const discountInfoFont = useFont(
     require('@/assets/fonts/Inter_18pt-Medium.ttf'),
-    theme.fontSize.lg,
+    theme.fontSize.md,
   );
 
   const { state, isActive } = useChartPressState({ x: 0, y: { value: 0 } });
@@ -95,20 +95,35 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
             },
           ]}
         >
-          {({ points, canvasSize, chartBounds }) => {
+          {({ points, canvasSize }) => {
+            const isXCanvasLeft = state.x.position.value < canvasSize.width / 2;
+            const isYCanvasTop = state.y.value.position.value < canvasSize.height / 2;
             return (
               <>
-                <SKText
-                  x={chartBounds.left + theme.spacing.lg * 2}
-                  y={chartBounds.top + theme.spacing.xl * 2}
-                  font={discountInfoFont}
-                  text={discountInfo}
-                  color={theme.colors.tint}
-                  style={'fill'}
-                />
+                {isActive && (
+                  <SKText
+                    x={
+                      isXCanvasLeft
+                        ? state.x.position.value + theme.spacing.lg
+                        : state.x.position.value -
+                          font!.measureText(discountInfo.value).width * 2 -
+                          theme.spacing.lg
+                    }
+                    y={
+                      isYCanvasTop
+                        ? state.y.value.position.value + theme.spacing.lg * 2
+                        : state.y.value.position.value - theme.spacing.lg
+                    }
+                    font={discountInfoFont}
+                    text={discountInfo}
+                    color={theme.colors.tint}
+                    style={'fill'}
+                  />
+                )}
                 <Line
                   points={points.value}
                   color={theme.colors.graphStroke}
+                  opacity={isActive ? 0.2 : 1}
                   strokeWidth={3}
                   animate={{ type: 'timing', duration: 300 }}
                 />
@@ -119,10 +134,16 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                   radius={theme.spacing.md}
                   style={'fill'}
                 >
-                  <Paint color={theme.colors.graphStroke} style="stroke" strokeWidth={3} />
+                  <Paint
+                    color={theme.colors.graphStroke}
+                    style="stroke"
+                    strokeWidth={3}
+                    opacity={isActive ? 0.2 : 1}
+                  />
                 </Scatter>
                 {points.value.map(point => {
                   const isYAtBottomCanvas = point.y! > canvasSize.height / 2;
+                  const isActivePoint = isActive && point.x === state.x.position.value;
                   if (!font) return null;
                   return (
                     <SKText
@@ -131,6 +152,7 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                       font={font}
                       text={formatXAxisDate(new Date(point.xValue))}
                       color={theme.colors.typography}
+                      opacity={!isActive ? 1 : isActivePoint ? 1 : 0.2}
                       style={'fill'}
                       transform={[
                         {
@@ -166,7 +188,9 @@ const ToolTip = memo(function ToolTip({
   x: SharedValue<number>;
   y: SharedValue<number>;
 }) {
-  return <Circle cx={x} cy={y} r={8} color="black" />;
+  const { theme } = useStyles(stylesheet);
+
+  return <Circle cx={x} cy={y} r={8} color={theme.colors.graphStroke} />;
 });
 
 const stylesheet = createStyleSheet(theme => ({
