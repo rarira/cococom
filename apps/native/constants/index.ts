@@ -34,3 +34,9 @@ export const INFINITE_WISHLIST_PAGE_SIZE = 50;
 export const INFINITE_MEMO_PAGE_SIZE = 20;
 export const INFINITE_COMMENT_PAGE_SIZE = 20;
 export const RANKING_PAGE_SIZE = 50;
+
+export const enum ItemDetailsTabNames {
+  HISTORY = 'history',
+  MEMO = 'memo',
+  COMMENT = 'comment',
+}

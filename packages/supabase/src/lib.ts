@@ -409,12 +409,14 @@ export class Supabase {
   }
 
   async upsertMemo(memo: InsertMemo) {
-    const { error } = await this.supabaseClient.from('memos').upsert(memo);
+    const { data, error } = await this.supabaseClient.from('memos').upsert(memo).select('id');
 
     if (error) {
       console.error(error);
       throw error;
     }
+
+    return data;
   }
 
   async deleteMemo(memoId: number) {
@@ -493,12 +495,14 @@ export class Supabase {
   }
 
   async insertComment(comment: InsertComment) {
-    const { error } = await this.supabaseClient.from('comments').insert(comment);
+    const { data, error } = await this.supabaseClient.from('comments').insert(comment).select('id');
 
     if (error) {
       console.error(error);
       throw error;
     }
+
+    return data;
   }
 
   async deleteComment(commentId: number) {
