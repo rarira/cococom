@@ -9,7 +9,7 @@ import { InfiniteQueryResult, JoinedComments, JoinedItems, Tables } from '@cococ
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { DiscountChannels, INFINITE_COMMENT_PAGE_SIZE, INFINITE_MEMO_PAGE_SIZE } from '@/constants';
-import { DiscountSortOption } from '@/libs/sort';
+import { DiscountSortOption, MySortOption } from '@/libs/sort';
 import { wishlistQueryKeys } from '@/libs/wishlist';
 
 export const queryKeys = {
@@ -85,6 +85,7 @@ export const queryKeys = {
     byUserId: (userId: string) => ['memos', { userId }],
   },
   comments: {
+    my: (userId: string, sortOption: MySortOption) => ['comments', { userId, sortOption }],
     byItem: (itemId: number) => ['comments', { itemId }],
   },
   alltimeRankings: (
