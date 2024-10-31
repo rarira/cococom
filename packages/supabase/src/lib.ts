@@ -8,7 +8,7 @@ import {
   createClient,
 } from '@supabase/supabase-js';
 
-import { Database, JoinedComments, Tables } from './merged-types';
+import { Database, JoinedComments, JoinedMyComments, Tables } from './merged-types';
 
 // import { loadEnv } from './util.js';
 
@@ -492,6 +492,34 @@ export class Supabase {
     }
 
     return data as unknown as JoinedComments[];
+  }
+
+  async fetchMyComments({
+    userId,
+    page,
+    pageSize = 20,
+    orderBy = 'created_at',
+    orderDirection = 'DESC',
+  }: {
+    userId: string;
+    page: number;
+    pageSize?: number;
+    orderBy?: string;
+    orderDirection?: 'ASC' | 'DESC';
+  }) {
+    const { data, error } = await this.supabaseClient
+      .from('comments')
+      .select('id, created_at, content, item_id, item:items (id, itemId, itemName, is_online)')
+      .eq('user_id', userId)
+      .order(orderBy, { ascending: orderDirection !== 'DESC' })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
+    return data as unknown as JoinedMyComments[];
   }
 
   async insertComment(comment: InsertComment) {
