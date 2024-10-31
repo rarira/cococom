@@ -24,7 +24,7 @@ DECLARE
     base_field text;
 BEGIN
     -- Validate order direction
-    IF _order_direction NOT IN ('asc', 'desc') THEN
+    IF _order_direction NOT IN ('ASC', 'DESC') THEN
         RAISE EXCEPTION 'Invalid order direction: %', _order_direction;
     END IF;
 

@@ -30,8 +30,7 @@ export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
 export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
 export type InsertComment = Database['public']['Tables']['comments']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];
-export type SearchItemSortField = 'itemId' | 'itemName' | 'bestDiscountRate' | 'lowestPrice';
-export type SearchItemSortDirection = 'ASC' | 'DESC';
+export type SortOptionDirection = 'ASC' | 'DESC';
 
 export class Supabase {
   supabaseClient: SupabaseClient<Database>;
@@ -169,7 +168,7 @@ export class Supabase {
     channel: string;
     limit: number;
     sortField: string;
-    sortDirection: 'desc' | 'asc';
+    sortDirection: SortOptionDirection;
   }) {
     const { data, error } = await this.supabaseClient.rpc(
       'get_discounted_ranking_with_wishlist_counts',
@@ -317,8 +316,8 @@ export class Supabase {
     userId?: string;
     page?: number;
     pageSize?: number;
-    sortField: SearchItemSortField;
-    sortDirection: SearchItemSortDirection;
+    sortField: string;
+    sortDirection: SortOptionDirection;
   }) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_keyword', {
       keyword,
@@ -355,8 +354,8 @@ export class Supabase {
     userId?: string;
     page: number;
     pageSize: number;
-    sortField: SearchItemSortField;
-    sortDirection: SearchItemSortDirection;
+    sortField: string;
+    sortDirection: SortOptionDirection;
   }) {
     const { data, error } = await this.supabaseClient.rpc('search_items_by_itemid', {
       item_id: itemId,
@@ -481,7 +480,16 @@ export class Supabase {
   }) {
     const { data, error } = await this.supabaseClient
       .from('comments')
-      .select('id, created_at, content, item_id, author:profiles (id, nickname)')
+      .select(
+        `
+        id, 
+        created_at, 
+        content, 
+        item_id, 
+        item:items (id, itemId, itemName, is_online),
+        comment_count:comments!item_id(count)::int
+      `,
+      )
       .eq('item_id', itemId)
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
@@ -505,11 +513,20 @@ export class Supabase {
     page: number;
     pageSize?: number;
     orderBy?: string;
-    orderDirection?: 'ASC' | 'DESC';
+    orderDirection?: SortOptionDirection;
   }) {
     const { data, error } = await this.supabaseClient
       .from('comments')
-      .select('id, created_at, content, item_id, item:items (id, itemId, itemName, is_online)')
+      .select(
+        `
+        id, 
+        created_at, 
+        content, 
+        item_id, 
+        item:items (id, itemId, itemName, is_online),
+        comment_count:comments!item_id(count)::int
+      `,
+      )
       .eq('user_id', userId)
       .order(orderBy, { ascending: orderDirection !== 'DESC' })
       .range((page - 1) * pageSize, page * pageSize - 1);
@@ -552,7 +569,7 @@ export class Supabase {
     channel: string;
     userId?: string;
     orderByColumn?: keyof Database['public']['Functions']['get_alltime_top_items']['Returns'][0];
-    orderByDirection?: 'asc' | 'desc';
+    orderByDirection?: SortOptionDirection;
     limitCount?: number;
   }) {
     const { data, error } = await this.supabaseClient.rpc('get_alltime_top_items', {
@@ -583,7 +600,7 @@ export class Supabase {
     userId: string;
     channel: string;
     sortField: string;
-    sortDirection: SearchItemSortDirection;
+    sortDirection: SortOptionDirection;
     page?: number;
     pageSize?: number;
     isOnSale?: boolean;

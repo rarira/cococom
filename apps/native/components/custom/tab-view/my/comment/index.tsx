@@ -6,9 +6,9 @@ import CircularProgress from '@/components/core/progress/circular';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import MyWishList from '@/components/custom/list/my-wish';
 import { DiscountChannels } from '@/constants';
+import { useMyComments } from '@/hooks/comment/useMyComments';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
-import { useWishlists } from '@/hooks/wishlist/useWishlists';
-import { useWishlistSort } from '@/hooks/wishlist/useWishlistSort';
+import { useSort } from '@/hooks/sort/useSort';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
 
 const MyCommentTabView = memo(function MyCommentTabView() {
@@ -19,7 +19,7 @@ const MyCommentTabView = memo(function MyCommentTabView() {
   const [options, setOptions] = useState<string[]>([]);
   const isOnSale = options.includes('on_sale');
 
-  const { sort, handleSortChange, sortOption } = useWishlistSort(WISHLIST_SORT_OPTIONS, _sort =>
+  const { sort, handleSortChange, sortOption } = useSort(WISHLIST_SORT_OPTIONS, _sort =>
     bottomSheetModalRef.current?.dismiss(),
   );
 
@@ -31,13 +31,14 @@ const MyCommentTabView = memo(function MyCommentTabView() {
   }, []);
 
   const {
-    wishlistResult,
-    totalResults,
-    queryKey,
-    isFetchingNextPage,
+    comments,
+    error,
     isLoading,
     handleEndReached,
-  } = useWishlists({
+    isFetchingNextPage,
+    handleRefresh,
+    refreshing,
+  } = useMyComments({
     channel: channelOption.value,
     sortOption,
     isOnSale,

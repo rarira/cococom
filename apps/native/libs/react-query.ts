@@ -2,14 +2,13 @@ import {
   CategorySectors,
   InsertComment,
   InsertMemo,
-  SearchItemSortDirection,
-  SearchItemSortField,
+  SortOptionDirection,
 } from '@cococom/supabase/libs';
 import { InfiniteQueryResult, JoinedComments, JoinedItems, Tables } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { DiscountChannels, INFINITE_COMMENT_PAGE_SIZE, INFINITE_MEMO_PAGE_SIZE } from '@/constants';
-import { DiscountSortOption, MySortOption } from '@/libs/sort';
+import { DiscountSortOption, MyCommentsSortOption } from '@/libs/sort';
 import { wishlistQueryKeys } from '@/libs/wishlist';
 
 export const queryKeys = {
@@ -54,8 +53,8 @@ export const queryKeys = {
     keyword: (
       keyword: string,
       isOnSaleSearch: boolean,
-      sortField: SearchItemSortField,
-      sortDirecntion: SearchItemSortDirection,
+      sortField: string,
+      sortDirecntion: SortOptionDirection,
       channelOption: DiscountChannels,
       userId?: string,
     ) => [
@@ -66,8 +65,8 @@ export const queryKeys = {
     itemId: (
       itemId: string,
       isOnSaleSearch: boolean,
-      sortField: SearchItemSortField,
-      sortDirecntion: SearchItemSortDirection,
+      sortField: string,
+      sortDirecntion: SortOptionDirection,
       channelOption: DiscountChannels,
       userId?: string,
     ) => [
@@ -85,14 +84,14 @@ export const queryKeys = {
     byUserId: (userId: string) => ['memos', { userId }],
   },
   comments: {
-    my: (userId: string, sortOption: MySortOption) => ['comments', { userId, sortOption }],
+    my: (userId: string, sortOption: MyCommentsSortOption) => ['comments', { userId, sortOption }],
     byItem: (itemId: number) => ['comments', { itemId }],
   },
   alltimeRankings: (
     channel: DiscountChannels,
     userId?: string | null,
     orderByColumn?: string,
-    orderByDirection?: 'asc' | 'desc',
+    orderByDirection?: SortOptionDirection,
     limit?: number,
   ) => [
     'alltimeRankings',
