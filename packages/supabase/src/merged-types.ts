@@ -20,6 +20,10 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
   author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
 };
 
+export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id'> & {
+  item: Pick<JoinedItems, 'id' | 'itemId' | 'itemName' | 'is_online'>;
+};
+
 export type InfiniteQueryResultPageArray =
   | { id: number }[]
   | InfinitResultPagesWithTotalRecords<{ id: number }>;

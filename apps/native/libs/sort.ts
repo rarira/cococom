@@ -3,6 +3,7 @@ import {
   AlltimeRankingResultItem,
   Database,
   JoinedItems,
+  JoinedMyComments,
   WishlistResultItem,
 } from '@cococom/supabase/types';
 
@@ -34,6 +35,12 @@ export type AlltimeSortOption = {
 
 export type WishlistSortOption = {
   field: keyof WishlistResultItem | 'endDate';
+  orderBy: 'ASC' | 'DESC';
+  text: string;
+};
+
+export type MySortOption = {
+  field: keyof JoinedMyComments | `items.${keyof JoinedMyComments['item']}`;
   orderBy: 'ASC' | 'DESC';
   text: string;
 };
