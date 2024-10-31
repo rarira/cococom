@@ -62,7 +62,7 @@ export function useSearchInput({
     keywordToSearch,
     isOnSaleSearch,
     SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-    SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+    SEARCH_ITEM_SORT_OPTIONS[sortOption].orderBy,
     channelOption,
     user?.id,
   );
@@ -79,7 +79,7 @@ export function useSearchInput({
           page: pageParam as number,
           pageSize: PAGE_SIZE,
           sortField: SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].orderBy,
         };
 
         if (isItemIdSearch) {
