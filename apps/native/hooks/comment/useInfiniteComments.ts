@@ -1,5 +1,3 @@
-// const queryFn = (itemId: number, userId: string) => () => supabase.fetchMemos(itemId, userId);
-
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -21,7 +19,7 @@ export function useInfiniteComments(itemId: number) {
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) =>
-        supabase.fetchComments({
+        supabase.comments.fetchComments({
           itemId,
           page: pageParam,
           pageSize: INFINITE_COMMENT_PAGE_SIZE,

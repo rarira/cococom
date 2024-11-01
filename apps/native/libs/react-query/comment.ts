@@ -1,4 +1,3 @@
-import { InsertComment } from '@cococom/supabase/libs';
 import {
   InfiniteQueryResult,
   JoinedComments,
@@ -11,6 +10,7 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 import { INFINITE_COMMENT_PAGE_SIZE } from '@/constants';
 import { MyCommentSortOption } from '@/libs/sort';
 
+import { InsertComment } from '../../../../packages/supabase/dist/lib/lib';
 import {
   findInfinteIndexFromPreviousData,
   makeNewInfiniteObjectForOptimisticUpdate,

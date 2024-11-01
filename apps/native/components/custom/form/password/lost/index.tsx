@@ -35,7 +35,7 @@ const LostPasswordForm = memo(function LostPasswordForm({ onCompleted }: LostPas
       setLoading(true);
       const resetPasswordURL = Linking.createURL('auth/password/reset');
 
-      const { error } = await supabase.resetPassword(email, resetPasswordURL);
+      const { error } = await supabase.auth.resetPassword(email, resetPasswordURL);
 
       if (error) {
         console.error(error);

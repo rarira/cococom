@@ -83,12 +83,12 @@ export function useSearchInput({
         };
 
         if (isItemIdSearch) {
-          return supabase.fullTextSearchItemsByItemId({
+          return supabase.items.fullTextSearchItemsByItemId({
             ...commonParams,
             itemId: keywordToSearch,
           });
         }
-        return supabase.fullTextSearchItemsByKeyword({
+        return supabase.items.fullTextSearchItemsByKeyword({
           keyword: keywordToSearch,
           ...commonParams,
         });

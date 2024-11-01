@@ -40,7 +40,7 @@ const RightAction = memo(({ dragX, comment }: any) => {
   const queryKey = queryKeys.comments.byItem(comment.item_id);
 
   const deleteCommentMutation = useMutation({
-    mutationFn: () => supabase.deleteComment(comment.id),
+    mutationFn: () => supabase.comments.deleteComment(comment.id),
     onMutate: () => {
       return handleMutateOfDeleteComment({
         queryClient,

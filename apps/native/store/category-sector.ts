@@ -1,5 +1,5 @@
-import { CategorySectors } from '@cococom/supabase/libs';
 import { create } from 'zustand';
+import { CategorySectors } from '../../../packages/supabase/dist/lib/lib';
 
 interface CategorySectorsState {
   categorySectorsArray: CategorySectors[] | null;

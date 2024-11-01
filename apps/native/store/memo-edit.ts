@@ -1,7 +1,7 @@
-import { InsertMemo } from '@cococom/supabase/libs';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { RefObject } from 'react';
 import { create } from 'zustand';
+import { InsertMemo } from '../../../packages/supabase/dist/lib/lib';
 
 interface MemoEditState {
   memo: InsertMemo;

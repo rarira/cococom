@@ -28,7 +28,7 @@ export function useAlltimeRankingQuery(
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey,
     queryFn: () => {
-      return supabase.fetchAlltimeRankingItems({
+      return supabase.items.fetchAlltimeRankingItems({
         channel,
         userId: user?.id,
         orderByColumn: sortOption.field,

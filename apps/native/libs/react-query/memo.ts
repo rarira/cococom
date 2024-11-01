@@ -1,9 +1,9 @@
-import { InsertMemo } from '@cococom/supabase/libs';
 import { InfiniteQueryResult, JoinedItems, Tables } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { INFINITE_MEMO_PAGE_SIZE } from '@/constants';
 
+import { InsertMemo } from '../../../../packages/supabase/dist/lib/lib';
 import {
   findInfinteIndexFromPreviousData,
   makeNewInfiniteObjectForOptimisticUpdate,

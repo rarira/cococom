@@ -1,4 +1,4 @@
-import { CategorySectors, SortOptionDirection } from '@cococom/supabase/libs';
+import { CategorySectors, SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
 
 import { DiscountChannels } from '@/constants';
 import { wishlistQueryKeys } from '@/libs/react-query';

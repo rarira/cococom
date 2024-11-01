@@ -27,7 +27,7 @@ export function useSingInWithIdToken() {
       const {
         data: { user },
         error,
-      } = await supabase.signInWithIdToken(credentials);
+      } = await supabase.auth.signInWithIdToken(credentials);
 
       if (!error && user) {
         const profile = await getProfile(user.id);

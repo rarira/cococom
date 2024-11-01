@@ -4,6 +4,7 @@ import * as DevClient from 'expo-dev-client';
 import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
+
 import 'react-native-url-polyfill/auto';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
@@ -12,27 +13,31 @@ if (DevClient.isDevelopmentBuild() && Platform.OS === 'android') {
   url = 'http://10.0.2.2:54321';
 }
 
-export const supabase = new Supabase(url, Constants.expoConfig?.extra?.supabase?.anonKey, {
-  auth: {
-    storage:
-      typeof window !== 'undefined'
-        ? {
-            getItem: key => {
-              return storage.getString(key) || null;
-            },
-            setItem: (key, value) => {
-              storage.set(key, value);
-            },
-            removeItem: key => {
-              storage.delete(key);
-            },
-          }
-        : undefined,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
+export const supabase: Supabase = new Supabase(
+  url,
+  Constants.expoConfig?.extra?.supabase?.anonKey,
+  {
+    auth: {
+      storage:
+        typeof window !== 'undefined'
+          ? {
+              getItem: (key: string) => {
+                return storage.getString(key) || null;
+              },
+              setItem: (key: string, value: string) => {
+                storage.set(key, value);
+              },
+              removeItem: (key: string) => {
+                storage.delete(key);
+              },
+            }
+          : undefined,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
   },
-});
+);
 
 export const supabaseClient = supabase.supabaseClient;
 

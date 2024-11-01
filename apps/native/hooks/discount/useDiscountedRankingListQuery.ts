@@ -21,7 +21,7 @@ function fetchCurrentDiscounts({
 }) {
   const currentTimestamp = new Date().toISOString().split('T')[0];
 
-  return supabase.fetchCurrentDiscountedRankingWithWishlistCount({
+  return supabase.discounts.fetchCurrentDiscountedRankingWithWishlistCount({
     currentTimestamp,
     userId,
     channel,
