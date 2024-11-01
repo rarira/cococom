@@ -1,4 +1,9 @@
-import { Database, InfiniteQueryResult, InfiniteSearchResultPages } from '@cococom/supabase/types';
+import {
+  Database,
+  InfiniteItemsToRender,
+  InfiniteQueryResult,
+  InfiniteSearchResultPages,
+} from '@cococom/supabase/types';
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
 import { SearchItemOptionInfo } from './sort';
@@ -14,10 +19,9 @@ export type SearchHistory = SearchQueryParams & {
   hash: string;
 };
 
-export type SearchResultToRender =
-  (Database['public']['Functions']['search_items_by_keyword']['Returns']['items'][number] & {
-    pageIndex: number;
-  })[];
+export type SearchResultToRender = InfiniteItemsToRender<
+  Database['public']['Functions']['search_items_by_keyword']['Returns']['items'][number]
+>;
 
 export type InfiniteSearchResultData = InfiniteQueryResult<InfiniteSearchResultPages>;
 
