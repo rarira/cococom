@@ -11,7 +11,7 @@ export const WISHLIST_SORT_OPTIONS: Record<string, WishlistSortOption> = {
   recent: {
     field: 'wishlistCreatedAt',
     orderBy: 'DESC',
-    text: '관심 등록 최신순',
+    text: '관심 등록 최신 순',
   },
   old: {
     field: 'wishlistCreatedAt',

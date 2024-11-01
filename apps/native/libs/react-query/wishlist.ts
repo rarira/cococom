@@ -10,8 +10,9 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 import { DiscountChannels, INFINITE_SEARCH_PAGE_SIZE } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 
-import { queryKeys } from './react-query';
-import { WishlistSortOption } from './sort';
+import { WishlistSortOption } from '../sort';
+
+import { queryKeys } from '.';
 
 export const wishlistQueryKeys = {
   byUserId: ({
