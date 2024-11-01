@@ -1,5 +1,5 @@
-import { SortOptionDirection } from '@cococom/supabase/libs';
 import { Tables } from '@cococom/supabase/types';
+import { SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
 
 export type SearchItemOptionInfo = {
   label: string;

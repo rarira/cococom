@@ -44,7 +44,7 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
   const queryKey = queryKeys.memos.byItem(memo.itemId, memo.userId);
 
   const deleteMemoMutation = useMutation({
-    mutationFn: () => supabase.deleteMemo(memo.id),
+    mutationFn: () => supabase.memos.deleteMemo(memo.id),
     onMutate: () => {
       return handleMutateOfDeleteMemo({
         queryClient,

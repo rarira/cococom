@@ -40,7 +40,7 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
-        return supabase.fetchMyWishlistItems({
+        return supabase.wishlists.fetchMyWishlistItems({
           userId: user!.id,
           channel,
           page: pageParam as number,

@@ -7,11 +7,10 @@ import { z } from 'zod';
 
 import TextInput from '@/components/core/text-input';
 import FormSubmitButton from '@/components/custom/button/form/submit';
+import TextInputEyeSlot from '@/components/custom/text-input/eye-slot';
 import { changePasswordFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
-
-import TextInputEyeSlot from '../../../text-input/eye-slot';
 
 interface ChangePasswordFormProps {
   onCompleted?: () => void;
@@ -40,7 +39,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
     async ({ password }: z.infer<typeof changePasswordFormSchema>) => {
       setAuthProcessing(true);
       setLoading(true);
-      const { error } = await supabase.changePassword(password);
+      const { error } = await supabase.auth.changePassword(password);
 
       if (error) {
         console.error(error);

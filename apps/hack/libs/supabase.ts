@@ -8,7 +8,7 @@ loadEnv();
 export const supabase = new Supabase(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
 export async function updateItemHistory(
-  newlyAddedDiscounts: NonNullable<Awaited<ReturnType<typeof supabase.upsertDiscount>>>,
+  newlyAddedDiscounts: NonNullable<Awaited<ReturnType<typeof supabase.discounts.upsertDiscount>>>,
 ) {
   for (const newlyAddedDiscount of newlyAddedDiscounts) {
     try {
@@ -45,7 +45,7 @@ export async function updateItemHistory(
 
       if (Object.keys(update).length === 0) continue;
 
-      await supabase.updateItem(update, data.id);
+      await supabase.items.updateItem(update, data.id);
     } catch (e) {
       console.error(e);
       continue;
@@ -64,11 +64,11 @@ export async function addReletedItemId(
       'id',
     );
 
-    await supabase.updateItem({ related_item_id: relatedItem.id, ...update }, item.id);
-    await supabase.updateItem({ related_item_id: item.id }, relatedItem.id);
+    await supabase.items.updateItem({ related_item_id: relatedItem.id, ...update }, item.id);
+    await supabase.items.updateItem({ related_item_id: item.id }, relatedItem.id);
   } catch (error) {
     if (update) {
-      await supabase.updateItem(update, item.id);
+      await supabase.items.updateItem(update, item.id);
     }
 
     if (error.code === 'PGRST116') {

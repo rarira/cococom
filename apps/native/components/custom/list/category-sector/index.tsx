@@ -1,4 +1,4 @@
-import { CategorySectors } from '@cococom/supabase/libs';
+import { CategorySectors } from '@cococom/supabase/types';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from 'react';
@@ -13,7 +13,7 @@ import CategorySectorGroupView from '../../view/category-sector-group';
 
 function fetchCurrentDiscountsByCategorySector() {
   const currentTimestamp = new Date().toISOString().split('T')[0];
-  return supabase.fetchCurrentDiscountsByCategorySector(currentTimestamp);
+  return supabase.discounts.fetchCurrentDiscountsByCategorySector(currentTimestamp);
 }
 
 export type DiscountsByCategorySector = NonNullable<

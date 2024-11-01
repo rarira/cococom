@@ -103,27 +103,27 @@ function getSubSubCategories($: cheerio.CheerioAPI, element: any) {
   return objectList;
 }
 
-async function getAllCategoryInfo() {
-  const subCategoryLinks: OnlineSubCategoryLink[] = [];
-  try {
-    const response = await axios.get(`${process.env['3RD_API_SITEMAP_URL']!}`);
+// async function getAllCategoryInfo() {
+//   const subCategoryLinks: OnlineSubCategoryLink[] = [];
+//   try {
+//     const response = await axios.get(`${process.env['3RD_API_SITEMAP_URL']!}`);
 
-    const $ = cheerio.load(response.data);
+//     const $ = cheerio.load(response.data);
 
-    $('.sub_category .sub-list-title a').each((_index, element) => {
-      const object = createSubCategoryLink($, element);
-      if (object) {
-        subCategoryLinks.push(...object);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-  }
+//     $('.sub_category .sub-list-title a').each((_index, element) => {
+//       const object = createSubCategoryLink($, element);
+//       if (object) {
+//         subCategoryLinks.push(...object);
+//       }
+//     });
+//   } catch (error) {
+//     console.error(error);
+//   }
 
-  console.log('subCategoryLinks', subCategoryLinks.length);
+//   console.log('subCategoryLinks', subCategoryLinks.length);
 
-  await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
-}
+//   await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
+// }
 
 async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
@@ -335,7 +335,7 @@ async function upsertOnlineUrlToItem() {
     `data/online_downloadResult_itemIds_${date}.json`,
   )) as ItemId[];
 
-  const result = await supabase.upsertItem(itemIds, {
+  const result = await supabase.items.upsertItem(itemIds, {
     ignoreDuplicates: false,
     onConflict: 'itemId',
   });
@@ -353,7 +353,7 @@ async function manageSoldOutDiscounts() {
   console.log(date, 'will manage sold out discounts for', salesProducts.length, 'products');
 
   try {
-    const result = await supabase.fetchCurrentOnlineDiscounts(date!);
+    const result = await supabase.discounts.fetchCurrentOnlineDiscounts(date!);
 
     if (!result?.length) {
       console.error('no current online discounts');
@@ -371,7 +371,7 @@ async function manageSoldOutDiscounts() {
       };
     });
 
-    const upsertDiscountResult = await supabase.upsertDiscount(
+    const upsertDiscountResult = await supabase.discounts.upsertDiscount(
       discountsToUpsert as InsertDiscount[],
       {
         ignoreDuplicates: false,
@@ -417,7 +417,7 @@ async function uploadNewRecords() {
     }
   });
 
-  const newlyAddedItems = await supabase.upsertItem(
+  const newlyAddedItems = await supabase.items.upsertItem(
     salesProducts.map(product => ({
       itemId: product.code + '_online',
       itemName: product.name,
@@ -437,7 +437,7 @@ async function uploadNewRecords() {
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
 
   try {
-    const newlyAddedDiscounts = await supabase.upsertDiscount(
+    const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
       salesProducts.map(product => {
         return {
           itemId: product.code + '_online',
@@ -474,23 +474,23 @@ async function uploadNewRecords() {
   }
 }
 
-async function updateRelatedItemId() {
-  const data = await supabase.fetchOnlineItemsWithNullRelatedItem();
+// async function updateRelatedItemId() {
+//   const data = await supabase.items.fetchOnlineItemsWithNullRelatedItem();
 
-  if (!data?.length) {
-    console.log('no data');
-    return;
-  }
+//   if (!data?.length) {
+//     console.log('no data');
+//     return;
+//   }
 
-  for (const onlineItem of data) {
-    await addReletedItemId(onlineItem);
-  }
-}
+//   for (const onlineItem of data) {
+//     await addReletedItemId(onlineItem);
+//   }
+// }
 
 async function createHistory() {
   if (!newItems.length) return;
 
-  await supabase.insertHistory({
+  await supabase.histories.insertHistory({
     new_item_count: newItems.length,
     added_discount_count: newDiscountsCount,
     no_images: [],

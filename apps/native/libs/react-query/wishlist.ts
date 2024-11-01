@@ -1,4 +1,3 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
 import {
   InfiniteQueryResult,
   InfiniteWishlistResultPages,
@@ -10,6 +9,7 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 import { DiscountChannels, INFINITE_SEARCH_PAGE_SIZE } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 
+import { InsertWishlist } from '../../../../packages/supabase/dist/lib/lib';
 import { WishlistSortOption } from '../sort';
 
 import { queryKeys } from '.';

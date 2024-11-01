@@ -21,7 +21,7 @@ import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 const queryFn = (itemId: number, userId?: string) => () =>
-  supabase.fetchItemsWithWishlistCount(itemId, userId, true);
+  supabase.items.fetchItemsWithWishlistCount(itemId, userId, true);
 
 export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);

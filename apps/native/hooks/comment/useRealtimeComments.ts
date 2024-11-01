@@ -1,4 +1,4 @@
-import { InsertComment } from '@cococom/supabase/libs';
+import { InsertComment } from '@cococom/supabase/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 

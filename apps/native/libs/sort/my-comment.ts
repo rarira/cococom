@@ -1,5 +1,5 @@
-import { SortOptionDirection } from '@cococom/supabase/libs';
 import { JoinedMyComments } from '@cococom/supabase/types';
+import { SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
 
 export type MyCommentSortOption = {
   field:

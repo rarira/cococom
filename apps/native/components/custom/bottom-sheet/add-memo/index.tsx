@@ -1,4 +1,4 @@
-import { InsertMemo } from '@cococom/supabase/libs';
+import { InsertMemo } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, RefObject, useCallback, useEffect } from 'react';
@@ -43,7 +43,7 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
 
   const upsertMemoMutation = useMutation({
     mutationFn: (newMemo: InsertMemo) => {
-      return supabase.upsertMemo(newMemo);
+      return supabase.memos.upsertMemo(newMemo);
     },
     onMutate: () => {
       return { previousData: queryClient.getQueryData(queryKey) };

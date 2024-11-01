@@ -15,8 +15,8 @@
   },
   "exports": {
     "./libs": {
-      "types": "./src/lib.ts",
-      "default": "./dist/lib.js"
+      "types": "./src/lib/index.ts",
+      "default": "./dist/lib/index.js"
     },
     "./types": {
       "types": "./src/merged-types.ts",

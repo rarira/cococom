@@ -1,5 +1,5 @@
-import { CategorySectors, SortOptionDirection } from '@cococom/supabase/libs';
 import { Database, JoinedItems } from '@cococom/supabase/types';
+import { CategorySectors, SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 
