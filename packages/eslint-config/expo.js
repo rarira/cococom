@@ -1,8 +1,12 @@
 module.exports = {
-  extends: ["expo", "prettier", "plugin:@tanstack/eslint-plugin-query/recommended"],
+  extends: [
+    "expo",
+    "prettier",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+  ],
   plugins: ["prettier", "import"],
   rules: {
-    "prettier/prettier": ['error'],
+    "prettier/prettier": ["error"],
     "import/order": [
       "error",
       {
@@ -17,18 +21,18 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '@(react|react-native)',
-            group: 'external',
-            position: 'before',
+            pattern: "@(react|react-native)",
+            group: "external",
+            position: "before",
           },
           {
-            pattern: '@/**/**',
-            group: 'internal',
+            pattern: "@/**/**",
+            group: "internal",
           },
         ],
         "newlines-between": "always",
         alphabetize: {
-          order: "asc",
+          order: "ignore",
           caseInsensitive: true,
         },
       },

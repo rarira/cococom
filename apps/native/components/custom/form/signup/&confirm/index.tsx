@@ -78,7 +78,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
-      return await supabase.updateProfile(
+      return await supabase.profiles.updateProfile(
         { ...Util.trimObject(data), confirmed: true },
         profile!.id,
       );

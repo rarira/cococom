@@ -1,5 +1,4 @@
-import { InsertComment } from '@cococom/supabase/libs';
-import { JoinedMyComments } from '@cococom/supabase/types';
+import { InsertComment, JoinedMyComments } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, RefObject, useCallback, useState } from 'react';
@@ -36,7 +35,7 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
 
   const insertCommentMutation = useMutation({
     mutationFn: (newComment: InsertComment) => {
-      return supabase.insertComment(newComment);
+      return supabase.comments.insertComment(newComment);
     },
     onMutate: () => {
       return { previousData: queryClient.getQueryData(queryKey) };

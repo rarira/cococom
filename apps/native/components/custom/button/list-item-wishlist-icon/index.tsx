@@ -1,5 +1,4 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
-import { JoinedItems } from '@cococom/supabase/types';
+import { InsertWishlist, JoinedItems } from '@cococom/supabase/types';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -46,10 +45,10 @@ function ListItemWishlistIconButton<
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
-        return supabase.deleteWishlist(newWishlist);
+        return supabase.wishlists.deleteWishlist(newWishlist);
       }
 
-      return supabase.createWishlist(newWishlist);
+      return supabase.wishlists.createWishlist(newWishlist);
     },
     onMutate: onMutate?.(queryClient),
     onSuccess: () => {

@@ -29,7 +29,7 @@ const WishlistItemCard = memo(function WishlistItemCard({
   const queryClient = useQueryClient();
 
   const deleteWishlistMutation = useMutation({
-    mutationFn: () => supabase.deleteWishlistById(item.wishlistId),
+    mutationFn: () => supabase.wishlists.deleteWishlistById(item.wishlistId),
     onMutate: () => {
       return handleMutateOfWishlist({
         queryClient,

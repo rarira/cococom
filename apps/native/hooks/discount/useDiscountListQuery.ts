@@ -1,4 +1,4 @@
-import { CategorySectors } from '@cococom/supabase/libs';
+import { CategorySectors } from '@cococom/supabase/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
@@ -19,7 +19,7 @@ function fetchCurrentDiscounts({
 }) {
   const currentTimestamp = new Date().toISOString().split('T')[0];
 
-  return supabase.fetchCurrentDiscountsWithWishlistCount({
+  return supabase.discounts.fetchCurrentDiscountsWithWishlistCount({
     currentTimestamp,
     userId,
     categorySector,

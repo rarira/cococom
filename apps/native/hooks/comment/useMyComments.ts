@@ -1,5 +1,3 @@
-// const queryFn = (itemId: number, userId: string) => () => supabase.fetchMemos(itemId, userId);
-
 import { InfiniteItemsToRender, JoinedMyComments } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
@@ -22,7 +20,7 @@ export function useMyComments(sortOption: MyCommentSortOption) {
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) =>
-        supabase.fetchMyComments({
+        supabase.comments.fetchMyComments({
           userId: user!.id,
           page: pageParam,
           pageSize: INFINITE_COMMENT_PAGE_SIZE,
