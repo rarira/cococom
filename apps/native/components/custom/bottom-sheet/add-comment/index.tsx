@@ -1,4 +1,5 @@
 import { InsertComment } from '@cococom/supabase/libs';
+import { JoinedMyComments } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, RefObject, useCallback, useState } from 'react';
@@ -11,7 +12,7 @@ import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfInsertComment, queryKeys } from '@/libs/react-query';
+import { handleMutateOfInsertComment, queryKeys, updateMyCommentInCache } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -45,14 +46,27 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
     },
     onSuccess: (data, variables) => {
       const newCommentWithAuthor = {
-        ...data[0],
+        id: data[0].id,
         ...variables,
         user_id: undefined,
         author: {
-          id: user?.id,
+          id: user!.id,
           nickname: profile?.nickname,
         },
       };
+
+      const newMyComment: JoinedMyComments = {
+        ...(data[0] as any),
+        content: variables.content,
+      };
+
+      updateMyCommentInCache({
+        comment: newMyComment,
+        userId: user!.id,
+        queryClient,
+        command: 'insert',
+      });
+
       return handleMutateOfInsertComment({
         queryClient,
         queryKey,

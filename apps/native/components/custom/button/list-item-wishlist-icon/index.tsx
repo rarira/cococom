@@ -6,10 +6,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { updateWishlistInCache } from '@/libs/react-query';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
-import { updateWishlistInCache } from '@/libs/wishlist';
 import { useUserStore } from '@/store/user';
 
 import NeedAuthDialog from '../../dialog/need-auth';

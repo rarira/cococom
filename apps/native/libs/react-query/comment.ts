@@ -1,9 +1,9 @@
 import { InsertComment } from '@cococom/supabase/libs';
 import {
   InfiniteQueryResult,
-  InfinitResultPagesWithTotalRecords,
   JoinedComments,
   JoinedItems,
+  JoinedMyComments,
   Tables,
 } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
@@ -15,9 +15,8 @@ import {
   findInfinteIndexFromPreviousData,
   makeNewInfiniteObjectForOptimisticUpdate,
   makeNewInfiniteQueryResult,
+  sortFlatPagesBySortOption,
 } from './util';
-
-import { queryKeys } from '.';
 
 export const commentQueryKeys = {
   my: (userId: string, sortOption: MyCommentSortOption) => [
@@ -37,7 +36,7 @@ export const handleMutateOfInsertComment = async ({
 }: {
   queryClient: QueryClient;
   queryKey: QueryKey;
-  newComment: InsertComment;
+  newComment: InsertComment & { author: { id: string; nickname?: string | null } };
   itemQueryKey: QueryKey;
   needSort?: boolean;
 }) => {
@@ -141,61 +140,67 @@ export const handleMutateOfDeleteComment = async ({
   return { previousData };
 };
 
+export type UpdateMyCommentInCacheParams =
+  | {
+      comment: JoinedMyComments;
+      userId: string;
+      queryClient: QueryClient;
+      command: 'insert';
+    }
+  | {
+      comment: Pick<JoinedMyComments, 'id'>;
+      userId: string;
+      queryClient: QueryClient;
+      command: 'delete';
+    };
+
 export const updateMyCommentInCache = ({
-  commentId,
+  comment,
   userId,
   queryClient,
-}: {
-  commentId: number;
-  userId: string;
-  queryClient: QueryClient;
-}) => {
-  // queryCache의 모든 쿼리 항목을 순회
+  command,
+}: UpdateMyCommentInCacheParams) => {
   queryClient
     .getQueryCache()
-    .findAll({ type: 'active' })
+    .findAll({
+      type: 'active',
+      queryKey: ['comments', 'my'],
+      exact: false,
+      predicate: query => {
+        return (query.queryKey[2] as { userId: string }).userId === userId;
+      },
+    })
     .forEach(query => {
-      if (!QueryWithWishlist.hasOwnProperty((query.queryKey as (keyof typeof queryKeys)[])[0]))
-        return;
+      const queryKey = query.queryKey;
 
-      // if (Util.compareArray(queryKey, query.queryKey)) return;
-
-      queryClient.setQueryData(query.queryKey, (oldData: unknown) => {
+      queryClient.setQueryData(queryKey, (oldData: InfiniteQueryResult<JoinedComments[]>) => {
         if (!oldData) return oldData; // 캐시가 비어있으면 스킵
 
-        if (Array.isArray(oldData)) {
-          if (query.queryKey[0] === 'discounts') {
-            return setQueryDataForDiscounts(oldData, { itemId });
-          }
+        const flatPages = oldData.pages.flat();
 
-          return setQueryDataForJoinedItems(oldData, { itemId });
+        const sortOption = (queryKey[2] as { sortOption: MyCommentSortOption }).sortOption;
+
+        if (command === 'insert') {
+          const newFlatPages = [
+            ...flatPages,
+            {
+              ...comment,
+              item: {
+                ...comment.item,
+                totalCommentCount: (comment.item.totalCommentCount ?? 0) + 1,
+              },
+            },
+          ];
+
+          const sortedNewFlatPages = sortFlatPagesBySortOption(newFlatPages, sortOption);
+
+          return makeNewInfiniteQueryResult(sortedNewFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
         }
 
-        if (typeof oldData === 'object') {
-          const { pageIndex, resourceIndex } = findInfinteIndexFromPreviousDataWithTotalRecords({
-            previousData: oldData as InfiniteQueryResult<
-              InfinitResultPagesWithTotalRecords<
-                Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
-              >
-            >,
-            queryPageSizeConstant:
-              QueryWithWishlist[query.queryKey[0] as keyof Partial<typeof queryKeys>] ?? 0,
-            resourceId: itemId,
-          });
+        if (command === 'delete') {
+          const newFlatPages = flatPages.filter(item => item.id !== comment.id);
 
-          if (typeof pageIndex === 'undefined' || typeof resourceIndex === 'undefined')
-            return oldData;
-
-          return setQueryDataForInfiniteResults({
-            pageIndexOfItem: pageIndex,
-            itemIndex: resourceIndex,
-            old: oldData as InfiniteQueryResult<
-              InfinitResultPagesWithTotalRecords<
-                Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
-              >
-            >,
-            newWishlist: { itemId },
-          });
+          return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
         }
 
         return oldData;

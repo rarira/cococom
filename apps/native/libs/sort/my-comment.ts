@@ -4,14 +4,14 @@ import { JoinedMyComments } from '@cococom/supabase/types';
 export type MyCommentSortOption = {
   field:
     | keyof JoinedMyComments
-    | `items.${keyof Pick<JoinedMyComments['item'], 'itemName' | 'totalCommentCount'>}`;
+    | `item.${keyof Pick<JoinedMyComments['item'], 'itemName' | 'totalCommentCount'>}`;
   orderBy: SortOptionDirection;
   text: string;
 };
 
 export const MY_COMMENT_SORT_OPTIONS: Record<string, MyCommentSortOption> = {
   trend: {
-    field: 'items.totalCommentCount',
+    field: 'item.totalCommentCount',
     orderBy: 'DESC',
     text: '댓글 많은 순',
   },
@@ -26,12 +26,12 @@ export const MY_COMMENT_SORT_OPTIONS: Record<string, MyCommentSortOption> = {
     text: '댓글 작성 오래된 순',
   },
   itemNameAsc: {
-    field: 'items.itemName',
+    field: 'item.itemName',
     orderBy: 'ASC',
     text: '상품명 A-Z순',
   },
   itemNameDesc: {
-    field: 'items.itemName',
+    field: 'item.itemName',
     orderBy: 'DESC',
     text: '상품명 Z-A순',
   },

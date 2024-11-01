@@ -4,11 +4,10 @@ import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'reac
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Chip from '@/components/core/chip';
+import MyCommentTabView from '@/components/custom/tab-view/my/comment';
 import MyWishlistTabView from '@/components/custom/tab-view/my/wishlist';
 
-interface AuthedMyContentViewProps {}
-
-const AuthedMyContentView = memo(function AuthedMyContentView({}: AuthedMyContentViewProps) {
+const AuthedMyContentView = memo(function AuthedMyContentView() {
   const { styles } = useStyles(stylesheet);
 
   const [index, setIndex] = useState(0);
@@ -21,7 +20,7 @@ const AuthedMyContentView = memo(function AuthedMyContentView({}: AuthedMyConten
   const renderScene = useMemo(() => {
     return SceneMap({
       wishlist: () => <MyWishlistTabView />,
-      comment: () => <View />,
+      comment: () => <MyCommentTabView />,
       memo: () => <View />,
     });
   }, []);
