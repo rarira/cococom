@@ -1,6 +1,8 @@
 import { InfiniteQueryResult } from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
+import { SortOption } from '../sort';
+
 export const findInfinteIndexFromPreviousData = <T extends { id: number }[]>({
   previousData,
   queryPageSizeConstant,
@@ -70,5 +72,27 @@ export const findAllQueryKeysByUserId = (queryClient: QueryClient, userId: strin
     return queryKey.some((key: any) => {
       return key.userId === userId;
     });
+  });
+};
+
+export const sortFlatPagesBySortOption = <T extends Record<string, any>>(
+  flatPages: T[],
+  sortOption: SortOption,
+) => {
+  return flatPages.sort((a, b) => {
+    const [prop1, prop2] = sortOption.field.split('.');
+
+    const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
+    const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
+
+    if (aValue === bValue) {
+      return 0;
+    }
+
+    if (sortOption.orderBy === 'ASC') {
+      return aValue > bValue ? 1 : -1;
+    }
+
+    return aValue < bValue ? 1 : -1;
   });
 };

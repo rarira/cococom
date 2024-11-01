@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { findAllQueryKeysByUserId } from '@/libs/react-query';
+import { findAllQueryKeysByUserId } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 

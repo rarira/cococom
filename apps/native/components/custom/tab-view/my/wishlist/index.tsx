@@ -4,7 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
-import MyWishList from '@/components/custom/list/my-wish';
+import MyWishlist from '@/components/custom/list/my/wish';
 import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useWishlists } from '@/hooks/wishlist/useWishlists';
@@ -47,7 +47,7 @@ const MyWishlistTabView = memo(function MyWishlistTabView() {
     <>
       {isLoading && <CircularProgress style={styles.loadingProgress} />}
       {wishlistResult && (
-        <MyWishList
+        <MyWishlist
           wishlistResult={wishlistResult}
           options={options}
           setOptions={setOptions}

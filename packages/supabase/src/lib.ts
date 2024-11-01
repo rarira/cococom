@@ -95,11 +95,22 @@ export class Supabase {
 
     const { data, error } = await call;
 
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
     return data;
   }
 
   async fetchAllDiscounts() {
     const { data, error } = await this.supabaseClient.from('discounts').select('*');
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+
     return data;
   }
 
@@ -161,7 +172,7 @@ export class Supabase {
     channel,
     limit,
     sortField = 'discoutRate',
-    sortDirection = 'desc',
+    sortDirection = 'DESC',
   }: {
     currentTimestamp: string;
     userId?: string;
@@ -480,16 +491,7 @@ export class Supabase {
   }) {
     const { data, error } = await this.supabaseClient
       .from('comments')
-      .select(
-        `
-        id, 
-        created_at, 
-        content, 
-        item_id, 
-        item:items (id, itemId, itemName, is_online),
-        comment_count:comments!item_id(count)::int
-      `,
-      )
+      .select('id, created_at, content, item_id, author:profiles (id, nickname)')
       .eq('item_id', itemId)
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
@@ -515,21 +517,23 @@ export class Supabase {
     orderBy?: string;
     orderDirection?: SortOptionDirection;
   }) {
-    const { data, error } = await this.supabaseClient
+    let promise = this.supabaseClient
       .from('comments')
       .select(
-        `
-        id, 
-        created_at, 
-        content, 
-        item_id, 
-        item:items (id, itemId, itemName, is_online),
-        comment_count:comments!item_id(count)::int
-      `,
+        'id, created_at, content, item:items (id, itemId, itemName, is_online, totalCommentCount)',
       )
-      .eq('user_id', userId)
-      .order(orderBy, { ascending: orderDirection !== 'DESC' })
-      .range((page - 1) * pageSize, page * pageSize - 1);
+      .eq('user_id', userId);
+
+    if (orderBy?.startsWith('item.')) {
+      promise = promise.order(orderBy.split('.')[1]!, {
+        referencedTable: 'items',
+        ascending: orderDirection !== 'DESC',
+      });
+    } else {
+      promise = promise.order(orderBy, { ascending: orderDirection !== 'DESC' });
+    }
+
+    const { data, error } = await promise.range((page - 1) * pageSize, page * pageSize - 1);
 
     if (error) {
       console.error(error);
@@ -540,7 +544,10 @@ export class Supabase {
   }
 
   async insertComment(comment: InsertComment) {
-    const { data, error } = await this.supabaseClient.from('comments').insert(comment).select('id');
+    const { data, error } = await this.supabaseClient
+      .from('comments')
+      .insert(comment)
+      .select('id,created_at,item:items (id, itemId, itemName, is_online, totalCommentCount)');
 
     if (error) {
       console.error(error);
