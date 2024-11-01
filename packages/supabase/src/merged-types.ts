@@ -21,8 +21,7 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
 };
 
 export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id'> & {
-  item: Pick<JoinedItems, 'id' | 'itemId' | 'itemName' | 'is_online'>;
-  comment_count: number;
+  item: Pick<JoinedItems, 'id' | 'itemId' | 'itemName' | 'is_online' | 'totalCommentCount'>;
 };
 
 export type InfiniteQueryResultPageArray =
@@ -47,6 +46,12 @@ export type InfinitResultPagesWithTotalRecords<T extends { id: number }> = {
   totalRecords: number | null;
   items: T[];
 };
+
+export type InfiniteItemsToRender<T extends { id: number }> = Array<
+  T & {
+    pageIndex: number;
+  }
+>;
 
 export type InfiniteSearchResultPages = InfinitResultPagesWithTotalRecords<InfiniteResultItem>;
 

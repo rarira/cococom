@@ -1,60 +1,45 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { memo, useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
-import MyWishList from '@/components/custom/list/my-wish';
+import MyCommentList from '@/components/custom/list/my/comment';
 import { DiscountChannels } from '@/constants';
 import { useMyComments } from '@/hooks/comment/useMyComments';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useSort } from '@/hooks/sort/useSort';
-import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
+import { MY_COMMENT_SORT_OPTIONS } from '@/libs/sort/my-comment';
 
 const MyCommentTabView = memo(function MyCommentTabView() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const { styles } = useStyles(stylesheet);
 
-  const [options, setOptions] = useState<string[]>([]);
-  const isOnSale = options.includes('on_sale');
-
-  const { sort, handleSortChange, sortOption } = useSort(WISHLIST_SORT_OPTIONS, _sort =>
-    bottomSheetModalRef.current?.dismiss(),
-  );
+  const { sort, handleSortChange, sortOption } = useSort({
+    sortOptions: MY_COMMENT_SORT_OPTIONS,
+    callback: _sort => bottomSheetModalRef.current?.dismiss(),
+    initialSort: 'recent',
+  });
 
   const { handlePress: handleChannelPress, option: channelOption } =
     useDiscountRotateButton<DiscountChannels>();
 
-  const handlePressHeaderRightButton = useCallback(() => {
+  const handlePressSortButton = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const {
-    comments,
-    error,
-    isLoading,
-    handleEndReached,
-    isFetchingNextPage,
-    handleRefresh,
-    refreshing,
-  } = useMyComments({
-    channel: channelOption.value,
-    sortOption,
-    isOnSale,
-  });
+  const { comments, isLoading, handleEndReached, isFetchingNextPage, queryKey } =
+    useMyComments(sortOption);
 
   return (
     <>
       {isLoading && <CircularProgress style={styles.loadingProgress} />}
-      {wishlistResult && (
-        <MyWishList
-          wishlistResult={wishlistResult}
-          options={options}
-          setOptions={setOptions}
-          sortOption={sort}
-          totalResults={totalResults}
-          onPressHeaderRightButton={handlePressHeaderRightButton}
+      {comments && (
+        <MyCommentList
+          comments={comments}
+          sortOption={sortOption}
+          onPressSortButton={handlePressSortButton}
           queryKey={queryKey}
           isFetchingNextPage={isFetchingNextPage}
           handleChannelPress={handleChannelPress}
@@ -64,7 +49,7 @@ const MyCommentTabView = memo(function MyCommentTabView() {
         />
       )}
       <SortBottomSheet
-        sortOptions={WISHLIST_SORT_OPTIONS}
+        sortOptions={MY_COMMENT_SORT_OPTIONS}
         ref={bottomSheetModalRef}
         currentSort={sort}
         onSortChange={handleSortChange}

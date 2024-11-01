@@ -8,18 +8,17 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Checkbox from '@/components/core/checkbox';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
+import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
+import WishlistItemCard from '@/components/custom/card/list-item/wishlist';
+import SearchOptionCheckbox from '@/components/custom/checkbox/search-option';
 import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { SearchItemsOptions } from '@/libs/search';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
 
-import DiscountChannelRotateButton from '../../button/discount-channel-rotate';
-import WishlistItemCard from '../../card/list-item/wishlist';
-import SearchOptionCheckbox from '../../checkbox/search-option';
-
-interface MyWishListProps extends Partial<FlashListProps<WishlistToRender[number]>> {
+interface MyWishlistProps extends Partial<FlashListProps<WishlistToRender[number]>> {
   wishlistResult: WishlistToRender;
   options: string[];
   setOptions: (value: string[]) => void;
@@ -32,7 +31,7 @@ interface MyWishListProps extends Partial<FlashListProps<WishlistToRender[number
   channelOption: ReturnType<typeof useDiscountRotateButton<DiscountChannels>>['option'];
 }
 
-const MyWishList = memo(function MyWishList({
+const MyWishlist = memo(function MyWishlist({
   wishlistResult,
   options,
   setOptions,
@@ -44,7 +43,7 @@ const MyWishList = memo(function MyWishList({
   channelOption,
   handleChannelPress,
   ...restProps
-}: MyWishListProps) {
+}: MyWishlistProps) {
   const { styles } = useStyles(stylesheet);
 
   const tabBarHeight = useBottomTabBarHeight();
@@ -189,4 +188,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default MyWishList;
+export default MyWishlist;

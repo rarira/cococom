@@ -1,23 +1,23 @@
 // const queryFn = (itemId: number, userId: string) => () => supabase.fetchMemos(itemId, userId);
 
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo, useState } from 'react';
+import { InfiniteItemsToRender, JoinedMyComments } from '@cococom/supabase/types';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
 
 import { INFINITE_COMMENT_PAGE_SIZE } from '@/constants';
-import { queryKeys } from '@/libs/react-query';
-import { MySortOption } from '@/libs/sort';
+import { queryKeys } from '@/libs/react-query/';
+import { MyCommentSortOption } from '@/libs/sort/my-comment';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-export function useMyComments(sortOption: MySortOption) {
-  const [refreshing, setRefreshing] = useState(false);
-  const user = useUserStore(store => store.user);
+export type MyCommentToRender = InfiniteItemsToRender<JoinedMyComments>;
 
-  const queryClient = useQueryClient();
+export function useMyComments(sortOption: MyCommentSortOption) {
+  const user = useUserStore(store => store.user);
 
   const queryKey = queryKeys.comments.my(user!.id, sortOption);
 
-  const { data, error, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
@@ -37,25 +37,23 @@ export function useMyComments(sortOption: MySortOption) {
       enabled: !!user,
     });
 
-  const comments = useMemo(() => data?.pages.flatMap(page => page), [data]);
+  const comments: MyCommentToRender = useMemo(
+    () =>
+      data?.pages.flatMap(
+        (page, index) => page.map(item => ({ ...item, pageIndex: index })) ?? [],
+      ) ?? [],
+    [data?.pages],
+  );
 
   const handleEndReached = useCallback(() => {
     if (hasNextPage && !isFetching) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetching]);
 
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await queryClient.invalidateQueries({ queryKey });
-    setRefreshing(false);
-  }, [queryClient, queryKey]);
-
   return {
     comments,
-    error,
     isLoading,
     handleEndReached,
     isFetchingNextPage,
-    handleRefresh,
-    refreshing,
+    queryKey,
   };
 }

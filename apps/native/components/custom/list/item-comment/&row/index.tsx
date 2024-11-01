@@ -10,7 +10,7 @@ import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
 import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteComment, queryKeys } from '@/libs/react-query';
+import { handleMutateOfDeleteComment, queryKeys, updateMyCommentInCache } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -51,6 +51,14 @@ const RightAction = memo(({ dragX, comment }: any) => {
     },
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: () => {
+      updateMyCommentInCache({
+        comment: { id: comment.id },
+        userId: user!.id,
+        queryClient,
+        command: 'delete',
+      });
     },
   });
 

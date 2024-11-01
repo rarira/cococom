@@ -1,4 +1,8 @@
-import { Database, InfiniteWishlistResultPages } from '@cococom/supabase/types';
+import {
+  Database,
+  InfiniteItemsToRender,
+  InfiniteWishlistResultPages,
+} from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 
@@ -8,10 +12,9 @@ import { WishlistSortOption } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-export type WishlistToRender =
-  (Database['public']['Functions']['get_wishlist_items']['Returns']['items'][number] & {
-    pageIndex: number;
-  })[];
+export type WishlistToRender = InfiniteItemsToRender<
+  Database['public']['Functions']['get_wishlist_items']['Returns']['items'][number]
+>;
 
 type UseWishlistsParams = {
   channel: DiscountChannels;

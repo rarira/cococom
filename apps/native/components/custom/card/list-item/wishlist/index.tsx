@@ -8,9 +8,9 @@ import Card from '@/components/core/card';
 import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import WishlistItemCardDetailView from '@/components/custom/view/list-item-card/wishlist/&detail';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
+import { handleMutateOfWishlist } from '@/libs/react-query';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
-import { handleMutateOfWishlist } from '@/libs/wishlist';
 
 interface WishlistItemCardProps {
   item: WishlistToRender[number];
