@@ -52,9 +52,9 @@ export async function download({
 export async function downloadImage(itemId: string) {
   await download({
     // eslint-disable-next-line turbo/no-undeclared-env-vars
-    url: `${process.env.API_URL}/costpictures/${itemId}.jpg`,
+    url: `${process.env.S3_URL}${itemId}.webp`,
     localPath: '../downloads/images',
-    fileName: `${itemId}.jpg`,
+    fileName: `${itemId}.webp`,
   });
 
   // const downloadPath = path.resolve(__dirname, '../downloads/images', `${itemId}.jpg`);
