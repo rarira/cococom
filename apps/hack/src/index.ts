@@ -11,7 +11,7 @@ import {
   getISOTimeStringWithTimezone,
   minus1MS,
 } from '../libs/date.js';
-import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
+import { addReletedItemId, supabase, updateItemHistory, updateNoImages } from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
@@ -158,6 +158,24 @@ async function createHistory() {
   });
 }
 
+async function downloadNoImages(info: { id: number; no_images: string[] | null }) {
+  if (!info.no_images || !info.no_images.length) return;
+
+  const no_images = [];
+  for (const itemId of info.no_images) {
+    try {
+      await downloadImage(itemId);
+    } catch (e) {
+      console.log('error downloading image', itemId);
+      no_images.push(itemId);
+    }
+  }
+
+  console.log('downloadNoImage completed', info.id, info.no_images.length, no_images.length);
+
+  await updateNoImages(no_images, info.id);
+}
+
 (async () => {
   // const dates = [
   //   '2024-05-03',
@@ -180,6 +198,12 @@ async function createHistory() {
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
+
+  // NOTE: 이미지 host 변경 대응ㅇ
+  // const histories = await getAllNoImagesFromHistory('2024-10-01');
+  // const downloadNoImagePromises = histories.map(history => downloadNoImages(history));
+  // await Promise.allSettled(downloadNoImagePromises);
+
   // NOTE: 루틴
   await updateDiscounts();
   await createHistory();
