@@ -78,3 +78,32 @@ export async function addReletedItemId(
     }
   }
 }
+
+export async function getAllNoImagesFromHistory(date: string) {
+  const { data: histories, error } = await supabase.supabaseClient
+    .from('histories')
+    .select('id, no_images')
+    .eq('is_online', false)
+    .gte('created_at', date);
+
+  if (error) {
+    console.error('getAllNoImagesFromHistory Error', error);
+  }
+
+  if (!histories) return [];
+
+  console.log('histories', histories);
+
+  return histories;
+}
+
+export async function updateNoImages(noImages: string[], id: number) {
+  const { error } = await supabase.supabaseClient
+    .from('histories')
+    .update({ no_images: noImages })
+    .eq('id', id);
+
+  if (error) {
+    console.error('updateNoImages Error', error);
+  }
+}

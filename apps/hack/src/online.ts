@@ -1,10 +1,10 @@
+/* eslint-disable import/order */
 /* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line import/order
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
-import { InsertDiscount } from '@cococom/supabase/libs';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
@@ -18,6 +18,8 @@ import {
   OnlineSubCategoryLink,
   SearchApiResult,
 } from '../libs/types.js';
+
+import { InsertDiscount } from '@cococom/supabase/types';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
