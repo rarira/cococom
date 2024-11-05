@@ -32,7 +32,7 @@ export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[]
 export const INFINITE_SEARCH_PAGE_SIZE = 10;
 export const INFINITE_WISHLIST_PAGE_SIZE = 50;
 export const INFINITE_MEMO_PAGE_SIZE = 20;
-export const INFINITE_COMMENT_PAGE_SIZE = 20;
+export const INFINITE_COMMENT_PAGE_SIZE = 10;
 export const RANKING_PAGE_SIZE = 50;
 
 export const enum ItemDetailsTabNames {

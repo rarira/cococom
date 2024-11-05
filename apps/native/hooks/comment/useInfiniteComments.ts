@@ -18,18 +18,25 @@ export function useInfiniteComments(itemId: number) {
     useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
-      queryFn: ({ pageParam }) =>
-        supabase.comments.fetchComments({
+      queryFn: ({ pageParam }) => {
+        console.log('useInfiniteComments queryFn', { pageParam });
+        return supabase.comments.fetchComments({
           itemId,
           page: pageParam,
           pageSize: INFINITE_COMMENT_PAGE_SIZE,
-        }),
-      initialPageParam: 1,
+        });
+      },
+      initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) return undefined;
-        return allPages.length + 1;
+        if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) {
+          console.log('useInfiniteComments getNextPageParam', { lastPage, allPages });
+          return null;
+        }
+        return allPages.length;
       },
     });
+
+  console.log('useInfiniteComments', { data });
 
   const comments = useMemo(() => data?.pages.flatMap(page => page), [data]);
 

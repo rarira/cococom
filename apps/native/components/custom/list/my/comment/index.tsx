@@ -8,6 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import SortWithTextButton from '@/components/custom/button/sort-with-text';
+import MyCommentListItemCard from '@/components/custom/card/list-item/my-comment';
 import { DiscountChannels } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
@@ -44,15 +45,7 @@ const MyCommentList = memo(function MyCommentList({
       listRef.current?.prepareForLayoutAnimationRender();
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     };
-    return (
-      <Text>{`${item.content}  count=${item.item.totalCommentCount}`}</Text>
-      // <WishlistItemCard
-      //   key={item.itemId}
-      //   item={item}
-      //   queryKey={queryKey}
-      //   onMutate={handleMutate}
-      // />
-    );
+    return <MyCommentListItemCard item={item} onMutate={handleMutate} />;
   }, []);
 
   const ListHeaderComponent = useMemo(() => {

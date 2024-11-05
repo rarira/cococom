@@ -45,6 +45,8 @@ export const handleMutateOfInsertComment = async ({
     JoinedComments[]
   >;
 
+  console.log('call handleMutateOfInsertComment', { queryKey, previousData });
+
   const {
     flatPages,
     pageIndex,
@@ -73,6 +75,8 @@ export const handleMutateOfInsertComment = async ({
       return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
     }
 
+    console.log('handleMutateOfInsertComment', { pageIndex, commentIndex, old });
+
     return {
       ...old,
       pages: [
@@ -91,7 +95,7 @@ export const handleMutateOfInsertComment = async ({
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
     return {
       ...old,
-      totalCommentCount: (old.totalCommentCount ?? 0) + 1,
+      totalCommentCount: (old?.totalCommentCount ?? 0) + 1,
     };
   });
 
@@ -114,19 +118,22 @@ export const handleMutateOfDeleteComment = async ({
     JoinedComments[]
   >;
 
-  const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
+  const { flatPages, flatIndex: flatCommentIndex } = findInfinteIndexFromPreviousData({
     previousData,
     queryPageSizeConstant: INFINITE_COMMENT_PAGE_SIZE,
     resourceId: commentId,
     noNeedToFindIndex: true,
   });
 
+  console.log(queryKey, { flatPages, flatCommentIndex });
+
   queryClient.setQueryData(queryKey, (old: JoinedItems) => {
     const newFlatPages = [
-      ...flatPages.slice(0, flatMemoIndex),
-      ...flatPages.slice(flatMemoIndex! + 1),
+      ...flatPages.slice(0, flatCommentIndex),
+      ...flatPages.slice(flatCommentIndex! + 1),
     ];
 
+    console.log('newFlatPages', newFlatPages);
     return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
   });
 

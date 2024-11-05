@@ -89,7 +89,7 @@ export const sortFlatPagesBySortOption = <T extends Record<string, any>>(
       return 0;
     }
 
-    if (sortOption.orderBy === 'ASC') {
+    if (sortOption.orderDirection === 'ASC') {
       return aValue > bValue ? 1 : -1;
     }
 

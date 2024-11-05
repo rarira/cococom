@@ -47,7 +47,6 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
       const newCommentWithAuthor = {
         id: data[0].id,
         ...variables,
-        user_id: undefined,
         author: {
           id: user!.id,
           nickname: profile?.nickname,

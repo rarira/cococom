@@ -27,7 +27,7 @@ function fetchCurrentDiscounts({
     channel,
     limit,
     sortField: sortOption.field,
-    sortDirection: sortOption.orderBy,
+    sortDirection: sortOption.orderDirection,
   });
 }
 
@@ -53,7 +53,7 @@ export function useDiscountedRankingListQuery({
     userId: user?.id,
     limit,
     sortField: sortOption.field,
-    sortDirection: sortOption.orderBy,
+    sortDirection: sortOption.orderDirection,
   });
 
   const { data, error, isLoading, refetch } = useQuery({

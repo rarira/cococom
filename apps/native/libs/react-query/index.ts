@@ -33,7 +33,7 @@ export const queryKeys = {
       userId?: string | null;
       limit?: number;
       sortField: DiscountSortOption['field'];
-      sortDirection: DiscountSortOption['orderBy'];
+      sortDirection: DiscountSortOption['orderDirection'];
     }) => [
       'discounts',
       'rankedList',
