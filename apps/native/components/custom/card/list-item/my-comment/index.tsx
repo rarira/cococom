@@ -97,6 +97,9 @@ const stylesheet = createStyleSheet(theme => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.lightShadow,
   },
   itemNameText: {
     flex: 1,
