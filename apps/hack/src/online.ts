@@ -182,6 +182,8 @@ async function getAllItems() {
   console.log('updatedSubCategoryLinks', updatedSubCategoryLinks.length);
 
   const promises = updatedSubCategoryLinks.map(async subCategoryLink => {
+    // if (subCategoryLink.category !== 'cos_10.4.4') return null;
+
     const { totalProducts, products } = await getAllItemsByCategory(
       subCategoryLink.category,
       subCategoryLink.categoryId!,
@@ -191,7 +193,7 @@ async function getAllItems() {
     allProducts.push(...products);
   });
 
-  await Promise.allSettled(promises);
+  await Promise.allSettled(promises.filter(promise => promise !== null));
 
   const uniqueProducts = await removeDuplicateProducts(allProducts);
 
