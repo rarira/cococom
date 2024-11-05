@@ -1,6 +1,7 @@
 import type { AppStateStatus } from 'react-native';
 
 import '@/styles/unistyles';
+
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -26,6 +27,7 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useDevPlugins } from '@/hooks/useDevPlugins';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
 LogBox.ignoreLogs([
@@ -74,6 +76,8 @@ function onAppStateChange(status: AppStateStatus) {
 
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
+
+  useDevPlugins({ queryClient, navigationRef });
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
