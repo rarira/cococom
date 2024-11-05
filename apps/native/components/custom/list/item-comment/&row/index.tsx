@@ -105,6 +105,8 @@ const ItemCommentListRow = memo(function ItemCommentListRow({
     previousSwipeableRef as MutableRefObject<SwipeableMethods>,
   );
 
+  const isMyself = comment.author.id === user?.id;
+
   return (
     <Swipeable
       friction={2}
@@ -115,9 +117,14 @@ const ItemCommentListRow = memo(function ItemCommentListRow({
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.authorText(comment.author.id === user?.id)}>
-            {comment.author.nickname}
-          </Text>
+          <View style={styles.authorContainer}>
+            <Text style={styles.authorText(isMyself)}>{comment.author.nickname}</Text>
+            {isMyself ? (
+              <View style={styles.authorIcon}>
+                <Text style={styles.authorIconText}>나</Text>
+              </View>
+            ) : null}
+          </View>
           <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
         </View>
         <Text style={styles.contentText}>{comment.content}</Text>
@@ -138,9 +145,29 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     width: '100%',
   },
+  authorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  authorIcon: {
+    width: theme.fontSize.sm,
+    height: theme.fontSize.sm,
+    borderRadius: theme.fontSize.sm / 4,
+    backgroundColor: theme.colors.tint3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  authorIconText: {
+    fontSize: theme.fontSize.xs,
+    color: 'white',
+    lineHeight: theme.fontSize.xs,
+    fontWeight: 'bold',
+  },
   authorText: (myself: boolean) => ({
     fontSize: theme.fontSize.normal,
     color: myself ? theme.colors.tint : `${theme.colors.typography}BB`,
+    fontWeight: myself ? 'bold' : 'normal',
   }),
   timeText: {
     fontSize: theme.fontSize.sm,
