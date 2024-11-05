@@ -13,8 +13,8 @@ const AuthedMyContentView = memo(function AuthedMyContentView() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'wishlist', title: '관심 상품' },
-    { key: 'comment', title: '댓글' },
-    { key: 'memo', title: '메모' },
+    { key: 'comment', title: '작성 댓글' },
+    { key: 'memo', title: '상품 메모' },
   ]);
 
   const renderScene = useMemo(() => {
