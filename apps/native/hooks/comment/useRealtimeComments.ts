@@ -46,7 +46,6 @@ export function useRealtimeComments(itemId: number) {
             );
 
             if (!author) return;
-            console.log('useRealtimeComments', { author });
             const newComment = {
               ...payload.new,
               user_id: undefined,

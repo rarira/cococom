@@ -49,16 +49,16 @@ export class WishlistsTable {
     channel,
     sortField = 'itemId',
     sortDirection = 'ASC',
-    page = 1,
-    pageSize = 50,
+    page,
+    pageSize,
     isOnSale,
   }: {
     userId: string;
     channel: string;
     sortField: string;
     sortDirection: SortOptionDirection;
-    page?: number;
-    pageSize?: number;
+    page: number;
+    pageSize: number;
     isOnSale?: boolean;
   }) {
     const query = this.supabaseClient.rpc('get_wishlist_items', {
@@ -71,7 +71,7 @@ export class WishlistsTable {
       is_on_sale: typeof isOnSale === 'boolean' ? isOnSale : null,
     });
 
-    const { data, error } = await query.range((page - 1) * pageSize, page * pageSize - 1);
+    const { data, error } = await query.range(page * pageSize, (page + 1) * pageSize - 1);
 
     if (error) {
       console.error('Error:', error);

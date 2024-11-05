@@ -50,10 +50,10 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
           isOnSale,
         });
       },
-      initialPageParam: 1,
+      initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
         if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
-        return allPages.length + 1;
+        return allPages.length;
       },
     });
 

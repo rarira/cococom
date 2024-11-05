@@ -33,12 +33,12 @@ export class MemosTable {
     itemId,
     userId,
     page,
-    pageSize = 20,
+    pageSize,
   }: {
     itemId: number;
     userId: string;
     page: number;
-    pageSize?: number;
+    pageSize: number;
   }) {
     const { data, error } = await this.supabaseClient
       .from('memos')
@@ -46,7 +46,7 @@ export class MemosTable {
       .eq('itemId', itemId)
       .eq('userId', userId)
       .order('created_at', { ascending: false })
-      .range((page - 1) * pageSize, page * pageSize - 1);
+      .range(page * pageSize, (page + 1) * pageSize - 1);
 
     if (error) {
       console.error(error);

@@ -166,8 +166,8 @@ export class ItemsTable {
     itemId,
     isOnsale,
     userId,
-    page = 1,
-    pageSize = 20,
+    page,
+    pageSize,
     sortField = 'itemName',
     sortDirection = 'ASC',
   }: {
