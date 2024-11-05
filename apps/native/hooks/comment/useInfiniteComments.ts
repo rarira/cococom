@@ -19,7 +19,6 @@ export function useInfiniteComments(itemId: number) {
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
-        console.log('useInfiniteComments queryFn', { pageParam });
         return supabase.comments.fetchComments({
           itemId,
           page: pageParam,
@@ -29,14 +28,11 @@ export function useInfiniteComments(itemId: number) {
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) {
-          console.log('useInfiniteComments getNextPageParam', { lastPage, allPages });
           return null;
         }
         return allPages.length;
       },
     });
-
-  console.log('useInfiniteComments', { data });
 
   const comments = useMemo(() => data?.pages.flatMap(page => page), [data]);
 

@@ -64,7 +64,7 @@ BEGIN
         END;
 
     -- Calculate total records if page is 1
-    IF page = 1 THEN
+    IF page = 0 THEN
         EXECUTE format('
             SELECT COUNT(*)
             FROM wishlists w
@@ -122,7 +122,7 @@ BEGIN
                     %s  -- Sale condition
                     %s  -- Channel condition
                     %s  -- Order by clause
-                    LIMIT $3 OFFSET ($4 - 1) * $3
+                    LIMIT $3 OFFSET $4 * $3
                 ) t
             )
         )',
