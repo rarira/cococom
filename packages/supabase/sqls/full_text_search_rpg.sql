@@ -52,7 +52,7 @@ BEGIN
     END;
 
     -- Calculate total records if page is 1
-    IF page = 1 THEN
+    IF page = 0 THEN
         EXECUTE format('
             SELECT COUNT(*)
             FROM items i
@@ -124,7 +124,7 @@ BEGIN
                     )
                     %s
                     %s
-                    LIMIT $5 OFFSET ($6 - 1) * $5
+                    LIMIT $5 OFFSET $6 * $5
                 ) t
             )
         )', channel_sql,order_sql)
@@ -189,7 +189,7 @@ BEGIN
     END;
 
     -- Calculate total records if page is 1
-    IF page = 1 THEN
+    IF page = 0 THEN
         EXECUTE format('
             SELECT COUNT(*)
             FROM items i
@@ -261,7 +261,7 @@ BEGIN
                     )
                     %s
                     %s
-                    LIMIT $5 OFFSET ($6 - 1) * $5
+                    LIMIT $5 OFFSET $6 * $5
                 ) t
             )
         )', channel_sql, order_sql)

@@ -31,7 +31,6 @@ export default function ItemScreen() {
 
   const { bottom } = useSafeAreaInsets();
 
-  console.log(tab);
   useHideTabBar();
 
   const { data, isLoading, error } = useQuery({
@@ -88,7 +87,7 @@ export default function ItemScreen() {
         renderHeader={renderHeader}
         allowHeaderOverscroll
         lazy={Platform.OS === 'ios'}
-        // initialTabName={tab}
+        initialTabName={tab}
       >
         <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>

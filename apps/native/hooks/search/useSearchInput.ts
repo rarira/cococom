@@ -93,10 +93,10 @@ export function useSearchInput({
           ...commonParams,
         });
       },
-      initialPageParam: 1,
+      initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
         if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
-        return allPages.length + 1;
+        return allPages.length;
       },
       enabled: !!keywordToSearch,
     });

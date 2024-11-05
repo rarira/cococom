@@ -147,6 +147,7 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                   if (!font) return null;
                   return (
                     <SKText
+                      key={point.xValue + `${point.y}`}
                       x={point.x}
                       y={point.y!}
                       font={font}
