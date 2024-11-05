@@ -2,7 +2,7 @@ export type SortOptions = Record<string, SortOption>;
 
 export type SortOption = {
   field: string;
-  orderBy: 'ASC' | 'DESC';
+  orderDirection: 'ASC' | 'DESC';
   text: string;
   authRequired?: boolean;
 };

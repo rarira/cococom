@@ -39,15 +39,18 @@ const ItemCommentList = memo(function ItemCommentList({
 
   useRealtimeComments(itemId);
 
-  const renderItem = useCallback(({ item }: { item: NonNullable<JoinedComments> }) => {
-    return (
-      <ItemCommentListRow
-        comment={item}
-        key={item.id}
-        previousSwipeableRef={previousSwipeableRef}
-      />
-    );
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: NonNullable<JoinedComments> }) => {
+      return (
+        <ItemCommentListRow
+          comment={item}
+          key={item.id}
+          previousSwipeableRef={previousSwipeableRef}
+        />
+      );
+    },
+    [previousSwipeableRef],
+  );
 
   const ListHeaderComponent = useMemo(() => {
     return (

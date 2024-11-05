@@ -20,7 +20,7 @@ export function useAlltimeRankingQuery(
     channel,
     user?.id ?? null,
     sortOption.field,
-    sortOption.orderBy,
+    sortOption.orderDirection,
     limit ?? 50,
   );
 
@@ -32,7 +32,7 @@ export function useAlltimeRankingQuery(
         channel,
         userId: user?.id,
         orderByColumn: sortOption.field,
-        orderByDirection: sortOption.orderBy,
+        orderByDirection: sortOption.orderDirection,
         limitCount: limit ?? 50,
       });
     },

@@ -62,7 +62,7 @@ export function useSearchInput({
     keywordToSearch,
     isOnSaleSearch,
     SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-    SEARCH_ITEM_SORT_OPTIONS[sortOption].orderBy,
+    SEARCH_ITEM_SORT_OPTIONS[sortOption].orderDirection,
     channelOption,
     user?.id,
   );
@@ -79,7 +79,7 @@ export function useSearchInput({
           page: pageParam as number,
           pageSize: PAGE_SIZE,
           sortField: SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].orderBy,
+          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].orderDirection,
         };
 
         if (isItemIdSearch) {
@@ -95,7 +95,7 @@ export function useSearchInput({
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
         return allPages.length + 1;
       },
       enabled: !!keywordToSearch,

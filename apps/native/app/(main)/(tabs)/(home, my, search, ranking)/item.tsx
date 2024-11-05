@@ -27,10 +27,11 @@ export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
 
-  const { itemId } = useLocalSearchParams();
+  const { itemId, tab } = useLocalSearchParams<{ itemId: string; tab?: ItemDetailsTabNames }>();
 
   const { bottom } = useSafeAreaInsets();
 
+  console.log(tab);
   useHideTabBar();
 
   const { data, isLoading, error } = useQuery({
@@ -87,6 +88,7 @@ export default function ItemScreen() {
         renderHeader={renderHeader}
         allowHeaderOverscroll
         lazy={Platform.OS === 'ios'}
+        // initialTabName={tab}
       >
         <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>

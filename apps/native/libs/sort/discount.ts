@@ -1,5 +1,9 @@
-import { Database, JoinedItems } from '@cococom/supabase/types';
-import { CategorySectors, SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
+import {
+  CategorySectors,
+  Database,
+  JoinedItems,
+  SortOptionDirection,
+} from '@cococom/supabase/types';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
 
@@ -9,7 +13,7 @@ export type DiscountSortOption = {
   field:
     | keyof Database['public']['Functions']['get_discounts_with_wishlist_counts']['Returns'][0]
     | `items.${keyof JoinedItems}`;
-  orderBy: SortOptionDirection;
+  orderDirection: SortOptionDirection;
   text: string;
   authRequired?: boolean;
 };
@@ -17,52 +21,52 @@ export type DiscountSortOption = {
 export const DISCOUNT_SORT_OPTIONS: Record<string, DiscountSortOption> = {
   biggest: {
     field: 'discountRate',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '할인율 높은 순',
   },
   smallest: {
     field: 'discountRate',
-    orderBy: 'ASC',
+    orderDirection: 'ASC',
     text: '할인율 낮은 순',
   },
   cheapset: {
     field: 'discountPrice',
-    orderBy: 'ASC',
+    orderDirection: 'ASC',
     text: '할인가 낮은 순',
   },
   expensive: {
     field: 'discountPrice',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '할인가 높은 순',
   },
   approaching: {
     field: 'endDate',
-    orderBy: 'ASC',
+    orderDirection: 'ASC',
     text: '마감 임박 순',
   },
   newest: {
     field: 'startDate',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '최신순',
   },
   popular: {
     field: 'items.totalWishlistCount',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '인기순',
   },
   trend: {
     field: 'items.totalCommentCount',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '댓글 많은 순',
   },
   frequent: {
     field: 'items.totalDiscountCount',
-    orderBy: 'DESC',
+    orderDirection: 'DESC',
     text: '할인 빈도 많은 순',
   },
   rare: {
     field: 'items.totalDiscountCount',
-    orderBy: 'ASC',
+    orderDirection: 'ASC',
     text: '할인 빈도 적은 순',
   },
 };
@@ -81,7 +85,7 @@ export function sortDiscounts(
       return 0;
     }
 
-    if (sortOption.orderBy === 'ASC') {
+    if (sortOption.orderDirection === 'ASC') {
       return aValue > bValue ? 1 : -1;
     }
 
