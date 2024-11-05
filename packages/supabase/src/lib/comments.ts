@@ -18,18 +18,20 @@ export class CommentsTable {
   async fetchComments({
     itemId,
     page,
-    pageSize = 20,
+    pageSize,
   }: {
     itemId: number;
     page: number;
-    pageSize?: number;
+    pageSize: number;
   }) {
     const { data, error } = await this.supabaseClient
       .from('comments')
       .select('id, created_at, content, item_id, author:profiles (id, nickname)')
       .eq('item_id', itemId)
       .order('created_at', { ascending: false })
-      .range((page - 1) * pageSize, page * pageSize - 1);
+      .range(page * pageSize, (page + 1) * pageSize - 1);
+
+    console.log('fetchComments', data, page);
 
     if (error) {
       console.error(error);
@@ -54,21 +56,18 @@ export class CommentsTable {
   }) {
     let promise = this.supabaseClient
       .from('comments')
-      .select(
-        'id, created_at, content, item:items (id, itemId, itemName, is_online, totalCommentCount)',
-      )
+      .select('id, created_at, content, item:items (id, itemName, totalCommentCount)')
       .eq('user_id', userId);
 
     if (orderBy?.startsWith('item.')) {
-      promise = promise.order(orderBy.split('.')[1]!, {
-        referencedTable: 'items',
+      promise = promise.order(`item(${orderBy.split('.')[1]})`, {
         ascending: orderDirection !== 'DESC',
       });
     } else {
       promise = promise.order(orderBy, { ascending: orderDirection !== 'DESC' });
     }
 
-    const { data, error } = await promise.range((page - 1) * pageSize, page * pageSize - 1);
+    const { data, error } = await promise.range(page * pageSize, (page + 1) * pageSize - 1);
 
     if (error) {
       console.error(error);

@@ -31,7 +31,7 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
     userId: user!.id,
     channel,
     sortField: sortOption.field,
-    sortDirection: sortOption.orderBy,
+    sortDirection: sortOption.orderDirection,
     isOnSale,
   });
 
@@ -46,13 +46,13 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
           page: pageParam as number,
           pageSize: PAGE_SIZE,
           sortField: sortOption.field,
-          sortDirection: sortOption.orderBy,
+          sortDirection: sortOption.orderDirection,
           isOnSale,
         });
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
         return allPages.length + 1;
       },
     });

@@ -20,8 +20,8 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
   author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
 };
 
-export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id'> & {
-  item: Pick<JoinedItems, 'id' | 'itemId' | 'itemName' | 'is_online' | 'totalCommentCount'>;
+export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id' | 'item_id'> & {
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'totalCommentCount'>;
 };
 
 export type InfiniteQueryResultPageArray =

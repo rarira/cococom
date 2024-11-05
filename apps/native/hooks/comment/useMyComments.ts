@@ -25,12 +25,12 @@ export function useMyComments(sortOption: MyCommentSortOption) {
           page: pageParam,
           pageSize: INFINITE_COMMENT_PAGE_SIZE,
           orderBy: sortOption.field,
-          orderDirection: sortOption.orderBy,
+          orderDirection: sortOption.orderDirection,
         }),
-      initialPageParam: 1,
+      initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) return undefined;
-        return allPages.length + 1;
+        if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) return null;
+        return allPages.length;
       },
       enabled: !!user,
     });

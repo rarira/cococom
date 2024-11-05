@@ -1,79 +1,84 @@
-import { QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
 import React, { memo, useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
-import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
-import MyCommentListItemCardDetailView from '@/components/custom/view/list-item-card/wishlist/&detail';
+import Text from '@/components/core/text';
+import { ItemDetailsTabNames } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
-import { handleMutateOfWishlist } from '@/libs/react-query';
+import { formatDashedDate } from '@/libs/date';
+import { handleMutateOfDeleteComment, queryKeys, updateMyCommentInCache } from '@/libs/react-query';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
+import { useUserStore } from '@/store/user';
 
 interface MyCommentListItemCardProps {
   item: MyCommentToRender[number];
   containerStyle?: StyleProp<ViewStyle>;
-  queryKey: QueryKey;
   onMutate: () => void;
 }
 
 const MyCommentListItemCard = memo(function MyCommentListItemCard({
-  item,
+  item: comment,
   containerStyle,
-  queryKey,
   onMutate,
 }: MyCommentListItemCardProps) {
   const { styles } = useStyles(stylesheet);
+  const user = useUserStore(store => store.user);
+
   const queryClient = useQueryClient();
 
-  const deleteWishlistMutation = useMutation({
-    mutationFn: () => supabase.comments.deleteComment(item.id),
+  const deleteCommentMutation = useMutation({
+    mutationFn: () => supabase.comments.deleteComment(comment.id),
     onMutate: () => {
-      return;
-    },
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previousData);
+      updateMyCommentInCache({
+        comment,
+        userId: user!.id,
+        queryClient,
+        command: 'delete',
+      });
+      onMutate();
     },
     onSuccess: () => {
-      handleMutateOfWishlist({
+      handleMutateOfDeleteComment({
         queryClient,
-        queryKey,
-        newWishlist: { itemId: item.id },
-        pageIndexOfItem: item.pageIndex,
-        callback: onMutate,
+        queryKey: queryKeys.comments.byItem(comment.item.id),
+        commentId: comment.id,
+        itemQueryKey: queryKeys.items.byId(comment.item.id, user!.id),
       });
     },
   });
 
   const handleLongPress = useCallback(async () => {
+    //TODO: 첫 동작시 안내 팝업 띄우기
     try {
-      await deleteWishlistMutation.mutateAsync();
+      await deleteCommentMutation.mutateAsync();
     } catch (e) {
       console.error(e);
     }
-  }, [deleteWishlistMutation]);
+  }, [deleteCommentMutation]);
 
   return (
     <Link
-      href={`/(my)/item?itemId=${item.id}` as Href<string>}
+      href={
+        `/(my)/item?itemId=${comment.item.id}&tab=${ItemDetailsTabNames.COMMENT}` as Href<string>
+      }
       asChild
       onLongPress={handleLongPress}
     >
       <Pressable>
-        <Card style={[styles.cardContainer(item.isOnSaleNow, item.is_online), containerStyle]}>
-          <View style={styles.itemContainer}>
-            <ProductCardThumbnailImage
-              product={item}
-              width={80}
-              height={80}
-              style={styles.thumbnail}
-              isOnline={item.is_online}
-              small
-            />
-            <MyCommentListItemCardDetailView item={item} />
+        <Card style={[styles.cardContainer, containerStyle]}>
+          <View style={styles.header}>
+            <Text numberOfLines={1} style={styles.itemNameText} ellipsizeMode="tail">
+              {comment.item.itemName}
+            </Text>
+            <Text numberOfLines={1} style={styles.dateText}>
+              {formatDashedDate(comment.created_at)}
+            </Text>
           </View>
+          <Text style={styles.contentText}>{comment.content}</Text>
         </Card>
       </Pressable>
     </Link>
@@ -81,21 +86,32 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
 });
 
 const stylesheet = createStyleSheet(theme => ({
-  cardContainer: (onSale: boolean, isOnline: boolean) => ({
-    borderRadius: theme.borderRadius.lg,
-    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
-    ...(onSale && {
-      borderColor: `${theme.colors.tint}77`,
-      borderWidth: 1,
-    }),
-    ...ShadowPresets.card(theme, onSale ? `${theme.colors.tint}22` : undefined),
-  }),
-  itemContainer: {
-    flex: 1,
+  cardContainer: {
+    ...ShadowPresets.card(theme),
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    gap: theme.spacing.md,
+  },
+  header: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     gap: theme.spacing.md,
+  },
+  itemNameText: {
+    flex: 1,
+    fontSize: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.2,
+    color: `${theme.colors.typography}AA`,
+  },
+  dateText: {
+    fontSize: theme.fontSize.xs,
+    lineHeight: theme.fontSize.xs * 1.2,
+    color: `${theme.colors.typography}AA`,
+  },
+  contentText: {
+    fontSize: theme.fontSize.normal,
+    lineHeight: theme.fontSize.normal * 1.2,
   },
   thumbnail: {
     borderRadius: theme.borderRadius.md,

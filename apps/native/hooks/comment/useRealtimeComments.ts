@@ -1,4 +1,3 @@
-import { InsertComment } from '@cococom/supabase/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -40,17 +39,19 @@ export function useRealtimeComments(itemId: number) {
             return;
           }
           if (payload.eventType === 'INSERT') {
-            const author = await supabase.fetchData(
+            const author = await supabase.fetchData<'profiles'>(
               { value: payload.new.user_id, column: 'id' },
               'profiles',
               'id, nickname',
             );
 
+            if (!author) return;
+            console.log('useRealtimeComments', { author });
             const newComment = {
               ...payload.new,
               user_id: undefined,
               author,
-            } as unknown as InsertComment;
+            } as any;
 
             handleMutateOfInsertComment({
               queryClient,
