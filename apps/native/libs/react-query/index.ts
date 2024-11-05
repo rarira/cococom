@@ -1,12 +1,12 @@
-import { CategorySectors, SortOptionDirection } from '../../../../packages/supabase/dist/lib/lib';
+import { CategorySectors, SortOptionDirection } from '@cococom/supabase/types';
 
 import { DiscountChannels } from '@/constants';
-import { wishlistQueryKeys } from '@/libs/react-query';
 import { DiscountSortOption } from '@/libs/sort';
 
 import { commentQueryKeys } from './comment';
 import { itemQueryKeys } from './item';
 import { memoQueryKeys } from './memo';
+import { wishlistQueryKeys } from './wishlist';
 
 export * from './comment';
 export * from './memo';
