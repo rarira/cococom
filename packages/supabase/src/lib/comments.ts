@@ -54,7 +54,7 @@ export class CommentsTable {
   }) {
     let promise = this.supabaseClient
       .from('comments')
-      .select('id, created_at, content, item:items (id, itemName, totalCommentCount)')
+      .select('id, created_at, content, item:items (id, itemName, totalCommentCount, itemId)')
       .eq('user_id', userId);
 
     if (orderBy?.startsWith('item.')) {
