@@ -31,8 +31,6 @@ export class CommentsTable {
       .order('created_at', { ascending: false })
       .range(page * pageSize, (page + 1) * pageSize - 1);
 
-    console.log('fetchComments', data, page);
-
     if (error) {
       console.error(error);
       throw error;
