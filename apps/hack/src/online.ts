@@ -47,7 +47,8 @@ function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
     !category?.startsWith('cos') ||
     CATEGORY_EXCLUDE.includes(category) ||
     category.startsWith('cos_17') ||
-    category.startsWith('cos_18')
+    category.startsWith('cos_18') ||
+    category.startsWith('cos_morning')
   ) {
     return;
   }
@@ -176,7 +177,7 @@ async function getAllItems() {
   const allProducts: OnlineProduct[] = [];
 
   const updatedSubCategoryLinks = (await readJsonFile(
-    'data/online_updatedSubCategoryLinks.json',
+    'data/readonly/online_updatedSubCategoryLinks.json',
   )) as OnlineSubCategoryLink[];
 
   console.log('updatedSubCategoryLinks', updatedSubCategoryLinks.length);
@@ -208,6 +209,8 @@ async function getAllItems() {
     return;
   }
 
+  const tempObject: Record<string, OnlineProduct> = {};
+
   for (const product of saleProducts) {
     if (!product.code) {
       console.log('no code', product.name);
@@ -222,11 +225,18 @@ async function getAllItems() {
     if (!product.basePrice?.value || !product.price?.value) {
       console.log('no price or basePrice', product.code);
     }
+
+    if (!tempObject[product.code]) tempObject[product.code] = product;
   }
 
-  await writeJsonFile(`data/online_saleProducts_${date}.json`, saleProducts);
+  const salesProductsWithNoDuplicate = Object.values(tempObject);
 
-  console.log('sales product count', saleProducts.length);
+  await writeJsonFile(
+    `data/online_saleProducts_${date}.json`,
+    Object.values(salesProductsWithNoDuplicate),
+  );
+
+  console.log('sales product count', saleProducts.length, salesProductsWithNoDuplicate.length);
 }
 
 async function removeDuplicateProducts(products: OnlineProduct[]) {
@@ -440,9 +450,15 @@ async function uploadNewRecords() {
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
 
+  console.log('will upsert discounts', salesProducts.length);
+
   try {
     const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
       salesProducts.map(product => {
+        if (!product.couponDiscount) {
+          console.log('no couponDiscount', JSON.stringify(product));
+        }
+
         return {
           itemId: product.code + '_online',
           startDate: product.couponDiscount!.discountStartDate,
@@ -457,8 +473,10 @@ async function uploadNewRecords() {
           is_online: true,
         };
       }),
+      // { ignoreDuplicates: false, onConflict: 'discountHash' },
     );
 
+    console.log('newlyAddedDiscounts', newlyAddedDiscounts?.length);
     if (newlyAddedDiscounts?.length) {
       newDiscountsCount += newlyAddedDiscounts.length;
       const newlyAddedDiscountsItemIdsSet = new Set(
@@ -478,18 +496,18 @@ async function uploadNewRecords() {
   }
 }
 
-// async function updateRelatedItemId() {
-//   const data = await supabase.items.fetchOnlineItemsWithNullRelatedItem();
+async function updateRelatedItemId() {
+  const data = await supabase.items.fetchOnlineItemsWithNullRelatedItem();
 
-//   if (!data?.length) {
-//     console.log('no data');
-//     return;
-//   }
+  if (!data?.length) {
+    console.log('no data');
+    return;
+  }
 
-//   for (const onlineItem of data) {
-//     await addReletedItemId(onlineItem);
-//   }
-// }
+  for (const onlineItem of data) {
+    await addReletedItemId(onlineItem);
+  }
+}
 
 async function createHistory() {
   if (!newItems.length) return;
@@ -504,15 +522,15 @@ async function createHistory() {
 }
 
 (async () => {
+  // 카테고리 업데이트
   // await getAllCategoryInfo();
+
+  // 루틴
   await getAllItems();
-  // await updateDownloadResult();
   await downloadImages();
   await upsertOnlineUrlToItem();
   await manageSoldOutDiscounts();
   await uploadNewRecords();
-  // await updateRelatedItemId();
+  await updateRelatedItemId();
   await createHistory();
-  // 수동으로
-  // await updateSubCategoryLinks();
 })();

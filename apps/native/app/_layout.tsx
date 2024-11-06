@@ -45,21 +45,14 @@ initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const reactNavigationIntegration = Sentry.reactNavigationIntegration();
 
 const queryClient = new QueryClient();
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-  // debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
-      routingInstrumentation,
-      enableNativeFramesTracking: !isRunningInExpoGo(),
-      // ...
-    }),
-  ],
+  enableNativeFramesTracking: !isRunningInExpoGo(),
+  integrations: [reactNavigationIntegration],
 });
 
 onlineManager.setEventListener(setOnline => {
@@ -89,7 +82,7 @@ function RootLayout() {
 
   useEffect(() => {
     if (navigationRef) {
-      routingInstrumentation.registerNavigationContainer(navigationRef);
+      reactNavigationIntegration.registerNavigationContainer(navigationRef);
     }
   }, [navigationRef]);
 
