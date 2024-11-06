@@ -3,6 +3,7 @@ import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { INFINITE_MEMO_PAGE_SIZE } from '@/constants';
 
+import { MyMemoSortOption } from '../sort/my-memo';
 import {
   findInfinteIndexFromPreviousData,
   makeNewInfiniteObjectForOptimisticUpdate,
@@ -11,7 +12,7 @@ import {
 
 export const memoQueryKeys = {
   byItem: (itemId: number, userId: string) => ['memos', 'byItem', { itemId, userId }],
-  byUserId: (userId: string) => ['memos', 'byUserId', { userId }],
+  my: (userId: string, sortOption: MyMemoSortOption) => ['comments', 'my', { userId, sortOption }],
 };
 
 export const handleMutateOfDeleteMemo = async ({

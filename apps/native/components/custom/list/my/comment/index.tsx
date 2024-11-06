@@ -9,9 +9,7 @@ import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import SortWithTextButton from '@/components/custom/button/sort-with-text';
 import MyCommentListItemCard from '@/components/custom/card/list-item/my-comment';
-import { DiscountChannels } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
-import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { MyCommentSortOption } from '@/libs/sort';
 
 interface MyCommentListProps extends Partial<FlashListProps<MyCommentToRender[number]>> {
@@ -20,8 +18,6 @@ interface MyCommentListProps extends Partial<FlashListProps<MyCommentToRender[nu
   onPressSortButton: () => void;
   queryKey: QueryKey;
   isFetchingNextPage: boolean;
-  handleChannelPress: ReturnType<typeof useDiscountRotateButton<DiscountChannels>>['handlePress'];
-  channelOption: ReturnType<typeof useDiscountRotateButton<DiscountChannels>>['option'];
 }
 
 const MyCommentList = memo(function MyCommentList({
@@ -30,8 +26,6 @@ const MyCommentList = memo(function MyCommentList({
   onPressSortButton,
   queryKey,
   isFetchingNextPage,
-  channelOption,
-  handleChannelPress,
   ...restProps
 }: MyCommentListProps) {
   const { styles } = useStyles(stylesheet);

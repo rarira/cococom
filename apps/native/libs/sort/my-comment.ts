@@ -1,9 +1,7 @@
 import { JoinedMyComments, SortOptionDirection } from '@cococom/supabase/types';
 
 export type MyCommentSortOption = {
-  field:
-    | keyof JoinedMyComments
-    | `item.${keyof Pick<JoinedMyComments['item'], 'itemName' | 'totalCommentCount'>}`;
+  field: keyof JoinedMyComments | `item.${keyof Pick<JoinedMyComments['item'], 'itemName'>}`;
   orderDirection: SortOptionDirection;
   text: string;
 };
