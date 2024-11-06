@@ -13,7 +13,7 @@ export class HistoriesTable {
     const { error } = await this.supabaseClient.from('histories').insert(newHistory);
 
     if (error) {
-      console.log({ error });
+      console.error({ error });
       throw error;
     }
     console.log('inserted history');
