@@ -1,4 +1,3 @@
-import { InfiniteSearchResultPages } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -68,7 +67,7 @@ export function useSearchInput({
   );
 
   const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
-    useInfiniteQuery<InfiniteSearchResultPages>({
+    useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
@@ -76,7 +75,7 @@ export function useSearchInput({
           channelOption,
           isOnsale: !!isOnSaleSearch,
           userId: user?.id,
-          page: pageParam as number,
+          page: pageParam,
           pageSize: PAGE_SIZE,
           sortField: SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
           sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].orderDirection,
@@ -94,9 +93,9 @@ export function useSearchInput({
         });
       },
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage, _, lastPageParam) => {
         if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
-        return allPages.length;
+        return lastPageParam + 1;
       },
       enabled: !!keywordToSearch,
     });
