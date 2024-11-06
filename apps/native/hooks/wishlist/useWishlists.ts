@@ -1,8 +1,4 @@
-import {
-  Database,
-  InfiniteItemsToRender,
-  InfiniteWishlistResultPages,
-} from '@cococom/supabase/types';
+import { Database, InfiniteItemsToRender } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 
@@ -36,14 +32,14 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
   });
 
   const { data, isFetching, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQuery<InfiniteWishlistResultPages>({
+    useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
         return supabase.wishlists.fetchMyWishlistItems({
           userId: user!.id,
           channel,
-          page: pageParam as number,
+          page: pageParam,
           pageSize: PAGE_SIZE,
           sortField: sortOption.field,
           sortDirection: sortOption.orderDirection,
@@ -51,9 +47,9 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
         });
       },
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage, _, lastPageParam) => {
         if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
-        return allPages.length;
+        return lastPageParam + 1;
       },
     });
 

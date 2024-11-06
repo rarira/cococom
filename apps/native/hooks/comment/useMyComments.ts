@@ -28,9 +28,9 @@ export function useMyComments(sortOption: MyCommentSortOption) {
           orderDirection: sortOption.orderDirection,
         }),
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage, _, lastPageParam) => {
         if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) return null;
-        return allPages.length;
+        return lastPageParam + 1;
       },
       enabled: !!user,
     });

@@ -1,4 +1,5 @@
 import { JoinedComments } from '@cococom/supabase/types';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
@@ -25,6 +26,8 @@ const ItemCommentList = memo(function ItemCommentList({
   onAddCommentPress,
 }: ItemCommentListProps) {
   const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.COMMENT);
+
+  const tabBarHeight = useBottomTabBarHeight();
 
   const { styles, theme } = useStyles(stylesheet);
   const {
@@ -118,7 +121,7 @@ const ItemCommentList = memo(function ItemCommentList({
       onRefresh={handleRefresh}
       refreshing={refreshing}
       style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={styles.contentContainer(tabBarHeight)}
     />
   );
 });
@@ -128,9 +131,10 @@ const stylesheet = createStyleSheet(theme => ({
     height: '100%',
     width: '100%',
   },
-  contentContainer: {
+  contentContainer: (tabBarHeight: number) => ({
     paddingHorizontal: theme.screenHorizontalPadding,
-  },
+    paddingBottom: theme.spacing.xl + tabBarHeight,
+  }),
   listEmptyContainer: {
     flexDirection: 'column',
     alignItems: 'center',

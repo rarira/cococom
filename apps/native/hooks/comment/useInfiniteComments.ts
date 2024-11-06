@@ -26,11 +26,11 @@ export function useInfiniteComments(itemId: number) {
         });
       },
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage, _, lastPageParam) => {
         if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) {
           return null;
         }
-        return allPages.length;
+        return lastPageParam + 1;
       },
     });
 
