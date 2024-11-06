@@ -5,6 +5,7 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
+import Chip from '@/components/core/chip';
 import Text from '@/components/core/text';
 import { ItemDetailsTabNames } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
@@ -60,6 +61,8 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
     }
   }, [deleteCommentMutation]);
 
+  const isOnline = comment.item.itemId.split('_')[1] === 'online';
+
   return (
     <Link
       href={
@@ -71,9 +74,12 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
       <Pressable>
         <Card style={[styles.cardContainer, containerStyle]}>
           <View style={styles.header}>
-            <Text numberOfLines={1} style={styles.itemNameText} ellipsizeMode="tail">
-              {comment.item.itemName}
-            </Text>
+            <View style={styles.nameContainer}>
+              {isOnline && <Chip text="온라인" style={styles.onlineChip} />}
+              <Text numberOfLines={1} style={styles.itemNameText} ellipsizeMode="tail">
+                {comment.item.itemName}
+              </Text>
+            </View>
             <Text numberOfLines={1} style={styles.dateText}>
               {formatDashedDate(comment.created_at)}
             </Text>
@@ -100,6 +106,16 @@ const stylesheet = createStyleSheet(theme => ({
     paddingBottom: theme.spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.lightShadow,
+  },
+  nameContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  onlineChip: {
+    backgroundColor: theme.colors.tint3,
   },
   itemNameText: {
     flex: 1,

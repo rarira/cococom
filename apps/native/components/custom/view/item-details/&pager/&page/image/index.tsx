@@ -90,7 +90,7 @@ const stylesheet = createStyleSheet(theme => ({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: `${theme.colors.background}88`,
+    backgroundColor: `${theme.colors.background}CC`,
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.screenHorizontalPadding,
   },
@@ -107,7 +107,7 @@ const stylesheet = createStyleSheet(theme => ({
     gap: theme.spacing.md,
   },
   buttonBackground: (hasOnlineUrl?: boolean) => ({
-    backgroundColor: `${hasOnlineUrl ? theme.colors.tint3 : theme.colors.background}88`,
+    backgroundColor: `${hasOnlineUrl ? theme.colors.tint3 : theme.colors.background}CC`,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
     borderWidth: hasOnlineUrl ? 1 : 0,
@@ -117,14 +117,14 @@ const stylesheet = createStyleSheet(theme => ({
     position: 'absolute',
     top: theme.spacing.md,
     left: theme.spacing.md,
-    backgroundColor: `${isOnline ? theme.colors.tint3 : theme.colors.background}88`,
+    backgroundColor: `${isOnline ? theme.colors.tint3 : theme.colors.background}CC`,
     paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.md,
   }),
   itemIdText: (isOnline: boolean) => ({
     color: isOnline ? 'white' : theme.colors.typography,
     fontSize: theme.fontSize.sm,
-    fontWeight: 'semibold',
+    fontWeight: 'bold',
   }),
 }));
 
