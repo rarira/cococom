@@ -26,9 +26,9 @@ export function useInfiniteMemos(itemId: number) {
           pageSize: INFINITE_MEMO_PAGE_SIZE,
         }),
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage, _, lastPageParam) => {
         if (lastPage.length < INFINITE_MEMO_PAGE_SIZE) return null;
-        return allPages.length;
+        return lastPageParam + 1;
       },
       enabled: !!user,
     });
