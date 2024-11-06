@@ -21,7 +21,7 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
 };
 
 export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id' | 'item_id'> & {
-  item: Pick<JoinedItems, 'id' | 'itemName' | 'totalCommentCount'>;
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'totalCommentCount' | 'itemId'>;
 };
 
 export type InfiniteQueryResultPageArray =
