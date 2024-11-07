@@ -11,7 +11,8 @@ import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfUpsertMemo, queryKeys, updateMyMemoInCache } from '@/libs/react-query';
+import { handleMutateOfUpsertMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useMemoEditStore } from '@/store/memo-edit';
 import { useUserStore } from '@/store/user';
@@ -66,12 +67,22 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
 
       newMyMemo.item.totalMemoCount = totalMemoCount;
 
-      updateMyMemoInCache({
+      updateMyMemos({
         memo: newMyMemo,
         userId: user!.id,
         queryClient,
         command: isEditMode ? 'update' : 'insert',
       });
+
+      if (!isEditMode) {
+        updateTotalCountInCache({
+          itemId,
+          queryClient,
+          excludeQueryKey: 'items',
+          totalCountsColumn: 'totalMemoCount',
+          updateType: 'increase',
+        });
+      }
 
       return handleMutateOfUpsertMemo({
         queryClient,

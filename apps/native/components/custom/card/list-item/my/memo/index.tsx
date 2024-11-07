@@ -10,7 +10,8 @@ import Text from '@/components/core/text';
 import { ItemDetailsTabNames } from '@/constants';
 import { MyMemoToRender } from '@/hooks/memo/useMyMemos';
 import { formatDashedDate } from '@/libs/date';
-import { handleMutateOfDeleteMemo, queryKeys, updateMyMemoInCache } from '@/libs/react-query';
+import { handleMutateOfDeleteMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -34,7 +35,7 @@ const MyMemoListItemCard = memo(function MyMemoListItemCard({
   const deleteCommentMutation = useMutation({
     mutationFn: () => supabase.memos.deleteMemo(memo.id),
     onMutate: () => {
-      updateMyMemoInCache({
+      updateMyMemos({
         memo,
         userId: user!.id,
         queryClient,
@@ -48,6 +49,13 @@ const MyMemoListItemCard = memo(function MyMemoListItemCard({
         queryKey: queryKeys.memos.byItem(memo.item.id, user!.id),
         memoId: memo.id,
         itemQueryKey: queryKeys.items.byId(memo.item.id, user!.id),
+      });
+
+      updateTotalCountInCache({
+        itemId: memo.item.id,
+        queryClient,
+        totalCountsColumn: 'totalMemoCount',
+        updateType: 'decrease',
       });
     },
   });
@@ -79,7 +87,7 @@ const MyMemoListItemCard = memo(function MyMemoListItemCard({
               </Text>
             </View>
             <Text numberOfLines={1} style={styles.dateText}>
-              {formatDashedDate(memo.updated_at)}
+              {formatDashedDate(memo.updated_at ?? '')}
             </Text>
           </View>
           <Text style={styles.contentText}>{memo.content}</Text>

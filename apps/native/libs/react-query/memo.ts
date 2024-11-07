@@ -38,23 +38,27 @@ export const handleMutateOfDeleteMemo = async ({
     Tables<'memos'>[]
   >;
 
-  const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
-    previousData,
-    queryPageSizeConstant: INFINITE_MEMO_PAGE_SIZE,
-    resourceId: memoId,
-    noNeedToFindIndex: true,
-  });
+  if (previousData) {
+    const { flatPages, flatIndex: flatMemoIndex } = findInfinteIndexFromPreviousData({
+      previousData,
+      queryPageSizeConstant: INFINITE_MEMO_PAGE_SIZE,
+      resourceId: memoId,
+      noNeedToFindIndex: true,
+    });
 
-  queryClient.setQueryData(queryKey, (old: JoinedItems) => {
-    const newFlatPages = [
-      ...flatPages.slice(0, flatMemoIndex),
-      ...flatPages.slice(flatMemoIndex! + 1),
-    ];
+    queryClient.setQueryData(queryKey, () => {
+      const newFlatPages = [
+        ...flatPages.slice(0, flatMemoIndex),
+        ...flatPages.slice(flatMemoIndex! + 1),
+      ];
 
-    return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
-  });
+      return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
+    });
+  }
 
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    if (!old) return old;
+
     return {
       ...old,
       totalMemoCount: old.totalMemoCount! - 1,
@@ -132,7 +136,7 @@ export const handleMutateOfUpsertMemo = async ({
   return { previousData };
 };
 
-type UpdateMyMemoInCacheParams =
+type UpdateMyMemosParams =
   | {
       memo: JoinedMyMemos;
       userId: string;
@@ -146,12 +150,7 @@ type UpdateMyMemoInCacheParams =
       command: 'delete';
     };
 
-export const updateMyMemoInCache = ({
-  memo,
-  userId,
-  queryClient,
-  command,
-}: UpdateMyMemoInCacheParams) => {
+export const updateMyMemos = ({ memo, userId, queryClient, command }: UpdateMyMemosParams) => {
   queryClient
     .getQueryCache()
     .findAll({
@@ -159,17 +158,13 @@ export const updateMyMemoInCache = ({
       queryKey: ['memos', 'my'],
       exact: false,
       predicate: query => {
-        console.log('updateMyMemoInCache query predicate', query);
         return (query.queryKey[2] as { userId: string }).userId === userId;
       },
     })
     .forEach(query => {
       const queryKey = query.queryKey;
 
-      console.log('updateMyMemoInCache queryKey', queryKey);
-
       queryClient.setQueryData(queryKey, (oldData: InfiniteQueryResult<JoinedMyMemos[]>) => {
-        console.log('updateMyMemoInCache oldData', oldData);
         if (!oldData) return oldData; // 캐시가 비어있으면 스킵
 
         const flatPages = oldData.pages.flat();
@@ -188,7 +183,6 @@ export const updateMyMemoInCache = ({
             },
           ];
 
-          console.log('updateMyMemoInCache newFlatPages', newFlatPages);
           const sortedNewFlatPages = sortFlatPagesBySortOption(newFlatPages, sortOption);
 
           return makeNewInfiniteQueryResult(sortedNewFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
