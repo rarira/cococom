@@ -10,7 +10,7 @@ import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
 import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';
+import { handleMutateOfDeleteMemo, queryKeys, updateMyMemoInCache } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useMemoEditStore } from '@/store/memo-edit';
 
@@ -56,6 +56,14 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
     },
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: () => {
+      updateMyMemoInCache({
+        memo,
+        userId: memo.userId,
+        queryClient,
+        command: 'delete',
+      });
     },
   });
 
