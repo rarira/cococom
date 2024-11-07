@@ -10,7 +10,8 @@ import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
 import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteMemo, queryKeys, updateMyMemoInCache } from '@/libs/react-query';
+import { handleMutateOfDeleteMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useMemoEditStore } from '@/store/memo-edit';
 
@@ -58,11 +59,19 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
       queryClient.setQueryData(queryKey, context?.previousData);
     },
     onSuccess: () => {
-      updateMyMemoInCache({
+      updateMyMemos({
         memo,
         userId: memo.userId,
         queryClient,
         command: 'delete',
+      });
+
+      updateTotalCountInCache({
+        itemId: memo.itemId,
+        queryClient,
+        totalCountsColumn: 'totalMemoCount',
+        updateType: 'decrease',
+        excludeQueryKey: 'items',
       });
     },
   });

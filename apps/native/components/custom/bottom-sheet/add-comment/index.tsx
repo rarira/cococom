@@ -11,7 +11,8 @@ import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfInsertComment, queryKeys, updateMyCommentInCache } from '@/libs/react-query';
+import { handleMutateOfInsertComment, queryKeys, updateMyComments } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -62,11 +63,19 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
 
       newMyComment.item.totalCommentCount = totalCommentCount;
 
-      updateMyCommentInCache({
+      updateMyComments({
         comment: newMyComment,
         userId: user!.id,
         queryClient,
         command: 'insert',
+      });
+
+      updateTotalCountInCache({
+        itemId,
+        queryClient,
+        totalCountsColumn: 'totalCommentCount',
+        updateType: 'increase',
+        excludeQueryKey: 'items',
       });
 
       return handleMutateOfInsertComment({
