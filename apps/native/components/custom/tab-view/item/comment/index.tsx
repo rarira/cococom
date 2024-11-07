@@ -8,9 +8,13 @@ import { useUserStore } from '@/store/user';
 
 export interface ItemCommentTabViewProps {
   itemId: number;
+  totalCommentCount: number;
 }
 
-const ItemCommentTabView = memo(function ItemCommentTabView({ itemId }: ItemCommentTabViewProps) {
+const ItemCommentTabView = memo(function ItemCommentTabView({
+  itemId,
+  totalCommentCount,
+}: ItemCommentTabViewProps) {
   const { user, setCallbackAfterSignIn } = useUserStore();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -28,7 +32,11 @@ const ItemCommentTabView = memo(function ItemCommentTabView({ itemId }: ItemComm
   return (
     <>
       <ItemCommentList itemId={itemId} onAddCommentPress={handleAddCommentPress} />
-      <AddCommentBottomSheet itemId={itemId} bottomSheetRef={bottomSheetRef} />
+      <AddCommentBottomSheet
+        itemId={itemId}
+        bottomSheetRef={bottomSheetRef}
+        totalCommentCount={totalCommentCount}
+      />
     </>
   );
 });

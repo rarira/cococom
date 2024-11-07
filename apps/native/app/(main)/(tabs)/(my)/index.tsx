@@ -8,10 +8,6 @@ import ScreenContainerView from '@/components/custom/view/container/screen';
 import AuthedMyContentView from '@/components/custom/view/my-content/authed';
 import { useUserStore } from '@/store/user';
 
-/* TODO: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
-* https://github.com/expo/router/issues/278
-Check the render method of `SlotClone`. */
-
 export default function MyScreen() {
   const { styles, theme } = useStyles(stylesheet);
 

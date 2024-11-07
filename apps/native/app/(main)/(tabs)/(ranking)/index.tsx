@@ -32,16 +32,22 @@ export default function RankingScreen() {
         <TabBar
           {...props}
           indicatorContainerStyle={styles.tabBarIndicatorContainer}
-          renderLabel={({ route, focused }) => (
-            <Chip
-              text={route.title!}
-              style={styles.tabBarLabelContainer(focused)}
-              textProps={{ style: styles.tabBarLabelText(focused) }}
-            />
-          )}
           renderTabBarItem={props => {
             const { key, ...restProps } = props;
-            return <TabBarItem key={key} {...restProps} style={styles.tabBarItem} />;
+            return (
+              <TabBarItem
+                key={key}
+                {...restProps}
+                style={styles.tabBarItem}
+                label={({ route, focused }) => (
+                  <Chip
+                    text={route.title!}
+                    style={styles.tabBarLabelContainer(focused)}
+                    textProps={{ style: styles.tabBarLabelText(focused) }}
+                  />
+                )}
+              />
+            );
           }}
           style={styles.tabBarContainer}
           pressOpacity={0.5}
@@ -65,7 +71,7 @@ export default function RankingScreen() {
         renderScene={renderScene}
         onIndexChange={setIndex}
         renderTabBar={renderTabBar}
-        sceneContainerStyle={styles.sceneContainer}
+        commonOptions={{ sceneStyle: styles.sceneContainer }}
       />
     </ScreenContainerView>
   );

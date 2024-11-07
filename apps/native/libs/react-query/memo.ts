@@ -1,4 +1,10 @@
-import { InfiniteQueryResult, InsertMemo, JoinedItems, Tables } from '@cococom/supabase/types';
+import {
+  InfiniteQueryResult,
+  InsertMemo,
+  JoinedItems,
+  JoinedMyMemos,
+  Tables,
+} from '@cococom/supabase/types';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 import { INFINITE_MEMO_PAGE_SIZE } from '@/constants';
@@ -8,11 +14,12 @@ import {
   findInfinteIndexFromPreviousData,
   makeNewInfiniteObjectForOptimisticUpdate,
   makeNewInfiniteQueryResult,
+  sortFlatPagesBySortOption,
 } from './util';
 
 export const memoQueryKeys = {
   byItem: (itemId: number, userId: string) => ['memos', 'byItem', { itemId, userId }],
-  my: (userId: string, sortOption: MyMemoSortOption) => ['comments', 'my', { userId, sortOption }],
+  my: (userId: string, sortOption: MyMemoSortOption) => ['memos', 'my', { userId, sortOption }],
 };
 
 export const handleMutateOfDeleteMemo = async ({
@@ -93,6 +100,7 @@ export const handleMutateOfUpsertMemo = async ({
         ),
         ...flatPages,
       ];
+
       return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
     }
 
@@ -112,12 +120,87 @@ export const handleMutateOfUpsertMemo = async ({
     };
   });
 
-  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
-    return {
-      ...old,
-      totalMemoCount: (old.totalMemoCount ?? 0) + 1,
-    };
-  });
+  if (typeof pageIndex === 'undefined') {
+    queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+      return {
+        ...old,
+        totalMemoCount: (old.totalMemoCount ?? 0) + 1,
+      };
+    });
+  }
 
   return { previousData };
+};
+
+type UpdateMyMemoInCacheParams =
+  | {
+      memo: JoinedMyMemos;
+      userId: string;
+      queryClient: QueryClient;
+      command: 'insert' | 'update';
+    }
+  | {
+      memo: Pick<JoinedMyMemos, 'id'>;
+      userId: string;
+      queryClient: QueryClient;
+      command: 'delete';
+    };
+
+export const updateMyMemoInCache = ({
+  memo,
+  userId,
+  queryClient,
+  command,
+}: UpdateMyMemoInCacheParams) => {
+  queryClient
+    .getQueryCache()
+    .findAll({
+      type: 'active',
+      queryKey: ['memos', 'my'],
+      exact: false,
+      predicate: query => {
+        console.log('updateMyMemoInCache query predicate', query);
+        return (query.queryKey[2] as { userId: string }).userId === userId;
+      },
+    })
+    .forEach(query => {
+      const queryKey = query.queryKey;
+
+      console.log('updateMyMemoInCache queryKey', queryKey);
+
+      queryClient.setQueryData(queryKey, (oldData: InfiniteQueryResult<JoinedMyMemos[]>) => {
+        console.log('updateMyMemoInCache oldData', oldData);
+        if (!oldData) return oldData; // 캐시가 비어있으면 스킵
+
+        const flatPages = oldData.pages.flat();
+
+        const sortOption = (queryKey[2] as { sortOption: MyMemoSortOption }).sortOption;
+
+        if (command === 'insert') {
+          const newFlatPages = [
+            ...flatPages,
+            {
+              ...memo,
+              item: {
+                ...memo.item,
+                totalCommentCount: (memo.item.totalMemoCount ?? 0) + 1,
+              },
+            },
+          ];
+
+          console.log('updateMyMemoInCache newFlatPages', newFlatPages);
+          const sortedNewFlatPages = sortFlatPagesBySortOption(newFlatPages, sortOption);
+
+          return makeNewInfiniteQueryResult(sortedNewFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
+        }
+
+        if (command === 'delete') {
+          const newFlatPages = flatPages.filter(item => item.id !== memo.id);
+
+          return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
+        }
+
+        return oldData;
+      });
+    });
 };

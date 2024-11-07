@@ -8,49 +8,49 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import SortWithTextButton from '@/components/custom/button/sort-with-text';
-import MyCommentListItemCard from '@/components/custom/card/list-item/my/comment';
-import { MyCommentToRender } from '@/hooks/comment/useMyComments';
-import { MyCommentSortOption } from '@/libs/sort';
+import MyMemoListItemCard from '@/components/custom/card/list-item/my/memo';
+import { MyMemoToRender } from '@/hooks/memo/useMyMemos';
+import { MyMemoSortOption } from '@/libs/sort/my-memo';
 
-interface MyCommentListProps extends Partial<FlashListProps<MyCommentToRender[number]>> {
-  comments: MyCommentToRender;
-  sortOption: MyCommentSortOption;
+interface MyMemoListProps extends Partial<FlashListProps<MyMemoToRender[number]>> {
+  memos: MyMemoToRender;
+  sortOption: MyMemoSortOption;
   onPressSortButton: () => void;
   queryKey: QueryKey;
   isFetchingNextPage: boolean;
 }
 
-const MyCommentList = memo(function MyCommentList({
-  comments,
+const MyMemoList = memo(function MyMemoList({
+  memos,
   sortOption,
   onPressSortButton,
   queryKey,
   isFetchingNextPage,
   ...restProps
-}: MyCommentListProps) {
+}: MyMemoListProps) {
   const { styles } = useStyles(stylesheet);
 
   const tabBarHeight = useBottomTabBarHeight();
 
-  const listRef = useRef<FlashList<MyCommentToRender[number]>>(null);
+  const listRef = useRef<FlashList<MyMemoToRender[number]>>(null);
 
-  const renderItem = useCallback(({ item }: { item: MyCommentToRender[number]; index: number }) => {
+  const renderItem = useCallback(({ item }: { item: MyMemoToRender[number]; index: number }) => {
     const handleMutate = () => {
       listRef.current?.prepareForLayoutAnimationRender();
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     };
-    return <MyCommentListItemCard item={item} onMutate={handleMutate} />;
+    return <MyMemoListItemCard item={item} onMutate={handleMutate} />;
   }, []);
 
   const ListHeaderComponent = useMemo(() => {
-    if (comments.length === 0) return null;
+    if (memos.length === 0) return null;
 
     return (
       <View style={styles.headerRowContainer}>
         <SortWithTextButton text={sortOption.text} onPress={onPressSortButton} />
       </View>
     );
-  }, [comments.length, styles.headerRowContainer, sortOption, onPressSortButton]);
+  }, [memos.length, styles.headerRowContainer, sortOption, onPressSortButton]);
 
   const ListFooterComponent = useMemo(() => {
     if (!isFetchingNextPage) return null;
@@ -74,7 +74,7 @@ const MyCommentList = memo(function MyCommentList({
   return (
     <FlashList
       ref={listRef}
-      data={comments}
+      data={memos}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={ListFooterComponent}
       ListFooterComponentStyle={styles.fetchingNextProgress}
@@ -116,4 +116,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default MyCommentList;
+export default MyMemoList;

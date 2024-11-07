@@ -10,7 +10,10 @@ export class MemosTable {
   }
 
   async upsertMemo(memo: InsertMemo) {
-    const { data, error } = await this.supabaseClient.from('memos').upsert(memo).select('id');
+    const { data, error } = await this.supabaseClient
+      .from('memos')
+      .upsert(memo)
+      .select('id,created_at,updated_at,item:items (id, itemId, itemName, is_online)');
 
     if (error) {
       console.error(error);

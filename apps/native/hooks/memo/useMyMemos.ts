@@ -1,4 +1,4 @@
-import { InfiniteItemsToRender, JoinedMyComments } from '@cococom/supabase/types';
+import { InfiniteItemsToRender, JoinedMyMemos } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 
@@ -8,7 +8,7 @@ import { MyMemoSortOption } from '@/libs/sort/my-memo';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
-export type MyMemoToRender = InfiniteItemsToRender<JoinedMyComments>;
+export type MyMemoToRender = InfiniteItemsToRender<JoinedMyMemos>;
 
 export function useMyMemos(sortOption: MyMemoSortOption) {
   const user = useUserStore(store => store.user);
