@@ -194,6 +194,17 @@ export const updateMyMemoInCache = ({
           return makeNewInfiniteQueryResult(sortedNewFlatPages as any, INFINITE_MEMO_PAGE_SIZE);
         }
 
+        if (command === 'update') {
+          const oldMemoIndex = flatPages.findIndex(item => item.id === memo.id);
+
+          flatPages[oldMemoIndex] = {
+            ...flatPages[oldMemoIndex],
+            ...memo,
+          };
+
+          return makeNewInfiniteQueryResult(flatPages as any, INFINITE_MEMO_PAGE_SIZE);
+        }
+
         if (command === 'delete') {
           const newFlatPages = flatPages.filter(item => item.id !== memo.id);
 
