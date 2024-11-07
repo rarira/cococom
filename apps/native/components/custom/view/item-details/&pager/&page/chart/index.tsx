@@ -96,23 +96,23 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
           ]}
         >
           {({ points, canvasSize }) => {
-            const isXCanvasLeft = state.x.position.value < canvasSize.width / 2;
-            const isYCanvasTop = state.y.value.position.value < canvasSize.height / 2;
+            const isXCanvasLeft = state.x.position.get() < canvasSize.width / 2;
+            const isYCanvasTop = state.y.value.position.get() < canvasSize.height / 2;
             return (
               <>
                 {isActive && (
                   <SKText
                     x={
                       isXCanvasLeft
-                        ? state.x.position.value + theme.spacing.lg
-                        : state.x.position.value -
+                        ? state.x.position.get() + theme.spacing.lg
+                        : state.x.position.get() -
                           font!.measureText(discountInfo.value).width * 2 -
                           theme.spacing.lg
                     }
                     y={
                       isYCanvasTop
-                        ? state.y.value.position.value + theme.spacing.lg * 2
-                        : state.y.value.position.value - theme.spacing.lg
+                        ? state.y.value.position.get() + theme.spacing.lg * 2
+                        : state.y.value.position.get() - theme.spacing.lg
                     }
                     font={discountInfoFont}
                     text={discountInfo}
@@ -143,7 +143,7 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                 </Scatter>
                 {points.value.map(point => {
                   const isYAtBottomCanvas = point.y! > canvasSize.height / 2;
-                  const isActivePoint = isActive && point.x === state.x.position.value;
+                  const isActivePoint = isActive && point.x === state.x.position.get();
                   if (!font) return null;
                   return (
                     <SKText
@@ -191,7 +191,7 @@ const ToolTip = memo(function ToolTip({
 }) {
   const { theme } = useStyles(stylesheet);
 
-  return <Circle cx={x} cy={y} r={8} color={theme.colors.graphStroke} />;
+  return <Circle cx={x.get()} cy={y.get()} r={8} color={theme.colors.graphStroke} />;
 });
 
 const stylesheet = createStyleSheet(theme => ({

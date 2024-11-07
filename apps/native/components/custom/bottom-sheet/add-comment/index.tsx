@@ -18,11 +18,13 @@ import { useUserStore } from '@/store/user';
 interface AddCommentBottomSheetProps {
   bottomSheetRef: RefObject<BottomSheetModal>;
   itemId: number;
+  totalCommentCount: number;
 }
 
 const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
   bottomSheetRef,
   itemId,
+  totalCommentCount,
 }: AddCommentBottomSheetProps) {
   const [content, setContent] = useState('');
 
@@ -57,6 +59,8 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
         ...(data[0] as any),
         content: variables.content,
       };
+
+      newMyComment.item.totalCommentCount = totalCommentCount;
 
       updateMyCommentInCache({
         comment: newMyComment,

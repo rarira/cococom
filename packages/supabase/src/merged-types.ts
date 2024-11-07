@@ -21,11 +21,11 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
 };
 
 export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id' | 'item_id' | 'updated_at'> & {
-  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId'>;
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId' | 'totalCommentCount'>;
 };
 
 export type JoinedMyMemos = Omit<Tables<'memos'>, 'user_id' | 'item_id' | 'created_at'> & {
-  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId'>;
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId' | 'totalMemoCount'>;
 };
 
 export type InfiniteQueryResultPageArray =

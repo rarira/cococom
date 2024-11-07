@@ -9,7 +9,7 @@ import IconButton from '@/components/core/button/icon';
 import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemCommentTabViewProps } from '@/components/custom/tab-view/item/comment';
 import { ItemDetailsTabNames } from '@/constants';
 import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
 import { useRealtimeComments } from '@/hooks/comment/useRealtimeComments';
@@ -17,7 +17,7 @@ import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemCommentListRow from './&row';
 
-interface ItemCommentListProps extends ItemMemoTabViewProps {
+interface ItemCommentListProps extends Omit<ItemCommentTabViewProps, 'totalCommentCount'> {
   onAddCommentPress?: () => void;
 }
 

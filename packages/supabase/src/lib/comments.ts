@@ -54,7 +54,7 @@ export class CommentsTable {
   }) {
     let promise = this.supabaseClient
       .from('comments')
-      .select('id, created_at, content, item:items (id, itemName, itemId)')
+      .select('id, created_at, content, item:items (id, itemName, itemId, totalCommentCount)')
       .eq('user_id', userId);
 
     if (orderBy?.startsWith('item.')) {
@@ -79,7 +79,7 @@ export class CommentsTable {
     const { data, error } = await this.supabaseClient
       .from('comments')
       .insert(comment)
-      .select('id,created_at,item:items (id, itemId, itemName, is_online, totalCommentCount)');
+      .select('id,created_at,item:items (id, itemId, itemName, is_online)');
 
     if (error) {
       console.error(error);

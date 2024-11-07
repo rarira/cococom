@@ -7,7 +7,7 @@ import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
 
 interface ItemMemoViewProps extends ItemMemoTabViewProps {}
 
-const ItemMemoView = memo(function ItemMemoView({ itemId }: ItemMemoViewProps) {
+const ItemMemoView = memo(function ItemMemoView({ itemId, totalMemoCount }: ItemMemoViewProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const handleAddMemoPress = useCallback(() => {
@@ -17,7 +17,11 @@ const ItemMemoView = memo(function ItemMemoView({ itemId }: ItemMemoViewProps) {
   return (
     <>
       <ItemMemoList itemId={itemId} onAddMemoPress={handleAddMemoPress} />
-      <AddMemoBottomSheet itemId={itemId} bottomSheetRef={bottomSheetRef} />
+      <AddMemoBottomSheet
+        itemId={itemId}
+        bottomSheetRef={bottomSheetRef}
+        totalMemoCount={totalMemoCount}
+      />
     </>
   );
 });

@@ -15,7 +15,7 @@ import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemMemoListRow from './&row';
 
-interface ItemMemoListProps extends ItemMemoTabViewProps {
+interface ItemMemoListProps extends Omit<ItemMemoTabViewProps, 'totalMemoCount'> {
   onAddMemoPress?: () => void;
 }
 
@@ -33,11 +33,14 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
     handleRefresh,
   } = useInfiniteMemos(itemId);
 
-  const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
-    return (
-      <ItemMemoListRow memo={item} key={item.id} previousSwipeableRef={previousSwipeableRef} />
-    );
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: NonNullable<Tables<'memos'>> }) => {
+      return (
+        <ItemMemoListRow memo={item} key={item.id} previousSwipeableRef={previousSwipeableRef} />
+      );
+    },
+    [previousSwipeableRef],
+  );
 
   const ListHeaderComponent = useMemo(() => {
     return (

@@ -10,7 +10,7 @@ import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import HeaderRightButton from '@/components/custom/button/header/right';
-import WishlistItemCard from '@/components/custom/card/list-item/wishlist';
+import MyWishlistItemCard from '@/components/custom/card/list-item/my/wish';
 import SearchOptionCheckbox from '@/components/custom/checkbox/search-option';
 import { DiscountChannels } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
@@ -57,7 +57,7 @@ const MyWishlist = memo(function MyWishlist({
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       };
       return (
-        <WishlistItemCard
+        <MyWishlistItemCard
           key={item.itemId}
           item={item}
           queryKey={queryKey}

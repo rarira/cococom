@@ -4,6 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
+import MyMemoList from '@/components/custom/list/my/memo';
 import { useMyMemos } from '@/hooks/memo/useMyMemos';
 import { useSort } from '@/hooks/sort/useSort';
 import { MY_COMMENT_SORT_OPTIONS } from '@/libs/sort/my-comment';
@@ -27,21 +28,20 @@ const MyMemoTabView = memo(function MyMemoTabView() {
   const { memos, isLoading, handleEndReached, isFetchingNextPage, queryKey } =
     useMyMemos(sortOption);
 
-  console.log('my memo tab view', { memos });
   return (
     <>
       {isLoading && <CircularProgress style={styles.loadingProgress} />}
-      {/* {comments && (
-        <MyCommentList
-          comments={comments}
+      {memos && (
+        <MyMemoList
+          memos={memos}
           sortOption={sortOption}
           onPressSortButton={handlePressSortButton}
           queryKey={queryKey}
-          channelOption={channelOption}
           onEndReached={handleEndReached}
           contentContainerStyle={styles.container}
+          isFetchingNextPage={isFetchingNextPage}
         />
-      )} */}
+      )}
       <SortBottomSheet
         sortOptions={MY_COMMENT_SORT_OPTIONS}
         ref={bottomSheetModalRef}
