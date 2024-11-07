@@ -1,7 +1,6 @@
 import type { AppStateStatus } from 'react-native';
 
 import '@/styles/unistyles';
-
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -24,17 +23,19 @@ import { useEffect } from 'react';
 import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
-LogBox.ignoreLogs([
-  'Failed prop type',
-  '[Reanimated] Tried to modify key',
-  '[Reanimated] Reading from `value` during component render.',
-]);
+LogBox.ignoreLogs(['Failed prop type']);
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.error,
+  strict: true, // Reanimated runs in strict mode by default
+});
 
 setDefaultOptions({ locale: ko });
 

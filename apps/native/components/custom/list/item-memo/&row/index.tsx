@@ -26,9 +26,10 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
   const queryClient = useQueryClient();
 
-  const { bottomSheetRef, setMemo } = useMemoEditStore(store => ({
+  const { bottomSheetRef, setMemo, setIsEditMode } = useMemoEditStore(store => ({
     setMemo: store.setMemo,
     bottomSheetRef: store.bottomSheetRef,
+    setIsEditMode: store.setIsEditMode,
   }));
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -68,9 +69,10 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
   const handleEditPress = useCallback(() => {
     setMemo(memo);
+    setIsEditMode(true);
     bottomSheetRef.current?.present();
     swipeableRef.current?.close();
-  }, [bottomSheetRef, memo, setMemo, swipeableRef]);
+  }, [bottomSheetRef, memo, setIsEditMode, setMemo, swipeableRef]);
 
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>

@@ -98,13 +98,13 @@ export default function ItemScreen() {
           name={ItemDetailsTabNames.COMMENT}
           label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
-          <ItemCommentTabView itemId={+itemId} />
+          <ItemCommentTabView itemId={+itemId} totalCommentCount={data.totalCommentCount ?? 0} />
         </Tabs.Tab>
         <Tabs.Tab
           name={ItemDetailsTabNames.MEMO}
           label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
         >
-          <ItemMemoTabView itemId={+itemId} />
+          <ItemMemoTabView itemId={+itemId} totalMemoCount={data.totalMemoCount ?? 0} />
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
         <Tabs.Tab name={`구매기록(3)`}>

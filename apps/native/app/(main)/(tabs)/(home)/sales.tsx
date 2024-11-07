@@ -1,10 +1,10 @@
+import { CategorySectors } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { Route, SceneMap, TabBar, TabView, TabViewProps } from 'react-native-tab-view';
+import { Route, SceneMap, TabBar, TabBarItem, TabBarProps, TabView } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { CategorySectors } from '../../../../../../packages/supabase/dist/lib/lib';
 
 import Chip from '@/components/core/chip';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
@@ -92,30 +92,33 @@ export default function SalesScreen() {
     return SceneMap(sceneMap);
   }, [categorySectorsArray, channelOption.value, sortOption]);
 
-  const renderTabBar = useCallback<NonNullable<TabViewProps<Route>['renderTabBar']>>(
-    props => {
-      return (
-        <TabBar
-          {...props}
-          indicatorContainerStyle={styles.tabBarIndicatorContainer}
-          renderLabel={({ route, focused }) => (
-            <Chip
-              text={route.title!}
-              style={styles.tabBarLabelContainer(focused)}
-              textProps={{ style: styles.tabBarLabelText(focused) }}
-            />
-          )}
-          scrollEnabled
-          style={styles.tabBarContainer}
-          tabStyle={styles.tabContainer}
-          pressOpacity={0.5}
-          bounces
-          gap={theme.spacing.md}
-          // NOTE: TabBar 컴포넌트 버그 이렇게 하거나 scrollToOffset을 requestAnimationFrame적용 필요
-          contentContainerStyle={styles.tabBarContentContainer}
-        />
-      );
-    },
+  const renderTabBar = useCallback(
+    (props: TabBarProps<Route>) => (
+      <TabBar
+        {...props}
+        indicatorContainerStyle={styles.tabBarIndicatorContainer}
+        scrollEnabled
+        style={styles.tabBarContainer}
+        tabStyle={styles.tabContainer}
+        pressOpacity={0.5}
+        bounces
+        gap={theme.spacing.md}
+        contentContainerStyle={styles.tabBarContentContainer}
+        renderTabBarItem={({ key, ...restProps }) => (
+          <TabBarItem
+            key={key}
+            {...restProps}
+            label={({ route, focused }) => (
+              <Chip
+                text={route.title!}
+                style={styles.tabBarLabelContainer(focused)}
+                textProps={{ style: styles.tabBarLabelText(focused) }}
+              />
+            )}
+          />
+        )}
+      />
+    ),
     [styles, theme],
   );
 

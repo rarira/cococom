@@ -88,12 +88,14 @@ export const handleMutateOfInsertComment = async ({
     };
   });
 
-  queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
-    return {
-      ...old,
-      totalCommentCount: (old?.totalCommentCount ?? 0) + 1,
-    };
-  });
+  if (typeof pageIndex === 'undefined') {
+    queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+      return {
+        ...old,
+        totalCommentCount: (old?.totalCommentCount ?? 0) + 1,
+      };
+    });
+  }
 
   return { previousData };
 };
@@ -140,7 +142,7 @@ export const handleMutateOfDeleteComment = async ({
   return { previousData };
 };
 
-export type UpdateMyCommentInCacheParams =
+type UpdateMyCommentInCacheParams =
   | {
       comment: JoinedMyComments;
       userId: string;

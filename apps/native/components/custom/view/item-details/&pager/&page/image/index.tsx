@@ -11,7 +11,8 @@ import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import OpenWebButton from '@/components/custom/button/open-web';
 import { PortalHostNames } from '@/constants';
-import { handleMutateOfItems, queryKeys } from '@/libs/react-query';
+import { queryKeys } from '@/libs/react-query';
+import { handleMutateOfItems } from '@/libs/react-query/item';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
@@ -52,10 +53,10 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
             <OpenWebButton item={item} />
           </View>
         ) : null}
-        <View style={styles.buttonBackground()}>
+        <View style={styles.buttonBackground(false)}>
           <ItemShareButton item={item} />
         </View>
-        <View style={styles.buttonBackground()}>
+        <View style={styles.buttonBackground(false)}>
           <ListItemWishlistIconButton<JoinedItems>
             item={item}
             // noText

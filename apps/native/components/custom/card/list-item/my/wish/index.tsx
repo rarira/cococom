@@ -12,19 +12,19 @@ import { handleMutateOfWishlist } from '@/libs/react-query';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
 
-interface WishlistItemCardProps {
+interface MyWishlistItemCardProps {
   item: WishlistToRender[number];
   containerStyle?: StyleProp<ViewStyle>;
   queryKey: QueryKey;
   onMutate: () => void;
 }
 
-const WishlistItemCard = memo(function WishlistItemCard({
+const MyWishlistItemCard = memo(function MyWishlistItemCard({
   item,
   containerStyle,
   queryKey,
   onMutate,
-}: WishlistItemCardProps) {
+}: MyWishlistItemCardProps) {
   const { styles } = useStyles(stylesheet);
   const queryClient = useQueryClient();
 
@@ -99,4 +99,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default WishlistItemCard;
+export default MyWishlistItemCard;
