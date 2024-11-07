@@ -116,23 +116,27 @@ export const handleMutateOfDeleteComment = async ({
     JoinedComments[]
   >;
 
-  const { flatPages, flatIndex: flatCommentIndex } = findInfinteIndexFromPreviousData({
-    previousData,
-    queryPageSizeConstant: INFINITE_COMMENT_PAGE_SIZE,
-    resourceId: commentId,
-    noNeedToFindIndex: true,
-  });
+  if (previousData) {
+    const { flatPages, flatIndex: flatCommentIndex } = findInfinteIndexFromPreviousData({
+      previousData,
+      queryPageSizeConstant: INFINITE_COMMENT_PAGE_SIZE,
+      resourceId: commentId,
+      noNeedToFindIndex: true,
+    });
 
-  queryClient.setQueryData(queryKey, (old: JoinedItems) => {
-    const newFlatPages = [
-      ...flatPages.slice(0, flatCommentIndex),
-      ...flatPages.slice(flatCommentIndex! + 1),
-    ];
+    queryClient.setQueryData(queryKey, (old: JoinedItems) => {
+      const newFlatPages = [
+        ...flatPages.slice(0, flatCommentIndex),
+        ...flatPages.slice(flatCommentIndex! + 1),
+      ];
 
-    return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
-  });
+      return makeNewInfiniteQueryResult(newFlatPages as any, INFINITE_COMMENT_PAGE_SIZE);
+    });
+  }
 
   queryClient.setQueryData(itemQueryKey, (old: JoinedItems) => {
+    if (!old) return old;
+
     return {
       ...old,
       totalCommentCount: old.totalCommentCount! - 1,
@@ -142,7 +146,7 @@ export const handleMutateOfDeleteComment = async ({
   return { previousData };
 };
 
-type UpdateMyCommentInCacheParams =
+type UpdateMyCommentsParams =
   | {
       comment: JoinedMyComments;
       userId: string;
@@ -156,12 +160,12 @@ type UpdateMyCommentInCacheParams =
       command: 'delete';
     };
 
-export const updateMyCommentInCache = ({
+export const updateMyComments = ({
   comment,
   userId,
   queryClient,
   command,
-}: UpdateMyCommentInCacheParams) => {
+}: UpdateMyCommentsParams) => {
   queryClient
     .getQueryCache()
     .findAll({

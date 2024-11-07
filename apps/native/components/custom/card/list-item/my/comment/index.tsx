@@ -10,7 +10,8 @@ import Text from '@/components/core/text';
 import { ItemDetailsTabNames } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
 import { formatDashedDate } from '@/libs/date';
-import { handleMutateOfDeleteComment, queryKeys, updateMyCommentInCache } from '@/libs/react-query';
+import { handleMutateOfDeleteComment, queryKeys, updateMyComments } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
@@ -34,7 +35,7 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
   const deleteCommentMutation = useMutation({
     mutationFn: () => supabase.comments.deleteComment(comment.id),
     onMutate: () => {
-      updateMyCommentInCache({
+      updateMyComments({
         comment,
         userId: user!.id,
         queryClient,
@@ -48,6 +49,13 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
         queryKey: queryKeys.comments.byItem(comment.item.id),
         commentId: comment.id,
         itemQueryKey: queryKeys.items.byId(comment.item.id, user!.id),
+      });
+
+      updateTotalCountInCache({
+        itemId: comment.item.id,
+        queryClient,
+        totalCountsColumn: 'totalCommentCount',
+        updateType: 'decrease',
       });
     },
   });

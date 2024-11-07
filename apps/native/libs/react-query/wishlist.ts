@@ -11,6 +11,7 @@ import { DiscountChannels, INFINITE_SEARCH_PAGE_SIZE } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 
 import { WishlistSortOption } from '../sort';
+import { findInfinteIndexFromPreviousDataWithTotalRecords } from './util';
 
 import { queryKeys } from '.';
 
@@ -55,7 +56,9 @@ const setQueryDataForJoinedItems = (
   old: Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>[],
   newWishlist: Pick<InsertWishlist, 'itemId'>,
 ) => {
-  const itemIndex = old.findIndex(d => d.id === newWishlist.itemId);
+  const itemIndex = old.findIndex(i => i.id === newWishlist.itemId);
+
+  if (itemIndex === -1) return old;
 
   const updatedItem = {
     ...old[itemIndex],
@@ -80,7 +83,6 @@ const setQueryDataForInfiniteResults = ({
       Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
     >
   >;
-  newWishlist: Pick<InsertWishlist, 'itemId'>;
 }) => {
   if (itemIndex === -1) return old;
   const updatedItem = {
@@ -104,45 +106,6 @@ const setQueryDataForInfiniteResults = ({
     ...restOld,
     pages: [...pages.slice(0, pageIndexOfItem), updatedPage, ...pages.slice(pageIndexOfItem + 1)],
   };
-};
-
-const findInfinteIndexFromPreviousDataWithTotalRecords = <T extends { id: number }>({
-  previousData,
-  queryPageSizeConstant,
-  resourceId,
-  noNeedToFindIndex,
-}: {
-  previousData: InfiniteQueryResult<InfinitResultPagesWithTotalRecords<T>>;
-  queryPageSizeConstant: number;
-  resourceId?: number;
-  noNeedToFindIndex?: boolean;
-}) => {
-  let pageIndex = undefined;
-  let resourceIndex = undefined;
-
-  const flatPages = previousData?.pages.flat();
-
-  const flatItemsPages = flatPages.reduce((acc, page) => {
-    acc.push(...page.items);
-    return acc;
-  }, [] as T[]);
-
-  const flatIndex = resourceId
-    ? flatItemsPages.findIndex(resource => resource.id === resourceId)
-    : -1;
-
-  if (noNeedToFindIndex) {
-    return { flatPages, flatIndex };
-  }
-
-  if (flatIndex === -1) {
-    return { flatPages, pageIndex, resourceIndex };
-  }
-
-  pageIndex = Math.floor(flatIndex / queryPageSizeConstant);
-  resourceIndex = flatIndex % queryPageSizeConstant;
-
-  return { pageIndex, resourceIndex, flatPages };
 };
 
 export const handleMutateOfWishlist = async ({
@@ -242,7 +205,6 @@ export const updateWishlistInCache = ({
                 Pick<JoinedItems, 'id' | 'isWishlistedByUser' | 'totalWishlistCount'>
               >
             >,
-            newWishlist: { itemId },
           });
         }
 
