@@ -20,58 +20,55 @@ SET row_security = off;
 -- Data for Name: profiles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.profiles VALUES ('859133bf-bbea-4a0d-bf64-bf3023e718cb', '박인성', '2024-11-05 13:42:51.236112+00', true, 'rarira@gmail.com', true, true, 'https://k.kakaocdn.net/dn/bKtmuJ/btqAq8w5UdX/5KXg5IyYqaKjc2UztsbIX0/img_110x110.jpg');
+INSERT INTO public.profiles VALUES ('bef9799f-cc23-4bf6-b41c-673f18558624', '박인성', '2024-11-06 17:26:32.539762+00', true, 'rarira@gmail.com', true, true, 'https://k.kakaocdn.net/dn/bKtmuJ/btqAq8w5UdX/5KXg5IyYqaKjc2UztsbIX0/img_110x110.jpg');
 
 
 --
 -- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.comments VALUES (1, '2024-11-05 09:34:34.585785+00', 'ㄹㅂㅈㄹㄹㅈ', 189965, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (4, '2024-11-05 09:35:16.083454+00', 'ㅁㄴㄹㄴㄴ.  ㅇㅇ', 204857, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (10, '2024-11-05 10:44:30.68937+00', '2222', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (11, '2024-11-05 10:47:15.147647+00', '222', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (12, '2024-11-05 10:48:41.926919+00', '333', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (13, '2024-11-05 10:52:05.652+00', '444', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (14, '2024-11-05 10:58:48.122887+00', '555', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (15, '2024-11-05 11:08:48.261307+00', '666', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (16, '2024-11-05 11:10:18.540053+00', '666', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (17, '2024-11-05 11:16:38.407141+00', '777', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (18, '2024-11-05 11:20:24.320731+00', '888', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (19, '2024-11-05 11:20:24.94575+00', '888', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (20, '2024-11-05 11:23:24.66275+00', '999', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (21, '2024-11-05 11:30:08.475157+00', '101010', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (26, '2024-11-05 14:09:42.619991+00', '1616', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.comments VALUES (27, '2024-11-06 00:07:35.171393+00', '1244', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb');
+INSERT INTO public.comments VALUES (28, '2024-11-06 11:47:47.995395+00', '1133', 187354, 'bef9799f-cc23-4bf6-b41c-673f18558624');
+INSERT INTO public.comments VALUES (30, '2024-11-06 11:48:14.955661+00', '4443', 204029, 'bef9799f-cc23-4bf6-b41c-673f18558624');
+INSERT INTO public.comments VALUES (31, '2024-11-06 23:50:14.836645+00', '12443', 187437, 'bef9799f-cc23-4bf6-b41c-673f18558624');
+INSERT INTO public.comments VALUES (32, '2024-11-07 03:19:46.199819+00', 'qwddd', 99671, 'bef9799f-cc23-4bf6-b41c-673f18558624');
+INSERT INTO public.comments VALUES (35, '2024-11-07 14:21:24.918549+00', 'comment', 14772, 'bef9799f-cc23-4bf6-b41c-673f18558624');
 
 
 --
 -- Data for Name: memos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.memos VALUES (1, '2024-11-06 12:48:06.688535+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 202197, 'asfasfdd', '2024-11-06 12:48:06.688535+00');
+INSERT INTO public.memos VALUES (2, '2024-11-06 12:48:11.818087+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 202197, 'gaasdd', '2024-11-06 12:48:11.818087+00');
+INSERT INTO public.memos VALUES (5, '2024-11-06 23:48:19.014699+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 99671, 'dq1233', '2024-11-06 23:48:19.014699+00');
+INSERT INTO public.memos VALUES (17, '2024-11-07 04:05:25.416692+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 99671, 'dasdd', '2024-11-07 04:05:25.416692+00');
+INSERT INTO public.memos VALUES (18, '2024-11-07 07:07:13.34215+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 178402, '1233', '2024-11-07 07:07:13.34215+00');
+INSERT INTO public.memos VALUES (19, '2024-11-07 07:13:03.046579+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 178402, '222', '2024-11-07 07:13:03.046579+00');
+INSERT INTO public.memos VALUES (20, '2024-11-07 07:14:37.031415+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 202197, '333', '2024-11-07 07:14:37.031415+00');
+INSERT INTO public.memos VALUES (21, '2024-11-07 07:17:02.120773+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 202197, '4444', '2024-11-07 07:17:02.120773+00');
+INSERT INTO public.memos VALUES (22, '2024-11-07 07:30:37.449595+00', 'bef9799f-cc23-4bf6-b41c-673f18558624', 202730, '111', '2024-11-07 07:30:37.449595+00');
 
 
 --
 -- Data for Name: wishlists; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.wishlists VALUES ('b2c3816c-e213-4f82-aa26-6da0715ef948', '2024-11-05 14:31:30.357425+00', 16021, '859133bf-bbea-4a0d-bf64-bf3023e718cb', '16021859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.wishlists VALUES ('fba65c3d-41d2-4565-a5a0-61a1026e90fb', '2024-11-05 14:31:32.287254+00', 14772, '859133bf-bbea-4a0d-bf64-bf3023e718cb', '14772859133bf-bbea-4a0d-bf64-bf3023e718cb');
-INSERT INTO public.wishlists VALUES ('b074b3f1-e6e8-4302-9a40-2d43db04b18c', '2024-11-05 14:31:39.344703+00', 9051, '859133bf-bbea-4a0d-bf64-bf3023e718cb', '9051859133bf-bbea-4a0d-bf64-bf3023e718cb');
+INSERT INTO public.wishlists VALUES ('447751ce-aae1-470d-ad9c-7b6745836dad', '2024-11-06 12:17:44.787946+00', 187354, 'bef9799f-cc23-4bf6-b41c-673f18558624', '187354bef9799f-cc23-4bf6-b41c-673f18558624');
+INSERT INTO public.wishlists VALUES ('ef054acc-9361-4019-877d-39266e70e53a', '2024-11-07 14:00:31.598828+00', 14772, 'bef9799f-cc23-4bf6-b41c-673f18558624', '14772bef9799f-cc23-4bf6-b41c-673f18558624');
 
 
 --
 -- Name: comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.comments_id_seq', 27, true);
+SELECT pg_catalog.setval('public.comments_id_seq', 35, true);
 
 
 --
 -- Name: memos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.memos_id_seq', 1, false);
+SELECT pg_catalog.setval('public.memos_id_seq', 28, true);
 
 
 --
