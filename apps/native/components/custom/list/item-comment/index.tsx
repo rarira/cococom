@@ -1,21 +1,23 @@
 import { JoinedComments } from '@cococom/supabase/types';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemCommentTabViewProps } from '@/components/custom/tab-view/item/comment';
+import { ItemDetailsTabNames } from '@/constants';
 import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
 import { useRealtimeComments } from '@/hooks/comment/useRealtimeComments';
+import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemCommentListRow from './&row';
 
-interface ItemCommentListProps extends ItemMemoTabViewProps {
+interface ItemCommentListProps extends Omit<ItemCommentTabViewProps, 'totalCommentCount'> {
   onAddCommentPress?: () => void;
 }
 
@@ -23,6 +25,10 @@ const ItemCommentList = memo(function ItemCommentList({
   itemId,
   onAddCommentPress,
 }: ItemCommentListProps) {
+  const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.COMMENT);
+
+  const tabBarHeight = useBottomTabBarHeight();
+
   const { styles, theme } = useStyles(stylesheet);
   const {
     comments,
@@ -36,11 +42,18 @@ const ItemCommentList = memo(function ItemCommentList({
 
   useRealtimeComments(itemId);
 
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
-
-  const renderItem = useCallback(({ item }: { item: NonNullable<JoinedComments> }) => {
-    return <ItemCommentListRow comment={item} key={item.id} ref={previousSwipeableRef} />;
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: NonNullable<JoinedComments> }) => {
+      return (
+        <ItemCommentListRow
+          comment={item}
+          key={item.id}
+          previousSwipeableRef={previousSwipeableRef}
+        />
+      );
+    },
+    [previousSwipeableRef],
+  );
 
   const ListHeaderComponent = useMemo(() => {
     return (
@@ -108,7 +121,7 @@ const ItemCommentList = memo(function ItemCommentList({
       onRefresh={handleRefresh}
       refreshing={refreshing}
       style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={styles.contentContainer(tabBarHeight)}
     />
   );
 });
@@ -118,9 +131,10 @@ const stylesheet = createStyleSheet(theme => ({
     height: '100%',
     width: '100%',
   },
-  contentContainer: {
+  contentContainer: (tabBarHeight: number) => ({
     paddingHorizontal: theme.screenHorizontalPadding,
-  },
+    paddingBottom: theme.spacing.xl + tabBarHeight,
+  }),
   listEmptyContainer: {
     flexDirection: 'column',
     alignItems: 'center',

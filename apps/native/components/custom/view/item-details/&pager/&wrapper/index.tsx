@@ -7,16 +7,14 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { usePagerViewNavigation } from '@/hooks/usePagerViewNavigation';
 
 import ItemDetailsPagerNavView from '../&nav';
-import ItemDetailsPagerGraphPageView from '../&page/graph';
+import ItemDetailsPagerChartPageView from '../&page/chart';
 import ItemDetailsPagerImagePageView from '../&page/image';
 
 interface ItemDetailsPagerWrapperViewProps {
-  onScrollY?: (value: boolean) => void;
   item: JoinedItems;
 }
 
 const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
-  // onScrollY,
   item,
 }: ItemDetailsPagerWrapperViewProps) {
   const { styles } = useStyles(stylesheet);
@@ -24,24 +22,16 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
   const { pagerViewRef, handlePageSelected, activePage, handleNavigateToPage } =
     usePagerViewNavigation();
 
-  // useAnimatedReaction(
-  //   () => scrollY.value > 0,
-  //   (currentValue, previousValue) => {
-  //     if (previousValue !== null && currentValue !== previousValue) {
-  //       runOnJS(onScrollY)(currentValue);
-  //     }
-  //   },
-  // );
-
   const GraphPages = useMemo(() => {
+    if (!item.discounts) return null;
     const graphValueFieldArray =
       item.lowestPrice === 0 ? ['discount'] : ['discount', 'discountPrice', 'discountRate'];
 
     return graphValueFieldArray.map((valueField, index) => (
       <View style={styles.page} key={index + 1} collapsable={false}>
-        <ItemDetailsPagerGraphPageView
-          discountsData={item.discounts}
-          valueField={valueField as any}
+        <ItemDetailsPagerChartPageView
+          discountsData={item.discounts!}
+          valueField={valueField as 'discount' | 'discountPrice' | 'discountRate'}
         />
       </View>
     ));
@@ -64,7 +54,7 @@ const ItemDetailsPagerWrapperView = memo(function ItemDetailsPagerWrapperView({
       <ItemDetailsPagerNavView
         activePage={activePage}
         handleNavigateToPage={handleNavigateToPage}
-        totalPages={GraphPages.length + 1}
+        totalPages={(GraphPages?.length ?? 0) + 1}
       />
     </View>
   );

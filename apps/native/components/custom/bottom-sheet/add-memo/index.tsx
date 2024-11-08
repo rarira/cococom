@@ -1,4 +1,4 @@
-import { InsertMemo } from '@cococom/supabase/libs';
+import { InsertMemo, JoinedMyMemos } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, RefObject, useCallback, useEffect } from 'react';
@@ -11,7 +11,8 @@ import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfUpsertMemo, queryKeys } from '@/libs/react-query';
+import { handleMutateOfUpsertMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useMemoEditStore } from '@/store/memo-edit';
 import { useUserStore } from '@/store/user';
@@ -19,18 +20,20 @@ import { useUserStore } from '@/store/user';
 interface AddMemoBottomSheetProps {
   bottomSheetRef: RefObject<BottomSheetModal>;
   itemId: number;
+  totalMemoCount: number;
 }
 
 const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
   bottomSheetRef,
   itemId,
+  totalMemoCount,
 }: AddMemoBottomSheetProps) {
   const { styles } = useStyles(stylesheet);
   const { bottom } = useSafeAreaInsets();
   const user = useUserStore(store => store.user);
   const queryClient = useQueryClient();
 
-  const { memo, setMemo, setBottomSheetRef } = useMemoEditStore();
+  const { memo, isEditMode, setMemo, setBottomSheetRef, setIsEditMode } = useMemoEditStore();
 
   useEffect(() => {
     setBottomSheetRef(bottomSheetRef);
@@ -43,22 +46,50 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
 
   const upsertMemoMutation = useMutation({
     mutationFn: (newMemo: InsertMemo) => {
-      return supabase.upsertMemo(newMemo);
+      return supabase.memos.upsertMemo(newMemo);
     },
-    onMutate: (newMemo: InsertMemo) => {
+    onMutate: () => {
+      return { previousData: queryClient.getQueryData(queryKey) };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: (data, variables) => {
+      const newMemo = {
+        ...data[0],
+        ...variables,
+      };
+
+      const newMyMemo: JoinedMyMemos = {
+        ...(data[0] as any),
+        content: variables.content,
+      };
+
+      newMyMemo.item.totalMemoCount = totalMemoCount;
+
+      updateMyMemos({
+        memo: newMyMemo,
+        userId: user!.id,
+        queryClient,
+        command: isEditMode ? 'update' : 'insert',
+      });
+
+      if (!isEditMode) {
+        updateTotalCountInCache({
+          itemId,
+          queryClient,
+          excludeQueryKey: 'items',
+          totalCountsColumn: 'totalMemoCount',
+          updateType: 'increase',
+        });
+      }
+
       return handleMutateOfUpsertMemo({
         queryClient,
         queryKey,
         newMemo,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
-    },
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previousData);
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.id) return;
-      queryClient.invalidateQueries({ queryKey });
     },
   });
 
@@ -76,11 +107,23 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
 
     try {
       await upsertMemoMutation.mutateAsync(newMemo);
+      if (isEditMode) {
+        setIsEditMode(false);
+      }
       bottomSheetRef.current?.dismiss();
     } catch (error) {
       console.error(error);
     }
-  }, [user, itemId, memo, upsertMemoMutation, bottomSheetRef]);
+  }, [
+    user,
+    itemId,
+    memo.id,
+    memo.content,
+    upsertMemoMutation,
+    isEditMode,
+    bottomSheetRef,
+    setIsEditMode,
+  ]);
 
   const handleDismiss = useCallback(() => {
     setMemo({ content: '' });

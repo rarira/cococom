@@ -1,6 +1,6 @@
 import { JoinedComments } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { forwardRef, memo, MutableRefObject, useCallback } from 'react';
+import { memo, MutableRefObject, useCallback } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -8,14 +8,16 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
-import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
+import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteComment, queryKeys } from '@/libs/react-query';
+import { handleMutateOfDeleteComment, queryKeys, updateMyComments } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 interface ItemCommentListRowProps {
   comment: JoinedComments;
+  previousSwipeableRef: MutableRefObject<SwipeableMethods | null>;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
@@ -38,8 +40,8 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
   const queryKey = queryKeys.comments.byItem(comment.item_id);
 
-  const deleteMemoMutation = useMutation({
-    mutationFn: () => supabase.deleteComment(comment.id),
+  const deleteCommentMutation = useMutation({
+    mutationFn: () => supabase.comments.deleteComment(comment.id),
     onMutate: () => {
       return handleMutateOfDeleteComment({
         queryClient,
@@ -51,15 +53,31 @@ const RightAction = memo(({ dragX, comment }: any) => {
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
     },
+    onSuccess: () => {
+      updateMyComments({
+        comment: { id: comment.id },
+        userId: user!.id,
+        queryClient,
+        command: 'delete',
+      });
+
+      updateTotalCountInCache({
+        itemId: comment.item_id,
+        queryClient,
+        totalCountsColumn: 'totalCommentCount',
+        updateType: 'decrease',
+        excludeQueryKey: 'items',
+      });
+    },
   });
 
   const handleDeletePress = useCallback(async () => {
     try {
-      await deleteMemoMutation.mutateAsync();
+      await deleteCommentMutation.mutateAsync();
     } catch (e) {
       console.error(e);
     }
-  }, [deleteMemoMutation]);
+  }, [deleteCommentMutation]);
 
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
@@ -78,46 +96,51 @@ const RightAction = memo(({ dragX, comment }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemCommentListRow = memo(
-  forwardRef<SwipeableMethods, ItemCommentListRowProps>(function ItemCommentListRow(
-    { comment },
-    previousSwipeableRef,
-  ) {
-    const { styles } = useStyles(stylesheet);
-    const user = useUserStore(store => store.user);
+const ItemCommentListRow = memo(function ItemCommentListRow({
+  comment,
+  previousSwipeableRef,
+}: ItemCommentListRowProps) {
+  const { styles } = useStyles(stylesheet);
+  const user = useUserStore(store => store.user);
 
-    const renderRightActions = useCallback(
-      (_progress: any, translation: SharedValue<number>) => (
-        <RightAction dragX={translation} comment={comment} />
-      ),
-      [comment],
-    );
+  const renderRightActions = useCallback(
+    (_progress: any, translation: SharedValue<number>) => (
+      <RightAction dragX={translation} comment={comment} />
+    ),
+    [comment],
+  );
 
-    const swipeableProps = useOnlyOneSwipeable(
-      previousSwipeableRef as MutableRefObject<SwipeableMethods>,
-    );
+  const swipeableProps = useOnlyOneSwipeable(
+    previousSwipeableRef as MutableRefObject<SwipeableMethods>,
+  );
 
-    return (
-      <Swipeable
-        friction={2}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={40}
-        renderRightActions={(_, progress) => renderRightActions(_, progress)}
-        {...swipeableProps}
-      >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.authorText(comment.author.id === user?.id)}>
-              {comment.author.nickname}
-            </Text>
-            <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
+  const isMyself = comment.author.id === user?.id;
+
+  return (
+    <Swipeable
+      friction={2}
+      enableTrackpadTwoFingerGesture
+      rightThreshold={40}
+      renderRightActions={(_, progress) => renderRightActions(_, progress)}
+      {...swipeableProps}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.authorContainer}>
+            <Text style={styles.authorText(isMyself)}>{comment.author.nickname}</Text>
+            {isMyself ? (
+              <View style={styles.authorIcon}>
+                <Text style={styles.authorIconText}>나</Text>
+              </View>
+            ) : null}
           </View>
-          <Text style={styles.contentText}>{comment.content}</Text>
+          <Text style={styles.timeText}>{formatLongLocalizedDateTime(comment.created_at)}</Text>
         </View>
-      </Swipeable>
-    );
-  }),
-);
+        <Text style={styles.contentText}>{comment.content}</Text>
+      </View>
+    </Swipeable>
+  );
+});
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
@@ -131,9 +154,29 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     width: '100%',
   },
+  authorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  authorIcon: {
+    width: theme.fontSize.sm,
+    height: theme.fontSize.sm,
+    borderRadius: theme.fontSize.sm / 4,
+    backgroundColor: theme.colors.tint3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  authorIconText: {
+    fontSize: theme.fontSize.xs,
+    color: 'white',
+    lineHeight: theme.fontSize.xs,
+    fontWeight: 'bold',
+  },
   authorText: (myself: boolean) => ({
     fontSize: theme.fontSize.normal,
     color: myself ? theme.colors.tint : `${theme.colors.typography}BB`,
+    fontWeight: myself ? 'bold' : 'normal',
   }),
   timeText: {
     fontSize: theme.fontSize.sm,

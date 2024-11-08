@@ -1,3 +1,4 @@
+import { forwardRef, memo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -11,26 +12,31 @@ export interface IconButtonProps extends Omit<ButtonProps, 'children'> {
   textStyle?: TextProps['style'];
 }
 
-function IconButton({ style, text, iconProps, textStyle, ...restProps }: IconButtonProps) {
-  const { styles } = useStyles(stylesheet);
+export default memo(
+  forwardRef<typeof Button, IconButtonProps>(function IconButton(
+    { style, text, iconProps, textStyle, ...restProps }: IconButtonProps,
+    ref,
+  ) {
+    const { styles } = useStyles(stylesheet);
 
-  return (
-    <Button
-      style={state => [styles.container, typeof style === 'function' ? style(state) : style]}
-      {...restProps}
-    >
-      <Icon {...iconProps} />
-      {/* <MaterialIcons color={theme.colors.typography} size={theme.fontSize.md} {...iconProps} /> */}
-      {text && (
-        <View style={styles.textContainer}>
-          <Text type="defaultSemiBold" style={[styles.text, textStyle]}>
-            {text}
-          </Text>
-        </View>
-      )}
-    </Button>
-  );
-}
+    return (
+      <Button
+        style={state => [styles.container, typeof style === 'function' ? style(state) : style]}
+        {...restProps}
+      >
+        <Icon {...iconProps} />
+        {/* <MaterialIcons color={theme.colors.typography} size={theme.fontSize.md} {...iconProps} /> */}
+        {text && (
+          <View style={styles.textContainer}>
+            <Text type="defaultSemiBold" style={[styles.text, textStyle]}>
+              {text}
+            </Text>
+          </View>
+        )}
+      </Button>
+    );
+  }),
+);
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
@@ -48,5 +54,3 @@ const stylesheet = createStyleSheet(theme => ({
     lineHeight: theme.fontSize.sm * 1.5,
   },
 }));
-
-export default IconButton;

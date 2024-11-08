@@ -1,9 +1,8 @@
-import { InfiniteSearchResultPages } from '@cococom/supabase/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
-import { DiscountChannels } from '@/constants';
+import { DiscountChannels, INFINITE_SEARCH_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import {
   getSearchHistoryHash,
@@ -22,7 +21,7 @@ type UseSearchInputParams = {
   channelOption: DiscountChannels;
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = INFINITE_SEARCH_PAGE_SIZE;
 
 export function useSearchInput({
   addSearchHistory,
@@ -62,43 +61,41 @@ export function useSearchInput({
     keywordToSearch,
     isOnSaleSearch,
     SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-    SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
+    SEARCH_ITEM_SORT_OPTIONS[sortOption].orderDirection,
     channelOption,
     user?.id,
   );
 
   const { data, isFetching, isLoading, isFetchingNextPage, isSuccess, fetchNextPage, hasNextPage } =
-    useInfiniteQuery<InfiniteSearchResultPages>({
+    useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
       queryFn: ({ pageParam }) => {
-        if (isItemIdSearch) {
-          return supabase.fullTextSearchItemsByItemId(
-            channelOption,
-            keywordToSearch,
-            !!isOnSaleSearch,
-            user?.id,
-            pageParam as number,
-            PAGE_SIZE,
-            SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-            SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-          );
-        }
-        return supabase.fullTextSearchItemsByKeyword(
+        const commonParams = {
           channelOption,
-          keywordToSearch,
-          !!isOnSaleSearch,
-          user?.id,
-          pageParam as number,
-          PAGE_SIZE,
-          SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
-          SEARCH_ITEM_SORT_OPTIONS[sortOption].direction,
-        );
+          isOnsale: !!isOnSaleSearch,
+          userId: user?.id,
+          page: pageParam,
+          pageSize: PAGE_SIZE,
+          sortField: SEARCH_ITEM_SORT_OPTIONS[sortOption].field,
+          sortDirection: SEARCH_ITEM_SORT_OPTIONS[sortOption].orderDirection,
+        };
+
+        if (isItemIdSearch) {
+          return supabase.items.fullTextSearchItemsByItemId({
+            ...commonParams,
+            itemId: keywordToSearch,
+          });
+        }
+        return supabase.items.fullTextSearchItemsByKeyword({
+          keyword: keywordToSearch,
+          ...commonParams,
+        });
       },
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return undefined;
-        return allPages.length + 1;
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, _, lastPageParam) => {
+        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
+        return lastPageParam + 1;
       },
       enabled: !!keywordToSearch,
     });
@@ -168,7 +165,6 @@ export function useSearchInput({
     isFetchingNextPage,
     handlePressSearchHistory,
     searchResult,
-    hasNextPage,
     handleEndReached,
     sortOption,
     handleSortChange,

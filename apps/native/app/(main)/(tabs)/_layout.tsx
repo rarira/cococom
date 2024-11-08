@@ -1,8 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { BottomTabBar } from '@react-navigation/bottom-tabs';
+import { RouteProp } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
 import React, { ComponentProps } from 'react';
 import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TabBarIcon from '@/components/custom/navigation/tab-bar-icon';
@@ -41,15 +43,16 @@ export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
 
   const tabBarVisible = useUIStore(state => state.tabBarVisible);
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <Tabs
-      screenOptions={({ route }) => {
+      screenOptions={({ route }: { route: RouteProp<any, any> }) => {
         return {
           tabBarActiveTintColor: theme.colors.tint,
           headerShown: false,
           freezeOnBlur: true,
-          tabBarIcon: ({ color, focused }) => {
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => {
             return (
               <TabBarIcon
                 name={
@@ -60,7 +63,8 @@ export default function TabLayout() {
               />
             );
           },
-          tabBarStyle: styles.tabBar,
+          tabBarStyle: styles.tabBar(bottom),
+          tabBarHideOnKeyboard: true,
         };
       }}
       tabBar={props => {
@@ -69,7 +73,7 @@ export default function TabLayout() {
             style={styles.tabBarContainer(tabBarVisible)}
             layout={LinearTransition.duration(100).delay(0).reduceMotion(ReduceMotion.Never)}
           >
-            <BottomTabBar {...props} />
+            <BottomTabBar {...props} style={{ paddingBottom: theme.spacing.lg }} />
           </Animated.View>
         );
       }}
@@ -103,10 +107,12 @@ export default function TabLayout() {
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  tabBar: {
+  tabBar: (bottom: number) => ({
     backgroundColor: theme.colors.cardBackground,
-  },
+    height: 60 + bottom,
+  }),
   tabBarContainer: (tabBarVisible: boolean) => ({
+    flex: 1,
     height: tabBarVisible ? 'auto' : 0,
     position: 'absolute',
     bottom: 0,

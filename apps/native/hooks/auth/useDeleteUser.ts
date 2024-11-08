@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { findAllQueryKeysByUserId } from '@/libs/react-query';
+import { useSignOut } from '@/hooks/auth/useSignOut';
+import { findAllQueryKeysByUserId } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
-
-import { useSignOut } from './useSignOut';
 
 export function useDeleteUser() {
   const { user, setAuthProcessing } = useUserStore(state => ({
@@ -19,7 +18,7 @@ export function useDeleteUser() {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      await supabase.deleteUser(userId);
+      await supabase.auth.deleteUser(userId);
     },
     onSuccess: async (_data, variables) => {
       findAllQueryKeysByUserId(queryClient, variables).forEach(key => {

@@ -1,10 +1,10 @@
+/* eslint-disable import/order */
 /* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line import/order
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
-import { InsertDiscount } from '@cococom/supabase/libs';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
@@ -18,6 +18,8 @@ import {
   OnlineSubCategoryLink,
   SearchApiResult,
 } from '../libs/types.js';
+
+import { InsertDiscount } from '@cococom/supabase/types';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
@@ -45,7 +47,8 @@ function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
     !category?.startsWith('cos') ||
     CATEGORY_EXCLUDE.includes(category) ||
     category.startsWith('cos_17') ||
-    category.startsWith('cos_18')
+    category.startsWith('cos_18') ||
+    category.startsWith('cos_morning')
   ) {
     return;
   }
@@ -103,27 +106,27 @@ function getSubSubCategories($: cheerio.CheerioAPI, element: any) {
   return objectList;
 }
 
-async function getAllCategoryInfo() {
-  const subCategoryLinks: OnlineSubCategoryLink[] = [];
-  try {
-    const response = await axios.get(`${process.env['3RD_API_SITEMAP_URL']!}`);
+// async function getAllCategoryInfo() {
+//   const subCategoryLinks: OnlineSubCategoryLink[] = [];
+//   try {
+//     const response = await axios.get(`${process.env['3RD_API_SITEMAP_URL']!}`);
 
-    const $ = cheerio.load(response.data);
+//     const $ = cheerio.load(response.data);
 
-    $('.sub_category .sub-list-title a').each((_index, element) => {
-      const object = createSubCategoryLink($, element);
-      if (object) {
-        subCategoryLinks.push(...object);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-  }
+//     $('.sub_category .sub-list-title a').each((_index, element) => {
+//       const object = createSubCategoryLink($, element);
+//       if (object) {
+//         subCategoryLinks.push(...object);
+//       }
+//     });
+//   } catch (error) {
+//     console.error(error);
+//   }
 
-  console.log('subCategoryLinks', subCategoryLinks.length);
+//   console.log('subCategoryLinks', subCategoryLinks.length);
 
-  await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
-}
+//   await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
+// }
 
 async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
@@ -174,12 +177,14 @@ async function getAllItems() {
   const allProducts: OnlineProduct[] = [];
 
   const updatedSubCategoryLinks = (await readJsonFile(
-    'data/online_updatedSubCategoryLinks.json',
+    'data/readonly/online_updatedSubCategoryLinks.json',
   )) as OnlineSubCategoryLink[];
 
   console.log('updatedSubCategoryLinks', updatedSubCategoryLinks.length);
 
   const promises = updatedSubCategoryLinks.map(async subCategoryLink => {
+    // if (subCategoryLink.category !== 'cos_10.4.4') return null;
+
     const { totalProducts, products } = await getAllItemsByCategory(
       subCategoryLink.category,
       subCategoryLink.categoryId!,
@@ -189,7 +194,7 @@ async function getAllItems() {
     allProducts.push(...products);
   });
 
-  await Promise.allSettled(promises);
+  await Promise.allSettled(promises.filter(promise => promise !== null));
 
   const uniqueProducts = await removeDuplicateProducts(allProducts);
 
@@ -203,6 +208,8 @@ async function getAllItems() {
     console.log('no sale products');
     return;
   }
+
+  const tempObject: Record<string, OnlineProduct> = {};
 
   for (const product of saleProducts) {
     if (!product.code) {
@@ -218,11 +225,18 @@ async function getAllItems() {
     if (!product.basePrice?.value || !product.price?.value) {
       console.log('no price or basePrice', product.code);
     }
+
+    if (!tempObject[product.code]) tempObject[product.code] = product;
   }
 
-  await writeJsonFile(`data/online_saleProducts_${date}.json`, saleProducts);
+  const salesProductsWithNoDuplicate = Object.values(tempObject);
 
-  console.log('sales product count', saleProducts.length);
+  await writeJsonFile(
+    `data/online_saleProducts_${date}.json`,
+    Object.values(salesProductsWithNoDuplicate),
+  );
+
+  console.log('sales product count', saleProducts.length, salesProductsWithNoDuplicate.length);
 }
 
 async function removeDuplicateProducts(products: OnlineProduct[]) {
@@ -335,7 +349,7 @@ async function upsertOnlineUrlToItem() {
     `data/online_downloadResult_itemIds_${date}.json`,
   )) as ItemId[];
 
-  const result = await supabase.upsertItem(itemIds, {
+  const result = await supabase.items.upsertItem(itemIds, {
     ignoreDuplicates: false,
     onConflict: 'itemId',
   });
@@ -353,7 +367,7 @@ async function manageSoldOutDiscounts() {
   console.log(date, 'will manage sold out discounts for', salesProducts.length, 'products');
 
   try {
-    const result = await supabase.fetchCurrentOnlineDiscounts(date!);
+    const result = await supabase.discounts.fetchCurrentOnlineDiscounts(date!);
 
     if (!result?.length) {
       console.error('no current online discounts');
@@ -371,7 +385,7 @@ async function manageSoldOutDiscounts() {
       };
     });
 
-    const upsertDiscountResult = await supabase.upsertDiscount(
+    const upsertDiscountResult = await supabase.discounts.upsertDiscount(
       discountsToUpsert as InsertDiscount[],
       {
         ignoreDuplicates: false,
@@ -417,7 +431,7 @@ async function uploadNewRecords() {
     }
   });
 
-  const newlyAddedItems = await supabase.upsertItem(
+  const newlyAddedItems = await supabase.items.upsertItem(
     salesProducts.map(product => ({
       itemId: product.code + '_online',
       itemName: product.name,
@@ -436,9 +450,15 @@ async function uploadNewRecords() {
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
 
+  console.log('will upsert discounts', salesProducts.length);
+
   try {
-    const newlyAddedDiscounts = await supabase.upsertDiscount(
+    const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
       salesProducts.map(product => {
+        if (!product.couponDiscount) {
+          console.log('no couponDiscount', JSON.stringify(product));
+        }
+
         return {
           itemId: product.code + '_online',
           startDate: product.couponDiscount!.discountStartDate,
@@ -453,8 +473,10 @@ async function uploadNewRecords() {
           is_online: true,
         };
       }),
+      // { ignoreDuplicates: false, onConflict: 'discountHash' },
     );
 
+    console.log('newlyAddedDiscounts', newlyAddedDiscounts?.length);
     if (newlyAddedDiscounts?.length) {
       newDiscountsCount += newlyAddedDiscounts.length;
       const newlyAddedDiscountsItemIdsSet = new Set(
@@ -475,7 +497,7 @@ async function uploadNewRecords() {
 }
 
 async function updateRelatedItemId() {
-  const data = await supabase.fetchOnlineItemsWithNullRelatedItem();
+  const data = await supabase.items.fetchOnlineItemsWithNullRelatedItem();
 
   if (!data?.length) {
     console.log('no data');
@@ -490,7 +512,7 @@ async function updateRelatedItemId() {
 async function createHistory() {
   if (!newItems.length) return;
 
-  await supabase.insertHistory({
+  await supabase.histories.insertHistory({
     new_item_count: newItems.length,
     added_discount_count: newDiscountsCount,
     no_images: [],
@@ -500,15 +522,15 @@ async function createHistory() {
 }
 
 (async () => {
+  // 카테고리 업데이트
   // await getAllCategoryInfo();
+
+  // 루틴
   await getAllItems();
-  // await updateDownloadResult();
   await downloadImages();
   await upsertOnlineUrlToItem();
   await manageSoldOutDiscounts();
   await uploadNewRecords();
-  // await updateRelatedItemId();
+  await updateRelatedItemId();
   await createHistory();
-  // 수동으로
-  // await updateSubCategoryLinks();
 })();

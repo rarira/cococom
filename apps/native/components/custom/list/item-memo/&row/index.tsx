@@ -1,6 +1,6 @@
 import { Tables } from '@cococom/supabase/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { forwardRef, memo, MutableRefObject, useCallback } from 'react';
+import { memo, MutableRefObject, useCallback } from 'react';
 import { View } from 'react-native';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -8,14 +8,16 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import Text from '@/components/core/text';
-import { useOnlyOneSwipeable } from '@/hooks/useOnlyOneSwipeable';
+import { useOnlyOneSwipeable } from '@/hooks/swipeable/useOnlyOneSwipeable';
 import { formatLongLocalizedDateTime } from '@/libs/date';
-import { handleMutateOfDeleteMemo, queryKeys } from '@/libs/react-query';
+import { handleMutateOfDeleteMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useMemoEditStore } from '@/store/memo-edit';
 
 interface ItemMemoListRowProps {
   memo: Tables<'memos'>;
+  previousSwipeableRef: MutableRefObject<SwipeableMethods | null>;
 }
 
 const ACTION_BUTTON_WIDTH = 50;
@@ -25,9 +27,10 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
   const queryClient = useQueryClient();
 
-  const { bottomSheetRef, setMemo } = useMemoEditStore(store => ({
+  const { bottomSheetRef, setMemo, setIsEditMode } = useMemoEditStore(store => ({
     setMemo: store.setMemo,
     bottomSheetRef: store.bottomSheetRef,
+    setIsEditMode: store.setIsEditMode,
   }));
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -43,7 +46,7 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
   const queryKey = queryKeys.memos.byItem(memo.itemId, memo.userId);
 
   const deleteMemoMutation = useMutation({
-    mutationFn: () => supabase.deleteMemo(memo.id),
+    mutationFn: () => supabase.memos.deleteMemo(memo.id),
     onMutate: () => {
       return handleMutateOfDeleteMemo({
         queryClient,
@@ -54,6 +57,22 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
     },
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: () => {
+      updateMyMemos({
+        memo,
+        userId: memo.userId,
+        queryClient,
+        command: 'delete',
+      });
+
+      updateTotalCountInCache({
+        itemId: memo.itemId,
+        queryClient,
+        totalCountsColumn: 'totalMemoCount',
+        updateType: 'decrease',
+        excludeQueryKey: 'items',
+      });
     },
   });
 
@@ -67,9 +86,10 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
   const handleEditPress = useCallback(() => {
     setMemo(memo);
+    setIsEditMode(true);
     bottomSheetRef.current?.present();
     swipeableRef.current?.close();
-  }, [bottomSheetRef, memo, setMemo, swipeableRef]);
+  }, [bottomSheetRef, memo, setIsEditMode, setMemo, swipeableRef]);
 
   return (
     <Animated.View style={[styles.actionButtonContainer, animatedStyle]}>
@@ -97,44 +117,40 @@ const RightAction = memo(({ dragX, swipeableRef, memo }: any) => {
 
 RightAction.displayName = 'RightAction';
 
-const ItemMemoListRow = memo(
-  forwardRef<SwipeableMethods, ItemMemoListRowProps>(function ItemMemoListRow(
-    { memo },
-    previousSwipeableRef,
-  ) {
-    const { styles } = useStyles(stylesheet);
+const ItemMemoListRow = memo(function ItemMemoListRow({
+  memo,
+  previousSwipeableRef,
+}: ItemMemoListRowProps) {
+  const { styles } = useStyles(stylesheet);
 
-    const renderRightActions = useCallback(
-      (
-        _progress: any,
-        translation: SharedValue<number>,
-        swipeableRef: React.RefObject<SwipeableMethods>,
-      ) => <RightAction dragX={translation} swipeableRef={swipeableRef} memo={memo} />,
-      [memo],
-    );
+  const renderRightActions = useCallback(
+    (
+      _progress: any,
+      translation: SharedValue<number>,
+      swipeableRef: React.RefObject<SwipeableMethods>,
+    ) => <RightAction dragX={translation} swipeableRef={swipeableRef} memo={memo} />,
+    [memo],
+  );
 
-    const swipeableProps = useOnlyOneSwipeable(
-      previousSwipeableRef as MutableRefObject<SwipeableMethods>,
-    );
+  const swipeableProps = useOnlyOneSwipeable(previousSwipeableRef);
 
-    return (
-      <Swipeable
-        friction={2}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={40}
-        renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableProps.ref)}
-        {...swipeableProps}
-      >
-        <View style={styles.container}>
-          <Text style={styles.timeText}>
-            {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
-          </Text>
-          <Text style={styles.contentText}>{memo.content}</Text>
-        </View>
-      </Swipeable>
-    );
-  }),
-);
+  return (
+    <Swipeable
+      friction={2}
+      enableTrackpadTwoFingerGesture
+      rightThreshold={40}
+      renderRightActions={(_, progress) => renderRightActions(_, progress, swipeableProps.ref)}
+      {...swipeableProps}
+    >
+      <View style={styles.container}>
+        <Text style={styles.timeText}>
+          {formatLongLocalizedDateTime(memo.updated_at || memo.created_at)}
+        </Text>
+        <Text style={styles.contentText}>{memo.content}</Text>
+      </View>
+    </Swipeable>
+  );
+});
 
 const stylesheet = createStyleSheet(theme => ({
   container: {
@@ -145,7 +161,6 @@ const stylesheet = createStyleSheet(theme => ({
   timeText: {
     fontSize: theme.fontSize.sm,
     color: `${theme.colors.typography}BB`,
-    alignSelf: 'flex-end',
   },
   contentText: {
     fontSize: theme.fontSize.normal,
@@ -156,6 +171,7 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginLeft: theme.spacing.xl,
+    paddingLeft: theme.spacing.xl,
     width: ACTION_BUTTON_WIDTH * 2,
   },
   actionButton: (backgroundColor: string) => ({

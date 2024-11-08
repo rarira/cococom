@@ -33,7 +33,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   rotateButtonText: {
     fontSize: theme.fontSize.sm,
-    lineHeight: theme.fontSize.sm,
+    lineHeight: theme.fontSize.sm * 1.5,
     fontWeight: 'bold',
     color: theme.colors.typography,
   },

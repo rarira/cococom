@@ -20,7 +20,7 @@ export function useAlltimeRankingQuery(
     channel,
     user?.id ?? null,
     sortOption.field,
-    sortOption.orderBy,
+    sortOption.orderDirection,
     limit ?? 50,
   );
 
@@ -28,11 +28,11 @@ export function useAlltimeRankingQuery(
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey,
     queryFn: () => {
-      return supabase.fetchAlltimeRankingItems({
+      return supabase.items.fetchAlltimeRankingItems({
         channel,
         userId: user?.id,
         orderByColumn: sortOption.field,
-        orderByDirection: sortOption.orderBy,
+        orderByDirection: sortOption.orderDirection,
         limitCount: limit ?? 50,
       });
     },
@@ -44,5 +44,5 @@ export function useAlltimeRankingQuery(
     setRefreshing(false);
   }, [refetch]);
 
-  return { data, error, isLoading, queryKey, refreshing, handleRefresh };
+  return { data, error, isLoading, refreshing, handleRefresh };
 }

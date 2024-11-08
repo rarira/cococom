@@ -1,8 +1,6 @@
 import type { AppStateStatus } from 'react-native';
 
 import '@/styles/unistyles';
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -25,17 +23,19 @@ import { useEffect } from 'react';
 import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useDevPlugins } from '@/hooks/useDevPlugins';
 import { useLoadUser } from '@/hooks/useLoadUser';
 
-LogBox.ignoreLogs([
-  'Support for defaultProps will be removed from',
-  'A props object containing',
-  'Failed prop type',
-  '[Reanimated] Tried to modify key',
-]);
+LogBox.ignoreLogs(['Failed prop type']);
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.error,
+  strict: true, // Reanimated runs in strict mode by default
+});
 
 setDefaultOptions({ locale: ko });
 
@@ -46,21 +46,14 @@ initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const reactNavigationIntegration = Sentry.reactNavigationIntegration();
 
 const queryClient = new QueryClient();
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-  // debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
-      routingInstrumentation,
-      enableNativeFramesTracking: !isRunningInExpoGo(),
-      // ...
-    }),
-  ],
+  enableNativeFramesTracking: !isRunningInExpoGo(),
+  integrations: [reactNavigationIntegration],
 });
 
 onlineManager.setEventListener(setOnline => {
@@ -78,11 +71,11 @@ function onAppStateChange(status: AppStateStatus) {
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
 
-  useReactNavigationDevTools(navigationRef);
-  useReactQueryDevTools(queryClient);
+  useDevPlugins({ queryClient, navigationRef });
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Inter: require('../assets/fonts/Inter_18pt-Medium.ttf'),
   });
 
   useLoadUser();
@@ -90,7 +83,7 @@ function RootLayout() {
 
   useEffect(() => {
     if (navigationRef) {
-      routingInstrumentation.registerNavigationContainer(navigationRef);
+      reactNavigationIntegration.registerNavigationContainer(navigationRef);
     }
   }, [navigationRef]);
 

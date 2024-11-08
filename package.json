@@ -5,14 +5,20 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
     "turbo": "^2.0.6",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "patch-package": "^8.0.0"
   },
-  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "engines": {
     "node": ">=18"
   },
@@ -23,9 +29,6 @@
         "expo-modules-*",
         "typescript"
       ]
-    },
-    "patchedDependencies": {
-      "react-native-collapsible-tab-view": "patches/react-native-collapsible-tab-view.patch"
     }
   }
 }

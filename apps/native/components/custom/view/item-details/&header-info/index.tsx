@@ -29,7 +29,7 @@ const ItemDetailsHeaderInfoView = memo(function ItemDetailsHeaderInfoView({
           <View style={styles.saleInfoContainer}>
             <View style={styles.periodContainer}>
               <Text style={styles.onSaleText}>할인중</Text>
-              <DiscountPeriodText startDate={discount.startDate} endDate={discount.endDate} />
+              <DiscountPeriodText endDate={discount.endDate} />
             </View>
             {discountType === 'normal' ? (
               <DiscountPriceView

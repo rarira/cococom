@@ -1,4 +1,4 @@
-import { InsertComment } from '@cococom/supabase/libs';
+import { InsertComment, JoinedMyComments } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { memo, RefObject, useCallback, useState } from 'react';
@@ -11,18 +11,21 @@ import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import BottomSheetTextInput from '@/components/custom/text-input/bottom-sheet';
 import { MAX_MEMO_LENGTH } from '@/constants';
-import { handleMutateOfInsertComment, queryKeys } from '@/libs/react-query';
+import { handleMutateOfInsertComment, queryKeys, updateMyComments } from '@/libs/react-query';
+import { updateTotalCountInCache } from '@/libs/react-query/util';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 interface AddCommentBottomSheetProps {
   bottomSheetRef: RefObject<BottomSheetModal>;
   itemId: number;
+  totalCommentCount: number;
 }
 
 const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
   bottomSheetRef,
   itemId,
+  totalCommentCount,
 }: AddCommentBottomSheetProps) {
   const [content, setContent] = useState('');
 
@@ -35,31 +38,52 @@ const AddCommentBottomSheet = memo(function AddCommentBottomSheet({
 
   const insertCommentMutation = useMutation({
     mutationFn: (newComment: InsertComment) => {
-      return supabase.insertComment(newComment);
+      return supabase.comments.insertComment(newComment);
     },
-    onMutate: (newComment: InsertComment) => {
+    onMutate: () => {
+      return { previousData: queryClient.getQueryData(queryKey) };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousData);
+    },
+    onSuccess: (data, variables) => {
       const newCommentWithAuthor = {
-        ...newComment,
-        user_id: undefined,
+        id: data[0].id,
+        ...variables,
         author: {
-          id: user?.id,
+          id: user!.id,
           nickname: profile?.nickname,
         },
       };
+
+      const newMyComment: JoinedMyComments = {
+        ...(data[0] as any),
+        content: variables.content,
+      };
+
+      newMyComment.item.totalCommentCount = totalCommentCount;
+
+      updateMyComments({
+        comment: newMyComment,
+        userId: user!.id,
+        queryClient,
+        command: 'insert',
+      });
+
+      updateTotalCountInCache({
+        itemId,
+        queryClient,
+        totalCountsColumn: 'totalCommentCount',
+        updateType: 'increase',
+        excludeQueryKey: 'items',
+      });
+
       return handleMutateOfInsertComment({
         queryClient,
         queryKey,
         newComment: newCommentWithAuthor,
         itemQueryKey: queryKeys.items.byId(itemId, user?.id),
       });
-    },
-    onError: (_error, _variables, context) => {
-      console.error('insertCommentMutation error', _error);
-      queryClient.setQueryData(queryKey, context?.previousData);
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.id) return;
-      queryClient.invalidateQueries({ queryKey });
     },
   });
 

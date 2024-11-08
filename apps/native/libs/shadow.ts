@@ -1,19 +1,33 @@
 import { UnistylesTheme } from 'react-native-unistyles/lib/typescript/src/types';
 
-export const shadowPresets = {
-  card: (theme: UnistylesTheme) => ({
-    offset: [theme.spacing.sm / 2, theme.spacing.sm / 2] as [x: number, y: number],
-    startColor: `${theme.colors.shadow}22`,
-    distance: theme.spacing.sm,
-    sides: { start: false, top: false, bottom: true, end: true },
-    corners: { topStart: false, topEnd: true, bottomStart: true, bottomEnd: true },
+// boxShadow 객체를 문자열로 변환하는 유틸리티 함수
+const convertBoxShadowToString = (boxShadow: {
+  color: string;
+  offsetX: number;
+  offsetY: number;
+  blurRadius: number;
+  spreadRadius: number;
+}) => {
+  return `${boxShadow.offsetX}px ${boxShadow.offsetY}px ${boxShadow.blurRadius}px ${boxShadow.spreadRadius}px ${boxShadow.color}`;
+};
+
+export const ShadowPresets = {
+  card: (theme: UnistylesTheme, color?: string) => ({
+    boxShadow: convertBoxShadowToString({
+      color: color ?? `${theme.colors.shadow}22`,
+      offsetX: theme.spacing.sm / 2,
+      offsetY: theme.spacing.sm / 2,
+      blurRadius: theme.spacing.sm / 4,
+      spreadRadius: theme.spacing.sm / 4,
+    }),
   }),
-  down: (theme: UnistylesTheme) => ({
-    offset: [0, theme.spacing.sm / 2] as [x: number, y: number],
-    startColor: `${theme.colors.shadow}22`,
-    distance: theme.spacing.sm,
-    sides: { start: false, top: false, bottom: true, end: false },
-    corners: { topStart: false, topEnd: false, bottomStart: false, bottomEnd: false },
-    stretch: true,
+  down: (theme: UnistylesTheme, color?: string) => ({
+    boxShadow: convertBoxShadowToString({
+      color: color ?? `${theme.colors.shadow}22`,
+      offsetX: 0,
+      offsetY: theme.spacing.sm / 2,
+      blurRadius: theme.spacing.sm / 4,
+      spreadRadius: theme.spacing.sm / 4,
+    }),
   }),
 };

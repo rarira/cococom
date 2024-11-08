@@ -1,7 +1,4 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
 import { AlltimeRankingResultItem } from '@cococom/supabase/types';
-import { QueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -13,7 +10,6 @@ import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
 import { getDiscountTypeFromResult } from '@/libs/item';
-import { handleMutateOfAlltimeRanking } from '@/libs/react-query';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 
@@ -22,26 +18,12 @@ type AlltimeRankingListItemCardDetailViewProps = Omit<
   'containerStyle'
 >;
 
-function AlltimeRankingListItemCardDetailView({
-  item,
-  queryKey,
-}: AlltimeRankingListItemCardDetailViewProps) {
+function AlltimeRankingListItemCardDetailView({ item }: AlltimeRankingListItemCardDetailViewProps) {
   const { styles, theme } = useStyles(stylesheets);
 
   const user = useUserStore(store => store.user);
 
   const discountType = getDiscountTypeFromResult(item);
-
-  const handleMutate = useCallback(
-    (queryClient: QueryClient) => async (newWishlist: InsertWishlist) => {
-      return await handleMutateOfAlltimeRanking({
-        queryClient,
-        queryKey,
-        newWishlist,
-      });
-    },
-    [queryKey],
-  );
 
   return (
     <View style={styles.container}>
@@ -81,8 +63,6 @@ function AlltimeRankingListItemCardDetailView({
           <ListItemWishlistIconButton<AlltimeRankingResultItem>
             item={item}
             portalHostName={PortalHostNames.RANKING}
-            queryKey={queryKey}
-            onMutate={handleMutate}
           />
         </View>
       </View>

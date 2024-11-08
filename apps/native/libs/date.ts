@@ -12,6 +12,10 @@ export function formatLongLocalizedDateTime(date: string) {
   return format(date, 'PPpp');
 }
 
+export function formatXAxisDate(date: Date) {
+  return format(date, 'yy-MM');
+}
+
 export function isItemOnSaleNow(item: JoinedItems) {
   if (!item.discounts?.length) return false;
 
