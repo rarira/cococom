@@ -39,7 +39,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
       const {
         data: { session, user },
         error,
-      } = await supabase.signUpWithEmail({
+      } = await supabase.auth.signUpWithEmail({
         email: email,
         password: password,
         options: {

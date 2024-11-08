@@ -404,18 +404,21 @@ export type Database = {
           id: string
           itemId: number
           userId: string
+          wishlist_hash: string
         }
         Insert: {
           created_at?: string
           id?: string
           itemId: number
           userId: string
+          wishlist_hash: string
         }
         Update: {
           created_at?: string
           id?: string
           itemId?: number
           userId?: string
+          wishlist_hash?: string
         }
         Relationships: [
           {
@@ -482,6 +485,8 @@ export type Database = {
           _user_id: string
           _channel: string
           _limit: number
+          _order_field: string
+          _order_direction: string
         }
         Returns: {
           id: number
@@ -538,6 +543,18 @@ export type Database = {
           added_discount_count: number
           is_online: boolean
         }[]
+      }
+      get_wishlist_items: {
+        Args: {
+          user_id: string
+          is_on_sale: boolean
+          page: number
+          page_size: number
+          order_field: string
+          order_direction: string
+          channel: string
+        }
+        Returns: Json
       }
       search_items_by_itemid: {
         Args: {

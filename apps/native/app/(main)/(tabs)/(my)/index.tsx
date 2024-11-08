@@ -5,27 +5,16 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import IconButton from '@/components/core/button/icon';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ScreenContainerView from '@/components/custom/view/container/screen';
+import AuthedMyContentView from '@/components/custom/view/my-content/authed';
 import { useUserStore } from '@/store/user';
-
-/* TODO: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
-* https://github.com/expo/router/issues/278
-Check the render method of `SlotClone`. */
 
 export default function MyScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
   const { user, profile } = useUserStore(state => ({ user: state.user, profile: state.profile }));
-  {
-    /* {!user ? (
-        <Link href="/auth/signin" asChild>
-          <Pressable>
-            <ScreenTitleText>로그인하세요</ScreenTitleText>
-          </Pressable>
-        </Link>
-      ) : ( */
-  }
+
   return (
-    <ScreenContainerView withBottomTabBar>
+    <ScreenContainerView withBottomTabBar style={styles.container}>
       <View style={styles.header}>
         <View style={styles.welcomeTextContainer}>
           {!user ? (
@@ -64,16 +53,21 @@ export default function MyScreen() {
           </Link>
         </View>
       </View>
+      {user ? <AuthedMyContentView /> : null}
     </ScreenContainerView>
   );
 }
 
 const stylesheet = createStyleSheet(theme => ({
+  container: {
+    paddingHorizontal: 0,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: theme.spacing.xl,
+    paddingHorizontal: theme.screenHorizontalPadding,
   },
   welcomeTextContainer: {
     flexDirection: 'row',

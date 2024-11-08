@@ -1,11 +1,11 @@
-import { InsertWishlist } from '@cococom/supabase/libs';
-import { JoinedItems } from '@cococom/supabase/types';
-import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query';
+import { InsertWishlist, JoinedItems } from '@cococom/supabase/types';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { updateWishlistInCache } from '@/libs/react-query';
 import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
@@ -18,7 +18,6 @@ interface ListItemWishlistIconButtonProps<
 > {
   item: T;
   portalHostName: PortalHostNames;
-  queryKey: QueryKey;
   onMutate?: (queryClient: QueryClient) => (newWishlist: InsertWishlist) => Promise<{
     previousData: T | T[] | InfiniteSearchResultData;
   }>;
@@ -32,7 +31,6 @@ function ListItemWishlistIconButton<
 >({
   item,
   portalHostName,
-  queryKey,
   onMutate,
   noText,
   iconProps,
@@ -47,13 +45,15 @@ function ListItemWishlistIconButton<
   const wishlistMutation = useMutation({
     mutationFn: (newWishlist: InsertWishlist) => {
       if (item.isWishlistedByUser) {
-        return supabase.deleteWishlist(newWishlist);
+        return supabase.wishlists.deleteWishlist(newWishlist);
       }
-      return supabase.createWishlist(newWishlist);
+
+      return supabase.wishlists.createWishlist(newWishlist);
     },
-    onMutate: onMutate ? onMutate(queryClient) : undefined,
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previousData);
+    onMutate: onMutate?.(queryClient),
+    onSuccess: () => {
+      updateWishlistInCache({ itemId: item.id, queryClient });
+      queryClient.invalidateQueries({ queryKey: ['wishlists'] });
     },
   });
 

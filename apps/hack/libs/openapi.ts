@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 
-import { Category, OnlineSubCategoryLink } from './types.js';
-import { loadEnv, readJsonFile, writeJsonFile } from './util.js';
+import { Category } from './types.js';
+import { loadEnv } from './util.js';
 
 loadEnv();
 
@@ -38,26 +38,4 @@ async function getCategoryFromChatGPT(title: string, categoryInfo: Category[]): 
     console.error('Error calling OpenAI API:', error);
     return '기타';
   }
-}
-
-async function matchCategoriesToLinks(links: OnlineSubCategoryLink[], categoryInfo: Category[]) {
-  const matchedLinks = await Promise.all(
-    links.map(async link => {
-      const matchedCategory = await getCategoryFromChatGPT(link.title, categoryInfo);
-      return { ...link, categoryId: categoryInfo.find(cat => cat.name === matchedCategory)?.id };
-    }),
-  );
-
-  return matchedLinks;
-}
-
-export async function updateSubCategoryLinks() {
-  const subCategoryLinks = (await readJsonFile(
-    'data/online_subCategoryLinks.json',
-  )) as OnlineSubCategoryLink[];
-  const categoryInfo = (await readJsonFile('data/category.json')) as Category[];
-
-  const updatedLinks = await matchCategoriesToLinks(subCategoryLinks, categoryInfo);
-  await writeJsonFile('data/online_updatedSubCategoryLinks.json', updatedLinks);
-  console.log('Updated subCategoryLinks.json');
 }

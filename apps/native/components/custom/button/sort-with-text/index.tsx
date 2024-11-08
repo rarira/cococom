@@ -4,18 +4,18 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import IconButton, { IconButtonProps } from '@/components/core/button/icon';
 import { IconProps } from '@/components/core/icon';
 
-interface RankingSortButtonProps extends Omit<IconButtonProps, 'iconProps'> {
+interface SortWithTextButtonProps extends Omit<IconButtonProps, 'iconProps'> {
   iconProps?: Omit<IconProps, 'font'>;
 }
 
-const RankingSortButton = memo(function RankingSortButton({
+const SortWithTextButton = memo(function SortWithTextButton({
   text,
   onPress,
   style,
   textStyle,
   iconProps,
   ...restProps
-}: RankingSortButtonProps) {
+}: SortWithTextButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
@@ -30,21 +30,19 @@ const RankingSortButton = memo(function RankingSortButton({
       onPress={onPress}
       style={state => [styles.button, typeof style === 'function' ? style(state) : style]}
       textStyle={[styles.buttonText, textStyle]}
+      {...restProps}
     />
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   button: {
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
     alignSelf: 'flex-end',
   },
   buttonText: {
-    fontSize: theme.fontSize.normal,
-    lineHeight: theme.fontSize.normal * 1.5,
+    fontSize: theme.fontSize.sm,
     color: theme.colors.typography,
   },
 }));
 
-export default RankingSortButton;
+export default SortWithTextButton;

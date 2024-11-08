@@ -11,7 +11,7 @@ import {
   getISOTimeStringWithTimezone,
   minus1MS,
 } from '../libs/date.js';
-import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
+import { addReletedItemId, supabase, updateItemHistory, updateNoImages } from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
@@ -27,7 +27,7 @@ async function crawlAllItems() {
 
   for (const digit of digitsArray) {
     const items = await getSearchResults(digit, itemSet);
-    const result = await supabase.upsertItem(
+    const result = await supabase.items.upsertItem(
       items.map(item => {
         return {
           itemId: item.productcode,
@@ -44,14 +44,14 @@ async function crawlAllItems() {
 }
 
 async function crawlAllDiscounts(noLowsetPrice = false) {
-  const items = await supabase.fetchAllItems(noLowsetPrice);
+  const items = await supabase.items.fetchAllItems(noLowsetPrice);
   console.log('will  update discounts for', items?.length, 'items');
 
   for (const item of items) {
     const today = getDateString();
     const discounts = await getSearchResults2(item.itemId, today);
     console.log('discounts for', item.itemId, discounts.length);
-    await supabase.upsertDiscount(
+    await supabase.discounts.upsertDiscount(
       discounts.map(discount => ({
         itemId: item.itemId,
         startDate: getISOTimeStringWithTimezone(discount.startdate),
@@ -66,7 +66,7 @@ async function crawlAllDiscounts(noLowsetPrice = false) {
 }
 
 async function downloadAllImages() {
-  const items = await supabase.fetchAllItems();
+  const items = await supabase.items.fetchAllItems();
   const errors: { itemId: string; statusText: string }[] = [];
 
   for (const item of items) {
@@ -84,18 +84,18 @@ async function downloadAllImages() {
 }
 
 async function updateAllItemCategory() {
-  const items = await supabase.fetchAllItems();
+  const items = await supabase.items.fetchAllItems();
 
   for (const item of items) {
     const data = await getItem(item.itemId);
-    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+    await supabase.items.updateItem({ categoryId: Number(data.category) }, item.id);
   }
 }
 
 async function createCategories() {
   const jsonData = readJsonFile('./data/category.json');
   for (const category of jsonData) {
-    await supabase.upsertCategory(category);
+    await supabase.categories.upsertCategory(category);
   }
 }
 
@@ -103,7 +103,7 @@ async function updateDiscounts(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
 
   console.log('discounts count', discounts.length);
-  const newlyAddedItems = await supabase.upsertItem(
+  const newlyAddedItems = await supabase.items.upsertItem(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
       itemName: discount.productname,
@@ -112,7 +112,7 @@ async function updateDiscounts(date?: string) {
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
 
-  const newlyAddedDiscounts = await supabase.upsertDiscount(
+  const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
       startDate: getISOTimeStringWithTimezone(discount.startdate),
@@ -151,11 +151,29 @@ async function updateDiscounts(date?: string) {
 async function createHistory() {
   if (!newItems.length) return;
 
-  await supabase.insertHistory({
+  await supabase.histories.insertHistory({
     new_item_count: newItems.length,
     added_discount_count: newDiscountsCount,
     no_images: newItemsWithNoImage,
   });
+}
+
+async function downloadNoImages(info: { id: number; no_images: string[] | null }) {
+  if (!info.no_images || !info.no_images.length) return;
+
+  const no_images = [];
+  for (const itemId of info.no_images) {
+    try {
+      await downloadImage(itemId);
+    } catch (e) {
+      console.log('error downloading image', itemId);
+      no_images.push(itemId);
+    }
+  }
+
+  console.log('downloadNoImage completed', info.id, info.no_images.length, no_images.length);
+
+  await updateNoImages(no_images, info.id);
 }
 
 (async () => {
@@ -180,6 +198,12 @@ async function createHistory() {
   // for (const date of dates) {
   //   await updateDiscounts(date);
   // }
+
+  // NOTE: 이미지 host 변경 대응ㅇ
+  // const histories = await getAllNoImagesFromHistory('2024-10-01');
+  // const downloadNoImagePromises = histories.map(history => downloadNoImages(history));
+  // await Promise.allSettled(downloadNoImagePromises);
+
   // NOTE: 루틴
   await updateDiscounts();
   await createHistory();

@@ -1,24 +1,27 @@
 import { Tables } from '@cococom/supabase/types';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import { MemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemMemoTabViewProps } from '@/components/custom/tab-view/item/memo';
+import { ItemDetailsTabNames } from '@/constants';
 import { useInfiniteMemos } from '@/hooks/memo/useInfiniteMemos';
+import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
 
 import ItemMemoListRow from './&row';
 
-interface ItemMemoListProps extends MemoTabViewProps {
+interface ItemMemoListProps extends Omit<ItemMemoTabViewProps, 'totalMemoCount'> {
   onAddMemoPress?: () => void;
 }
 
 const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: ItemMemoListProps) {
+  const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.MEMO);
+
   const { styles, theme } = useStyles(stylesheet);
   const {
     memos,
@@ -30,11 +33,14 @@ const ItemMemoList = memo(function ItemMemoList({ itemId, onAddMemoPress }: Item
     handleRefresh,
   } = useInfiniteMemos(itemId);
 
-  const previousSwipeableRef = useRef<SwipeableMethods>(null);
-
-  const renderItem = useCallback(({ item }: { item: NonNullable<Tables<'memos'>> }) => {
-    return <ItemMemoListRow memo={item} key={item.id} ref={previousSwipeableRef} />;
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: NonNullable<Tables<'memos'>> }) => {
+      return (
+        <ItemMemoListRow memo={item} key={item.id} previousSwipeableRef={previousSwipeableRef} />
+      );
+    },
+    [previousSwipeableRef],
+  );
 
   const ListHeaderComponent = useMemo(() => {
     return (

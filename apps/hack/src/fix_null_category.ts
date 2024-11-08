@@ -25,6 +25,6 @@ loadEnv();
     if (!data) {
       throw new Error(`Item not found: ${item.itemId}`);
     }
-    await supabase.updateItem({ categoryId: Number(data.category) }, item.id);
+    await supabase.items.updateItem({ categoryId: Number(data.category) }, item.id);
   }
 })();

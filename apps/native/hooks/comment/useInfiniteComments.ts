@@ -1,13 +1,10 @@
-// const queryFn = (itemId: number, userId: string) => () => supabase.fetchMemos(itemId, userId);
-
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
-import { COMMENT_INFINITE_QUERY_PAGE_SIZE } from '@/constants';
+import { INFINITE_COMMENT_PAGE_SIZE } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
-
 
 export function useInfiniteComments(itemId: number) {
   const [refreshing, setRefreshing] = useState(false);
@@ -21,16 +18,19 @@ export function useInfiniteComments(itemId: number) {
     useInfiniteQuery({
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
-      queryFn: ({ pageParam }) =>
-        supabase.fetchComments({
+      queryFn: ({ pageParam }) => {
+        return supabase.comments.fetchComments({
           itemId,
           page: pageParam,
-          pageSize: COMMENT_INFINITE_QUERY_PAGE_SIZE,
-        }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < COMMENT_INFINITE_QUERY_PAGE_SIZE) return undefined;
-        return allPages.length + 1;
+          pageSize: INFINITE_COMMENT_PAGE_SIZE,
+        });
+      },
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, _, lastPageParam) => {
+        if (lastPage.length < INFINITE_COMMENT_PAGE_SIZE) {
+          return null;
+        }
+        return lastPageParam + 1;
       },
     });
 

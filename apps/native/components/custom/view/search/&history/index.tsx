@@ -39,7 +39,7 @@ const SearchHistoryView = memo(function SearchHistoryView({
                   history.options.length > 0
                     ? () => (
                         <View style={styles.chipSuffixContainer}>
-                          {history.options.map((option, index) => (
+                          {history.options.map(option => (
                             <View
                               key={option}
                               style={styles.chipSuffixCircle(

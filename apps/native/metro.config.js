@@ -14,23 +14,23 @@ const monorepoRoot = path.resolve(projectRoot, '../..');
 
 const config = getSentryExpoConfig(projectRoot);
 
-const monorepoPackages = {
-  '@cococom/supabase': path.resolve(monorepoRoot, 'packages/supabase'),
-  '@cococom/eslint-config': path.resolve(monorepoRoot, 'packages/eslint-config'),
-  '@cococom/prettier-config': path.resolve(monorepoRoot, 'packages/prettier-config'),
-  '@cococom/typescript-config': path.resolve(monorepoRoot, 'packages/typescript-config'),
-};
+// const monorepoPackages = {
+//   '@cococom/supabase': path.resolve(monorepoRoot, 'packages/supabase'),
+//   '@cococom/eslint-config': path.resolve(monorepoRoot, 'packages/eslint-config'),
+//   '@cococom/prettier-config': path.resolve(monorepoRoot, 'packages/prettier-config'),
+//   '@cococom/typescript-config': path.resolve(monorepoRoot, 'packages/typescript-config'),
+// };
 
-// 1. Watch the local app folder, and only the shared packages (limiting the scope and speeding it up)
-// Note how we change this from `monorepoRoot` to `projectRoot`. This is part of the optimization!
-config.watchFolders = [projectRoot, ...Object.values(monorepoPackages)];
+// // 1. Watch the local app folder, and only the shared packages (limiting the scope and speeding it up)
+// // Note how we change this from `monorepoRoot` to `projectRoot`. This is part of the optimization!
+config.watchFolders = [monorepoRoot];
 
 // Add the monorepo workspaces as `extraNodeModules` to Metro.
 // If your monorepo tooling creates workspace symlinks in the `node_modules` folder,
 // you can either add symlink support to Metro or set the `extraNodeModules` to avoid the symlinks.
 // See: https://metrobundler.dev/docs/configuration/#extranodemodules
-config.resolver.extraNodeModules = monorepoPackages;
-config.resolver.disableHierarchicalLookup = true;
+// config.resolver.extraNodeModules = monorepoPackages;
+// config.resolver.disableHierarchicalLookup = true;
 
 // 2. Let Metro know where to resolve packages and in what order
 config.resolver.nodeModulesPaths = [

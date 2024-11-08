@@ -9,12 +9,13 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
-import HeaderRightButton from '@/components/custom/button/header/right';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
 import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
+
+import SortWithTextButton from '../../button/sort-with-text';
 
 interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
   searchResult: SearchResultToRender;
@@ -46,18 +47,9 @@ const SearchResultList = memo(function SearchResultList({
 
   const renderItem = useCallback(
     ({ item }: { item: SearchResultToRender[number]; index: number }) => {
-      return (
-        <SearchResultListItemCard
-          key={item.id}
-          item={item}
-          sortOption={sortOption}
-          queryKey={queryKey}
-          channelOption={channelOption.value}
-          {...searchQueryParams}
-        />
-      );
+      return <SearchResultListItemCard key={item.id} item={item} />;
     },
-    [channelOption, queryKey, searchQueryParams, sortOption],
+    [],
   );
 
   const ListHeaderComponent = useMemo(() => {
@@ -71,8 +63,8 @@ const SearchResultList = memo(function SearchResultList({
           <View />
         )}
         <View style={styles.resultHeaderRightContainer}>
-          <HeaderRightButton
-            iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
+          <SortWithTextButton
+            text={SEARCH_ITEM_SORT_OPTIONS[sortOption].text}
             onPress={onPressHeaderRightButton}
           />
           <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
@@ -84,6 +76,7 @@ const SearchResultList = memo(function SearchResultList({
     handleChannelPress,
     onPressHeaderRightButton,
     searchResult.length,
+    sortOption,
     styles.resultHeader,
     styles.resultHeaderRightContainer,
     styles.totalResultsText,
@@ -100,14 +93,6 @@ const SearchResultList = memo(function SearchResultList({
     return <Text style={styles.listEmptyText}>검색 결과가 없습니다</Text>;
   }, [styles.listEmptyText]);
 
-  const searchResultByChannel = useMemo(() => {
-    return searchResult.filter(result => {
-      if (channelOption.value === DiscountChannels.ALL) return true;
-      if (channelOption.value === DiscountChannels.ONLINE) return result.is_online;
-      return !result.is_online;
-    });
-  }, [searchResult, channelOption]);
-
   const ItemSeparatorComponent = useCallback(
     () => <View style={styles.seperator} />,
     [styles.seperator],
@@ -116,7 +101,7 @@ const SearchResultList = memo(function SearchResultList({
   return (
     <>
       <FlashList
-        data={searchResultByChannel}
+        data={searchResult}
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
         ListFooterComponentStyle={styles.fetchingNextProgress}
@@ -144,7 +129,6 @@ const stylesheet = createStyleSheet(theme => ({
     height: theme.spacing.md * 2,
   },
   resultHeader: {
-    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: theme.spacing.md,

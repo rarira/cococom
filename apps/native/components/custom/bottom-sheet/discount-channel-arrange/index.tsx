@@ -52,8 +52,6 @@ const DiscountChannelArrangeBottomSheet = memo(
           renderItem={renderItem}
           scrollEnabled={false}
           containerStyle={styles.container}
-          onDragBegin={() => console.log('drag begin')}
-          onRelease={() => console.log('release')}
         />
       </BottomSheet>
     );

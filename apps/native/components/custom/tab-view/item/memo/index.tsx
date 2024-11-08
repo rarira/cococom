@@ -10,9 +10,13 @@ import { useUserStore } from '@/store/user';
 
 export interface ItemMemoTabViewProps {
   itemId: number;
+  totalMemoCount: number;
 }
 
-const ItemMemoTabView = memo(function ItemMemoTabView({ itemId }: ItemMemoTabViewProps) {
+const ItemMemoTabView = memo(function ItemMemoTabView({
+  itemId,
+  totalMemoCount,
+}: ItemMemoTabViewProps) {
   const { styles } = useStyles(stylesheet);
 
   const user = useUserStore(store => store.user);
@@ -29,7 +33,7 @@ const ItemMemoTabView = memo(function ItemMemoTabView({ itemId }: ItemMemoTabVie
           </View>
         </Tabs.ScrollView>
       ) : (
-        <ItemMemoView itemId={itemId} />
+        <ItemMemoView itemId={itemId} totalMemoCount={totalMemoCount} />
       )}
     </>
   );

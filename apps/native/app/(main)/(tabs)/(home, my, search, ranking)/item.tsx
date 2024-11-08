@@ -1,6 +1,6 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { Platform, View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
@@ -13,25 +13,21 @@ import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discou
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
-import { PortalHostNames } from '@/constants';
+import { ItemDetailsTabNames, PortalHostNames } from '@/constants';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
-import { useListQueryKeyStore } from '@/store/list-query-key';
 import { useUserStore } from '@/store/user';
 
 const queryFn = (itemId: number, userId?: string) => () =>
-  supabase.fetchItemsWithWishlistCount(itemId, userId, true);
+  supabase.items.fetchItemsWithWishlistCount(itemId, userId, true);
 
 export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
-  const [setQueryKeyOfList, setPageIndexOfInfinteList] = useListQueryKeyStore(state => [
-    state.setQueryKeyOfList,
-    state.setPageIndexOfInfinteList,
-  ]);
-  const { itemId } = useLocalSearchParams();
+
+  const { itemId, tab } = useLocalSearchParams<{ itemId: string; tab?: ItemDetailsTabNames }>();
 
   const { bottom } = useSafeAreaInsets();
 
@@ -49,18 +45,9 @@ export default function ItemScreen() {
 
   useTransparentHeader({
     title: data?.itemName,
-    headerBackTitleVisible: false,
+    headerBackButtonDisplayMode: 'minimal',
     headerRight,
   });
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        setQueryKeyOfList(null);
-        setPageIndexOfInfinteList(null);
-      };
-    }, [setPageIndexOfInfinteList, setQueryKeyOfList]),
-  );
 
   const renderTabBar = useCallback(
     (props: TabBarProps) => {
@@ -100,23 +87,24 @@ export default function ItemScreen() {
         renderHeader={renderHeader}
         allowHeaderOverscroll
         lazy={Platform.OS === 'ios'}
+        initialTabName={tab}
       >
-        <Tabs.Tab name="history" label={`할인 이력(${data.discounts?.length})`}>
+        <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>
           <Tabs.ScrollView>
             <ItemDiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab
-          name="comment"
+          name={ItemDetailsTabNames.COMMENT}
           label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
-          <ItemCommentTabView itemId={+itemId} />
+          <ItemCommentTabView itemId={+itemId} totalCommentCount={data.totalCommentCount ?? 0} />
         </Tabs.Tab>
         <Tabs.Tab
-          name="memo"
+          name={ItemDetailsTabNames.MEMO}
           label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
         >
-          <ItemMemoTabView itemId={+itemId} />
+          <ItemMemoTabView itemId={+itemId} totalMemoCount={data.totalMemoCount ?? 0} />
         </Tabs.Tab>
         {/* TODO: 언제가 추가할 기능 
         <Tabs.Tab name={`구매기록(3)`}>

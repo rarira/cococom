@@ -12,7 +12,7 @@ export function useSignOut() {
 
   const signOut = useCallback(async () => {
     try {
-      await supabase.signOut();
+      await supabase.auth.signOut();
     } catch (error: any) {
       if (error.code !== AuthErrorCode.USER_NOT_FOUND) {
         console.error('signOut error', error);

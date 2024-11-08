@@ -4,17 +4,16 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Text from '@/components/core/text';
+import HistoryTable from '@/components/custom/table/history';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
-
-import HistoryTable from '../../table/history';
 
 interface HistoryInfoBannerProps {
   totalDiscounts: number;
 }
 
 function fetchLatestHistory() {
-  return supabase.fetchLatestHistory();
+  return supabase.histories.fetchLatestHistory();
 }
 
 const HistoryInfoBanner = memo(function HistoryInfoBanner({

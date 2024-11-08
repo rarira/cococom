@@ -4,6 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import IconButton from '@/components/core/button/icon';
 import Checkbox, { CheckboxGroupViewProps } from '@/components/core/checkbox';
+import SearchOptionCheckbox from '@/components/custom/checkbox/search-option';
 import SearchHistoryView from '@/components/custom/view/search/&history';
 import { SearchItemOptionInfo, SearchItemsOptions, SearchOptionValue } from '@/libs/search';
 
@@ -25,7 +26,7 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
     }
   }, [searchHistoryProps.searchHistory.length]);
 
-  const SearchItemCheckbox = useMemo(() => {
+  const SearchItemCheckboxes = useMemo(() => {
     const searchItemsOptions = Object.entries(SearchItemsOptions(theme)) as [
       SearchOptionValue,
       SearchItemOptionInfo,
@@ -33,19 +34,17 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
 
     return (
       <>
-        {searchItemsOptions.map(([key, value], index) => (
-          <Checkbox.Root key={key} value={key}>
-            <Checkbox.Indicator
-              style={
-                key === 'item_id'
-                  ? styles.checkboxProductNumberIndicator
-                  : styles.checkboxOnSaleIndicator
-              }
-            >
-              <Checkbox.Icon color={value.iconColor} />
-            </Checkbox.Indicator>
-            <Checkbox.Label>{value.label}</Checkbox.Label>
-          </Checkbox.Root>
+        {searchItemsOptions.map(([key, value], _index) => (
+          <SearchOptionCheckbox
+            key={key}
+            option={key}
+            value={value}
+            indicatorStyle={
+              key === 'item_id'
+                ? styles.checkboxProductNumberIndicator
+                : styles.checkboxOnSaleIndicator
+            }
+          />
         ))}
       </>
     );
@@ -55,7 +54,7 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
     <View style={styles.container}>
       <View style={styles.header}>
         <Checkbox.Group {...checkboxGroupProps} style={styles.checkboxGroup}>
-          {SearchItemCheckbox}
+          {SearchItemCheckboxes}
         </Checkbox.Group>
         {searchHistoryProps.searchHistory.length > 0 ? (
           <IconButton

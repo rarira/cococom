@@ -7,13 +7,12 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { z } from 'zod';
 
 import TextInput from '@/components/core/text-input';
+import FormSubmitButton from '@/components/custom/button/form/submit';
+import TextInputEyeSlot from '@/components/custom/text-input/eye-slot';
 import { AuthErrorCode } from '@/libs/error';
 import { signInFormSchema } from '@/libs/form';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
-
-import FormSubmitButton from '../../button/form/submit';
-import TextInputEyeSlot from '../../text-input/eye-slot';
 
 interface SignInFormProps {
   loading: boolean;
@@ -36,7 +35,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
       const {
         data: { user },
         error,
-      } = await supabase.signInWithEmail({ email, password });
+      } = await supabase.auth.signInWithEmail({ email, password });
 
       if (error) {
         if (error.code === AuthErrorCode.INVALID_CREDENTIALS) {

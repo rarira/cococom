@@ -1,6 +1,7 @@
 {
   "name": "@cococom/supabase",
   "scripts": {
+    "prepare": "pnpm build",
     "dev": "tsc --watch",
     "build": "tsc",
     "start": "supabase start",
@@ -8,13 +9,14 @@
     "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types --lang=typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts",
     "update-types:local": "supabase gen types --lang=typescript --local --schema public > src/types.ts",
     "sync:data": "supabase db dump --data-only -f supabase/seed.sql -s public && supabase db reset",
+    "backup:local": "PGPASSWORD='postgres' pg_dump -h localhost -p 54322 -U postgres -d postgres --data-only -t public.profiles -t  public.comments -t public.wishlists -t public.memos -f supabase/local_backup.sql --inserts && supabase db dump --local --data-only -f supabase/seed_auth.sql -s auth",
     "sync:schema": "supabase db diff -f local_schema && supabase db push",
     "sync:function": "supabase functions deploy"
   },
   "exports": {
     "./libs": {
-      "types": "./src/lib.ts",
-      "default": "./dist/lib.js"
+      "types": "./src/lib/index.ts",
+      "default": "./dist/lib/index.js"
     },
     "./types": {
       "types": "./src/merged-types.ts",
@@ -22,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.44.3",
+    "@supabase/supabase-js": "^2.46.0",
     "dotenv": "^16.4.5",
     "type-fest": "^4.21.0"
   },
@@ -31,7 +33,7 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
-    "supabase": "^1.204.3",
-    "typescript": "latest"
+    "supabase": "^1.215.0",
+    "typescript": "^5.4.2"
   }
 }

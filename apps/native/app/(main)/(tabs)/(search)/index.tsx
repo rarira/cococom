@@ -1,7 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { Shadow } from 'react-native-shadow-2';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
@@ -15,14 +14,14 @@ import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButto
 import { useSearchHistory } from '@/hooks/search/useSearchHistory';
 import { useSearchInput } from '@/hooks/search/useSearchInput';
 import { SearchOptionValue } from '@/libs/search';
-import { shadowPresets } from '@/libs/shadow';
+import { ShadowPresets } from '@/libs/shadow';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 
 export default function SearchScreen() {
   const [options, setOptions] = useState<SearchOptionValue[]>([]);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const { addSearchHistory, ...restSearchHistoryReturns } = useSearchHistory();
 
@@ -72,26 +71,24 @@ export default function SearchScreen() {
 
   return (
     <ScreenContainerView style={styles.container}>
-      <Shadow {...shadowPresets.down(theme)} containerStyle={styles.shadowContainer}>
-        <View style={styles.searchBox}>
-          <SearchTextInput
-            placeholder={
-              isItemIdSearch ? '상품번호를 숫자로만 입력하세요' : '상품명, 브랜드를 입력하세요'
-            }
-            disabled={isFetching}
-            autoFocus
-            onPressSearch={handlePressSearch}
-            keywordToSearch={keywordToSearch}
-          />
-          <SearchAccessoriesView
-            checkboxGroupProps={{ value: options, onChange: setOptions as any }}
-            searchHistoryProps={{
-              ...restSearchHistoryReturns,
-              onPressSearchHistory: handlePressSearchHistory,
-            }}
-          />
-        </View>
-      </Shadow>
+      <View style={styles.searchBox}>
+        <SearchTextInput
+          placeholder={
+            isItemIdSearch ? '상품번호를 숫자로만 입력하세요' : '상품명, 브랜드를 입력하세요'
+          }
+          disabled={isFetching}
+          autoFocus
+          onPressSearch={handlePressSearch}
+          keywordToSearch={keywordToSearch}
+        />
+        <SearchAccessoriesView
+          checkboxGroupProps={{ value: options, onChange: setOptions as any }}
+          searchHistoryProps={{
+            ...restSearchHistoryReturns,
+            onPressSearchHistory: handlePressSearchHistory,
+          }}
+        />
+      </View>
       {isLoading && <CircularProgress style={styles.loadingProgress} />}
       {searchResult && (
         <View style={styles.resultContainer}>
@@ -124,9 +121,9 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: 0,
     alignItems: 'center',
   },
-  shadowContainer: { width: '95%' },
+  // shadowContainer: { width: '95%' },
   searchBox: {
-    width: '100%',
+    width: '95%',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
@@ -136,6 +133,7 @@ const stylesheet = createStyleSheet(theme => ({
     borderColor: `${theme.colors.typography}55`,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.lg,
+    ...ShadowPresets.down(theme),
   },
   resultContainer: {
     flex: 1,

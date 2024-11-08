@@ -20,35 +20,57 @@ export type JoinedComments = Omit<Tables<'comments'>, 'user_id'> & {
   author: Pick<Tables<'profiles'>, 'id' | 'nickname'>;
 };
 
-export type InfiniteQueryResult<T> = {
+export type JoinedMyComments = Omit<Tables<'comments'>, 'user_id' | 'item_id' | 'updated_at'> & {
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId' | 'totalCommentCount'>;
+};
+
+export type JoinedMyMemos = Omit<Tables<'memos'>, 'user_id' | 'item_id' | 'created_at'> & {
+  item: Pick<JoinedItems, 'id' | 'itemName' | 'itemId' | 'totalMemoCount'>;
+};
+
+export type InfiniteQueryResultPageArray =
+  | { id: number }[]
+  | InfinitResultPagesWithTotalRecords<{ id: number }>;
+
+export type InfiniteQueryResult<T extends InfiniteQueryResultPageArray> = {
   pageParams: number[];
   pages: T[];
 };
 
-export type InfiniteSearchResultItem = {
-  id: number;
-  itemId: string;
-  itemName: string;
-  bestDiscountRate: number;
-  bestDiscount: number;
-  lowestPrice: number;
+export type InfiniteResultItem = Omit<JoinedItems, 'discounts' | 'categories' | 'online_url'> & {
   isOnSaleNow: boolean;
-  totalWishlistCount: number;
-  totalCommentCount: number;
-  totalMemoCount: number | null;
-  isWishlistedByUser: boolean;
-  is_online: boolean;
 };
 
-export type AlltimeRankingResultItem = InfiniteSearchResultItem & {
+export type AlltimeRankingResultItem = InfiniteResultItem & {
   created_at: string;
   totalDiscountCount: number;
 };
 
-export type InfiniteSearchResultPages = {
+export type InfinitResultPagesWithTotalRecords<T extends { id: number }> = {
   totalRecords: number | null;
-  items: InfiniteSearchResultItem[];
+  items: T[];
 };
+
+export type InfiniteItemsToRender<T extends { id: number }> = Array<
+  T & {
+    pageIndex: number;
+  }
+>;
+
+export type InfiniteSearchResultPages = InfinitResultPagesWithTotalRecords<InfiniteResultItem>;
+
+export type WishlistResultItem = Omit<InfiniteResultItem, 'isWishlistedByUser'> & {
+  totalDiscountCount: number;
+  wishlistCreatedAt: string;
+  wishlistId: string;
+  discount: Pick<
+    Tables<'discounts'>,
+    'discount' | 'discountPrice' | 'discountRate' | 'endDate'
+  > | null;
+};
+
+export type InfiniteWishlistResultPages = InfinitResultPagesWithTotalRecords<WishlistResultItem>;
+
 // Override the type for a specific column in a view:
 export type Database = MergeDeep<
   DatabaseGenerated,
@@ -79,6 +101,8 @@ export type Database = MergeDeep<
             _user_id: string | null;
             _channel: string;
             _limit: number;
+            _order_field: string;
+            _order_direction: string;
           };
           Returns: {
             id: number;
@@ -134,7 +158,32 @@ export type Database = MergeDeep<
           };
           Returns: AlltimeRankingResultItem[];
         };
+        get_wishlist_items: {
+          Args: {
+            user_id: string;
+            is_on_sale: boolean | null;
+            page: number;
+            page_size: number;
+            order_field: string;
+            order_direction: string;
+            channel: string;
+          };
+          Returns: InfiniteWishlistResultPages;
+        };
       };
     };
   }
 >;
+
+export type InsertDiscount = Database['public']['Tables']['discounts']['Insert'];
+export type InsertItem = Database['public']['Tables']['items']['Insert'];
+export type InsertCategory = Database['public']['Tables']['categories']['Insert'];
+export type InsertWishlist = Omit<
+  Database['public']['Tables']['wishlists']['Insert'],
+  'wishlist_hash'
+>;
+export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
+export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
+export type InsertComment = Database['public']['Tables']['comments']['Insert'];
+export type CategorySectors = Database['public']['Enums']['CategorySectors'];
+export type SortOptionDirection = 'ASC' | 'DESC';
