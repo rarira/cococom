@@ -8,11 +8,11 @@ import dotenv from 'dotenv';
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
 
-export function writeJsonFile(filePath, data) {
+export function writeJsonFile(filePath: string, data: unknown) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
-export function readJsonFile(filePath) {
+export function readJsonFile(filePath: string) {
   return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 }
 
