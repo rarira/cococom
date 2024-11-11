@@ -19,15 +19,15 @@
     "@cococom/typescript-config": "workspace:*",
     "@eslint/eslintrc": "^3.1.0",
     "@types/dotenv": "^8.2.0",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.14.15",
     "prisma": "^5.13.0",
-    "tsx": "^4.16.0",
-    "typescript": "^5.4.5"
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@cococom/supabase": "workspace:*",
     "@prisma/client": "^5.13.0",
-    "axios": "^1.6.8",
+    "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
