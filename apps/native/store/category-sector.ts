@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { CategorySectors } from '../../../packages/supabase/dist/lib/lib';
+import { CategorySectors } from '@cococom/supabase/types';
+import { createWithEqualityFn as create } from 'zustand/traditional';
 
 interface CategorySectorsState {
   categorySectorsArray: CategorySectors[] | null;
