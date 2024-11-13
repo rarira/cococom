@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { DiscountChannels } from '@/constants';
+import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
 import { storage, STORAGE_KEYS } from '@/libs/mmkv';
 import { useDiscountChannels } from '@/store/discount-channels';
 
@@ -10,10 +10,12 @@ export function useDiscountChannelsArrange() {
   const { discountChannels, setDiscountChannels } = useDiscountChannels();
 
   useEffect(() => {
-    if (!discountChannels) {
+    if (discountChannels.length === 0) {
       const stored = storage.getString(STORAGE_KEYS.DISCOUNT_CHANNELS);
       if (stored) {
         setDiscountChannels(JSON.parse(stored));
+      } else {
+        setDiscountChannels(DiscountRotateButtonOptions);
       }
     }
   }, [discountChannels, setDiscountChannels]);
