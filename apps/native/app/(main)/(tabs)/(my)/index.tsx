@@ -1,7 +1,6 @@
 import { Link } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useShallow } from 'zustand/shallow';
 
 import IconButton from '@/components/core/button/icon';
 import ScreenTitleText from '@/components/custom/text/screen-title';
@@ -12,9 +11,7 @@ import { useUserStore } from '@/store/user';
 export default function MyScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
-  const { user, profile } = useUserStore(
-    useShallow(state => ({ user: state.user, profile: state.profile })),
-  );
+  const { user, profile } = useUserStore(state => ({ user: state.user, profile: state.profile }));
 
   return (
     <ScreenContainerView withBottomTabBar style={styles.container}>

@@ -79,7 +79,6 @@ function RootLayout() {
   });
 
   useLoadUser();
-
   const { theme } = useColorScheme();
 
   useEffect(() => {

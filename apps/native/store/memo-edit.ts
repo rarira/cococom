@@ -1,7 +1,7 @@
 import { InsertMemo } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { RefObject } from 'react';
-import { createWithEqualityFn as create } from 'zustand/traditional';
+import { create } from 'zustand';
 
 interface MemoEditState {
   memo: InsertMemo;
