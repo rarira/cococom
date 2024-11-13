@@ -1,5 +1,5 @@
 /* eslint-disable import/order */
-import { uploadImageToImageKit } from '@cococom/imagekit';
+import { uploadImageToImageKit } from '@cococom/imagekit/server';
 import { supabase } from '../libs/supabase.js';
 import {
   clearFolder,

@@ -18,6 +18,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@cococom/imagekit": "workspace:*",
     "@cococom/supabase": "workspace:*",
     "@dev-plugins/react-native-mmkv": "^0.0.1",
     "@dev-plugins/react-navigation": "^0.0.6",
