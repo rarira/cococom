@@ -1,4 +1,4 @@
-import { createWithEqualityFn as create } from 'zustand/traditional';
+import { create } from 'zustand';
 
 interface UIState {
   tabBarVisible: boolean;

@@ -1,4 +1,4 @@
-import { createWithEqualityFn as create } from 'zustand/traditional';
+import { create } from 'zustand';
 
 import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
 import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
