@@ -1,0 +1,25 @@
+{
+  "name": "@cococom/imagekit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "pnpm build",
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "imagekit": "^5.2.0"
+  },
+  "devDependencies": {
+    "@cococom/eslint-config": "workspace:*",
+    "@cococom/prettier-config": "workspace:*",
+    "@cococom/typescript-config": "workspace:*",
+    "@types/dotenv": "^8.2.0",
+    "typescript": "^5.4.2"
+  }
+}
