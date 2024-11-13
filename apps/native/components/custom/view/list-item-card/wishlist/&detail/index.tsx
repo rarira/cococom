@@ -5,8 +5,7 @@ import Chip from '@/components/core/chip';
 import Text from '@/components/core/text';
 import DiscountPeriodText from '@/components/custom/text/discount-period';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
-
-import ListItemCardChipsView from '../../chips';
+import ListItemCardChipsView from '@/components/custom/view/list-item-card/chips';
 
 interface WishlistItemCardDetailViewProps {
   item: WishlistToRender[number];

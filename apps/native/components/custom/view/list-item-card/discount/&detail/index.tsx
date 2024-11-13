@@ -12,8 +12,7 @@ import { ITEM_DETAILS_MAX_COUNT } from '@/constants';
 import { getDiscountTypeFromDiscount } from '@/libs/item';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
-
-import DiscountPriceView from '../../../discount-price';
+import DiscountPriceView from '@/components/custom/view/discount-price';
 
 interface DiscountListItemCardDetailViewProps
   extends Pick<DiscountListItemCardProps, 'discount' | 'portalHostName'> {}
