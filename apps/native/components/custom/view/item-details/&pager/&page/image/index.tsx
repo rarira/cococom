@@ -58,7 +58,7 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
       <View style={styles.buttonOverlay}>
         {item.online_url ? (
           <View style={styles.buttonBackground(true)}>
-            <OpenWebButton item={item} />
+            <OpenWebButton item={item} iconProps={{ color: 'white' }} />
           </View>
         ) : null}
         <View style={styles.buttonBackground(false)}>
@@ -118,7 +118,7 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: `${hasOnlineUrl ? theme.colors.tint3 : theme.colors.background}CC`,
     padding: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
-    borderWidth: hasOnlineUrl ? 1 : 0,
+    borderWidth: 1,
     borderColor: theme.colors.tint3,
   }),
   itemIdOverlay: (isOnline: boolean) => ({
