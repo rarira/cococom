@@ -1,11 +1,11 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
+import { loadEnv } from './util';
+
+loadEnv();
+
 import { readFile } from 'node:fs/promises';
 
 import ImageKit from 'imagekit';
-
-import { loadEnv } from './util.js';
-
-loadEnv();
 
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,

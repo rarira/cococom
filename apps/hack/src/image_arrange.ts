@@ -1,6 +1,5 @@
 /* eslint-disable import/order */
-import { kMaxLength } from 'node:buffer';
-import { deleteAllFilesInFolder, uploadImageToImageKit } from '../libs/imagekit.js';
+import { uploadImageToImageKit } from '@cococom/imagekit';
 import { supabase } from '../libs/supabase.js';
 import {
   clearFolder,
