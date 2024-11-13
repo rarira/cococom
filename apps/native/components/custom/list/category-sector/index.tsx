@@ -8,8 +8,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useCategorySectorsStore } from '@/store/category-sector';
-
-import CategorySectorGroupView from '../../view/category-sector-group';
+import CategorySectorGroupView from '@/components/custom/view/category-sector-group';
 
 function fetchCurrentDiscountsByCategorySector() {
   const currentTimestamp = new Date().toISOString().split('T')[0];

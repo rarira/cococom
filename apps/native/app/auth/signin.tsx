@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } fro
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
+import { useShallow } from 'zustand/shallow';
 
 import Button from '@/components/core/button';
 import Divider from '@/components/core/divider';
@@ -31,7 +32,7 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const { setAuthProcessing } = useUserStore();
+  const setAuthProcessing = useUserStore(store => store.setAuthProcessing);
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
 

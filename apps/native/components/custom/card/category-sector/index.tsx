@@ -9,8 +9,7 @@ import Card from '@/components/core/card';
 import Text from '@/components/core/text';
 import { ShadowPresets } from '@/libs/shadow';
 import Util from '@/libs/util';
-
-import { DiscountsByCategorySector } from '../../list/category-sector';
+import { DiscountsByCategorySector } from '@/components/custom/list/category-sector';
 
 interface CategorySectorCardProps {
   discountInfo: Awaited<DiscountsByCategorySector>[number] | null;

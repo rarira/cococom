@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import Icon, { IconProps } from '../../icon';
+import Icon, { IconProps } from '@/components/core/icon';
 
 export interface ToggleSwitchProps extends PressableProps {
   checked: boolean;
