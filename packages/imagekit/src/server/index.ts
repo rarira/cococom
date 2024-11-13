@@ -1,5 +1,6 @@
+/* eslint-disable import/order */
 /* eslint-disable turbo/no-undeclared-env-vars */
-import { loadEnv } from './util';
+import { loadEnv } from '../util';
 
 loadEnv();
 

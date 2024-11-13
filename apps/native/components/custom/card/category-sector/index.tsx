@@ -2,10 +2,13 @@ import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useMemo } from 'react';
+import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
 
 import Card from '@/components/core/card';
 import Text from '@/components/core/text';
 import { ShadowPresets } from '@/libs/shadow';
+import Util from '@/libs/util';
 
 import { DiscountsByCategorySector } from '../../list/category-sector';
 
@@ -15,6 +18,13 @@ interface CategorySectorCardProps {
 
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles } = useStyles(stylesheet);
+
+  const categoryItemImageUrl = useMemo(() => {
+    if (!discountInfo) return '';
+    return getImagekitUrlFromPath({
+      imagePath: `products/${Util.extractItemid(discountInfo.itemId)}.webp`,
+    });
+  }, [discountInfo]);
 
   if (discountInfo === null) return <View style={styles.cardContainer} />;
 
@@ -29,8 +39,7 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
           <View>
             <View style={styles.imageContainer}>
               <Image
-                // TODO: 상품별 이미지로 변경
-                source={`https://picsum.photos/150/150`}
+                source={categoryItemImageUrl}
                 contentFit="cover"
                 alt={`${discountInfo.categorySector} thumbnail image`}
                 style={styles.image}
