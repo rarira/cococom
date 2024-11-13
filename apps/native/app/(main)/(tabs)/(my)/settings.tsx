@@ -66,6 +66,7 @@ export default function ProfileScreen() {
             iconProps={{
               font: { type: 'Ionicon', name: 'chevron-down' },
               size: theme.fontSize.xl,
+              color: theme.colors.typography,
             }}
             textStyle={styles.channelText}
             text={stringifiedDiscountChannels}
