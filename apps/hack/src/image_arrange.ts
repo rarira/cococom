@@ -1,4 +1,6 @@
 /* eslint-disable import/order */
+import { kMaxLength } from 'node:buffer';
+import { deleteAllFilesInFolder, uploadImageToImageKit } from '../libs/imagekit.js';
 import { supabase } from '../libs/supabase.js';
 import {
   clearFolder,
@@ -11,7 +13,7 @@ import {
 
 loadEnv();
 
-import { access, copyFile, unlink, mkdir } from 'node:fs/promises';
+import { access, copyFile, unlink, mkdir, readdir } from 'node:fs/promises';
 import sharp from 'sharp';
 
 const date = new Date().toISOString().split('T')[0];
@@ -25,6 +27,12 @@ type UniqueItemId = Record<
   string,
   { online: number | null; offline: number | null; finalImageExt?: 'webp' | 'jpg' | null }
 >;
+
+type UploadImages = {
+  folderPath: string;
+  totalFiles: number;
+  uploadFailed: string[];
+};
 
 async function fetchAllItems() {
   try {
@@ -208,23 +216,25 @@ async function jpgToWebp() {
   const convertPromises: Promise<void>[] = [];
 
   for (const uniqueItemId in uniqueItemIds) {
-    if (uniqueItemIds[uniqueItemId]?.finalImageExt === 'jpg') {
-      // convert to webp
-      convertPromises.push(
-        (async () => {
-          try {
-            await sharp(`downloads/final/${uniqueItemId}.jpg`)
-              .webp()
-              .toFile(`downloads/final/${uniqueItemId}.webp`);
+    const convertPromise = new Promise<void>((resolve, reject) => {
+      console.log('converting', uniqueItemId);
+      sharp(`downloads/final/${uniqueItemId}.jpg`)
+        .webp()
+        .toFile(`downloads/final/${uniqueItemId}.webp`)
+        .then(() => {
+          unlink(`downloads/final/${uniqueItemId}.jpg`);
+        })
+        .then(() => {
+          uniqueItemIds[uniqueItemId]!.finalImageExt = 'webp';
+          resolve();
+        })
+        .catch(error => {
+          console.error('convertJpgToWebp error', { error, uniqueItemId });
+          reject();
+        });
+    });
 
-            await unlink(`downloads/final/${uniqueItemId}.jpg`);
-            uniqueItemIds[uniqueItemId]!.finalImageExt = 'webp';
-          } catch (error) {
-            console.error('convertJpgToWebp error', { error, uniqueItemId });
-          }
-        })(),
-      );
-    }
+    convertPromises.push(convertPromise);
   }
 
   await Promise.allSettled(convertPromises);
@@ -265,11 +275,114 @@ async function updateNewlyAddedImages() {
   await writeJsonFile(`data/jpgToWebp_${date}.json`, uniqueItemIds);
 }
 
+async function uploadImages(folderPath: string) {
+  const files = await readdir(folderPath, { withFileTypes: true, recursive: false });
+
+  const uploadFailed: string[] = [];
+
+  let count = 0;
+
+  for (const file of files) {
+    if (file.isFile() && file.name.endsWith('.webp')) {
+      try {
+        await uploadImageToImageKit({
+          targetFolder: 'products',
+          filePath: `${folderPath}/${file.name}`,
+          fileName: file.name,
+        });
+        count++;
+        console.log(count, ': uploaded', file.name);
+      } catch (error) {
+        if (
+          (error as Error).message ===
+          'A file with the same name already exists at the exact location. We could not overwrite it because both overwriteFile and useUniqueFileName are set to false.'
+        ) {
+          console.log(count, ': skip existing', file.name);
+          count++;
+          continue;
+        }
+        console.error(count, 'upload error', { error, file: file.name });
+        uploadFailed.push(file.name);
+        count++;
+      }
+    }
+  }
+
+  await writeJsonFile(`data/uploadImages_${date}.json`, {
+    folderPath,
+    totalFiles: files.length,
+    uploadFailed,
+  });
+
+  console.log('upload done', { totalFiles: files.length, uploadFailed: uploadFailed.length });
+}
+
+async function retryFailedUploading() {
+  const mostRecentUploadImagesFilePath = await getMostRecentFile('data', 'uploadImages');
+  console.log({ mostRecentUploadImagesFilePath });
+
+  if (!mostRecentUploadImagesFilePath) {
+    console.error('No jpgToWebp file found');
+    return;
+  }
+
+  const { folderPath, uploadFailed } = (await readJsonFile(
+    mostRecentUploadImagesFilePath,
+  )) as unknown as UploadImages;
+
+  if (uploadFailed.length === 0) {
+    console.log('No failed uploads');
+    return;
+  }
+
+  let count = 0;
+
+  const retryUploadFailed: string[] = [...uploadFailed];
+  uploadFailed.length = 0;
+
+  for (const file of retryUploadFailed) {
+    try {
+      await uploadImageToImageKit({
+        targetFolder: 'products',
+        filePath: `${folderPath}/${file}`,
+        fileName: file,
+      });
+    } catch (error) {
+      if (
+        (error as Error).message ===
+        'A file with the same name already exists at the exact location. We could not overwrite it because both overwriteFile and useUniqueFileName are set to false.'
+      ) {
+        console.log(count, ': skip existing', file);
+        count++;
+        continue;
+      }
+      console.error(count, 'upload error', { error, file });
+      uploadFailed.push(file);
+    }
+  }
+
+  await writeJsonFile(`data/uploadImages_${date}.json`, {
+    folderPath,
+    totalFiles: count,
+    uploadFailed,
+  });
+}
+
 (async () => {
-  // await fetchAllItems();
+  // 초기 데이터 가져오기
   // await getUniqueItemIds();
   // await verifyUniqueItemIds();
   // await arrangeImageFiles();
   // await jpgToWebp();
+
+  // 루틴 실행
+  await fetchAllItems();
   await updateNewlyAddedImages();
+  await uploadImages(`downloads/final/${date}`);
+
+  // 실패 파일 재시도
+  await retryFailedUploading();
+
+  // 미디어라이브러리 지우기
+  // await deleteAllFilesInFolder('/');
 })();
