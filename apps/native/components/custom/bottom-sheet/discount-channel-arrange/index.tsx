@@ -52,6 +52,7 @@ const DiscountChannelArrangeBottomSheet = memo(
           renderItem={renderItem}
           scrollEnabled={false}
           containerStyle={styles.container}
+          dragItemOverflow
         />
       </BottomSheet>
     );
@@ -64,6 +65,8 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: theme.screenHorizontalPadding,
+    borderColor: 'red',
+    borderWidth: 1,
   },
   listContainer: {
     flexDirection: 'row',
