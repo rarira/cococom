@@ -2,9 +2,10 @@ import { JoinedItems } from '@cococom/supabase/types';
 import { QueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
-import { memo, useCallback } from 'react';
-import { View } from 'react-native';
+import { memo, useCallback, useMemo } from 'react';
+import { useWindowDimensions, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
 
 import Text from '@/components/core/text';
 import ItemShareButton from '@/components/custom/button/item-share';
@@ -39,9 +40,16 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
     [queryKey],
   );
 
+  const itemImageUrl = useMemo(() => {
+    if (!item) return '';
+    return getImagekitUrlFromPath({
+      imagePath: `products/${Util.extractItemid(item.itemId)}.webp`,
+    });
+  }, [item]);
+
   return (
     <View style={styles.page} key="1" collapsable={false}>
-      <Image source={`https://picsum.photos/500/500`} style={styles.image} />
+      <Image source={itemImageUrl} style={styles.image} />
       <View style={styles.nameOverlay}>
         <Text style={styles.nameText} numberOfLines={2}>
           {item.itemName}
@@ -83,8 +91,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   image: {
     flex: 1,
-    width: '100%',
-    objectFit: 'cover',
+    objectFit: 'contain',
   },
   nameOverlay: {
     position: 'absolute',

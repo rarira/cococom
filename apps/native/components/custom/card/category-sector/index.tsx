@@ -23,6 +23,7 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
     if (!discountInfo) return '';
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(discountInfo.itemId)}.webp`,
+      transformationArray: [{ height: '100', width: '100' }],
     });
   }, [discountInfo]);
 

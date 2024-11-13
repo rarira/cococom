@@ -2,9 +2,12 @@ import { Tables } from '@cococom/supabase/types';
 import { Image } from 'expo-image';
 import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
+import { useMemo } from 'react';
 
 import Text from '@/components/core/text';
 import Util from '@/libs/util';
+import item from '@/app/(main)/(tabs)/(home, my, search, ranking)/item';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;
@@ -24,11 +27,18 @@ function ListItemCardThumbnailImage({
 }: ListItemCardThumbnailImageProps) {
   const { styles } = useStyles(stylesheet);
 
+  const itemImageUrl = useMemo(() => {
+    return getImagekitUrlFromPath({
+      imagePath: `products/${Util.extractItemid(product.itemId!)}.webp`,
+      transformationArray: [{ height: height?.toString(), width: width?.toString() }],
+    });
+  }, [height, product.itemId, width]);
+
   return (
     <View style={[styles.container(width, height), style]}>
       <Image
-        source={`https://picsum.photos/${width}/${height}`}
-        contentFit="cover"
+        source={itemImageUrl}
+        contentFit="contain"
         alt={`${product.itemName} thumbnail image`}
         style={styles.image}
       />
@@ -47,6 +57,8 @@ const stylesheet = createStyleSheet(theme => ({
     height,
     overflow: 'hidden',
     aspectRatio: 1 / 1,
+    borderColor: theme.colors.lightShadow,
+    borderWidth: 1,
   }),
   image: {
     flex: 1,
