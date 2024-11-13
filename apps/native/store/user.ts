@@ -1,5 +1,5 @@
 import { Tables, User } from '@cococom/supabase/types';
-import { create } from 'zustand';
+import { createWithEqualityFn as create } from 'zustand/traditional';
 
 interface UserState {
   user: User | null;
