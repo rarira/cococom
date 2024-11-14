@@ -24,9 +24,9 @@ export const enum DiscountChannels {
 }
 
 export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[] = [
-  { text: '모두', value: DiscountChannels.ALL },
-  { text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
-  { text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
+  { id: 0, text: '모두', value: DiscountChannels.ALL },
+  { id: 1, text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
+  { id: 2, text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
 ];
 
 export const INFINITE_SEARCH_PAGE_SIZE = 10;

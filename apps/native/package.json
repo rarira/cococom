@@ -59,7 +59,6 @@
     "react-native": "0.76.1",
     "react-native-animated-spinkit": "^1.5.2",
     "react-native-collapsible-tab-view": "^8.0.0",
-    "react-native-draggable-flatlist": "^4.0.1",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-mmkv": "^3.1.0",
     "react-native-pager-view": "6.4.1",
