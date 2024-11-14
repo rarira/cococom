@@ -15,6 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
   slug: 'cococom',
+  // TODO: https://github.com/rarira/cococom/issues/16 해결되야 newArchEnabled: true로 변경 가능
   newArchEnabled: false,
   plugins: [
     'expo-router',
