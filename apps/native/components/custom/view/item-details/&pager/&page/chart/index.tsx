@@ -92,6 +92,7 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                 }
                 return value.toLocaleString();
               },
+              labelColor: `${theme.colors.typography}AA`,
             },
           ]}
         >
@@ -152,7 +153,9 @@ const ItemDetailsPagerChartPageView = memo(function ItemDetailsPagerChartPageVie
                       y={point.y!}
                       font={font}
                       text={formatXAxisDate(new Date(point.xValue))}
-                      color={theme.colors.typography}
+                      color={
+                        isActivePoint ? theme.colors.typography : `${theme.colors.typography}AA`
+                      }
                       opacity={!isActive ? 1 : isActivePoint ? 1 : 0.2}
                       style={'fill'}
                       transform={[
