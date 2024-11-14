@@ -330,15 +330,6 @@ async function downloadImages() {
     await downloadImage({ product, codedb, itemIds });
   }
 
-  console.log(
-    'products',
-    products.length,
-    'itemIds',
-    itemIds.length,
-    'lastItemId',
-    itemIds[itemIds.length - 1],
-  );
-
   await writeJsonFile(`data/online_downloadResult_itemIds_${date}.json`, itemIds);
 
   await writeJsonFile(`data/online_downloadResult_codedb_${date}.json`, codedb);
