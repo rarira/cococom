@@ -67,8 +67,6 @@ const DiscountChannelItem = memo(function ({
 }) {
   const { styles, theme } = useStyles(stylesheet);
 
-  const { handleUpdate } = useDiscountChannelsArrange();
-
   return (
     <DraggableListItem item={item} containerStyle={styles.listContainer}>
       <InfoIconText
