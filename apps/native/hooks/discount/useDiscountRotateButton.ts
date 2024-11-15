@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useDiscountChannels } from '@/store/discount-channels';
 
 export type RotateButtonOption<T> = {
+  id: number;
   text: string;
   fullText?: string;
   value: T;

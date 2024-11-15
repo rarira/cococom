@@ -4,8 +4,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Icon, { IconProps } from '@/components/core/icon';
 import Text, { TextProps } from '@/components/core/text';
-
-import ToggleSwitch, { ToggleSwitchProps } from '../../switch/toggle';
+import ToggleSwitch, { ToggleSwitchProps } from '@/components/core/switch/toggle';
 interface DefaultRowMenuWrapperProps extends ViewProps {
   type?: 'default';
 }

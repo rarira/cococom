@@ -15,6 +15,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
   slug: 'cococom',
+  // TODO: https://github.com/rarira/cococom/issues/16 해결되야 newArchEnabled: true로 변경 가능
+  newArchEnabled: false,
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
@@ -30,10 +32,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         ios: {
           useFrameworks: 'static',
-          newArchEnabled: true,
         },
         android: {
-          newArchEnabled: true,
           extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
         },
       },

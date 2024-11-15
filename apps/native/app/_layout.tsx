@@ -29,6 +29,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
 import { useLoadUser } from '@/hooks/useLoadUser';
+import { useDiscountChannelsArrange } from '@/hooks/settings/useDiscountChannelArrange';
 
 LogBox.ignoreLogs(['Failed prop type']);
 
@@ -79,6 +80,9 @@ function RootLayout() {
   });
 
   useLoadUser();
+
+  useDiscountChannelsArrange();
+
   const { theme } = useColorScheme();
 
   useEffect(() => {

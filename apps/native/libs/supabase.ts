@@ -5,8 +5,6 @@ import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
 
-import 'react-native-url-polyfill/auto';
-
 let url = Constants.expoConfig?.extra?.supabase?.url;
 
 if (DevClient.isDevelopmentBuild() && Platform.OS === 'android') {

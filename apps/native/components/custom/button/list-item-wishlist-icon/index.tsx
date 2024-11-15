@@ -10,8 +10,7 @@ import { InfiniteSearchResultData } from '@/libs/search';
 import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
-
-import NeedAuthDialog from '../../dialog/need-auth';
+import NeedAuthDialog from '@/components/custom/dialog/need-auth';
 
 interface ListItemWishlistIconButtonProps<
   T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,

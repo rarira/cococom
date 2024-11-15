@@ -5,9 +5,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Divider from '@/components/core/divider';
 import Text from '@/components/core/text';
-
-import DiscountRateText from '../../text/discount-rate';
-import SuperscriptWonText from '../../text/superscript-won';
+import DiscountRateText from '@/components/custom/text/discount-rate';
+import SuperscriptWonText from '@/components/custom/text/superscript-won';
 
 export type DiscountType = 'wholeProduct' | 'memberOnly' | 'normal';
 

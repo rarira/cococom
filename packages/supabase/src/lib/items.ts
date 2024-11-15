@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 
+import { MAX_ROWS } from '../constants';
 import { Database, InsertItem, SortOptionDirection } from '../merged-types';
 
 export class ItemsTable {
@@ -42,6 +43,30 @@ export class ItemsTable {
     }
 
     return data;
+  }
+
+  async fetchAllItemsWithId() {
+    const pageSize = MAX_ROWS;
+
+    const allData = [];
+
+    for (let page = 0; page <= Infinity; page++) {
+      const { data, error } = await this.supabaseClient
+        .from('items')
+        .select('id, itemId')
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+
+      if (error) {
+        console.error('fetchAllTiemsWithId error', error);
+        throw error;
+      }
+
+      allData.push(...data);
+
+      if (data.length < pageSize) break;
+    }
+
+    return allData;
   }
 
   async updateItem(item: Database['public']['Tables']['items']['Update'], id: number) {

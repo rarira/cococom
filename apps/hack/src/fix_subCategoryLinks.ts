@@ -1,8 +1,8 @@
+/* eslint-disable import/order */
+
 import { loadEnv, readJsonFile } from '../libs/util.js';
 
 loadEnv();
-
-/* eslint-disable import/order */
 
 import { OnlineSubCategoryLink } from '../libs/types.js';
 

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { createWithEqualityFn as create } from 'zustand/traditional';
 
-import { DiscountChannels, DiscountRotateButtonOptions } from '@/constants';
+import { DiscountChannels } from '@/constants';
 import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
 
 interface DiscountChannelState {
@@ -9,6 +9,6 @@ interface DiscountChannelState {
 }
 
 export const useDiscountChannels = create<DiscountChannelState>()(set => ({
-  discountChannels: DiscountRotateButtonOptions,
+  discountChannels: [],
   setDiscountChannels: discountChannels => set({ discountChannels }),
 }));
