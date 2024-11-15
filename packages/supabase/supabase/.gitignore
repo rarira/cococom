@@ -2,5 +2,4 @@
 .branches
 .temp
 
-/*.sql
-!migrations/*.sql
+*.sql
