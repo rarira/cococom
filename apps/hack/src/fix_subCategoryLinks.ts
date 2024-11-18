@@ -51,5 +51,5 @@ import { OnlineSubCategoryLink } from '../libs/types.js';
   //   }
   // }
 
-  // await writeJsonFile('data/readonly/online_updatedSubCategoryLinks.json', updatedSubCategoryLinks);
+  // writeJsonFile('data/readonly/online_updatedSubCategoryLinks.json', updatedSubCategoryLinks);
 })();

@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { Supabase } from '@cococom/supabase/libs';
 import { Tables } from '@cococom/supabase/types';
 
@@ -5,7 +6,17 @@ import { loadEnv } from './util.js';
 
 loadEnv();
 
-export const supabase = new Supabase(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+const supabaseUrl =
+  process.env.NODE_ENV === 'PROD' ? process.env.SUPABASE_PROD_URL : process.env.SUPABASE_URL;
+
+const supabaseAnonKey =
+  process.env.NODE_ENV === 'PROD'
+    ? process.env.SUPABASE_PROD_ANON_KEY
+    : process.env.SUPABASE_ANON_KEY;
+
+console.log({ supabaseUrl, supabaseAnonKey });
+
+export const supabase = new Supabase(supabaseUrl!, supabaseAnonKey!);
 
 export async function updateItemHistory(
   newlyAddedDiscounts: NonNullable<Awaited<ReturnType<typeof supabase.discounts.upsertDiscount>>>,

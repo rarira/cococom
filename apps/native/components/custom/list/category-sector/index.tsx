@@ -33,6 +33,7 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
     queryFn: fetchCurrentDiscountsByCategorySector,
   });
 
+  console.log('category-sector-list.tsx', data);
   const { width } = useWindowDimensions();
   const setCategorySectorsArray = useCategorySectorsStore(state => state.setCategorySectorsArray);
 

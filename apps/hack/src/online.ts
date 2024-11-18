@@ -12,14 +12,19 @@ import dayjs from 'dayjs';
 import { download } from '../libs/axios.js';
 import { minus1MS } from '../libs/date.js';
 import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
-import {
-  DownloadResultDb,
-  OnlineProduct,
-  OnlineSubCategoryLink,
-  SearchApiResult,
-} from '../libs/types.js';
+import { OnlineProduct, OnlineSubCategoryLink, SearchApiResult } from '../libs/types.js';
 
 import { InsertDiscount } from '@cococom/supabase/types';
+import {
+  buildDownloadedImagesIndex,
+  DownloadedImagesIndex,
+  getMostRecentDownloadedImagesIndex,
+  getMostRecentUniqueItemIds,
+  retryFailedUploading,
+  UniqueItemId,
+  updateNewlyAddedImages,
+  uploadImages,
+} from '../libs/images.js';
 
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
@@ -28,6 +33,8 @@ const date = new Date().toISOString().split('T')[0];
 
 const newItems: string[] = [];
 const noPriceValue = new Set<string>();
+
+const IS_PROD_ENVIROMENT = process.env.NODE_ENV === 'PROD';
 
 let newDiscountsCount = 0;
 
@@ -125,7 +132,7 @@ function getSubSubCategories($: cheerio.CheerioAPI, element: any) {
 
 //   console.log('subCategoryLinks', subCategoryLinks.length);
 
-//   await writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
+//   writeJsonFile('data/online_subCategoryLinks.json', subCategoryLinks);
 // }
 
 async function getAllItemsByCategory(category: string, categoryId: number) {
@@ -198,7 +205,7 @@ async function getAllItems() {
 
   const uniqueProducts = await removeDuplicateProducts(allProducts);
 
-  await writeJsonFile(`data/online_products_${date}.json`, uniqueProducts);
+  writeJsonFile(`data/online_products_${date}.json`, uniqueProducts);
 
   const saleProducts: OnlineProduct[] = allProducts.filter(
     product => product.couponDiscount?.discountValue,
@@ -231,7 +238,7 @@ async function getAllItems() {
 
   const salesProductsWithNoDuplicate = Object.values(tempObject);
 
-  await writeJsonFile(
+  writeJsonFile(
     `data/online_saleProducts_${date}.json`,
     Object.values(salesProductsWithNoDuplicate),
   );
@@ -258,12 +265,14 @@ async function removeDuplicateProducts(products: OnlineProduct[]) {
 
 async function downloadImage({
   product,
-  codedb,
+  uniqueItemIds,
+  downloadedImagesIndex,
   itemIds,
   jpg,
 }: {
   product: OnlineProduct;
-  codedb: DownloadResultDb;
+  uniqueItemIds: UniqueItemId;
+  downloadedImagesIndex: DownloadedImagesIndex;
   itemIds: { id: number; itemId: string; online_url: string }[];
   jpg?: boolean;
 }) {
@@ -273,7 +282,6 @@ async function downloadImage({
 
   async function saveImage(exists: boolean) {
     if (!productImage) {
-      codedb.noImage.push(product.code);
       return;
     }
 
@@ -284,55 +292,50 @@ async function downloadImage({
         fileName: `${product.code}.${jpg ? 'jpg' : 'webp'}`,
       });
     } catch (error) {
-      codedb.downloadError.push(product.code);
+      console.error('download image error', error);
     }
   }
 
-  try {
-    const data = await supabase.fetchDataLike(
-      { column: 'itemId', value: product.code },
-      'items',
-      'id, itemId, itemName',
-    );
+  if (uniqueItemIds[product.code] !== undefined) {
+    if (uniqueItemIds[product.code]?.online !== null) {
+      itemIds.push({
+        id: uniqueItemIds[product.code]?.online as number,
+        itemId: product.code + '_online',
+        online_url: product.url,
+      });
+    }
 
-    if (data.length === 0) {
+    if (uniqueItemIds[product.code]?.offline === null) {
+      itemIds.push({
+        id: uniqueItemIds[product.code]?.offline as number,
+        itemId: product.code,
+        online_url: product.url,
+      });
+    }
+  } else {
+    if (downloadedImagesIndex[product.code] === undefined) {
       await saveImage(false);
-      return;
     }
-
-    for (const item of data) {
-      itemIds.push({ id: item.id, itemId: item.itemId, online_url: product.url });
-
-      if (item.itemName !== product.name) {
-        codedb.nameDiff.push({
-          code: product.code,
-          dbName: item.itemName!,
-          onlineName: product.name,
-        });
-      }
-
-      await saveImage(true);
-    }
-  } catch (error) {
-    console.error('fetchDataLike error', error);
-    return;
   }
 }
 
 async function downloadImages() {
   console.log(date, 'will download images');
   const products = (await readJsonFile(`data/online_products_${date}.json`)) as OnlineProduct[];
-  const codedb: DownloadResultDb = { noImage: [], nameDiff: [], downloadError: [] };
+
+  const uniqueItemIds = await getMostRecentUniqueItemIds();
+
+  const downloadedImagesIndex = await getMostRecentDownloadedImagesIndex();
 
   const itemIds: ItemId[] = [];
 
   for (const product of products) {
-    await downloadImage({ product, codedb, itemIds });
+    await downloadImage({ product, itemIds, uniqueItemIds, downloadedImagesIndex });
   }
 
-  await writeJsonFile(`data/online_downloadResult_itemIds_${date}.json`, itemIds);
+  await buildDownloadedImagesIndex();
 
-  await writeJsonFile(`data/online_downloadResult_codedb_${date}.json`, codedb);
+  writeJsonFile(`data/online_downloadResult_itemIds_${date}.json`, itemIds);
 }
 
 async function upsertOnlineUrlToItem() {
@@ -437,6 +440,11 @@ async function uploadNewRecords() {
     for (const newlyAddedItem of newlyAddedItems) {
       await addReletedItemId(newlyAddedItem);
     }
+
+    if (!IS_PROD_ENVIROMENT) {
+      await updateNewlyAddedImages(newlyAddedItems);
+      await uploadImages(`downloads/final/${date}`);
+    }
   }
 
   console.log(`${newlyAddedItems?.length ?? 0} new items added`);
@@ -516,12 +524,18 @@ async function createHistory() {
   // 카테고리 업데이트
   // await getAllCategoryInfo();
 
+  console.log('start online fetching in ', process.env.NODE_ENV ?? 'staging', ' environment');
+
   // 루틴
-  await getAllItems();
-  await downloadImages();
+  if (!IS_PROD_ENVIROMENT) {
+    await getAllItems();
+    await downloadImages();
+  }
   await upsertOnlineUrlToItem();
   await manageSoldOutDiscounts();
   await uploadNewRecords();
   await updateRelatedItemId();
   await createHistory();
+
+  await retryFailedUploading();
 })();
