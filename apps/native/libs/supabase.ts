@@ -5,12 +5,12 @@ import { AppState, Platform } from 'react-native';
 import { storage } from '@/libs/mmkv';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
-const variant = Constants.expoConfig?.extra?.variant;
+const supabaseEnv = Constants.expoConfig?.extra?.supabase?.env;
 
-if (variant === 'LOCAL' && Platform.OS === 'android') {
+if (supabaseEnv === 'LOCAL' && Platform.OS === 'android') {
   url = 'http://10.0.2.2:54321';
 }
-
+console.log(Constants.expoConfig?.extra, process.env.EXPO_PUBLIC_ONLINE_HOST);
 export const supabase: Supabase = new Supabase(
   url,
   Constants.expoConfig?.extra?.supabase?.anonKey,

@@ -1,7 +1,5 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
-const variant = process.env.APP_VARIANT?.toUpperCase() ?? 'DEVELOPMENT';
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
@@ -55,13 +53,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     ...config.extra,
-    variant,
     sentry: {
       dsn: process.env.SENTRY_DSN,
     },
     supabase: {
-      url: process.env[`SUPABASE_${variant}_URL`],
-      anonKey: process.env[`SUPABASE_${variant}_ANON_KEY`],
+      env: process.env.SUPABASE_ENV,
+      url: process.env.EXPO_PUBLIC_SUPABASE_URL,
+      anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
     },
     kakao: {
       nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,

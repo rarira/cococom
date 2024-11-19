@@ -33,7 +33,7 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
-    "supabase": "^1.219.2",
+    "supabase": "^1.223.10",
     "typescript": "^5.4.2"
   }
 }
