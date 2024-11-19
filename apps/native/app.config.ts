@@ -1,15 +1,6 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
-const variant = (() => {
-  switch (process.env.APP_VARIANT) {
-    case 'development-simulator':
-      return 'LOCAL';
-    case 'preview':
-      return 'PRODUCTION';
-    default:
-      return process.env.APP_VARIANT?.toUpperCase() ?? 'LOCAL';
-  }
-})();
+const variant = process.env.APP_VARIANT?.toUpperCase() ?? 'DEVELOPMENT';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -64,15 +55,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     ...config.extra,
+    variant,
     sentry: {
       dsn: process.env.SENTRY_DSN,
     },
     supabase: {
-      url: variant === 'LOCAL' ? process.env.SUPABASE_URL : process.env[`SUPABASE_${variant}_URL`],
-      anonKey:
-        variant === 'LOCAL'
-          ? process.env.SUPABASE_ANON_KEY
-          : process.env[`SUPABASE_${variant}_ANON_KEY`],
+      url: process.env[`SUPABASE_${variant}_URL`],
+      anonKey: process.env[`SUPABASE_${variant}_ANON_KEY`],
     },
     kakao: {
       nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,

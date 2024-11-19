@@ -1,13 +1,13 @@
 import { Supabase } from '@cococom/supabase/libs';
 import Constants from 'expo-constants';
-import * as DevClient from 'expo-dev-client';
 import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
+const variant = Constants.expoConfig?.extra?.variant;
 
-if (DevClient.isDevelopmentBuild() && Platform.OS === 'android') {
+if (variant === 'LOCAL' && Platform.OS === 'android') {
   url = 'http://10.0.2.2:54321';
 }
 
