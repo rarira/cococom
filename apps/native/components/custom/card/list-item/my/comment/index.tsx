@@ -41,6 +41,7 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
         queryClient,
         command: 'delete',
       });
+
       onMutate();
     },
     onSuccess: () => {

@@ -12,9 +12,7 @@ const supabaseUrl =
 const supabaseAnonKey =
   process.env.NODE_ENV === 'PROD'
     ? process.env.SUPABASE_PROD_ANON_KEY
-    : process.env.SUPABASE_ANON_KEY;
-
-console.log({ supabaseUrl, supabaseAnonKey });
+    : process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export const supabase = new Supabase(supabaseUrl!, supabaseAnonKey!);
 

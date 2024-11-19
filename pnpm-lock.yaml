@@ -394,8 +394,8 @@ importers:
         specifier: ^8.2.0
         version: 8.2.0
       supabase:
-        specifier: ^1.215.0
-        version: 1.215.0
+        specifier: ^1.219.2
+        version: 1.219.2
       typescript:
         specifier: ^5.4.2
         version: 5.6.3
@@ -6791,8 +6791,8 @@ packages:
   sudo-prompt@9.2.1:
     resolution: {integrity: sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==}
 
-  supabase@1.215.0:
-    resolution: {integrity: sha512-ITHqEnDl3F/b44AYdBUSzinqZhmGxrx205Yt2HfyaVTd5W/JppF3/naqVPIdRiUZBBLKkvfQO/wUk48W8SoVxw==}
+  supabase@1.219.2:
+    resolution: {integrity: sha512-bngNxjoiU2EHbQ4Cxfrft/ZnYnYdlWfpLcye3KCyJFQhTl3ucpygKymJZiasJl0xdN+hR98TdrHp7WHTuf9ztQ==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -9484,7 +9484,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.14.15
+      '@types/node': 22.9.0
       '@types/yargs': 15.0.19
       chalk: 4.1.2
     optional: true
@@ -13694,7 +13694,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.14.15
+      '@types/node': 22.9.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -15666,7 +15666,7 @@ snapshots:
   sudo-prompt@9.2.1:
     optional: true
 
-  supabase@1.215.0:
+  supabase@1.219.2:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.5

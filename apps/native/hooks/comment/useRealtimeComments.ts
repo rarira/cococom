@@ -1,11 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import {
-  handleMutateOfDeleteComment,
-  handleMutateOfInsertComment,
-  queryKeys,
-} from '@/libs/react-query';
+import { handleMutateOfInsertComment, queryKeys } from '@/libs/react-query';
 import { supabase, supabaseClient } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -24,20 +20,12 @@ export function useRealtimeComments(itemId: number) {
         {
           schema: 'public',
           table: 'comments',
-          event: '*',
+          event: 'INSERT',
           filter: 'item_id=eq.' + itemId,
         },
         async payload => {
-          if (payload.eventType === 'DELETE') {
-            handleMutateOfDeleteComment({
-              queryClient,
-              queryKey: commentsQueryKey,
-              commentId: payload.old.id,
-              itemQueryKey,
-            });
+          if (payload.new.user_id === user?.id) return;
 
-            return;
-          }
           if (payload.eventType === 'INSERT') {
             const author = await supabase.fetchData<'profiles'>(
               { value: payload.new.user_id, column: 'id' },
@@ -46,6 +34,7 @@ export function useRealtimeComments(itemId: number) {
             );
 
             if (!author) return;
+
             const newComment = {
               ...payload.new,
               user_id: undefined,

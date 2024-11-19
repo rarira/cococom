@@ -211,6 +211,8 @@ async function downloadNoImages(info: { id: number; no_images: string[] | null }
 }
 
 (async () => {
+  console.log('start offline fetching in ', process.env.NODE_ENV ?? 'staging', ' environment');
+
   // const dates = [
   //   '2024-05-03',
   //   '2024-04-30',

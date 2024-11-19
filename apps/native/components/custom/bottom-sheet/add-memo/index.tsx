@@ -5,6 +5,7 @@ import { memo, RefObject, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { is } from 'date-fns/locale';
 
 import BottomSheet from '@/components/core/bottom-sheet';
 import Button from '@/components/core/button';
@@ -56,8 +57,8 @@ const AddMemoBottomSheet = memo(function AddMemoBottomSheet({
     },
     onSuccess: (data, variables) => {
       const newMemo = {
-        ...data[0],
         ...variables,
+        ...data[0],
       };
 
       const newMyMemo: JoinedMyMemos = {

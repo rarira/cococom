@@ -95,7 +95,6 @@ export async function getMostRecentFile(folderPath: string, prefix: string) {
     // 가장 최신 파일 경로
     const mostRecentFilePath = path.join(folderPath, mostRecentFile!.file);
 
-    console.log(`Most recent file: ${mostRecentFile!.file}`);
     return mostRecentFilePath;
   } catch (err) {
     console.error('Error reading folder:', err);
