@@ -9,7 +9,7 @@
     "start:dalin": "tsx src/dalin.ts",
     "start:online": "tsx src/online.ts",
     "start:prod": "cross-env NODE_ENV=PROD tsx src/index.ts",
-    "start:online:prod": "cross-env NODE_ENV=PROD tsx src/online.ts",
+    "start:prod:online": "cross-env NODE_ENV=PROD tsx src/online.ts",
     "migrate": "tsx src/migrate.ts",
     "update-images": "tsx src/image_arrange.ts --max-old-space-size=4096"
   },

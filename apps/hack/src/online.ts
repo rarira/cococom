@@ -343,7 +343,9 @@ async function upsertOnlineUrlToItem() {
     `data/online_downloadResult_itemIds_${date}.json`,
   )) as ItemId[];
 
-  const result = await supabase.items.upsertItem(itemIds, {
+  const filteredItemIds = itemIds.filter(item => !!item.id);
+
+  const result = await supabase.items.upsertItem(filteredItemIds, {
     ignoreDuplicates: false,
     onConflict: 'itemId',
   });
