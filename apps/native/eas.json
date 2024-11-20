@@ -13,7 +13,7 @@
       },
       "env": {
         "NODE_ENV": "development",
-        "EXPO_PUBLIC_SUPABASE_ENV": "LOCAL"
+        "SUPABASE_ENV": "LOCAL"
       }
     },
     "development": {
@@ -26,7 +26,7 @@
         "NODE_ENV": "development",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "EXPO_PUBLIC_SUPABASE_ENV": "STAGING"
+        "SUPABASE_ENV": "STAGING"
       }
     },
     "staging": {
@@ -38,7 +38,9 @@
         "NODE_ENV": "production",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "EXPO_PUBLIC_SUPABASE_ENV": "STAGING"
+        "SUPABASE_ENV": "STAGING",
+        "EXPO_PUBLIC_SUPABASE_URL": "SUPABASE_STAGING_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "SUPABASE_STAGING_ANON_KEY"
       }
     },
     "production": {
@@ -49,7 +51,7 @@
         "NODE_ENV": "production",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "EXPO_PUBLIC_SUPABASE_ENV": "PROD"
+        "SUPABASE_ENV": "PROD"
       }
     }
   },

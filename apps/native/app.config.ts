@@ -54,7 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   extra: {
     ...config.extra,
     sentry: {
-      dsn: process.env.SENTRY_DSN,
+      dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
     },
     supabase: {
       env: process.env.SUPABASE_ENV,
