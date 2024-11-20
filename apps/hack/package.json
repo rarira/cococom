@@ -10,7 +10,6 @@
     "start:online": "tsx src/online.ts",
     "start:prod": "cross-env NODE_ENV=PROD tsx src/index.ts",
     "start:prod:online": "cross-env NODE_ENV=PROD tsx src/online.ts",
-    "migrate": "tsx src/migrate.ts",
     "update-images": "tsx src/image_arrange.ts --max-old-space-size=4096"
   },
   "keywords": [],
@@ -24,14 +23,12 @@
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.14.15",
     "cross-env": "^7.0.3",
-    "prisma": "^5.13.0",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "dependencies": {
     "@cococom/imagekit": "workspace:*",
     "@cococom/supabase": "workspace:*",
-    "@prisma/client": "^5.13.0",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "dayjs": "^1.11.10",
