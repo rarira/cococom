@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'cococom',
   slug: 'cococom',
   // TODO: https://github.com/rarira/cococom/issues/16 해결되야 newArchEnabled: true로 변경 가능
-  newArchEnabled: false,
+  newArchEnabled: true,
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
