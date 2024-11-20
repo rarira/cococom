@@ -257,45 +257,49 @@ export async function updateNewlyAddedImages(items?: ItemWithItemId[]) {
 }
 
 export async function uploadImages(folderPath: string) {
-  const files = await readdir(folderPath, { withFileTypes: true, recursive: false });
+  try {
+    const files = await readdir(folderPath, { withFileTypes: true, recursive: false });
 
-  const uploadFailed: string[] = [];
+    const uploadFailed: string[] = [];
 
-  let count = 0;
+    let count = 0;
 
-  for (const file of files) {
-    if (file.isFile() && file.name.endsWith('.webp')) {
-      try {
-        await uploadImageToImageKit({
-          targetFolder: 'products',
-          filePath: `${folderPath}/${file.name}`,
-          fileName: file.name,
-        });
-        count++;
-        console.log(count, ': uploaded', file.name);
-      } catch (error) {
-        if (
-          (error as Error).message ===
-          'A file with the same name already exists at the exact location. We could not overwrite it because both overwriteFile and useUniqueFileName are set to false.'
-        ) {
-          console.log(count, ': skip existing', file.name);
+    for (const file of files) {
+      if (file.isFile() && file.name.endsWith('.webp')) {
+        try {
+          await uploadImageToImageKit({
+            targetFolder: 'products',
+            filePath: `${folderPath}/${file.name}`,
+            fileName: file.name,
+          });
           count++;
-          continue;
+          console.log(count, ': uploaded', file.name);
+        } catch (error) {
+          if (
+            (error as Error).message ===
+            'A file with the same name already exists at the exact location. We could not overwrite it because both overwriteFile and useUniqueFileName are set to false.'
+          ) {
+            console.log(count, ': skip existing', file.name);
+            count++;
+            continue;
+          }
+          console.error(count, 'upload error', { error, file: file.name });
+          uploadFailed.push(file.name);
+          count++;
         }
-        console.error(count, 'upload error', { error, file: file.name });
-        uploadFailed.push(file.name);
-        count++;
       }
     }
+    writeJsonFile(`data/uploadImages_${date}.json`, {
+      folderPath,
+      totalFiles: files.length,
+      uploadFailed,
+    });
+
+    console.log('upload done', { totalFiles: files.length, uploadFailed: uploadFailed.length });
+  } catch (error) {
+    if (error.message.includes('no such file or directory')) return;
+    console.error('uploadImages error', { error });
   }
-
-  writeJsonFile(`data/uploadImages_${date}.json`, {
-    folderPath,
-    totalFiles: files.length,
-    uploadFailed,
-  });
-
-  console.log('upload done', { totalFiles: files.length, uploadFailed: uploadFailed.length });
 }
 
 export async function retryFailedUploading() {

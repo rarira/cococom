@@ -116,12 +116,12 @@ async function createCategories() {
 async function getAllDiscountsData(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
   console.log('discounts count', discounts.length);
-  writeJsonFile(`offlineAllDiscountsData-${date ?? getDateString()}.json`, discounts);
+  writeJsonFile(`data/offlineAllDiscountsData-${date ?? getDateString()}.json`, discounts);
 }
 
 async function updateDiscounts(date?: string) {
   const discounts = readJsonFile(
-    `offlineAllDiscountsData-${date ?? getDateString()}.json`,
+    `data/offlineAllDiscountsData-${date ?? getDateString()}.json`,
   ) as GetAllDatasResult[];
 
   const newlyAddedItems = await supabase.items.upsertItem(
