@@ -51,10 +51,13 @@ const reactNavigationIntegration = Sentry.reactNavigationIntegration();
 
 const queryClient = new QueryClient();
 
+console.log(process.env.EXPO_PUBLIC_SENTRY_DSN, process.env.EAS_BUILD_PROFILE);
+
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   enableNativeFramesTracking: !isRunningInExpoGo(),
   integrations: [reactNavigationIntegration],
+  environment: process.env.EAS_BUILD_PROFILE ?? 'development',
 });
 
 onlineManager.setEventListener(setOnline => {
