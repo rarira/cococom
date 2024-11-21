@@ -193,7 +193,7 @@ const stylesheet = createStyleSheet(theme => ({
   tabBarLabelText: (focused: boolean) => ({
     color: focused ? theme.colors.background : theme.colors.typography,
     fontWeight: focused ? 'semibold' : 'normal',
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.normal,
     lineHeight: theme.fontSize.md,
   }),
 }));

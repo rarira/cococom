@@ -7,7 +7,6 @@ import { useMemo } from 'react';
 
 import Text from '@/components/core/text';
 import Util from '@/libs/util';
-import item from '@/app/(main)/(tabs)/(home, my, search, ranking)/item';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;

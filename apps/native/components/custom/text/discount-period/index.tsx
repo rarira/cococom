@@ -22,7 +22,7 @@ function DiscountPeriodText({ endDate, style }: DiscountPeriodTextProps) {
 const stylesheet = createStyleSheet(theme => ({
   container: {},
   text: {
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.xs,
     opacity: 0.6,
   },
 }));

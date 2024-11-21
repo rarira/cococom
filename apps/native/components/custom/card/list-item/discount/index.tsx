@@ -3,11 +3,11 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
-import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import DiscountListItemCardDetailView from '@/components/custom/view/list-item-card/discount/&detail';
 import { PortalHostNames } from '@/constants';
 import { CurrentDiscounts } from '@/hooks/discount/useDiscountListQuery';
 import { ShadowPresets } from '@/libs/shadow';
+import ListItemCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 
 export interface DiscountListItemCardProps {
   discount: Awaited<CurrentDiscounts>[number];
@@ -27,14 +27,14 @@ function DiscountListItemCard({
   const isOnline = discount.is_online;
 
   return (
-    <Link href={`/item?itemId=${discount.items.id}` as Href<string>} asChild>
+    <Link href={`/item?itemId=${discount.items.id}` as Href} asChild>
       <Pressable>
         <Card style={[styles.cardContainer(numColumns > 1, isOnline), containerStyle]}>
           <View style={styles.itemContainer(numColumns === 1)}>
-            <ProductCardThumbnailImage
+            <ListItemCardThumbnailImage
               product={discount.items!}
-              width={115}
-              height={115}
+              width={110}
+              height={110}
               style={styles.thumbnail}
               isOnline={discount.is_online}
             />
@@ -50,7 +50,7 @@ const stylesheet = createStyleSheet(theme => ({
   cardContainer: (needMargin: boolean, isOnline: boolean) => ({
     marginHorizontal: needMargin ? theme.spacing.sm : 0,
     borderRadius: theme.borderRadius.md,
-    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
+    backgroundColor: isOnline ? `${theme.colors.tint3}44` : theme.colors.cardBackground,
     ...ShadowPresets.card(theme),
   }),
   itemContainer: (row: boolean) => ({

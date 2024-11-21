@@ -41,7 +41,7 @@ function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDe
             <InfoIconText
               iconProps={{
                 font: { type: 'FontAwesomeIcon', name: 'comments-o' },
-                size: theme.fontSize.normal,
+                size: theme.fontSize.sm,
               }}
               textProps={{
                 children: Util.showMaxNumber(item?.totalCommentCount, ITEM_DETAILS_MAX_COUNT),
@@ -51,7 +51,7 @@ function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDe
               <InfoIconText
                 iconProps={{
                   font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
-                  size: theme.fontSize.normal,
+                  size: theme.fontSize.sm,
                 }}
                 textProps={{
                   children: Util.showMaxNumber(item?.totalMemoCount!, ITEM_DETAILS_MAX_COUNT),
