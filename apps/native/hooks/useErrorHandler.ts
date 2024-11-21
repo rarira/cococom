@@ -14,7 +14,7 @@ export function useErrorHandler() {
   // const store = useStore({ safeUse: true });
 
   const reportToSentry = useCallback(
-    (e: Error, stackTrace?: string, callback?: Callback | boolean) => {
+    (e: Error, stackTrace: string, callback?: Callback | boolean) => {
       if (process.env.NODE_ENV === 'development') {
         return console.error(JSON.stringify(e, null, 2));
       }
