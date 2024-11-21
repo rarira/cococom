@@ -65,6 +65,7 @@ export default function TabLayout() {
           },
           tabBarStyle: styles.tabBar(bottom),
           tabBarHideOnKeyboard: true,
+          tabBarLabelStyle: styles.tabBarLabel,
         };
       }}
       tabBar={props => {
@@ -119,4 +120,8 @@ const stylesheet = createStyleSheet(theme => ({
     left: 0,
     right: 0,
   }),
+  tabBarLabel: {
+    fontSize: theme.fontSize.normal,
+    fontWeight: 'bold',
+  },
 }));

@@ -1,6 +1,7 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import Constants from 'expo-constants';
 
 import IconButton from '@/components/core/button/icon';
 import RowMenu from '@/components/core/menu/row';
@@ -10,6 +11,7 @@ import ScreenContainerView from '@/components/custom/view/container/screen';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDiscountChannels } from '@/store/discount-channels';
 import { useUserStore } from '@/store/user';
+import Text from '@/components/core/text';
 
 export default function ProfileScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -72,6 +74,7 @@ export default function ProfileScreen() {
             text={stringifiedDiscountChannels}
           />
         </RowMenu.Root>
+        <Text>{`버전: ${Constants.expoConfig?.version}`}</Text>
       </ScreenContainerView>
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>

@@ -4,7 +4,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
   slug: 'cococom',
-  // TODO: https://github.com/rarira/cococom/issues/16 해결되야 newArchEnabled: true로 변경 가능
   newArchEnabled: true,
   plugins: [
     'expo-router',
@@ -43,6 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     '@react-native-google-signin/google-signin',
     'expo-apple-authentication',
     './plugins',
+    'expo-font',
   ],
   ios: {
     ...config.ios,
@@ -76,8 +76,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   updates: {
     url: 'https://u.expo.dev/aad6f74a-0f9e-4ef0-9fb3-2a19791cb1ec',
-  },
-  runtimeVersion: {
-    policy: 'appVersion',
   },
 });
