@@ -2,8 +2,8 @@
 const fs = require('fs');
 
 // const buildProfile = process.env.EAS_BUILD_PROFILE;
-const googleServicesJson = process.env.GOOGLE_SERVICES_JSON;
-const googleServicesInfo = process.env.GOOGLE_SERVICES_INFO;
+const googleServicesJson = process.env.GOOGLE_SERVICES_JSON_STRING;
+const googleServicesInfo = process.env.GOOGLE_SERVICES_INFO_STRING;
 
 // const config = buildProfile === 'production' ? configProd : configDevelop;
 const decodedGoogleServicesJson = Buffer.from(googleServicesJson, 'base64').toString();

@@ -45,11 +45,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   ios: {
     ...config.ios,
-    googleServicesFile: process.env.GOOGLE_SERVICES_INFO,
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_INFO ?? './assets/firebase/GoogleService-Info.plist',
   },
   android: {
     ...config.android,
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_JSON ?? './assets/firebase/google-services.json',
   },
   extra: {
     ...config.extra,
