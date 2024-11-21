@@ -14,6 +14,10 @@ web-build/
 ./ios/
 ./android/
 
+
+googles-services.json
+GoogleService-Info.plist
+
 # macOS
 .DS_Store
 
@@ -23,8 +27,6 @@ web-build/
 expo-env.d.ts
 # @end expo-cli
 
-google-services.json
-GoogleService-Info.plist
 
 *.apk
 
