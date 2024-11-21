@@ -37,10 +37,7 @@
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "SUPABASE_ENV": "STAGING",
-        "SENTRY_AUTH_TOKEN": "SENTRY_AUTH_TOKEN",
-        "EXPO_PUBLIC_SUPABASE_URL": "EXPO_PUBLIC_SUPABASE_STAGING_URL",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "EXPO_PUBLIC_SUPABASE_STAGING_ANON_KEY"
+        "SUPABASE_ENV": "STAGING"
       },
       "ios": {
         "applicationArchivePath": "ios/build/*"
@@ -53,8 +50,7 @@
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "SUPABASE_ENV": "STAGING",
-        "SENTRY_AUTH_TOKEN": "SENTRY_AUTH_TOKEN"
+        "SUPABASE_ENV": "STAGING"
       },
       "ios": {
         "applicationArchivePath": "ios/build/*"
