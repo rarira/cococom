@@ -9,6 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
+    '@react-native-firebase/crashlytics',
     [
       '@sentry/react-native/expo',
       {

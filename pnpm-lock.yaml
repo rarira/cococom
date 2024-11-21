@@ -118,6 +118,9 @@ importers:
       '@react-native-firebase/app':
         specifier: ^21.5.0
         version: 21.5.0(expo@52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
+      '@react-native-firebase/crashlytics':
+        specifier: ^21.6.0
+        version: 21.6.0(5pr4xtqriglfrtiusbcgkx4mga)
       '@react-native-google-signin/google-signin':
         specifier: ^13.1.0
         version: 13.1.0(expo@52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
@@ -1979,6 +1982,15 @@ packages:
       expo: '>=47.0.0'
       react: '*'
       react-native: '*'
+    peerDependenciesMeta:
+      expo:
+        optional: true
+
+  '@react-native-firebase/crashlytics@21.6.0':
+    resolution: {integrity: sha512-LlaHrg7YG+4r8BaMaFEhirEQzP27vfrmVs4zQnosKRzBaBVzm8m2gcFPMXhTI/hvzswMb87GJ5PFgrDacOWX9Q==}
+    peerDependencies:
+      '@react-native-firebase/app': 21.6.0
+      expo: '>=47.0.0'
     peerDependenciesMeta:
       expo:
         optional: true
@@ -9668,6 +9680,13 @@ snapshots:
       expo: 52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
+
+  '@react-native-firebase/crashlytics@21.6.0(5pr4xtqriglfrtiusbcgkx4mga)':
+    dependencies:
+      '@react-native-firebase/app': 21.5.0(expo@52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
+      stacktrace-js: 2.0.2
+    optionalDependencies:
+      expo: 52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)
 
   '@react-native-google-signin/google-signin@13.1.0(expo@52.0.9(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1)))(graphql@15.8.0)(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.2(@babel/core@7.26.0)(@babel/preset-env@7.25.3(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.3.12)(react@18.3.1))(react@18.3.1)':
     dependencies:

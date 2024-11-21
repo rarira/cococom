@@ -30,6 +30,7 @@
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-firebase/analytics": "^21.5.0",
     "@react-native-firebase/app": "^21.5.0",
+    "@react-native-firebase/crashlytics": "^21.6.0",
     "@react-native-google-signin/google-signin": "^13.1.0",
     "@react-native-kakao/core": "^2.2.6",
     "@react-native-kakao/user": "^2.2.6",
