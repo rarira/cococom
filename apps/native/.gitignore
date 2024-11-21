@@ -9,6 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 .envrc
+.env*.*
 web-build/
 
 ./ios/
