@@ -26,6 +26,7 @@ import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
+import * as Updates from 'expo-updates';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -58,7 +59,9 @@ Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   enableNativeFramesTracking: !isRunningInExpoGo(),
   integrations: [reactNavigationIntegration],
-  environment: process.env.EAS_BUILD_PROFILE ?? 'development',
+  environment: Updates.channel ?? process.env.EAS_BUILD_PROFILE ?? 'development',
+  release: Constants.expoConfig?.version,
+  dist: Constants.expoConfig?.version,
 });
 
 onlineManager.setEventListener(setOnline => {
