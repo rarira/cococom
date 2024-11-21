@@ -13,8 +13,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@sentry/react-native/expo',
       {
-        organization: process.env.EXPO_PUBLIC_SENTRY_ORG,
-        project: process.env.EXPO_PUBLIC_SENTRY_PROJECT,
+        organization: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
       },
     ],
     [
@@ -31,7 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@react-native-kakao/core',
       {
-        nativeAppKey: process.env.EXPO_PUBLIC_KAKAO_TEST_NATIVE_APP_KEY,
+        nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
         android: {
           authCodeHandlerActivity: true,
         },
@@ -60,18 +60,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
     },
     supabase: {
-      env: process.env.EXPO_PUBLIC_SUPABASE_ENV,
+      env: process.env.SUPABASE_ENV,
       url:
-        process.env.EXPO_PUBLIC_SUPABASE_ENV === 'LOCAL'
+        process.env.SUPABASE_ENV === 'LOCAL'
           ? process.env.EXPO_PUBLIC_SUPABASE_URL
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.EXPO_PUBLIC_SUPABASE_ENV}_URL`],
+          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_URL`],
       anonKey:
-        process.env.EXPO_PUBLIC_SUPABASE_ENV === 'LOCAL'
+        process.env.SUPABASE_ENV === 'LOCAL'
           ? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.EXPO_PUBLIC_SUPABASE_ENV}_ANON_KEY`],
+          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_ANON_KEY`],
     },
     kakao: {
-      nativeAppKey: process.env.EXPO_PUBLIC_KAKAO_TEST_NATIVE_APP_KEY,
+      nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
     },
   },
 });
