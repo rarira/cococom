@@ -32,6 +32,7 @@
     },
     "staging": {
       "distribution": "internal",
+      "channel": "staging",
       "cache": {
         "key": "expo:52:1732195364"
       },
@@ -45,6 +46,7 @@
       }
     },
     "production": {
+      "channel": "production",
       "cache": {
         "key": "expo:52:1732195364"
       },
