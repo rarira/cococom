@@ -1,15 +1,19 @@
 /* eslint-disable no-undef */
 const fs = require('fs');
 
-// const buildProfile = process.env.EAS_BUILD_PROFILE;
-const googleServicesJson = process.env.GOOGLE_SERVICES_JSON_STRING;
-const googleServicesInfo = process.env.GOOGLE_SERVICES_INFO_STRING;
+console.log(process.env.EAS_BUILD_RUNNER);
 
-// const config = buildProfile === 'production' ? configProd : configDevelop;
-const decodedGoogleServicesJson = Buffer.from(googleServicesJson, 'base64').toString();
-const decodedGoogleServiceInfo = Buffer.from(googleServicesInfo, 'base64').toString();
+if (process.env.EAS_BUILD_RUNNER === 'local-build-plugin') {
+  // const buildProfile = process.env.EAS_BUILD_PROFILE;
+  const googleServicesJson = process.env.GOOGLE_SERVICES_JSON_STRING;
+  const googleServicesInfo = process.env.GOOGLE_SERVICES_INFO_STRING;
 
-fs.writeFileSync('./assets/firebase/google-services.json', decodedGoogleServicesJson);
-fs.writeFileSync('./assets/firebase/GoogleService-Info.plist', decodedGoogleServiceInfo);
+  // const config = buildProfile === 'production' ? configProd : configDevelop;
+  const decodedGoogleServicesJson = Buffer.from(googleServicesJson, 'base64').toString();
+  const decodedGoogleServiceInfo = Buffer.from(googleServicesInfo, 'base64').toString();
 
-console.log('Google Services JSON and Info files have been created');
+  fs.writeFileSync('./assets/firebase/google-services.json', decodedGoogleServicesJson);
+  fs.writeFileSync('./assets/firebase/GoogleService-Info.plist', decodedGoogleServiceInfo);
+
+  console.log('Google Services JSON and Info files have been created');
+}
