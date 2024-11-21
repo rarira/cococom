@@ -9,7 +9,7 @@
         "simulator": true
       },
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732195364"
       },
       "env": {
         "NODE_ENV": "local",
@@ -22,7 +22,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732195364"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
@@ -33,7 +33,7 @@
     "staging": {
       "distribution": "internal",
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732195364"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
@@ -46,7 +46,7 @@
     },
     "production": {
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732195364"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
