@@ -12,6 +12,8 @@
         "key": "expo:51:1719554338"
       },
       "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
         "SUPABASE_ENV": "LOCAL"
       }
     },
@@ -46,7 +48,8 @@
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "SUPABASE_ENV": "PROD"
+        "SUPABASE_ENV": "STAGING",
+        "SENTRY_AUTH_TOKEN": "SENTRY_AUTH_TOKEN"
       }
     }
   },
