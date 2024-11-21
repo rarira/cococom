@@ -15,7 +15,7 @@ web-build/
 ./android/
 
 
-googles-services.json
+google-services.json
 GoogleService-Info.plist
 
 # macOS
