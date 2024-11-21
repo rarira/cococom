@@ -25,11 +25,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ErrorBoundary from 'react-native-error-boundary';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
 import { useLoadUser } from '@/hooks/useLoadUser';
 import { useDiscountChannelsArrange } from '@/hooks/settings/useDiscountChannelArrange';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
 
@@ -39,8 +42,6 @@ configureReanimatedLogger({
 });
 
 setDefaultOptions({ locale: ko });
-
-export { ErrorBoundary } from 'expo-router';
 
 initializeKakaoSDK(Constants.expoConfig?.extra?.kakao?.nativeAppKey);
 
@@ -86,6 +87,8 @@ function RootLayout() {
 
   useDiscountChannelsArrange();
 
+  const { reportToSentry } = useErrorHandler();
+
   const { theme } = useColorScheme();
 
   useEffect(() => {
@@ -111,41 +114,43 @@ function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView>
-        <SafeAreaProvider>
-          <PortalProvider>
-            <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-              <BottomSheetModalProvider>
-                <Stack
-                  screenOptions={{
-                    contentStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(main)"
-                    options={{
-                      headerShown: false,
+    <ErrorBoundary onError={reportToSentry}>
+      <QueryClientProvider client={queryClient}>
+        <GestureHandlerRootView>
+          <SafeAreaProvider>
+            <PortalProvider>
+              <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+                <BottomSheetModalProvider>
+                  <Stack
+                    screenOptions={{
+                      contentStyle: {
+                        backgroundColor: 'transparent',
+                      },
                     }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                  <Stack.Screen
-                    name="auth"
-                    options={{
-                      presentation: 'modal',
-                      headerShown: false,
-                      gestureEnabled: false,
-                    }}
-                  />
-                </Stack>
-              </BottomSheetModalProvider>
-            </ThemeProvider>
-          </PortalProvider>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+                  >
+                    <Stack.Screen
+                      name="(main)"
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                    <Stack.Screen
+                      name="auth"
+                      options={{
+                        presentation: 'modal',
+                        headerShown: false,
+                        gestureEnabled: false,
+                      }}
+                    />
+                  </Stack>
+                </BottomSheetModalProvider>
+              </ThemeProvider>
+            </PortalProvider>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

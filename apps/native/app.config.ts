@@ -62,13 +62,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supabase: {
       env: process.env.SUPABASE_ENV,
       url:
-        process.env.SUPABASE_ENV === 'LOCAL'
-          ? process.env.EXPO_PUBLIC_SUPABASE_URL
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_URL`],
+        // process.env.SUPABASE_ENV === 'LOCAL'?
+        process.env.EXPO_PUBLIC_SUPABASE_URL,
+      // : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_URL`],
       anonKey:
-        process.env.SUPABASE_ENV === 'LOCAL'
-          ? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_ANON_KEY`],
+        // process.env.SUPABASE_ENV === 'LOCAL'?
+        process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+      // : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_ANON_KEY`],
     },
     kakao: {
       nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
