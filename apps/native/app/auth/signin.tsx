@@ -82,6 +82,7 @@ export default function SignInScreen() {
 
     const result = await login();
 
+    console.log('kakao login result', result);
     await handleSignInWithIdToken({
       provider: 'kakao',
       token: result.idToken!,
