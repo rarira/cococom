@@ -1,9 +1,9 @@
 import { Supabase } from '@cococom/supabase/libs';
 import Constants from 'expo-constants';
 import { AppState, Platform } from 'react-native';
+import axios from 'axios';
 
 import { storage } from '@/libs/mmkv';
-import axios from 'axios';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
 const supabaseEnv = Constants.expoConfig?.extra?.supabase?.env;
@@ -43,14 +43,14 @@ export const supabase: Supabase = new Supabase(
             headers: config?.headers as any,
             data: config?.body,
           });
-  
+
           const responseBody = JSON.stringify(result.data);
-  
+
           const headers = new Headers();
           Object.entries(result.headers).forEach(([key, value]) => {
             headers.append(key, value as string);
           });
-  
+
           return new Response(responseBody, {
             headers,
             status: result.status,
@@ -70,6 +70,7 @@ export const supabase: Supabase = new Supabase(
           );
         }
       },
+    },
   },
 );
 
