@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import {
   focusManager,
   onlineManager,
+  QueryCache,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
@@ -51,7 +52,13 @@ SplashScreen.preventAutoHideAsync();
 
 const reactNavigationIntegration = Sentry.reactNavigationIntegration();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: error => {
+      Sentry.captureException(error);
+    },
+  }),
+});
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,

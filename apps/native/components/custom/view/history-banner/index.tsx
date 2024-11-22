@@ -40,12 +40,12 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 
   return (
     <View style={styles.container}>
-      {!data || error ? (
-        <View style={{ flex: 1, flexDirection: 'column' }}>
+      {!!error || !data ? (
+        <View style={{ flexDirection: 'column', height: '100%' }}>
           <Text>에러 발생</Text>
-          <Text>`SUPABASE_ENV: ${process.env.SUPABASE_ENV}`</Text>
-          <Text>`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_url}`</Text>
-          <Text>`extra: ${JSON.stringify(Constants.expoConfig?.extra)}`</Text>
+          <Text>{`SUPABASE_ENV: ${process.env.SUPABASE_ENV}`}</Text>
+          <Text>{`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_url}`}</Text>
+          <Text>{`extra: ${JSON.stringify(Constants.expoConfig?.extra)}`}</Text>
         </View>
       ) : (
         <>
