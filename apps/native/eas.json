@@ -9,7 +9,7 @@
         "simulator": true
       },
       "cache": {
-        "key": "expo:52:1732195364"
+        "key": "expo:52:1732256850"
       },
       "env": {
         "NODE_ENV": "local",
@@ -22,7 +22,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "cache": {
-        "key": "expo:52:1732195364"
+        "key": "expo:52:1732256850"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
@@ -30,16 +30,31 @@
         "SUPABASE_ENV": "STAGING"
       }
     },
-    "staging": {
+    "preview": {
       "distribution": "internal",
-      "channel": "staging",
+      "channel": "preview",
       "cache": {
-        "key": "expo:52:1732195364"
+        "key": "expo:52:1732256850"
       },
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "SUPABASE_ENV": "STAGING"
+        "SUPABASE_ENV": "PREVIEW"
+      },
+      "ios": {
+        "applicationArchivePath": "ios/build/*"
+      }
+    },
+    "staging": {
+      "distribution": "store",
+      "channel": "staging",
+      "cache": {
+        "key": "expo:52:1732256850"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "SUPABASE_ENV": "PRODUCTION"
       },
       "ios": {
         "applicationArchivePath": "ios/build/*"
@@ -48,12 +63,13 @@
     "production": {
       "channel": "production",
       "cache": {
-        "key": "expo:52:1732195364"
+        "key": "expo:52:1732256850"
       },
+      "distribution": "store",
       "env": {
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "SUPABASE_ENV": "STAGING"
+        "SUPABASE_ENV": "PRODUCTION"
       },
       "ios": {
         "applicationArchivePath": "ios/build/*"
