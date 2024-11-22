@@ -1,4 +1,5 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
   switch (env) {
@@ -24,7 +25,10 @@ function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
   }
 }
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
+export default ({ config }: ConfigContext): ExpoConfig => {
+  const supabaseEnv = getSupabaseEnv(process.env.supabaseEnv as 'LOCAL' | 'PREVIEW' | 'PRODUCTION');
+  console.log({supabaseEnv})
+  return ({
   ...config,
   name: 'cococom',
   slug: 'cococom',
@@ -83,9 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     sentry: {
       dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
     },
-    supabase: getSupabaseEnv(
-      process.env.EXPO_PUBLIC_SUPABASE_ENV as 'LOCAL' | 'PREVIEW' | 'PRODUCTION',
-    ),
+    supabase: supabaseEnv,
     kakao: {
       nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
     },
@@ -93,4 +95,4 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   updates: {
     url: 'https://u.expo.dev/aad6f74a-0f9e-4ef0-9fb3-2a19791cb1ec',
   },
-});
+}});
