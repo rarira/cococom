@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from 'react-native';
+// import { Button } from 'react-native';
 
 import CategorySectorList from '@/components/custom/list/category-sector';
 import ScreenContainerView from '@/components/custom/view/container/screen';
@@ -8,11 +8,11 @@ import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 export default function HomeScreen() {
   const [totalDiscounts, setTotalDiscounts] = useState<number>(0);
-  const { reportToSentry } = useErrorHandler();
+  // const { reportToSentry } = useErrorHandler();
 
   return (
     <ScreenContainerView withBottomTabBar>
-      <Button
+      {/* <Button
         title="Press me"
         onPress={() => {
           try {
@@ -21,7 +21,7 @@ export default function HomeScreen() {
             reportToSentry(error as Error);
           }
         }}
-      />
+      /> */}
 
       <HistoryInfoBanner totalDiscounts={totalDiscounts} />
       <CategorySectorList setTotalDiscounts={setTotalDiscounts} />

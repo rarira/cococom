@@ -28,7 +28,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const supabaseEnv = getSupabaseEnv(
     process.env.SUPABASE_ENV as 'LOCAL' | 'PREVIEW' | 'PRODUCTION',
   );
-  console.log({ supabaseEnv });
   return {
     ...config,
     name: 'cococom',
