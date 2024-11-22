@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
+import axios from 'axios';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
 const supabaseEnv = Constants.expoConfig?.extra?.supabase?.env;
@@ -33,6 +34,42 @@ export const supabase: Supabase = new Supabase(
       persistSession: true,
       detectSessionInUrl: false,
     },
+    global: {
+      fetch: async (url, config) => {
+        try {
+          const result = await axios({
+            url: url as string,
+            method: config?.method,
+            headers: config?.headers as any,
+            data: config?.body,
+          });
+  
+          const responseBody = JSON.stringify(result.data);
+  
+          const headers = new Headers();
+          Object.entries(result.headers).forEach(([key, value]) => {
+            headers.append(key, value as string);
+          });
+  
+          return new Response(responseBody, {
+            headers,
+            status: result.status,
+            statusText: result.statusText,
+          });
+        } catch (error: Error) {
+          return new Response(
+            JSON.stringify({
+              message: error.message,
+              name: error.name,
+              status: error.response?.status || 500,
+            }),
+            {
+              status: error.response?.status || 500,
+              statusText: error.message,
+            },
+          );
+        }
+      },
   },
 );
 
