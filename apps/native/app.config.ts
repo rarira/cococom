@@ -1,5 +1,4 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
   switch (env) {
@@ -26,7 +25,9 @@ function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const supabaseEnv = getSupabaseEnv(process.env.supabaseEnv as 'LOCAL' | 'PREVIEW' | 'PRODUCTION');
+  const supabaseEnv = getSupabaseEnv(
+    process.env.SUPABASE_ENV as 'LOCAL' | 'PREVIEW' | 'PRODUCTION',
+  );
   console.log({ supabaseEnv });
   return {
     ...config,
