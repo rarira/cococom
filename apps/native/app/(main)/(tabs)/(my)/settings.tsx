@@ -74,7 +74,13 @@ export default function ProfileScreen() {
             text={stringifiedDiscountChannels}
           />
         </RowMenu.Root>
-        <Text>{`버전: ${Constants.expoConfig?.version}`}</Text>
+        <SectionText style={styles.withPaddingHorizontal} isFirstSection>
+          버전 정보
+        </SectionText>
+        <RowMenu.Root style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
+          <RowMenu.Text>앱 버전</RowMenu.Text>
+          <Text style={styles.channelText}>{Constants.expoConfig?.version ?? ''}</Text>
+        </RowMenu.Root>
       </ScreenContainerView>
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>
@@ -87,6 +93,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   withPaddingHorizontal: {
     paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  rowWithNoInteraction: {
+    backgroundColor: `${theme.colors.modalBackground}22`,
   },
   channelText: {
     fontSize: theme.fontSize.md,
