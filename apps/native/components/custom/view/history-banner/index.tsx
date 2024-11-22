@@ -44,7 +44,7 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
         <View style={{ flexDirection: 'column', height: '100%' }}>
           <Text>에러 발생</Text>
           <Text>{`SUPABASE_ENV: ${process.env.SUPABASE_ENV}`}</Text>
-          <Text>{`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_url}`}</Text>
+          <Text>{`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_URL}`}</Text>
           <Text>{`extra: ${JSON.stringify(Constants.expoConfig?.extra)}`}</Text>
         </View>
       ) : (
