@@ -53,11 +53,11 @@ SplashScreen.preventAutoHideAsync();
 const reactNavigationIntegration = Sentry.reactNavigationIntegration();
 
 const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: error => {
-      Sentry.captureException(error);
-    },
-  }),
+  // queryCache: new QueryCache({
+  //   onError: error => {
+  //     Sentry.captureException(error);
+  //   },
+  // }),
 });
 
 Sentry.init({
