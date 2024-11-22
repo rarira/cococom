@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { memo, useEffect } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import Constants from 'expo-constants';
 
 import Text from '@/components/core/text';
 import HistoryTable from '@/components/custom/table/history';
@@ -35,12 +36,17 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
     }
   }, [error, reportToSentry]);
 
-  if (!data || isLoading) return null;
+  if (isLoading) return null;
 
   return (
     <View style={styles.container}>
-      {error ? (
-        <Text>에러 발생</Text>
+      {!data || error ? (
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <Text>에러 발생</Text>
+          <Text>`SUPABASE_ENV: ${process.env.SUPABASE_ENV}`</Text>
+          <Text>`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_url}`</Text>
+          <Text>`extra: ${JSON.stringify(Constants.expoConfig?.extra)}`</Text>
+        </View>
       ) : (
         <>
           <View style={styles.rowContainer}>
