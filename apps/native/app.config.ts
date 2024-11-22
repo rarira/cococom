@@ -1,5 +1,29 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
+function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
+  switch (env) {
+    case 'PREVIEW':
+      return {
+        env,
+        url: process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_URL,
+        anonKey: process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_ANON_KEY,
+      };
+    case 'PRODUCTION':
+      return {
+        env,
+        url: process.env.EXPO_PUBLIC_SUPABASE_PRODUCTION_URL,
+        anonKey: process.env.EXPO_PUBLIC_SUPABASE_PRODUCTION_ANON_KEY,
+      };
+    case 'LOCAL':
+    default:
+      return {
+        env,
+        url: process.env.EXPO_PUBLIC_SUPABASE_URL,
+        anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+      };
+  }
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'cococom',
@@ -59,17 +83,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     sentry: {
       dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
     },
-    supabase: {
-      env: process.env.SUPABASE_ENV,
-      url:
-        process.env.SUPABASE_ENV === 'LOCAL'
-          ? process.env.EXPO_PUBLIC_SUPABASE_URL
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_URL`],
-      anonKey:
-        process.env.SUPABASE_ENV === 'LOCAL'
-          ? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-          : process.env[`EXPO_PUBLIC_SUPABASE_${process.env.SUPABASE_ENV}_ANON_KEY`],
-    },
+    supabase: getSupabaseEnv(
+      process.env.EXPO_PUBLIC_SUPABASE_ENV as 'LOCAL' | 'PREVIEW' | 'PRODUCTION',
+    ),
     kakao: {
       nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
     },
