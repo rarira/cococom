@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -7,6 +7,7 @@ import Text from '@/components/core/text';
 import HistoryTable from '@/components/custom/table/history';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface HistoryInfoBannerProps {
   totalDiscounts: number;
@@ -21,20 +22,34 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 }: HistoryInfoBannerProps) {
   const { styles } = useStyles(stylesheet);
 
+  const { reportToSentry } = useErrorHandler();
+
   const { data, error, isLoading } = useQuery({
     queryKey: queryKeys.histories.latest,
     queryFn: fetchLatestHistory,
   });
 
-  if (!data || error || isLoading) return null;
+  useEffect(() => {
+    if (error) {
+      reportToSentry(error);
+    }
+  }, [error, reportToSentry]);
+
+  if (!data || isLoading) return null;
 
   return (
     <View style={styles.container}>
-      <View style={styles.rowContainer}>
-        <Text style={styles.title}>최신 할인 정보 업데이트 </Text>
-        <Text style={styles.infoText}>{totalDiscounts} 개 할인 중</Text>
-      </View>
-      <HistoryTable data={data} />
+      {error ? (
+        <Text>에러 발생</Text>
+      ) : (
+        <>
+          <View style={styles.rowContainer}>
+            <Text style={styles.title}>최신 할인 정보 업데이트 </Text>
+            <Text style={styles.infoText}>{totalDiscounts} 개 할인 중</Text>
+          </View>
+          <HistoryTable data={data} />
+        </>
+      )}
     </View>
   );
 });
