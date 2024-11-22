@@ -13,7 +13,7 @@ export default function HomeScreen() {
   return (
     <ScreenContainerView withBottomTabBar>
       <Button
-        title="Press me"
+        title="Fuck me"
         onPress={() => {
           try {
             throw new Error('Hello, again, Sentry!');
