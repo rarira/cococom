@@ -9,18 +9,19 @@ export function useErrorHandler() {
   const user = useUserStore(state => state.user);
 
   const reportToSentry = useCallback(
-    (e: Error, stackTrace?: string, callback?: Callback | boolean) => {
+    (e: Error, stackTrace?: string, callback?: Callback | false) => {
       if (process.env.NODE_ENV === 'development') {
         return console.error(JSON.stringify(e, null, 2));
       }
 
-      Sentry.withScope(scope => scope.setUser(user));
-
-      if (callback === false) {
-        /** do nothing */
-      } else if (callback) Sentry.withScope(callback as Callback);
-
-      Sentry.captureException(e);
+      Sentry.withScope(scope => {
+        scope.setUser(user);
+        scope.setExtra('stackTrace', stackTrace);
+        if (callback === false) {
+          /** do nothing */
+        } else if (callback) callback(scope);
+        Sentry.captureException(e);
+      });
     },
     [user],
   );

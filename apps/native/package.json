@@ -1,7 +1,7 @@
 {
   "name": "@cococom/mobile",
   "main": "index.ts",
-  "version": "0.1.20-alpha.cdc-17.9",
+  "version": "0.1.20-alpha.cdc-17.10",
   "scripts": {
     "start": "expo start --dev-client",
     "reset-project": "node ./scripts/reset-project.js",
@@ -12,7 +12,8 @@
     "lint": "expo lint",
     "build:local:ios": "eas build --platform ios --profile development-simulator --local --non-interactive",
     "eas-build-pre-install": "node scripts/google-services-install.js && corepack enable",
-    "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled"
+    "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled",
+    "upload-sourcemaps": "npx sentry-expo-upload-sourcemaps dist"
   },
   "jest": {
     "preset": "jest-expo"

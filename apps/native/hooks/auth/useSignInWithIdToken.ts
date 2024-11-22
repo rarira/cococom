@@ -33,7 +33,7 @@ export function useSignInWithIdToken() {
       } = await supabase.auth.signInWithIdToken(credentials);
 
       if (error) {
-        reportToSentry(error, undefined, scope => scope.setExtra('credentials', credentials));
+        reportToSentry(error, undefined, scope => scope.setExtra('auth_credentials', credentials));
         return;
       }
 

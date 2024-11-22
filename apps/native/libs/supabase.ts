@@ -1,7 +1,6 @@
 import { Supabase } from '@cococom/supabase/libs';
 import Constants from 'expo-constants';
 import { AppState, Platform } from 'react-native';
-import axios from 'axios';
 
 import { storage } from '@/libs/mmkv';
 
