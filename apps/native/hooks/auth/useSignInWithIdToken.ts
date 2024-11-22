@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 
 import { getProfile, supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 type SignInWithIdTokenCredentials = {
   /** Provider name or OIDC `iss` value identifying which provider should be used to verify the provided token. Supported names: `google`, `apple`, `azure`, `facebook`, `keycloak` (deprecated). */
@@ -19,8 +20,10 @@ type SignInWithIdTokenCredentials = {
   };
 };
 
-export function useSingInWithIdToken() {
+export function useSignInWithIdToken() {
   const { setUser, setProfile, callbackAfterSignIn, setCallbackAfterSignIn } = useUserStore();
+
+  const { reportToSentry } = useErrorHandler();
 
   const handleSignInWithIdToken = useCallback(
     async (credentials: SignInWithIdTokenCredentials) => {
@@ -28,6 +31,11 @@ export function useSingInWithIdToken() {
         data: { user },
         error,
       } = await supabase.auth.signInWithIdToken(credentials);
+
+      if (error) {
+        reportToSentry(error);
+        return;
+      }
 
       if (!error && user) {
         const profile = await getProfile(user.id);
@@ -45,7 +53,7 @@ export function useSingInWithIdToken() {
         router.dismiss();
       }
     },
-    [callbackAfterSignIn, setCallbackAfterSignIn, setProfile, setUser],
+    [callbackAfterSignIn, reportToSentry, setCallbackAfterSignIn, setProfile, setUser],
   );
 
   return { handleSignInWithIdToken };

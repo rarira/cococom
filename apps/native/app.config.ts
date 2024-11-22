@@ -17,7 +17,7 @@ function getSupabaseEnv(env: 'LOCAL' | 'PREVIEW' | 'PRODUCTION') {
     case 'LOCAL':
     default:
       return {
-        env,
+        env: 'LOCAL',
         url: process.env.EXPO_PUBLIC_SUPABASE_URL,
         anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
       };

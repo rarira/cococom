@@ -6,7 +6,6 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } fro
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
-import { useShallow } from 'zustand/shallow';
 
 import Button from '@/components/core/button';
 import Divider from '@/components/core/divider';
@@ -16,7 +15,7 @@ import ResetPasswordButton from '@/components/custom/button/reset-password';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
-import { useSingInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
+import { useSignInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
 
 const LOGIN_IMAGE_HEIGHT = 36;
@@ -36,7 +35,7 @@ export default function SignInScreen() {
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
 
-  const { handleSignInWithIdToken } = useSingInWithIdToken();
+  const { handleSignInWithIdToken } = useSignInWithIdToken();
 
   useLayoutEffect(() => {
     navigation.setOptions({
