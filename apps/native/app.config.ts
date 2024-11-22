@@ -58,7 +58,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         '@react-native-kakao/core',
         {
-          nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
+          nativeAppKey: process.env.EXPO_PUBLIC_KAKAO_TEST_NATIVE_APP_KEY,
           android: {
             authCodeHandlerActivity: true,
           },
@@ -88,9 +88,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
       },
       supabase: supabaseEnv,
-      kakao: {
-        nativeAppKey: process.env.KAKAO_TEST_NATIVE_APP_KEY,
-      },
     },
     updates: {
       url: 'https://u.expo.dev/aad6f74a-0f9e-4ef0-9fb3-2a19791cb1ec',
