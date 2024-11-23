@@ -13,7 +13,7 @@
     "build:local:ios": "eas build --platform ios --profile development-simulator --local --non-interactive",
     "eas-build-pre-install": "node scripts/google-services-install.js && corepack enable",
     "launch:ios:debug": "xcrun simctl launch $(xcrun simctl list devices | grep Booted | awk -F '[()]' '{print $2}') com.rariradev.cococom -FIRDebugEnabled",
-    "upload-sourcemaps": "npx sentry-expo-upload-sourcemaps dist"
+    "publish:update": "./scripts/publish-update.sh"
   },
   "jest": {
     "preset": "jest-expo"
