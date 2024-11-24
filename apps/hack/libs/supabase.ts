@@ -73,6 +73,8 @@ export async function addReletedItemId(
       'id',
     );
 
+    if (relatedItem.id === item.id) return;
+
     await supabase.items.updateItem({ related_item_id: relatedItem.id, ...update }, item.id);
     await supabase.items.updateItem({ related_item_id: item.id }, relatedItem.id);
   } catch (error) {

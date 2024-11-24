@@ -36,26 +36,15 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
     }
   }, [error, reportToSentry]);
 
-  if (isLoading) return null;
+  if (isLoading || !data || error) return null;
 
   return (
     <View style={styles.container}>
-      {!!error || !data ? (
-        <View style={{ flexDirection: 'column', height: '100%' }}>
-          <Text>에러 발생</Text>
-          <Text>{`SUPABASE_ENV: ${process.env.SUPABASE_ENV}`}</Text>
-          <Text>{`url_env: ${process.env.EXPO_PUBLIC_SUPABASE_PREVIEW_URL}`}</Text>
-          <Text>{`extra: ${JSON.stringify(Constants.expoConfig?.extra)}`}</Text>
-        </View>
-      ) : (
-        <>
-          <View style={styles.rowContainer}>
-            <Text style={styles.title}>최신 할인 정보 업데이트 </Text>
-            <Text style={styles.infoText}>{totalDiscounts} 개 할인 중</Text>
-          </View>
-          <HistoryTable data={data} />
-        </>
-      )}
+      <View style={styles.rowContainer}>
+        <Text style={styles.title}>최신 할인 정보 업데이트 </Text>
+        <Text style={styles.infoText}>{totalDiscounts} 개 할인 중</Text>
+      </View>
+      <HistoryTable data={data} />
     </View>
   );
 });

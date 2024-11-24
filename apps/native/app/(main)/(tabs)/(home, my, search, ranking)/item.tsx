@@ -39,6 +39,7 @@ export default function ItemScreen() {
   });
 
   const headerRight = useCallback(() => {
+    console.log('headerRight', data);
     if (!data?.related_item_id) return null;
     return <HeaderRightRelatedButton item={data} />;
   }, [data]);
