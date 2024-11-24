@@ -72,7 +72,6 @@ const chips = [
 function ListItemCardChipsView({ discount, item, style }: ListItemCardChipsViewProps) {
   const { styles, theme } = useStyles(stylesheet);
 
-  console.log({ discount, item });
   const chipsToRender = useMemo(
     () =>
       chips
