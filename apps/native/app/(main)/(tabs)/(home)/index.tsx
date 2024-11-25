@@ -14,7 +14,7 @@ export default function HomeScreen() {
   return (
     <ScreenContainerView withBottomTabBar>
       <Button
-        title="Update me"
+        title="Update App"
         onPress={async () => {
           try {
             await handleFetchUpdateAsync();
