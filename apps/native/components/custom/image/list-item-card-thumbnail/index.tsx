@@ -1,6 +1,6 @@
 import { Tables } from '@cococom/supabase/types';
 import { Image } from 'expo-image';
-import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
+import { DimensionValue, PixelRatio, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
 import { useMemo } from 'react';
@@ -16,6 +16,8 @@ interface ListItemCardThumbnailImageProps {
   small?: boolean;
 }
 
+const pixelRatio = PixelRatio.get();
+
 function ListItemCardThumbnailImage({
   product,
   width,
@@ -30,7 +32,10 @@ function ListItemCardThumbnailImage({
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(product.itemId!)}.webp`,
       transformationArray: [
-        { height: (height ?? 0 * 2).toString(), width: (width ?? 0 * 2)?.toString() },
+        {
+          height: (height ?? 0 * pixelRatio).toString(),
+          width: (width ?? 0 * pixelRatio)?.toString(),
+        },
       ],
     });
   }, [height, product.itemId, width]);
