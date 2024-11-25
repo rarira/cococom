@@ -9,10 +9,12 @@ if [ "$development_client" = "true" ]; then
   exit 1
 fi
 
+app_version=$(jq -r ".expo.version" app.json) 
+
 supabase_env=$(jq -r ".build.${environment}.env.SUPABASE_ENV" eas.json)
 
 echo "$environment 프로필 대상으로 $supabase_env 환경으로 eas update를 시작합니다."
-SUPABASE_ENV=$supabase_env eas update --auto --channel=$environment
+SUPABASE_ENV=$supabase_env SENTRY_RELEASE=$app_version eas update --auto --channel=$environment
 
 echo "$environment 대상으로 sentry sourcemaps 업로드를 시작합니다."
 npx sentry-expo-upload-sourcemaps dist
