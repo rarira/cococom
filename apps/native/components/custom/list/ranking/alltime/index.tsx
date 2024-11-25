@@ -57,7 +57,7 @@ export default function AlltimeRankingList({
       <FlashList
         data={data}
         renderItem={renderItem}
-        estimatedItemSize={600}
+        estimatedItemSize={110}
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={ItemSeparatorComponent}
         contentContainerStyle={{

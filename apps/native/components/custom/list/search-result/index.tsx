@@ -106,7 +106,7 @@ const SearchResultList = memo(function SearchResultList({
         ListFooterComponentStyle={styles.fetchingNextProgress}
         ListEmptyComponent={ListEmptyComponent}
         renderItem={renderItem}
-        estimatedItemSize={200}
+        estimatedItemSize={110}
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={ItemSeparatorComponent}
         contentContainerStyle={styles.flashListContainer(tabBarHeight)}
