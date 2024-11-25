@@ -5,6 +5,7 @@ import CategorySectorList from '@/components/custom/list/category-sector';
 import ScreenContainerView from '@/components/custom/view/container/screen';
 import HistoryInfoBanner from '@/components/custom/view/history-banner';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { handleFetchUpdateAsync } from '@/libs/expo-update';
 
 export default function HomeScreen() {
   const [totalDiscounts, setTotalDiscounts] = useState<number>(0);
@@ -13,10 +14,10 @@ export default function HomeScreen() {
   return (
     <ScreenContainerView withBottomTabBar>
       <Button
-        title="Fuck me"
-        onPress={() => {
+        title="Update me"
+        onPress={async () => {
           try {
-            throw new Error('Hello, again, Sentry!');
+            await handleFetchUpdateAsync();
           } catch (error) {
             reportToSentry(error as Error);
           }

@@ -9,6 +9,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import {
   focusManager,
   onlineManager,
+  QueryCache,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
@@ -47,11 +48,11 @@ initializeKakaoSDK(process.env.EXPO_PUBLIC_KAKAO_TEST_NATIVE_APP_KEY ?? '');
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
-  // queryCache: new QueryCache({
-  //   onError: error => {
-  //     Sentry.captureException(error);
-  //   },
-  // }),
+  queryCache: new QueryCache({
+    onError: error => {
+      Sentry.captureException(error);
+    },
+  }),
 });
 
 onlineManager.setEventListener(setOnline => {
