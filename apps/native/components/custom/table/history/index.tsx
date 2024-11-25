@@ -1,4 +1,4 @@
-import { Database, Tables } from '@cococom/supabase/types';
+import { Database } from '@cococom/supabase/types';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-reanimated-table';
