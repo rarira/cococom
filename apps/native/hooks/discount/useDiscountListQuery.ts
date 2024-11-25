@@ -17,7 +17,7 @@ function fetchCurrentDiscounts({
   userId?: string;
   categorySector?: CategorySectors;
 }) {
-  const currentTimestamp = new Date().toISOString().split('T')[0];
+  const currentTimestamp = new Date().toISOString();
 
   return supabase.discounts.fetchCurrentDiscountsWithWishlistCount({
     currentTimestamp,

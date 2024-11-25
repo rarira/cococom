@@ -262,59 +262,6 @@ export type Database = {
           },
         ]
       }
-      items_duplicate: {
-        Row: {
-          bestDiscount: number | null
-          bestDiscountRate: number | null
-          categoryId: number | null
-          created_at: string | null
-          id: number
-          itemId: string
-          itemName: string | null
-          lowestPrice: number | null
-          totalCommentCount: number | null
-          totalDiscountCount: number | null
-          totalWishlistCount: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          bestDiscount?: number | null
-          bestDiscountRate?: number | null
-          categoryId?: number | null
-          created_at?: string | null
-          id?: number
-          itemId: string
-          itemName?: string | null
-          lowestPrice?: number | null
-          totalCommentCount?: number | null
-          totalDiscountCount?: number | null
-          totalWishlistCount?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          bestDiscount?: number | null
-          bestDiscountRate?: number | null
-          categoryId?: number | null
-          created_at?: string | null
-          id?: number
-          itemId?: string
-          itemName?: string | null
-          lowestPrice?: number | null
-          totalCommentCount?: number | null
-          totalDiscountCount?: number | null
-          totalWishlistCount?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "items_duplicate_categoryId_fkey"
-            columns: ["categoryId"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       memos: {
         Row: {
           content: string | null
@@ -531,9 +478,8 @@ export type Database = {
         Returns: {
           id: number
           created_at: string
-          new_item_count: number
-          added_discount_count: number
           is_online: boolean
+          total_discounts_count: number
         }[]
       }
       get_wishlist_items: {

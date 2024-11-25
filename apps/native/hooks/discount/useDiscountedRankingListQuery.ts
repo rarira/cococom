@@ -19,7 +19,7 @@ function fetchCurrentDiscounts({
   limit: number;
   sortOption: DiscountSortOption;
 }) {
-  const currentTimestamp = new Date().toISOString().split('T')[0];
+  const currentTimestamp = new Date().toISOString();
 
   return supabase.discounts.fetchCurrentDiscountedRankingWithWishlistCount({
     currentTimestamp,

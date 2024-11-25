@@ -174,9 +174,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
-    width: '100%',
     backgroundColor: theme.colors.background,
-    paddingHorizontal: theme.spacing.md,
   },
   tabBarContentContainer: {
     width: undefined,
