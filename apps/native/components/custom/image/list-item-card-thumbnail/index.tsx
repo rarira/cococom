@@ -29,7 +29,9 @@ function ListItemCardThumbnailImage({
   const itemImageUrl = useMemo(() => {
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(product.itemId!)}.webp`,
-      transformationArray: [{ height: height?.toString(), width: width?.toString() }],
+      transformationArray: [
+        { height: (height ?? 0 * 2).toString(), width: (width ?? 0 * 2)?.toString() },
+      ],
     });
   }, [height, product.itemId, width]);
 
