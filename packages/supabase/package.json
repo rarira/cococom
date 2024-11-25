@@ -6,7 +6,7 @@
     "build": "tsc",
     "start": "supabase start",
     "stop": "supabase stop",
-    "update-types": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types --lang=typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/types.ts",
+    "update-types": "eval $(grep '^SUPABASE_PRODUCTION_PROJECT_ID' .env) && supabase gen types --lang=typescript --project-id \"$SUPABASE_PRODUCTION_PROJECT_ID\" --schema public > src/types.ts",
     "update-types:local": "supabase gen types --lang=typescript --local --schema public > src/types.ts",
     "sync:data": "supabase db dump --data-only -f supabase/seed.sql -s public && supabase db reset",
     "backup:local": "PGPASSWORD='postgres' pg_dump -h localhost -p 54322 -U postgres -d postgres --data-only -t public.profiles -t  public.comments -t public.wishlists -t public.memos -f supabase/local_backup.sql --inserts && supabase db dump --local --data-only -f supabase/seed_auth.sql -s auth",
@@ -33,7 +33,7 @@
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
     "@types/dotenv": "^8.2.0",
-    "supabase": "^1.215.0",
+    "supabase": "^1.223.10",
     "typescript": "^5.4.2"
   }
 }

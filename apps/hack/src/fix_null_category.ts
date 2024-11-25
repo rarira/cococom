@@ -1,8 +1,5 @@
 import { getItem } from '../libs/api.js';
 import { supabase } from '../libs/supabase.js';
-import { loadEnv } from '../libs/util.js';
-
-loadEnv();
 
 (async () => {
   const { data: allItemsWithNoCategory, error } = await supabase.supabaseClient

@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { PixelRatio, Pressable, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { useMemo } from 'react';
 import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
@@ -15,6 +15,8 @@ interface CategorySectorCardProps {
   discountInfo: Awaited<DiscountsByCategorySector>[number] | null;
 }
 
+const pixelRatio = PixelRatio.get();
+
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -22,7 +24,9 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
     if (!discountInfo) return '';
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(discountInfo.itemId)}.webp`,
-      transformationArray: [{ height: '100', width: '100' }],
+      transformationArray: [
+        { height: (100 * pixelRatio).toString(), width: (100 * pixelRatio).toString() },
+      ],
     });
   }, [discountInfo]);
 

@@ -6,7 +6,8 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } fro
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
-import { useShallow } from 'zustand/shallow';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { fi } from 'date-fns/locale';
 
 import Button from '@/components/core/button';
 import Divider from '@/components/core/divider';
@@ -16,8 +17,9 @@ import ResetPasswordButton from '@/components/custom/button/reset-password';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
-import { useSingInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
+import { useSignInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const LOGIN_IMAGE_HEIGHT = 36;
 
@@ -36,7 +38,9 @@ export default function SignInScreen() {
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
 
-  const { handleSignInWithIdToken } = useSingInWithIdToken();
+  const { handleSignInWithIdToken } = useSignInWithIdToken();
+
+  const { reportToSentry } = useErrorHandler();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,6 +52,37 @@ export default function SignInScreen() {
       ),
     } as any);
   }, [navigation]);
+
+  const handlePressAppleLogin = useCallback(async () => {
+    setAuthProcessing(true);
+
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (credential.identityToken) {
+        await handleSignInWithIdToken({
+          provider: 'apple',
+          token: credential.identityToken,
+        });
+      } else {
+        throw new Error('No identityToken.');
+      }
+    } catch (error: any) {
+      if (error.code === 'ERR_REQUEST_CANCELED') {
+        // handle that the user canceled the sign-in flow
+      } else {
+        // handle other errors
+        reportToSentry(error);
+      }
+    } finally {
+      setAuthProcessing(false);
+    }
+  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
 
   const handlePressGoogleLogin = useCallback(async () => {
     setAuthProcessing(true);
@@ -62,21 +97,21 @@ export default function SignInScreen() {
         });
       }
     } catch (error: any) {
-      console.error('google sign in error', error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        setAuthProcessing(false);
+        // setAuthProcessing(false);
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // operation (e.g. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        setAuthProcessing(false);
+        // setAuthProcessing(false);
       } else {
-        setAuthProcessing(false);
+        reportToSentry(error);
+        // setAuthProcessing(false);
         // some other error happened
       }
     } finally {
       setAuthProcessing(false);
     }
-  }, [handleSignInWithIdToken, setAuthProcessing]);
+  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
 
   const handlePressKakaoLogin = useCallback(async () => {
     setAuthProcessing(true);
@@ -118,7 +153,11 @@ export default function SignInScreen() {
         <ResetPasswordButton />
         <Divider style={styles.divider} />
         <View style={styles.socialLogin}>
-          <Button disabled={loading} style={styles.appleLoginButton}>
+          <Button
+            disabled={loading}
+            style={styles.appleLoginButton}
+            onPress={handlePressAppleLogin}
+          >
             <Image source={appleLogo} style={styles.appleLoginImage} contentFit="contain" />
           </Button>
           <Button

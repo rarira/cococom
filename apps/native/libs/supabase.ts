@@ -1,16 +1,15 @@
 import { Supabase } from '@cococom/supabase/libs';
 import Constants from 'expo-constants';
-import * as DevClient from 'expo-dev-client';
 import { AppState, Platform } from 'react-native';
 
 import { storage } from '@/libs/mmkv';
 
 let url = Constants.expoConfig?.extra?.supabase?.url;
+const supabaseEnv = Constants.expoConfig?.extra?.supabase?.env;
 
-if (DevClient.isDevelopmentBuild() && Platform.OS === 'android') {
+if (supabaseEnv === 'LOCAL' && Platform.OS === 'android') {
   url = 'http://10.0.2.2:54321';
 }
-
 export const supabase: Supabase = new Supabase(
   url,
   Constants.expoConfig?.extra?.supabase?.anonKey,

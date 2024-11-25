@@ -1,6 +1,8 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 
 import IconButton from '@/components/core/button/icon';
 import RowMenu from '@/components/core/menu/row';
@@ -10,6 +12,7 @@ import ScreenContainerView from '@/components/custom/view/container/screen';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDiscountChannels } from '@/store/discount-channels';
 import { useUserStore } from '@/store/user';
+import Text from '@/components/core/text';
 
 export default function ProfileScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -72,6 +75,17 @@ export default function ProfileScreen() {
             text={stringifiedDiscountChannels}
           />
         </RowMenu.Root>
+        <SectionText style={styles.withPaddingHorizontal} isFirstSection>
+          버전 정보
+        </SectionText>
+        <RowMenu.Root style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
+          <RowMenu.Text>앱 버전</RowMenu.Text>
+          <Text style={styles.channelText}>{Constants.expoConfig?.version ?? ''}</Text>
+        </RowMenu.Root>
+        <RowMenu.Root style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
+          <RowMenu.Text>런타임 버전</RowMenu.Text>
+          <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
+        </RowMenu.Root>
       </ScreenContainerView>
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>
@@ -84,6 +98,9 @@ const stylesheet = createStyleSheet(theme => ({
   },
   withPaddingHorizontal: {
     paddingHorizontal: theme.screenHorizontalPadding,
+  },
+  rowWithNoInteraction: {
+    backgroundColor: `${theme.colors.modalBackground}22`,
   },
   channelText: {
     fontSize: theme.fontSize.md,

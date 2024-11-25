@@ -9,49 +9,70 @@
         "simulator": true
       },
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732256850"
       },
       "env": {
-        "NODE_ENV": "development",
+        "NODE_ENV": "local",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "APP_VARIANT": "development-simulator"
+        "SUPABASE_ENV": "LOCAL"
       }
     },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732256850"
       },
       "env": {
-        "NODE_ENV": "development",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "APP_VARIANT": "development"
+        "SUPABASE_ENV": "PREVIEW"
       }
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732256850"
       },
       "env": {
-        "NODE_ENV": "preview",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "APP_VARIANT": "preview"
+        "SUPABASE_ENV": "PREVIEW"
+      },
+      "ios": {
+        "applicationArchivePath": "ios/build/*"
+      }
+    },
+    "staging": {
+      "distribution": "store",
+      "channel": "staging",
+      "cache": {
+        "key": "expo:52:1732256850"
+      },
+      "env": {
+        "SENTRY_ORG": "rarira-studio-q9",
+        "SENTRY_PROJECT": "cococom-app",
+        "SUPABASE_ENV": "PRODUCTION"
+      },
+      "ios": {
+        "applicationArchivePath": "ios/build/*"
       }
     },
     "production": {
+      "channel": "production",
       "cache": {
-        "key": "expo:51:1719554338"
+        "key": "expo:52:1732256850"
       },
+      "distribution": "store",
       "env": {
-        "NODE_ENV": "production",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
-        "APP_VARIANT": "production"
+        "SUPABASE_ENV": "PRODUCTION"
+      },
+      "ios": {
+        "applicationArchivePath": "ios/build/*"
       }
     }
   },

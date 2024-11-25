@@ -62,7 +62,7 @@ export default function DiscountList({
   if (error) return null;
 
   if (isLoading) {
-    return <CircularProgress style={styles.loadinProgress} />;
+    return <CircularProgress style={styles.loadinProgress(tabBarHeight)} />;
   }
 
   return (
@@ -70,7 +70,7 @@ export default function DiscountList({
       <FlashList
         data={data}
         renderItem={renderItem}
-        estimatedItemSize={600}
+        estimatedItemSize={110}
         keyExtractor={item => item?.id.toString()}
         numColumns={NumberOfColumns}
         ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
@@ -94,8 +94,9 @@ const stylesheet = createStyleSheet(theme => ({
   seperatorStyle: {
     height: theme.spacing.md * 2,
   },
-  loadinProgress: {
+  loadinProgress: (tabBarHeight: number) => ({
     flex: 1,
-    marginTop: theme.spacing.xl * 3,
-  },
+    marginBottom: tabBarHeight,
+    borderWidth: 1,
+  }),
 }));

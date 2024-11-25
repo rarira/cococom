@@ -9,7 +9,24 @@ const __filename = fileURLToPath(import.meta.url); // get the resolved path to t
 const __dirname = path.dirname(__filename); // get the name of the directory
 
 export function writeJsonFile(filePath: string, data: unknown) {
+  // const finalPathString = filePath.split('_').pop();
+  // const isFinalPathStringDate = finalPathString
+  //   ? finalPathString.match(/^\d{4}-\d{2}-\d{2}/)
+  //   : false;
+
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+  // isFinalPathStringDate가 true일 때는 현재 filePath의 파일을 제외하고는 다른 파일을 모두 삭제
+  // if (isFinalPathStringDate) {
+  //   const files = fs.readdirSync(path.dirname(filePath));
+  //   const fileNameExceptFinalPathString = filePath.replace(finalPathString!, '');
+
+  //   files.forEach(file => {
+  //     if (file.startsWith(fileNameExceptFinalPathString) && file !== path.basename(filePath)) {
+  //       fs.unlinkSync(path.join(path.dirname(filePath), file));
+  //     }
+  //   });
+  // }
 }
 
 export function readJsonFile(filePath: string) {
@@ -78,7 +95,6 @@ export async function getMostRecentFile(folderPath: string, prefix: string) {
     // 가장 최신 파일 경로
     const mostRecentFilePath = path.join(folderPath, mostRecentFile!.file);
 
-    console.log(`Most recent file: ${mostRecentFile!.file}`);
     return mostRecentFilePath;
   } catch (err) {
     console.error('Error reading folder:', err);

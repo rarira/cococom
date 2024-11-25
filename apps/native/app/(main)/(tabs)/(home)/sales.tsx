@@ -174,9 +174,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   tabContainer: { width: 'auto', padding: 0 },
   tabBarContainer: {
-    width: '100%',
     backgroundColor: theme.colors.background,
-    paddingHorizontal: theme.spacing.md,
   },
   tabBarContentContainer: {
     width: undefined,
@@ -193,7 +191,7 @@ const stylesheet = createStyleSheet(theme => ({
   tabBarLabelText: (focused: boolean) => ({
     color: focused ? theme.colors.background : theme.colors.typography,
     fontWeight: focused ? 'semibold' : 'normal',
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.normal,
     lineHeight: theme.fontSize.md,
   }),
 }));

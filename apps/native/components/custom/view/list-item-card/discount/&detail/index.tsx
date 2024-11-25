@@ -52,7 +52,7 @@ function DiscountListItemCardDetailView({
             <InfoIconText
               iconProps={{
                 font: { type: 'FontAwesomeIcon', name: 'comments-o' },
-                size: theme.fontSize.normal,
+                size: theme.fontSize.sm,
               }}
               textProps={{
                 children: Util.showMaxNumber(
@@ -65,7 +65,7 @@ function DiscountListItemCardDetailView({
               <InfoIconText
                 iconProps={{
                   font: { type: 'FontAwesomeIcon', name: 'sticky-note-o' },
-                  size: theme.fontSize.normal,
+                  size: theme.fontSize.sm,
                 }}
                 textProps={{
                   children: Util.showMaxNumber(

@@ -1,13 +1,12 @@
 import { Tables } from '@cococom/supabase/types';
 import { Image } from 'expo-image';
-import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
+import { DimensionValue, PixelRatio, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
 import { useMemo } from 'react';
 
 import Text from '@/components/core/text';
 import Util from '@/libs/util';
-import item from '@/app/(main)/(tabs)/(home, my, search, ranking)/item';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
   width: DimensionValue;
@@ -16,6 +15,8 @@ interface ListItemCardThumbnailImageProps {
   style?: StyleProp<ViewStyle>;
   small?: boolean;
 }
+
+const pixelRatio = PixelRatio.get();
 
 function ListItemCardThumbnailImage({
   product,
@@ -30,7 +31,12 @@ function ListItemCardThumbnailImage({
   const itemImageUrl = useMemo(() => {
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(product.itemId!)}.webp`,
-      transformationArray: [{ height: height?.toString(), width: width?.toString() }],
+      transformationArray: [
+        {
+          height: (height ?? 0 * pixelRatio).toString(),
+          width: (width ?? 0 * pixelRatio)?.toString(),
+        },
+      ],
     });
   }, [height, product.itemId, width]);
 

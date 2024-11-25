@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "item" ALTER COLUMN "itemName" SET DATA TYPE VARCHAR(100);

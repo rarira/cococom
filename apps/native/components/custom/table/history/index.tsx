@@ -1,4 +1,4 @@
-import { Tables } from '@cococom/supabase/types';
+import { Database } from '@cococom/supabase/types';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { Cell, Row, Table, TableWrapper } from 'react-native-reanimated-table';
@@ -8,7 +8,7 @@ import Text from '@/components/core/text';
 import { formatDashedDate } from '@/libs/date';
 
 interface HistoryTableProps {
-  data: Omit<Tables<'histories'>, 'no_images' | 'no_price'>[];
+  data: Database['public']['Functions']['get_latest_histories']['Returns'];
 }
 
 const HistoryTable = memo(function HistoryTable({ data }: HistoryTableProps) {
@@ -28,17 +28,20 @@ const HistoryTable = memo(function HistoryTable({ data }: HistoryTableProps) {
   return (
     <Table style={styles.table}>
       <Row
-        data={['구분', '신규 할인', '신규 상품', '업데이트일']}
-        flexArr={[2, 2, 2, 3]}
+        data={['구분', '할인 상품 수', '최종 업데이트']}
+        flexArr={[3, 3, 4]}
         style={styles.headerRow}
         textStyle={styles.headerText}
       />
       {data.map(history => (
         <TableWrapper key={history.id} style={styles.row}>
-          <Cell flex={2} data={renderType(history.is_online)} />
-          <Cell flex={2} data={history.added_discount_count} textStyle={styles.cellText} />
-          <Cell flex={2} data={history.new_item_count} textStyle={styles.cellText} />
-          <Cell flex={3} data={formatDashedDate(history.created_at)} textStyle={styles.cellText} />
+          <Cell flex={3} data={renderType(history.is_online)} />
+          <Cell
+            flex={3}
+            data={history.total_discounts_count.toLocaleString()}
+            textStyle={styles.cellText}
+          />
+          <Cell flex={4} data={formatDashedDate(history.created_at)} textStyle={styles.cellText} />
         </TableWrapper>
       ))}
     </Table>

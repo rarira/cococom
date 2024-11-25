@@ -1,8 +1,15 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 
 // eslint-disable-next-line import/order
-import { getAllDatas, getItem, getSearchResults, getSearchResults2 } from '../libs/api.js';
+import {
+  getAllDatas,
+  GetAllDatasResult,
+  getItem,
+  getSearchResults,
+  getSearchResults2,
+} from '../libs/api.js';
 import { downloadImage } from '../libs/axios.js';
 import {
   addDays,
@@ -11,6 +18,11 @@ import {
   getISOTimeStringWithTimezone,
   minus1MS,
 } from '../libs/date.js';
+import {
+  getMostRecentDownloadedImagesIndex,
+  updateNewlyAddedImages,
+  uploadImages,
+} from '../libs/images.js';
 import { addReletedItemId, supabase, updateItemHistory, updateNoImages } from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
@@ -19,6 +31,8 @@ loadEnv();
 const newItems: string[] = [];
 const newItemsWithNoImage: string[] = [];
 let newDiscountsCount = 0;
+
+const IS_PROD_ENVIROMENT = process.env.NODE_ENV === 'PROD';
 
 async function crawlAllItems() {
   const digitsArray = Array.from({ length: 10 }, (_, i) => i.toString());
@@ -99,10 +113,17 @@ async function createCategories() {
   }
 }
 
-async function updateDiscounts(date?: string) {
+async function getAllDiscountsData(date?: string) {
   const discounts = await getAllDatas(date || getDateString());
-
   console.log('discounts count', discounts.length);
+  writeJsonFile(`data/offlineAllDiscountsData-${date ?? getDateString()}.json`, discounts);
+}
+
+async function updateDiscounts(date?: string) {
+  const discounts = readJsonFile(
+    `data/offlineAllDiscountsData-${date ?? getDateString()}.json`,
+  ) as GetAllDatasResult[];
+
   const newlyAddedItems = await supabase.items.upsertItem(
     discounts.map(discount => ({
       itemId: discount.productcode as string,
@@ -128,17 +149,30 @@ async function updateDiscounts(date?: string) {
   console.log(`${newlyAddedDiscounts?.length ?? 0} new discounts added`);
 
   if (newlyAddedItems?.length) {
+    const downloadedImagesIndex = await getMostRecentDownloadedImagesIndex();
+
     for (const item of newlyAddedItems) {
       newItems.push(item.itemId as string);
+
+      const data = await getItem(item.itemId);
+
+      await addReletedItemId(item, { categoryId: Number(data!.category) });
+
+      if (downloadedImagesIndex[item.itemId as string]) {
+        continue;
+      }
+
       try {
         await downloadImage(item.itemId as string);
       } catch (e) {
         console.log('error downloading image', item.itemId);
         newItemsWithNoImage.push(item.itemId);
       }
-      const data = await getItem(item.itemId);
+    }
 
-      await addReletedItemId(item, { categoryId: Number(data.category) });
+    if (!IS_PROD_ENVIROMENT) {
+      await updateNewlyAddedImages(newlyAddedItems);
+      await uploadImages(`downloads/final/${date ?? new Date().toISOString().split('T')[0]}`);
     }
   }
 
@@ -177,6 +211,8 @@ async function downloadNoImages(info: { id: number; no_images: string[] | null }
 }
 
 (async () => {
+  console.log('start offline fetching in ', process.env.NODE_ENV ?? 'staging', ' environment');
+
   // const dates = [
   //   '2024-05-03',
   //   '2024-04-30',
@@ -205,6 +241,9 @@ async function downloadNoImages(info: { id: number; no_images: string[] | null }
   // await Promise.allSettled(downloadNoImagePromises);
 
   // NOTE: 루틴
+  if (!IS_PROD_ENVIROMENT) {
+    await getAllDiscountsData();
+  }
   await updateDiscounts();
   await createHistory();
 })();

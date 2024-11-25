@@ -4,10 +4,10 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
-import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import SearchResultListItemCardDetailView from '@/components/custom/view/list-item-card/search-result/&detail';
 import { SearchResultToRender } from '@/libs/search';
 import { ShadowPresets } from '@/libs/shadow';
+import ListItemCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 
 interface SearchResultListItemCardProps {
   item: SearchResultToRender[number];
@@ -21,11 +21,11 @@ const SearchResultListItemCard = memo(function SearchResultListItemCard({
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Link href={`/(search)/item?itemId=${item.id}` as Href<string>} asChild>
+    <Link href={`/(search)/item?itemId=${item.id}` as Href} asChild>
       <Pressable>
         <Card style={[styles.cardContainer(item.isOnSaleNow, item.is_online), containerStyle]}>
           <View style={styles.itemContainer}>
-            <ProductCardThumbnailImage
+            <ListItemCardThumbnailImage
               product={item}
               width={120}
               height={120}
@@ -46,7 +46,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   cardContainer: (onSale: boolean, isOnline: boolean) => ({
     borderRadius: theme.borderRadius.lg,
-    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
+    backgroundColor: isOnline ? `${theme.colors.tint3}44` : theme.colors.cardBackground,
     ...(onSale && {
       borderColor: `${theme.colors.tint}77`,
       borderWidth: 1,

@@ -5,12 +5,12 @@ import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
-import ProductCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 import WishlistItemCardDetailView from '@/components/custom/view/list-item-card/wishlist/&detail';
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { handleMutateOfWishlist } from '@/libs/react-query';
 import { ShadowPresets } from '@/libs/shadow';
 import { supabase } from '@/libs/supabase';
+import ListItemCardThumbnailImage from '@/components/custom/image/list-item-card-thumbnail';
 
 interface MyWishlistItemCardProps {
   item: WishlistToRender[number];
@@ -53,15 +53,11 @@ const MyWishlistItemCard = memo(function MyWishlistItemCard({
   }, [deleteWishlistMutation]);
 
   return (
-    <Link
-      href={`/(my)/item?itemId=${item.id}` as Href<string>}
-      asChild
-      onLongPress={handleLongPress}
-    >
+    <Link href={`/(my)/item?itemId=${item.id}` as Href} asChild onLongPress={handleLongPress}>
       <Pressable>
         <Card style={[styles.cardContainer(item.isOnSaleNow, item.is_online), containerStyle]}>
           <View style={styles.itemContainer}>
-            <ProductCardThumbnailImage
+            <ListItemCardThumbnailImage
               product={item}
               width={80}
               height={80}
@@ -80,7 +76,7 @@ const MyWishlistItemCard = memo(function MyWishlistItemCard({
 const stylesheet = createStyleSheet(theme => ({
   cardContainer: (onSale: boolean, isOnline: boolean) => ({
     borderRadius: theme.borderRadius.lg,
-    backgroundColor: isOnline ? `${theme.colors.tint3}11` : theme.colors.cardBackground,
+    backgroundColor: isOnline ? `${theme.colors.tint3}44` : theme.colors.cardBackground,
     ...(onSale && {
       borderColor: `${theme.colors.tint}77`,
       borderWidth: 1,

@@ -262,59 +262,6 @@ export type Database = {
           },
         ]
       }
-      items_duplicate: {
-        Row: {
-          bestDiscount: number | null
-          bestDiscountRate: number | null
-          categoryId: number | null
-          created_at: string | null
-          id: number
-          itemId: string
-          itemName: string | null
-          lowestPrice: number | null
-          totalCommentCount: number | null
-          totalDiscountCount: number | null
-          totalWishlistCount: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          bestDiscount?: number | null
-          bestDiscountRate?: number | null
-          categoryId?: number | null
-          created_at?: string | null
-          id?: number
-          itemId: string
-          itemName?: string | null
-          lowestPrice?: number | null
-          totalCommentCount?: number | null
-          totalDiscountCount?: number | null
-          totalWishlistCount?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          bestDiscount?: number | null
-          bestDiscountRate?: number | null
-          categoryId?: number | null
-          created_at?: string | null
-          id?: number
-          itemId?: string
-          itemName?: string | null
-          lowestPrice?: number | null
-          totalCommentCount?: number | null
-          totalDiscountCount?: number | null
-          totalWishlistCount?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "items_duplicate_categoryId_fkey"
-            columns: ["categoryId"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       memos: {
         Row: {
           content: string | null
@@ -342,14 +289,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "memos_itemId_fkey"
+            foreignKeyName: "memos_itemid_fkey"
             columns: ["itemId"]
             isOneToOne: false
             referencedRelation: "items"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "memos_userId_fkey"
+            foreignKeyName: "memos_userid_fkey"
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -388,15 +335,7 @@ export type Database = {
           nickname?: string | null
           picture?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       wishlists: {
         Row: {
@@ -539,9 +478,8 @@ export type Database = {
         Returns: {
           id: number
           created_at: string
-          new_item_count: number
-          added_discount_count: number
           is_online: boolean
+          total_discounts_count: number
         }[]
       }
       get_wishlist_items: {
@@ -685,5 +623,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 

@@ -9,10 +9,15 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 .envrc
+.env*.*
 web-build/
 
 ./ios/
 ./android/
+
+
+google-services.json
+GoogleService-Info.plist
 
 # macOS
 .DS_Store
@@ -23,10 +28,10 @@ web-build/
 expo-env.d.ts
 # @end expo-cli
 
-google-services.json
-GoogleService-Info.plist
 
 *.apk
 
 credentials.json
 credentials/
+
+deploy.js

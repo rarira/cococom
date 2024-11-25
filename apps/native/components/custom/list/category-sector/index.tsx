@@ -11,7 +11,7 @@ import { useCategorySectorsStore } from '@/store/category-sector';
 import CategorySectorGroupView from '@/components/custom/view/category-sector-group';
 
 function fetchCurrentDiscountsByCategorySector() {
-  const currentTimestamp = new Date().toISOString().split('T')[0];
+  const currentTimestamp = new Date().toISOString();
   return supabase.discounts.fetchCurrentDiscountsByCategorySector(currentTimestamp);
 }
 

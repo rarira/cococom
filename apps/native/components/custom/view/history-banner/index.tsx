@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import Constants from 'expo-constants';
 
 import Text from '@/components/core/text';
 import HistoryTable from '@/components/custom/table/history';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 interface HistoryInfoBannerProps {
   totalDiscounts: number;
@@ -21,12 +23,20 @@ const HistoryInfoBanner = memo(function HistoryInfoBanner({
 }: HistoryInfoBannerProps) {
   const { styles } = useStyles(stylesheet);
 
+  const { reportToSentry } = useErrorHandler();
+
   const { data, error, isLoading } = useQuery({
     queryKey: queryKeys.histories.latest,
     queryFn: fetchLatestHistory,
   });
 
-  if (!data || error || isLoading) return null;
+  useEffect(() => {
+    if (error) {
+      reportToSentry(error);
+    }
+  }, [error, reportToSentry]);
+
+  if (isLoading || !data || error) return null;
 
   return (
     <View style={styles.container}>
