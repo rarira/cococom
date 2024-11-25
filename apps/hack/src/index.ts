@@ -156,7 +156,7 @@ async function updateDiscounts(date?: string) {
 
       const data = await getItem(item.itemId);
 
-      await addReletedItemId(item, { categoryId: Number(data.category) });
+      await addReletedItemId(item, { categoryId: Number(data!.category) });
 
       if (downloadedImagesIndex[item.itemId as string]) {
         continue;
