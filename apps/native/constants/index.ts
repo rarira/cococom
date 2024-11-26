@@ -7,6 +7,7 @@ export const enum PortalHostNames {
   RANKING = 'RankingPortalHost',
   SIGN_UP = 'SignUpPortalHost',
   PROFILE = 'ProfilePortalHost',
+  SETTINGS = 'SettingsPortalHost',
 }
 
 export const MAX_MEMO_LENGTH = 140;

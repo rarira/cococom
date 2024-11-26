@@ -35,7 +35,8 @@ import { useErrorHandler } from '@/hooks/useErrorHandler';
 import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
 import { useExpoUpdate } from '@/hooks/useExpoUpdate';
 import CircularProgress from '@/components/core/progress/circular';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { usePushNotifications } from '@/hooks/notification/usePushNotifications';
+import Util from '@/libs/util';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
@@ -126,7 +127,7 @@ function RootLayout() {
 
   return (
     <>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <StatusBar style={Util.isPlatform('ios') ? 'light' : 'auto'} />
       <ErrorBoundary onError={reportToSentry}>
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView>

@@ -1,5 +1,5 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
@@ -13,6 +13,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDiscountChannels } from '@/store/discount-channels';
 import { useUserStore } from '@/store/user';
 import Text from '@/components/core/text';
+import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notification';
+import { PortalHostNames } from '@/constants';
 
 export default function ProfileScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -87,6 +89,11 @@ export default function ProfileScreen() {
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
         </RowMenu.Root>
       </ScreenContainerView>
+      <OptOutNotificationDialog
+        portalHostName={PortalHostNames.SETTINGS}
+        visible={visible}
+        setVisible={setVisible}
+      />
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>
   );

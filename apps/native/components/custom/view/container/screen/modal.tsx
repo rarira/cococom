@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { memo } from 'react';
-import { Platform } from 'react-native';
+
+import Util from '@/libs/util';
 
 interface ModalScreenContainerProps {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ const ModalScreenContainer = memo(function ModalScreenContainer({
 }: ModalScreenContainerProps) {
   return (
     <>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <StatusBar style={Util.isPlatform('ios') ? 'light' : 'auto'} />
       {children}
     </>
   );

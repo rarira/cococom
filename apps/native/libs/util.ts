@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 const Util = {
   toWonString(value: number): string {
     return value.toLocaleString('ko-KR');
@@ -66,6 +68,10 @@ const Util = {
     }
 
     return check;
+  },
+  isPlatform(os: 'native' | 'android' | 'ios' | 'web') {
+    if (os === 'native') return ['android', 'ios'].includes(Platform.OS);
+    return Platform.OS === os;
   },
 };
 

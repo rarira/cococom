@@ -6,45 +6,54 @@ import { registerForPushNotificationsAsync } from '@/libs/notifications';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
+import { useErrorHandler } from '../useErrorHandler';
+
 export function usePushNotifications() {
-  const { user, setProfile } = useUserStore(state => ({
+  const { user, profile, setProfile } = useUserStore(state => ({
     user: state.user,
+    profile: state.profile,
     setProfile: state.setProfile,
   }));
 
   const [notification, setNotification] = useState<Notifications.Notification | undefined>(
     undefined,
   );
+
+  const { reportToSentry } = useErrorHandler();
+
   const notificationListener = useRef<Notifications.EventSubscription>();
   const responseListener = useRef<Notifications.EventSubscription>();
 
   useEffect(() => {
-    if (!user) return;
-
     (async () => {
       try {
-        const token = await registerForPushNotificationsAsync();
+        const result = await registerForPushNotificationsAsync();
 
-        const profile = await supabase.profiles.updateProfile({ expo_push_token: token }, user.id);
+        if (!user || !result) return;
+
+        const profile = await supabase.profiles.updateProfile(
+          { expo_push_token: result.token },
+          user.id,
+        );
 
         setProfile(profile[0]);
-
-        notificationListener.current = Notifications.addNotificationReceivedListener(
-          notification => {
-            setNotification(notification);
-            Alert.alert(notification.request.content.title!, notification.request.content.body!);
-          },
-        );
-
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(
-          response => {
-            console.log(response);
-          },
-        );
       } catch (error) {
-        console.error('usePushNotifications error', error);
+        reportToSentry(error as Error);
       }
     })();
+  }, [reportToSentry, setProfile, user]);
+
+  useEffect(() => {
+    if (profile?.expo_push_token) {
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+        Alert.alert(notification.request.content.title!, notification.request.content.body!);
+      });
+
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
+    }
 
     return () => {
       notificationListener.current &&
@@ -52,7 +61,7 @@ export function usePushNotifications() {
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, [setProfile, user]);
+  }, [profile?.expo_push_token]);
 
   return { notification };
 }

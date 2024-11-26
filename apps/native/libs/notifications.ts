@@ -28,7 +28,9 @@ function handleRegistrationError(errorMessage: string) {
   throw new Error(errorMessage);
 }
 
-export async function registerForPushNotificationsAsync() {
+export async function registerForPushNotificationsAsync(
+  currentPermissionStatus?: Notifications.NotificationPermissionsStatus,
+) {
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -39,14 +41,20 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let existingStatus = currentPermissionStatus;
     let finalStatus = existingStatus;
 
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
+    if (!existingStatus) {
+      const permissionStatus = await Notifications.getPermissionsAsync();
+      existingStatus = permissionStatus;
+      finalStatus = permissionStatus;
     }
-    if (finalStatus !== 'granted') {
+
+    if (existingStatus.status !== 'granted') {
+      const permissionStatus = await Notifications.requestPermissionsAsync();
+      finalStatus = permissionStatus;
+    }
+    if (finalStatus?.status !== 'granted') {
       handleRegistrationError('Permission not granted to get push token for push notification!');
       return;
     }
@@ -62,8 +70,7 @@ export async function registerForPushNotificationsAsync() {
           projectId,
         })
       ).data;
-      console.log(pushTokenString);
-      return pushTokenString;
+      return { token: pushTokenString, finalStatus };
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);
     }
