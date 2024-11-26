@@ -15,6 +15,7 @@ import { useUserStore } from '@/store/user';
 import Text from '@/components/core/text';
 import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notification';
 import { PortalHostNames } from '@/constants';
+import { useUpdateNotificationSetting } from '@/hooks/notification/useUpdateNotificationSetting';
 
 export default function ProfileScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -28,6 +29,14 @@ export default function ProfileScreen() {
   }, [discountChannels]);
 
   const { theme: colorTheme, handleToggleAutoTheme, handleToggleTheme } = useColorScheme();
+
+  const {
+    granted,
+    optOutDialogVisible,
+    setOptOutDialogVisible,
+    dialogProps,
+    handleToggleNotification,
+  } = useUpdateNotificationSetting();
 
   const handlePressDiscountChannelArrange = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -54,10 +63,7 @@ export default function ProfileScreen() {
             <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
             <RowMenu.Root style={styles.withPaddingHorizontal}>
               <RowMenu.Text>할인 정보 업데이트 알림 수신</RowMenu.Text>
-              <RowMenu.ToggleSwitch
-                checked={false}
-                onToggle={() => console.log('노티 관련 구현 필요')}
-              />
+              <RowMenu.ToggleSwitch checked={granted} onToggle={handleToggleNotification} />
             </RowMenu.Root>
           </>
         )}
@@ -91,8 +97,9 @@ export default function ProfileScreen() {
       </ScreenContainerView>
       <OptOutNotificationDialog
         portalHostName={PortalHostNames.SETTINGS}
-        visible={visible}
-        setVisible={setVisible}
+        visible={optOutDialogVisible}
+        setVisible={setOptOutDialogVisible}
+        {...dialogProps!}
       />
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>
