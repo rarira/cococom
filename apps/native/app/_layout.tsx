@@ -24,6 +24,7 @@ import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
+import * as Notifications from 'expo-notifications';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -33,6 +34,7 @@ import { useErrorHandler } from '@/hooks/useErrorHandler';
 import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
 import { useExpoUpdate } from '@/hooks/useExpoUpdate';
 import CircularProgress from '@/components/core/progress/circular';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
@@ -63,6 +65,14 @@ onlineManager.setEventListener(setOnline => {
   });
 });
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 function onAppStateChange(status: AppStateStatus) {
   if (Platform.OS !== 'web') {
     focusManager.setFocused(status === 'active');
@@ -82,6 +92,8 @@ function RootLayout() {
   const { isUpdating } = useExpoUpdate();
 
   useLoadUser();
+
+  usePushNotifications();
 
   useDiscountChannelsArrange();
 

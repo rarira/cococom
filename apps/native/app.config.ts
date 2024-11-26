@@ -69,6 +69,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
       '@react-native-google-signin/google-signin',
       'expo-apple-authentication',
+      'expo-notifications',
       './plugins',
       'expo-font',
     ],

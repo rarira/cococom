@@ -304,6 +304,27 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           confirmed: boolean | null
@@ -311,6 +332,7 @@ export type Database = {
           email: string | null
           email_opted_in: boolean
           email_verified: boolean | null
+          expo_push_token: string | null
           id: string
           nickname: string | null
           picture: string | null
@@ -321,6 +343,7 @@ export type Database = {
           email?: string | null
           email_opted_in?: boolean
           email_verified?: boolean | null
+          expo_push_token?: string | null
           id: string
           nickname?: string | null
           picture?: string | null
@@ -331,6 +354,7 @@ export type Database = {
           email?: string | null
           email_opted_in?: boolean
           email_verified?: boolean | null
+          expo_push_token?: string | null
           id?: string
           nickname?: string | null
           picture?: string | null

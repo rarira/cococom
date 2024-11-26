@@ -2,8 +2,8 @@
   "expo": {
     "name": "cococom",
     "slug": "cococom",
-    "version": "0.1.21-alpha.cdc-18.2",
-    "runtimeVersion": "0.1.20",
+    "version": "0.1.21-alpha.cdc-18.3",
+    "runtimeVersion": "0.1.21",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cccom",
