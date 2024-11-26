@@ -31,6 +31,8 @@ import { useLoadUser } from '@/hooks/useLoadUser';
 import { useDiscountChannelsArrange } from '@/hooks/settings/useDiscountChannelArrange';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
+import { useExpoUpdate } from '@/hooks/useExpoUpdate';
+import CircularProgress from '@/components/core/progress/circular';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
@@ -77,6 +79,8 @@ function RootLayout() {
     Inter: require('../assets/fonts/Inter_18pt-Medium.ttf'),
   });
 
+  const { isUpdating } = useExpoUpdate();
+
   useLoadUser();
 
   useDiscountChannelsArrange();
@@ -103,8 +107,8 @@ function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  if (!loaded) {
-    return null;
+  if (!loaded || isUpdating) {
+    return <CircularProgress style={{ flex: 1 }} />;
   }
 
   return (
