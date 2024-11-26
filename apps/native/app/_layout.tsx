@@ -25,6 +25,7 @@ import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-rean
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
 import * as Notifications from 'expo-notifications';
+import { StatusBar } from 'expo-status-bar';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -124,43 +125,46 @@ function RootLayout() {
   }
 
   return (
-    <ErrorBoundary onError={reportToSentry}>
-      <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView>
-          <SafeAreaProvider>
-            <PortalProvider>
-              <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-                <BottomSheetModalProvider>
-                  <Stack
-                    screenOptions={{
-                      contentStyle: {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(main)"
-                      options={{
-                        headerShown: false,
+    <>
+      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <ErrorBoundary onError={reportToSentry}>
+        <QueryClientProvider client={queryClient}>
+          <GestureHandlerRootView>
+            <SafeAreaProvider>
+              <PortalProvider>
+                <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+                  <BottomSheetModalProvider>
+                    <Stack
+                      screenOptions={{
+                        contentStyle: {
+                          backgroundColor: 'transparent',
+                        },
                       }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                    <Stack.Screen
-                      name="auth"
-                      options={{
-                        presentation: 'modal',
-                        headerShown: false,
-                        gestureEnabled: false,
-                      }}
-                    />
-                  </Stack>
-                </BottomSheetModalProvider>
-              </ThemeProvider>
-            </PortalProvider>
-          </SafeAreaProvider>
-        </GestureHandlerRootView>
-      </QueryClientProvider>
-    </ErrorBoundary>
+                    >
+                      <Stack.Screen
+                        name="(main)"
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                      <Stack.Screen
+                        name="auth"
+                        options={{
+                          presentation: 'modal',
+                          headerShown: false,
+                          gestureEnabled: false,
+                        }}
+                      />
+                    </Stack>
+                  </BottomSheetModalProvider>
+                </ThemeProvider>
+              </PortalProvider>
+            </SafeAreaProvider>
+          </GestureHandlerRootView>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </>
   );
 }
 

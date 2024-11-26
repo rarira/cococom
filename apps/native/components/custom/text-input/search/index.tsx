@@ -42,6 +42,9 @@ const SearchTextInput = memo(function SearchTextInput({
         autoCapitalize="none"
         clearButtonMode="while-editing"
         onChangeText={setKeyword}
+        inputMode="search"
+        enterKeyHint="search"
+        returnKeyType="search"
         {...restProps}
       />
       <TextInput.Slot style={styles.textInputSlot} onPress={handlePress} disabled={disabled}>
