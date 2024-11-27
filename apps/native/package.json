@@ -4,6 +4,7 @@
   "version": "0.1.21-alpha.cdc-18.5",
   "scripts": {
     "start": "expo start --dev-client",
+    "start:preview": "SUPABASE_ENV=PREVIEW expo start --dev-client",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",

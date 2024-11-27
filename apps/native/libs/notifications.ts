@@ -24,7 +24,6 @@ async function sendPushNotification(expoPushToken: string) {
 }
 
 function handleRegistrationError(errorMessage: string) {
-  alert(errorMessage);
   throw new Error(errorMessage);
 }
 
@@ -51,13 +50,15 @@ export async function registerForPushNotificationsAsync(
     }
 
     if (existingStatus.status !== 'granted') {
+      if (!finalStatus?.canAskAgain) return;
       const permissionStatus = await Notifications.requestPermissionsAsync();
       finalStatus = permissionStatus;
     }
+
     if (finalStatus?.status !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
       return;
     }
+
     const projectId =
       Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 

@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
 const Util = {
   toWonString(value: number): string {
@@ -72,6 +73,9 @@ const Util = {
   isPlatform(os: 'native' | 'android' | 'ios' | 'web') {
     if (os === 'native') return ['android', 'ios'].includes(Platform.OS);
     return Platform.OS === os;
+  },
+  isDevClient() {
+    return Constants.executionEnvironment === ExecutionEnvironment.Bare;
   },
 };
 

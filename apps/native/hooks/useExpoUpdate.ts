@@ -2,6 +2,8 @@ import { useLayoutEffect, useState } from 'react';
 import * as Updates from 'expo-updates';
 import { Alert } from 'react-native';
 
+import Util from '@/libs/util';
+
 import { useErrorHandler } from './useErrorHandler';
 
 export function useExpoUpdate() {
@@ -11,6 +13,8 @@ export function useExpoUpdate() {
   useLayoutEffect(() => {
     (async () => {
       try {
+        if (Util.isDevClient()) return;
+
         const update = await Updates.checkForUpdateAsync();
 
         if (update.isAvailable) {
