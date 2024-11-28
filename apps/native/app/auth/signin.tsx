@@ -20,6 +20,7 @@ import ModalScreenContainer from '@/components/custom/view/container/screen/moda
 import { useSignInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useUserStore } from '@/store/user';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
+import Util from '@/libs/util';
 
 const LOGIN_IMAGE_HEIGHT = 36;
 
@@ -46,7 +47,12 @@ export default function SignInScreen() {
     navigation.setOptions({
       headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
       headerRight: () => (
-        <Button onPress={() => router.replace('/auth/signup?from=signin')}>
+        //TODO: https://github.com/software-mansion/react-native-screens/issues/2219#issuecomment-2481628312
+        <Button
+          {...(Util.isPlatform('android')
+            ? { onPressOut: () => router.replace('/auth/signup?from=signin') }
+            : { onPress: () => router.replace('/auth/signup?from=signin') })}
+        >
           <Text>회원 가입</Text>
         </Button>
       ),

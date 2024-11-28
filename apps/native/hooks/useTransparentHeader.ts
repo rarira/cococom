@@ -3,6 +3,8 @@ import { useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
+import Util from '@/libs/util';
+
 export function useTransparentHeader(options: Record<string, any>) {
   const { theme } = useStyles();
   const headerHeight = useHeaderHeight();

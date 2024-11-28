@@ -25,7 +25,10 @@ export default function AuthLayout() {
           title: '회원가입',
         }}
       />
-      <Stack.Screen name="signup/confirm" options={{ title: '회원가입 확인' }} />
+      <Stack.Screen
+        name="signup/confirm"
+        options={{ title: '회원가입 확인', headerBackVisible: false }}
+      />
       <Stack.Screen
         name="password/change"
         options={{ title: '비밀번호 변경', headerBackVisible: true }}

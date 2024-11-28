@@ -18,7 +18,7 @@ import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notific
 import { PortalHostNames } from '@/constants';
 import { useUpdateNotificationSetting } from '@/hooks/notification/useUpdateNotificationSetting';
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -95,14 +95,14 @@ export default function ProfileScreen() {
           <RowMenu.Text>런타임 버전</RowMenu.Text>
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
         </RowMenu.Root>
+        <PortalHost name={PortalHostNames.SETTINGS} />
+        <OptOutNotificationDialog
+          portalHostName={PortalHostNames.SETTINGS}
+          visible={optOutDialogVisible}
+          setVisible={setOptOutDialogVisible}
+          {...dialogProps!}
+        />
       </ScreenContainerView>
-      <PortalHost name={PortalHostNames.SETTINGS} />
-      <OptOutNotificationDialog
-        portalHostName={PortalHostNames.SETTINGS}
-        visible={optOutDialogVisible}
-        setVisible={setOptOutDialogVisible}
-        {...dialogProps!}
-      />
       <DiscountChannelArrangeBottomSheet ref={bottomSheetModalRef} />
     </>
   );

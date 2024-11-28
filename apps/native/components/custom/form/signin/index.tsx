@@ -90,7 +90,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
               onBlur={onBlur}
               onChangeText={onChange}
               textContentType="password"
-              secureTextEntry
+              secureTextEntry={!showPassword}
             />
             <TextInputEyeSlot show={showPassword} setShow={setShowPassword} disabled={loading} />
           </TextInput.Root>

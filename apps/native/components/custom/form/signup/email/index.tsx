@@ -112,8 +112,8 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
                 placeholder="비밀번호를 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
-                textContentType="password"
-                secureTextEntry
+                textContentType="newPassword"
+                secureTextEntry={!showPassword}
                 passwordRules={
                   'minlength: 8; maxlength: 20; required: lower; required: upper; required: digit; required: special;'
                 }
@@ -132,7 +132,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 textContentType="password"
-                secureTextEntry
+                secureTextEntry={!showConfirmPassword}
               />
               <TextInputEyeSlot show={showConfirmPassword} setShow={setShowConfirmPassword} />
             </TextInput.Root>

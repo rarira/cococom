@@ -18,7 +18,7 @@ const HeaderRightRelatedButton = memo(function HeaderRightRelatedButton({
 
   return (
     <Link href={`/item?itemId=${item.related_item_id}`} asChild>
-      <Pressable style>
+      <Pressable>
         <Text style={styles.headerRightText} numberOfLines={2}>
           {(item.is_online ? '오프라인' : '온라인') + '\n상품 보기'}
         </Text>

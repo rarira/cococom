@@ -11,6 +11,7 @@ const HeaderBackButton = memo(function HeaderBackButton({
   style,
   text,
   textStyle,
+  onPress,
   // iconProps,
   ...restProps
 }: HeaderBackButtonProps) {
@@ -23,12 +24,14 @@ const HeaderBackButton = memo(function HeaderBackButton({
         size: theme.fontSize.xl,
         color: theme.colors.typography,
       }}
-      style={({ pressed }) => [
-        styles.container(pressed),
-        typeof style === 'function' ? style({ pressed }) : style,
+      style={state => [
+        styles.container(state.pressed),
+        typeof style === 'function' ? style(state) : style,
       ]}
       text={text}
       textStyle={[styles.text, textStyle]}
+      //TODO: https://github.com/software-mansion/react-native-screens/issues/2219#issuecomment-2481628312
+      onPressOut={onPress}
       {...restProps}
     />
   );

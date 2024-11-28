@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Notifications from 'expo-notifications';
 import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
@@ -41,7 +41,8 @@ export function useUpdateNotificationSetting() {
     const subscription = AppState.addEventListener('change', async nextAppState => {
       if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
         const settings = await Notifications.getPermissionsAsync();
-        console.log('useUpdateNotificationSetting after appstate change', settings);
+        setPermissionStatus(settings);
+
         if (settings.status === 'granted') {
           const token = await Notifications.getExpoPushTokenAsync();
           if (token && user) {
@@ -60,7 +61,6 @@ export function useUpdateNotificationSetting() {
             setProfile(profile[0]);
           }
         }
-        setPermissionStatus(settings);
       }
 
       appState.current = nextAppState;
@@ -71,13 +71,15 @@ export function useUpdateNotificationSetting() {
     };
   }, [setProfile, user]);
 
-  const granted =
-    permissionStatus?.status === 'granted' ||
-    (!!permissionStatus?.ios?.status &&
-      permissionStatus?.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL);
+  const granted = useMemo(
+    () =>
+      permissionStatus?.status === 'granted' ||
+      (!!permissionStatus?.ios?.status &&
+        permissionStatus?.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL),
+    [permissionStatus],
+  );
 
-  console.log('granted', granted);
-
+  console.log('useUpdateHook', { granted });
   const handleToggleNotification = useCallback(async () => {
     if (granted) {
       console.log('toggle notification off');
@@ -88,17 +90,6 @@ export function useUpdateNotificationSetting() {
         onPressOk: async () => {
           await Linking.openSettings();
           setOptOutDialogVisible(false);
-          // try {
-          //   const profile = await supabase.profiles.updateProfile(
-          //     { expo_push_token: null },
-          //     user!.id,
-          //   );
-          //   setProfile(profile[0]);
-          // } catch (error) {
-          //   Alert.alert('알림 설정 변경 실패', '나중에 다시 시도해주세요');
-          //   reportToSentry(error as Error);
-          // }
-          // setOptOutDialogVisible(false);
         },
       });
       setOptOutDialogVisible(true);
@@ -106,7 +97,6 @@ export function useUpdateNotificationSetting() {
       console.log('toggle notification on', permissionStatus);
       try {
         if (!!permissionStatus && !permissionStatus?.canAskAgain) {
-          console.log('show open settings dialog');
           setDialogProps({
             title: '시스템 설정 변경 필요',
             body: '알림을 받으시려면 시스템 설정 메뉴에서 변경하셔야 합니다. 설정 메뉴로 이동할까요?',

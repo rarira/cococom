@@ -21,6 +21,7 @@ export default function SignUpScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerBackVisible: false,
       headerLeft: () => {
         return from === 'signin' ? (
           <HeaderBackButton text="로그인" onPress={() => router.replace('/auth/signin')} />
