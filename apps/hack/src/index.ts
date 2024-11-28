@@ -183,10 +183,10 @@ async function updateDiscounts(date?: string) {
 }
 
 async function createHistory() {
-  if (!newItems.length) return;
+  if (!newItems.length && !newDiscountsCount) return;
 
   await supabase.histories.insertHistory({
-    new_item_count: newItems.length,
+    new_item_count: newItems?.length ?? 0,
     added_discount_count: newDiscountsCount,
     no_images: newItemsWithNoImage,
   });

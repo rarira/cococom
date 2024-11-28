@@ -26,10 +26,12 @@ import {
   uploadImages,
 } from '../libs/images.js';
 
+const dateArgument = process.argv[2];
+
 const CATEGORY_EXCLUDE = ['cos_whsonly', 'cos_22', 'cos_10.12'];
 const CATEGORY_TO_DEEP = ['cos_10.1', 'cos_10.4', 'cos_10.10'];
 
-const date = new Date().toISOString().split('T')[0];
+const date = dateArgument || new Date().toISOString().split('T')[0];
 
 const newItems: string[] = [];
 const noPriceValue = new Set<string>();
@@ -201,7 +203,22 @@ async function getAllItems() {
     allProducts.push(...products);
   });
 
-  await Promise.allSettled(promises.filter(promise => promise !== null));
+  const results = await Promise.allSettled(promises.filter(promise => promise !== null));
+
+  for (const [index, result] of results.entries()) {
+    if (result.status === 'rejected') {
+      let successful = false;
+      do {
+        try {
+          await promises[index];
+          successful = true;
+        } catch (error) {
+          //do nothing here
+          console.error('retry error', (error as Error).message);
+        }
+      } while (!successful);
+    }
+  }
 
   const uniqueProducts = await removeDuplicateProducts(allProducts);
 
@@ -343,7 +360,19 @@ async function upsertOnlineUrlToItem() {
     `data/online_downloadResult_itemIds_${date}.json`,
   )) as ItemId[];
 
-  const filteredItemIds = itemIds.filter(item => !!item.id);
+  const { data: itemsWithNoOnlineUrl } = await supabase.supabaseClient
+    .from('items')
+    .select('id')
+    .is('online_url', null);
+
+  const itemsWithNoOnlineUrlSet = new Set((itemsWithNoOnlineUrl ?? []).map(item => item.id));
+
+  console.log(
+    'itemsWithNoOnlineUrl',
+    itemsWithNoOnlineUrl?.length,
+    itemsWithNoOnlineUrlSet.has(242408),
+  );
+  const filteredItemIds = itemIds.filter(item => !!item.id && itemsWithNoOnlineUrlSet.has(item.id));
 
   const result = await supabase.items.upsertItem(filteredItemIds, {
     ignoreDuplicates: false,
@@ -409,9 +438,11 @@ async function uploadNewRecords() {
     if (!product.code) {
       console.log('no code', product.name);
     }
+
     if (!product.name) {
       console.log('no name', product.code);
     }
+
     if (!product.categoryId) {
       console.log('no categoryId', product.code);
     }
@@ -427,15 +458,15 @@ async function uploadNewRecords() {
     }
   });
 
-  const newlyAddedItems = await supabase.items.upsertItem(
-    salesProducts.map(product => ({
-      itemId: product.code + '_online',
-      itemName: product.name,
-      categoryId: product.categoryId,
-      is_online: true,
-      online_url: product.url,
-    })),
-  );
+  const upsertItemsMap = salesProducts.map(product => ({
+    itemId: product.code + '_online',
+    itemName: product.name,
+    categoryId: product.categoryId,
+    is_online: true,
+    online_url: product.url,
+  }));
+
+  const newlyAddedItems = await supabase.items.upsertItem(upsertItemsMap);
 
   if (newlyAddedItems?.length) {
     newItems.push(...newlyAddedItems.map(item => item.itemId));
@@ -511,10 +542,10 @@ async function updateRelatedItemId() {
 }
 
 async function createHistory() {
-  if (!newItems.length) return;
+  if (!newItems.length && !newDiscountsCount) return;
 
   await supabase.histories.insertHistory({
-    new_item_count: newItems.length,
+    new_item_count: newItems.length ?? 0,
     added_discount_count: newDiscountsCount,
     no_images: [],
     no_price: Array.from(noPriceValue),
@@ -533,9 +564,9 @@ async function createHistory() {
     await getAllItems();
     await downloadImages();
   }
-  await upsertOnlineUrlToItem();
   await manageSoldOutDiscounts();
   await uploadNewRecords();
+  await upsertOnlineUrlToItem();
   await updateRelatedItemId();
   await createHistory();
 

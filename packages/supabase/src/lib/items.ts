@@ -10,6 +10,15 @@ export class ItemsTable {
     this.supabaseClient = supabaseClient;
   }
 
+  async insertItem(item: InsertItem) {
+    const response = await this.supabaseClient.from('items').insert([item]).select('id, itemId');
+
+    if (response.error) {
+      console.error(response.error);
+    }
+    return response;
+  }
+
   async upsertItem(
     item: InsertItem | InsertItem[],
     options?: { ignoreDuplicates?: boolean; onConflict?: string },
