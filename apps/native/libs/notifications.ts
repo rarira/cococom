@@ -3,6 +3,8 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+import Util from './util';
+
 async function sendPushNotification(expoPushToken: string) {
   const message = {
     to: expoPushToken,
@@ -66,6 +68,15 @@ export async function registerForPushNotificationsAsync(
       handleRegistrationError('Project ID not found');
     }
     try {
+      if (Util.isPlatform('android')) {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          // TODO : 아이콘 정해지면 색상 변경
+          lightColor: '#FF231F7C',
+        });
+      }
       const pushTokenString = (
         await Notifications.getExpoPushTokenAsync({
           projectId,

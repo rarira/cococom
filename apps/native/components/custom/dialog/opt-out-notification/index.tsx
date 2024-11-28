@@ -23,22 +23,22 @@ function OptOutNotificationDialog({
   const renderButtons = useCallback(() => {
     return (
       <View style={styles.buttonContainer}>
-        <Button onPress={onPressOk} style={styles.deleteButton}>
-          <Text style={styles.deleteButtonText}>탈퇴</Text>
-        </Button>
         <Button onPress={() => setVisible(false)} style={styles.cancelButton}>
           <Text style={styles.cancelButtonText}>취소</Text>
+        </Button>
+        <Button onPress={onPressOk} style={styles.okButton}>
+          <Text style={styles.okButtonText}>OK</Text>
         </Button>
       </View>
     );
   }, [
-    onPressOk,
-    setVisible,
     styles.buttonContainer,
     styles.cancelButton,
     styles.cancelButtonText,
-    styles.deleteButton,
-    styles.deleteButtonText,
+    styles.okButton,
+    styles.okButtonText,
+    onPressOk,
+    setVisible,
   ]);
 
   return (
@@ -60,23 +60,23 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'space-between',
     gap: theme.spacing.lg,
   },
-  deleteButton: {
-    borderColor: theme.colors.alert,
+  cancelButton: {
+    borderColor: theme.colors.typography,
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
   },
-  deleteButtonText: {
-    color: theme.colors.alert,
+  cancelButtonText: {
+    color: theme.colors.typography,
   },
-  cancelButton: {
+  okButton: {
     backgroundColor: theme.colors.tint,
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
   },
-  cancelButtonText: {
+  okButtonText: {
     color: theme.colors.background,
     fontWeight: 'bold',
   },

@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
+import { PortalHost } from '@gorhom/portal';
 
 import IconButton from '@/components/core/button/icon';
 import RowMenu from '@/components/core/menu/row';
@@ -95,6 +96,7 @@ export default function ProfileScreen() {
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
         </RowMenu.Root>
       </ScreenContainerView>
+      <PortalHost name={PortalHostNames.SETTINGS} />
       <OptOutNotificationDialog
         portalHostName={PortalHostNames.SETTINGS}
         visible={optOutDialogVisible}
