@@ -2,8 +2,8 @@
   "expo": {
     "name": "cococom",
     "slug": "cococom",
-    "version": "0.1.21-alpha.cdc-18.5",
-    "runtimeVersion": "0.1.21",
+    "version": "0.1.22-alpha.cdc-18",
+    "runtimeVersion": "0.1.22",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cccom",
@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.rariradev.cococom",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["cccom"]
+        "LSApplicationQueriesSchemes": ["cccom"],
+        "UIBackgroundModes": ["remote-notification"]
       },
       "usesAppleSignIn": true
     },

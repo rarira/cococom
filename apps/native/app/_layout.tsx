@@ -1,6 +1,8 @@
 import type { AppStateStatus } from 'react-native';
 
+import '@/libs/background-notification';
 import '@/styles/unistyles';
+
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -26,6 +28,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
+import { PushNotificationTrigger } from 'expo-notifications';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -68,11 +71,26 @@ onlineManager.setEventListener(setOnline => {
 });
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async notification => {
+    //https://github.com/expo/expo/issues/31184
+    const trigger = notification.request.trigger as PushNotificationTrigger;
+    if (trigger?.type === 'push') {
+      const isDataOnly = trigger?.remoteMessage?.notification === null;
+      if (isDataOnly) {
+        console.log('Data only notification - you can see this message in LogCat android tool');
+        return {
+          shouldShowAlert: false,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        };
+      }
+    }
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
 });
 
 function onAppStateChange(status: AppStateStatus) {
