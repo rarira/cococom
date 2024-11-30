@@ -32,7 +32,6 @@ const ToggleSwitch = memo(function ToggleSwitch({
   const checkedValue = useSharedValue(checked ? 1 : 0);
 
   useLayoutEffect(() => {
-    console.log('call useEffect in ToggleSwitch', { checked });
     checkedValue.value = withTiming(checked ? 1 : 0, { duration: 100 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checked, checkedValue.value]);

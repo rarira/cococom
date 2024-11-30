@@ -50,17 +50,20 @@ Deno.serve(async req => {
     receiverChunks.push(data.slice(i, i + ReceiverChunkSize));
   }
 
-  console.log(data.length, receiverChunks.length);
+  console.log(`will send push to ${data.length} devices in ${receiverChunks.length} chunks`);
 
   const promises = receiverChunks.map(chunk => {
     const message = {
       to: chunk.map(receiver => receiver.expo_push_token),
-      _contentAvailable: true,
+      // _contentAvailable: true, // for ios background push
       sound: 'default',
-      body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`,
+      data: {
+        isOnline: payload.record.is_online,
+        newDiscount: payload.record.added_discount_count,
+        newItem: payload.record.new_item_count,
+      },
+      body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`, // must be removed for background push
     };
-
-    console.log('Sending message', message);
 
     const compressedMessages = gzip(new TextEncoder().encode(JSON.stringify(message)));
 
@@ -77,9 +80,19 @@ Deno.serve(async req => {
 
   const result = await Promise.allSettled(promises);
 
-  console.log('Result', result);
+  const failed = result.filter(r => r.status === 'rejected');
+  const success = result.filter(r => r.status === 'fulfilled');
 
-  return new Response(JSON.stringify(result), {
+  const finalResult = {
+    success: success.length,
+    failed: failed.length,
+    failedDetails: failed.map(f => f.reason),
+    totalDevicesToSend: data.length,
+  };
+
+  console.log('finalResult', finalResult);
+
+  return new Response(JSON.stringify(finalResult), {
     headers: { 'Content-Type': 'application/json' },
   });
 });

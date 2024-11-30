@@ -28,7 +28,6 @@ export function usePushNotifications() {
     (async () => {
       try {
         const result = await registerForPushNotificationsAsync();
-        console.log('result', result);
         if (!user || !result) return;
 
         const profile = await supabase.profiles.updateProfile(
@@ -46,8 +45,12 @@ export function usePushNotifications() {
   useEffect(() => {
     if (profile?.expo_push_token) {
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        if (notification.request.content.body === null) return;
-        console.log({ notification: notification.request.content });
+        if (
+          notification.request.content.body === null ||
+          notification.request.trigger?.payload!.aps['content-available'] === 1
+        )
+          return;
+
         setNotification(notification);
         Alert.alert(notification.request.content.title!, notification.request.content.body!);
       });

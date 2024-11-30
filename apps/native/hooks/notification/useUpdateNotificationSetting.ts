@@ -32,7 +32,6 @@ export function useUpdateNotificationSetting() {
     if (!user) return;
     (async () => {
       const settings = await Notifications.getPermissionsAsync();
-      console.log('useUpdateNotificationSetting settings', settings);
       setPermissionStatus(settings);
     })();
   }, [user]);
@@ -79,11 +78,8 @@ export function useUpdateNotificationSetting() {
     [permissionStatus],
   );
 
-  console.log('useUpdateHook', { granted });
   const handleToggleNotification = useCallback(async () => {
     if (granted) {
-      console.log('toggle notification off');
-
       setDialogProps({
         title: '알림 수신 거부',
         body: '새로운 업데이트 알림을 받으실 수 없어요. 수신 거부하시려면 시스템 설정 메뉴에서 변경해 주세요. 설정 메뉴로 이동할까요?',
@@ -94,7 +90,6 @@ export function useUpdateNotificationSetting() {
       });
       setOptOutDialogVisible(true);
     } else {
-      console.log('toggle notification on', permissionStatus);
       try {
         if (!!permissionStatus && !permissionStatus?.canAskAgain) {
           setDialogProps({
