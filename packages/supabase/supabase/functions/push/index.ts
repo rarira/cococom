@@ -2,8 +2,9 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { gzip } from 'https://deno.land/x/compress@v0.3.8/mod.ts';
 
-console.log('Hello from Functions!');
+console.log('Run push edge functions!');
 
 interface History {
   added_discount_count: number;
@@ -28,6 +29,8 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
 );
 
+const ReceiverChunkSize = 100;
+
 Deno.serve(async req => {
   const payload: WebhookPayload = await req.json();
   const { data } = await supabase
@@ -35,34 +38,48 @@ Deno.serve(async req => {
     .select('expo_push_token')
     .not('expo_push_token', 'is', null);
 
-  const promises: Promise<void>[] = [];
-
   if (data?.length === 0) {
     return new Response('No push tokens found', {
       status: 400,
     });
   }
 
-  data.forEach(async (profile: { expo_push_token: string }) => {
-    promises.push(
-      fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
-        },
-        body: JSON.stringify({
-          to: profile.expo_push_token,
-          sound: 'default',
-          body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`,
-        }),
-      }).then(res => res.json()),
-    );
+  const receiverChunks: { expo_push_token: string }[][] = [];
+
+  for (let i = 0; i < data.length; i += ReceiverChunkSize) {
+    receiverChunks.push(data.slice(i, i + ReceiverChunkSize));
+  }
+
+  console.log(data.length, receiverChunks.length);
+
+  const promises = receiverChunks.map(chunk => {
+    const message = {
+      to: chunk.map(receiver => receiver.expo_push_token),
+      _contentAvailable: true,
+      sound: 'default',
+      body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`,
+    };
+
+    console.log('Sending message', message);
+
+    const compressedMessages = gzip(new TextEncoder().encode(JSON.stringify(message)));
+
+    return fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'gzip',
+        Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
+      },
+      body: compressedMessages,
+    }).then(res => res.json());
   });
 
-  await Promise.allSettled(promises);
+  const result = await Promise.allSettled(promises);
 
-  return new Response(JSON.stringify(res), {
+  console.log('Result', result);
+
+  return new Response(JSON.stringify(result), {
     headers: { 'Content-Type': 'application/json' },
   });
 });

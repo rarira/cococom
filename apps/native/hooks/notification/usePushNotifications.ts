@@ -47,6 +47,7 @@ export function usePushNotifications() {
     if (profile?.expo_push_token) {
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         if (notification.request.content.body === null) return;
+        console.log({ notification: notification.request.content });
         setNotification(notification);
         Alert.alert(notification.request.content.title!, notification.request.content.body!);
       });
