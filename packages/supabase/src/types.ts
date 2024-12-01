@@ -128,6 +128,7 @@ export type Database = {
           discountPrice: number
           discountRate: number | null
           endDate: string
+          history_id: number | null
           id: number
           is_online: boolean
           itemId: string
@@ -141,6 +142,7 @@ export type Database = {
           discountPrice: number
           discountRate?: number | null
           endDate: string
+          history_id?: number | null
           id?: number
           is_online?: boolean
           itemId: string
@@ -154,6 +156,7 @@ export type Database = {
           discountPrice?: number
           discountRate?: number | null
           endDate?: string
+          history_id?: number | null
           id?: number
           is_online?: boolean
           itemId?: string
@@ -161,6 +164,13 @@ export type Database = {
           startDate?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "discounts_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "histories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "discounts_itemId_fkey"
             columns: ["itemId"]
@@ -517,6 +527,12 @@ export type Database = {
           channel: string
         }
         Returns: Json
+      }
+      pg_get_nextval: {
+        Args: {
+          sequence_name: string
+        }
+        Returns: number
       }
       search_items_by_itemid: {
         Args: {

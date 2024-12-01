@@ -29,4 +29,17 @@ export class HistoriesTable {
 
     return data;
   }
+
+  async getNextId() {
+    const { data, error } = await this.supabaseClient.rpc('pg_get_nextval', {
+      sequence_name: 'public.histories_id_seq',
+    });
+
+    if (error) {
+      console.log('getNextId error', error);
+      throw error;
+    }
+
+    return data;
+  }
 }

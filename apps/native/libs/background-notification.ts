@@ -2,12 +2,19 @@ import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
 
 import Util from './util';
+import { storage } from './mmkv';
 
 const BACKGROUND_NOTIFICATION_TASK = 'BACKGROUND-NOTIFICATION-TASK';
 
 TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async ({ data, error, executionInfo }) => {
+  const userId = storage.getString('userId');
+
+  if (!userId) return;
   if (Util.isPlatform('android') && !!(data as any).notification) return;
-  console.log('Received a notification in the background!', Util.isPlatform('android'), data);
+  console.log('Received a notification in the background!', Util.isPlatform('android'), {
+    data,
+    userId,
+  });
 
   // 안드로이드 killed 상태에선 다음 앱 실행시에 작동함
   // Do something with the notification data
