@@ -1,6 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 
-import { Database, InsertHistory } from '../merged-types';
+import { Database, InsertHistory, UpdateHistory } from '../merged-types';
 
 export class HistoriesTable {
   private supabaseClient: SupabaseClient<Database>;
@@ -10,13 +10,33 @@ export class HistoriesTable {
   }
 
   async insertHistory(newHistory: InsertHistory) {
-    const { error } = await this.supabaseClient.from('histories').insert(newHistory);
+    const { data, error } = await this.supabaseClient
+      .from('histories')
+      .insert(newHistory)
+      .select('id');
 
     if (error) {
       console.error({ error });
       throw error;
     }
-    console.log('inserted history');
+    console.log('inserted history with id', data?.[0]?.id);
+
+    return data[0];
+  }
+
+  async updateHistory(newHistory: UpdateHistory) {
+    if (!newHistory.id) {
+      throw new Error('id is required to update history');
+    }
+    const { error } = await this.supabaseClient
+      .from('histories')
+      .update(newHistory)
+      .eq('id', newHistory.id);
+
+    if (error) {
+      console.error({ error });
+      throw error;
+    }
   }
 
   async fetchLatestHistory() {
@@ -30,16 +50,12 @@ export class HistoriesTable {
     return data;
   }
 
-  async getNextId() {
-    const { data, error } = await this.supabaseClient.rpc('pg_get_nextval', {
-      sequence_name: 'public.histories_id_seq',
-    });
+  async deleteHistory(id: number) {
+    const { error } = await this.supabaseClient.from('histories').delete().eq('id', id);
 
     if (error) {
-      console.log('getNextId error', error);
+      console.log('deleteHistory error', error);
       throw error;
     }
-
-    return data;
   }
 }

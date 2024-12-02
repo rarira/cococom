@@ -4,3 +4,4 @@
 
 *.sql
 CLI/
+!sqls/*

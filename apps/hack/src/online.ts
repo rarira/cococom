@@ -11,7 +11,12 @@ import dayjs from 'dayjs';
 
 import { download } from '../libs/axios.js';
 import { minus1MS } from '../libs/date.js';
-import { addReletedItemId, supabase, updateItemHistory } from '../libs/supabase.js';
+import {
+  addReletedItemId,
+  insertTemporaryHistory,
+  supabase,
+  updateItemHistory,
+} from '../libs/supabase.js';
 import { OnlineProduct, OnlineSubCategoryLink, SearchApiResult } from '../libs/types.js';
 
 import { InsertDiscount } from '@cococom/supabase/types';
@@ -38,6 +43,7 @@ const noPriceValue = new Set<string>();
 
 const IS_PROD_ENVIROMENT = process.env.NODE_ENV === 'PROD';
 
+let nextHistoryId: number | undefined;
 let newDiscountsCount = 0;
 
 type ItemId = { id: number; itemId: string; online_url: string };
@@ -211,6 +217,7 @@ async function getAllItems() {
       do {
         try {
           await promises[index];
+          console.log('retry success');
           successful = true;
         } catch (error) {
           //do nothing here
@@ -485,6 +492,8 @@ async function uploadNewRecords() {
   console.log('will upsert discounts', salesProducts.length);
 
   try {
+    nextHistoryId = await insertTemporaryHistory(true);
+
     const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
       salesProducts.map(product => {
         if (!product.couponDiscount) {
@@ -503,12 +512,13 @@ async function uploadNewRecords() {
             ? product.couponDiscount!.discountValue / product.basePrice?.value
             : null,
           is_online: true,
+          history_id: nextHistoryId,
         };
       }),
       // { ignoreDuplicates: false, onConflict: 'discountHash' },
     );
 
-    console.log('newlyAddedDiscounts', newlyAddedDiscounts?.length);
+    console.log('newlyAddedDiscounts', newlyAddedDiscounts?.length, 'nextHistoryId', nextHistoryId);
     if (newlyAddedDiscounts?.length) {
       newDiscountsCount += newlyAddedDiscounts.length;
       const newlyAddedDiscountsItemIdsSet = new Set(
@@ -541,10 +551,14 @@ async function updateRelatedItemId() {
   }
 }
 
-async function createHistory() {
-  if (!newItems.length && !newDiscountsCount) return;
+async function updateHistory() {
+  if (!newItems.length && !newDiscountsCount) {
+    await supabase.histories.deleteHistory(nextHistoryId!);
+    return;
+  }
 
-  await supabase.histories.insertHistory({
+  await supabase.histories.updateHistory({
+    id: nextHistoryId,
     new_item_count: newItems.length ?? 0,
     added_discount_count: newDiscountsCount,
     no_images: [],
@@ -568,7 +582,7 @@ async function createHistory() {
   await uploadNewRecords();
   await upsertOnlineUrlToItem();
   await updateRelatedItemId();
-  await createHistory();
+  await updateHistory();
 
   await retryFailedUploading();
 })();

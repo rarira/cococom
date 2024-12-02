@@ -183,6 +183,7 @@ export type InsertWishlist = Omit<
   'wishlist_hash'
 >;
 export type InsertHistory = Database['public']['Tables']['histories']['Insert'];
+export type UpdateHistory = Database['public']['Tables']['histories']['Update'];
 export type InsertMemo = Database['public']['Tables']['memos']['Insert'];
 export type InsertComment = Database['public']['Tables']['comments']['Insert'];
 export type CategorySectors = Database['public']['Enums']['CategorySectors'];

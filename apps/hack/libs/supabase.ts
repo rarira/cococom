@@ -121,3 +121,14 @@ export async function updateNoImages(noImages: string[], id: number) {
     console.error('updateNoImages Error', error);
   }
 }
+
+export async function insertTemporaryHistory(isOnline: boolean) {
+  const data = await supabase.histories.insertHistory({ is_online: isOnline });
+
+  if (!data) {
+    console.error('insertTemporaryHistory Error');
+    return;
+  }
+
+  return data.id;
+}
