@@ -58,6 +58,7 @@ Deno.serve(async req => {
       // _contentAvailable: true, // for ios background push
       sound: 'default',
       data: {
+        id: payload.record.id,
         isOnline: payload.record.is_online,
         newDiscount: payload.record.added_discount_count,
         newItem: payload.record.new_item_count,

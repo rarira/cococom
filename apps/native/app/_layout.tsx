@@ -78,6 +78,8 @@ Notifications.setNotificationHandler({
       const isDataOnly =
         trigger?.remoteMessage?.notification === null ||
         trigger?.payload?.aps['content-available'] === 1;
+
+      console.log('isDataOnly push not show any alert', isDataOnly);
       if (isDataOnly) {
         return {
           shouldShowAlert: false,

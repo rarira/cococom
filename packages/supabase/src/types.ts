@@ -66,60 +66,6 @@ export type Database = {
           },
         ]
       }
-      dalins: {
-        Row: {
-          category_id: number | null
-          category_image: string | null
-          category_name: string | null
-          created_at: string
-          discount: number | null
-          discount_condition: string | null
-          from_date: string | null
-          hash: string | null
-          id: number
-          normal_price: number | null
-          product_id: number
-          product_image: string | null
-          product_name: string | null
-          sale_price: number | null
-          to_date: string | null
-        }
-        Insert: {
-          category_id?: number | null
-          category_image?: string | null
-          category_name?: string | null
-          created_at?: string
-          discount?: number | null
-          discount_condition?: string | null
-          from_date?: string | null
-          hash?: string | null
-          id?: number
-          normal_price?: number | null
-          product_id: number
-          product_image?: string | null
-          product_name?: string | null
-          sale_price?: number | null
-          to_date?: string | null
-        }
-        Update: {
-          category_id?: number | null
-          category_image?: string | null
-          category_name?: string | null
-          created_at?: string
-          discount?: number | null
-          discount_condition?: string | null
-          from_date?: string | null
-          hash?: string | null
-          id?: number
-          normal_price?: number | null
-          product_id?: number
-          product_image?: string | null
-          product_name?: string | null
-          sale_price?: number | null
-          to_date?: string | null
-        }
-        Relationships: []
-      }
       discounts: {
         Row: {
           created_at: string | null
@@ -528,11 +474,18 @@ export type Database = {
         }
         Returns: Json
       }
-      pg_get_nextval: {
+      get_wishlist_items_on_sale_start: {
         Args: {
-          sequence_name: string
+          user_uuid: string
+          history_id: number
         }
-        Returns: number
+        Returns: {
+          wishlistId: string
+          id: number
+          itemId: string
+          itemName: string
+          is_online: boolean
+        }[]
       }
       search_items_by_itemid: {
         Args: {
