@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import TabBarIcon from '@/components/custom/navigation/tab-bar-icon';
-import { useUIStore } from '@/store/ui';
+import { useUiStore } from '@/store/ui';
 
 export const unstable_settings = {
   initialRouteName: '(home)',
@@ -42,7 +42,7 @@ const TabIcons: Record<
 export default function TabLayout() {
   const { styles, theme } = useStyles(stylesheet);
 
-  const tabBarVisible = useUIStore(state => state.tabBarVisible);
+  const tabBarVisible = useUiStore(state => state.tabBarVisible);
   const { bottom } = useSafeAreaInsets();
 
   return (

@@ -21,7 +21,6 @@ export const useUserStore = create<UserState>()(set => ({
   authProcessing: false,
   setUser: user => {
     set({ user });
-    console.log('set mmkv storage with userId', user?.id);
     if (user) {
       storage.set('userId', user.id);
     } else {

@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import { Alert } from 'react-native';
+import { Platform } from 'react-native';
 
-import { registerForPushNotificationsAsync } from '@/libs/notifications';
+import { NOTIFICATION_IDENTIFIER, registerForPushNotificationsAsync } from '@/libs/notifications';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
@@ -14,10 +14,6 @@ export function usePushNotifications() {
     profile: state.profile,
     setProfile: state.setProfile,
   }));
-
-  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-    undefined,
-  );
 
   const { reportToSentry } = useErrorHandler();
 
@@ -47,16 +43,16 @@ export function usePushNotifications() {
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         if (
           notification.request.content.body === null ||
-          notification.request.trigger?.payload!.aps['content-available'] === 1
+          notification.request.trigger?.payload?.aps['content-available'] === 1 ||
+          notification.request.identifier === NOTIFICATION_IDENTIFIER.LOCAL
         )
           return;
 
-        setNotification(notification);
-        Alert.alert(notification.request.content.title!, notification.request.content.body!);
+        console.log('addNotificationReceivedListener', { OS: Platform.OS, notification });
       });
 
       responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
+        console.log('open notificattion', { OS: Platform.OS, response });
       });
     }
 
@@ -67,6 +63,4 @@ export function usePushNotifications() {
         Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [profile?.expo_push_token]);
-
-  return { notification };
 }

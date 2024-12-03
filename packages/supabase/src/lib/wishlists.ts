@@ -89,7 +89,6 @@ export class WishlistsTable {
 
     if (error) {
       if (error.code === 'PGRST116') return [];
-      console.error('getWishlistItemsOnSaleStart Error:', error);
       throw error;
     }
 

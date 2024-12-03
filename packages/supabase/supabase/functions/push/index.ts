@@ -55,7 +55,7 @@ Deno.serve(async req => {
   const promises = receiverChunks.map(chunk => {
     const message = {
       to: chunk.map(receiver => receiver.expo_push_token),
-      // _contentAvailable: true, // for ios background push
+      _contentAvailable: true, // for ios background push
       sound: 'default',
       data: {
         id: payload.record.id,
@@ -63,7 +63,7 @@ Deno.serve(async req => {
         newDiscount: payload.record.added_discount_count,
         newItem: payload.record.new_item_count,
       },
-      body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`, // must be removed for background push
+      // body: `${payload.record.is_online ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.record.added_discount_count}, 새로운 상품: ${payload.record.new_item_count}`, // must be removed for background push
     };
 
     const compressedMessages = gzip(new TextEncoder().encode(JSON.stringify(message)));

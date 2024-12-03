@@ -5,6 +5,10 @@ import { Platform } from 'react-native';
 
 import Util from './util';
 
+export const NOTIFICATION_IDENTIFIER = {
+  LOCAL: 'LOCAL_NOTIFICATION',
+} as const;
+
 async function sendPushNotification(expoPushToken: string) {
   const message = {
     to: expoPushToken,
