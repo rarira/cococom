@@ -25,16 +25,16 @@
     }
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.46.0",
-    "dotenv": "^16.4.5",
-    "type-fest": "^4.21.0"
+    "@supabase/supabase-js": "^2.46.2",
+    "dotenv": "^16.4.7",
+    "type-fest": "^4.30.0"
   },
   "devDependencies": {
     "@cococom/eslint-config": "workspace:*",
     "@cococom/prettier-config": "workspace:*",
     "@cococom/typescript-config": "workspace:*",
-    "@types/dotenv": "^8.2.0",
-    "supabase": "^1.226.3",
-    "typescript": "^5.4.2"
+    "@types/dotenv": "^8.2.3",
+    "supabase": "^2.0.0",
+    "typescript": "^5.7.2"
   }
 }

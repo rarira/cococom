@@ -39,7 +39,6 @@ import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
 import { useExpoUpdate } from '@/hooks/useExpoUpdate';
 import CircularProgress from '@/components/core/progress/circular';
 import { usePushNotifications } from '@/hooks/notification/usePushNotifications';
-import Util from '@/libs/util';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
@@ -123,6 +122,8 @@ function RootLayout() {
 
   const { theme } = useColorScheme();
 
+  console.log('RootLayout', theme);
+
   useEffect(() => {
     if (navigationRef) {
       reactNavigationIntegration.registerNavigationContainer(navigationRef);
@@ -147,7 +148,7 @@ function RootLayout() {
 
   return (
     <>
-      <StatusBar style={Util.isPlatform('ios') ? 'light' : 'auto'} />
+      <StatusBar />
       <ErrorBoundary onError={reportToSentry}>
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView>

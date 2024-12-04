@@ -12,7 +12,6 @@
         "key": "expo:52:1732256850"
       },
       "env": {
-        "NODE_ENV": "local",
         "SENTRY_ORG": "rarira-studio-q9",
         "SENTRY_PROJECT": "cococom-app",
         "SUPABASE_ENV": "LOCAL"

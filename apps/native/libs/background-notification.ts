@@ -1,6 +1,5 @@
 import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 
 import Util from './util';
 import { storage } from './mmkv';
