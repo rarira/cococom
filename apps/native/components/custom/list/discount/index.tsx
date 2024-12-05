@@ -97,6 +97,5 @@ const stylesheet = createStyleSheet(theme => ({
   loadinProgress: (tabBarHeight: number) => ({
     flex: 1,
     marginBottom: tabBarHeight,
-    borderWidth: 1,
   }),
 }));
