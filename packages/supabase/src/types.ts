@@ -292,6 +292,7 @@ export type Database = {
           id: string
           nickname: string | null
           picture: string | null
+          subscription_level: Database["public"]["Enums"]["subscription_level_type"]
         }
         Insert: {
           confirmed?: boolean | null
@@ -303,6 +304,7 @@ export type Database = {
           id: string
           nickname?: string | null
           picture?: string | null
+          subscription_level?: Database["public"]["Enums"]["subscription_level_type"]
         }
         Update: {
           confirmed?: boolean | null
@@ -314,6 +316,7 @@ export type Database = {
           id?: string
           nickname?: string | null
           picture?: string | null
+          subscription_level?: Database["public"]["Enums"]["subscription_level_type"]
         }
         Relationships: []
       }
@@ -487,6 +490,12 @@ export type Database = {
           is_online: boolean
         }[]
       }
+      max_wishlist_limit: {
+        Args: {
+          user_id: string
+        }
+        Returns: number
+      }
       search_items_by_itemid: {
         Args: {
           item_id: string
@@ -529,6 +538,7 @@ export type Database = {
         | "식자재"
         | "냉장/냉동/가공식품"
         | "문구/사무/아동/반려"
+      subscription_level_type: "basic" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never

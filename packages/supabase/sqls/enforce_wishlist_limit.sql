@@ -1,20 +1,21 @@
--- max_wishlist_limit 함수 정의
 CREATE OR REPLACE FUNCTION max_wishlist_limit(user_id uuid)
 RETURNS integer AS $$
 DECLARE
-  user_subscription_level text; -- 변수 이름을 명확히 변경
+  user_subscription_level TEXT;
+  max_limit INTEGER;
 BEGIN
   -- 프로필 테이블에서 구독 레벨 확인
   SELECT p.subscription_level INTO user_subscription_level
   FROM profiles p
   WHERE p.id = user_id;
 
-  -- 구독 레벨에 따라 최대 허용 수 반환
-  IF user_subscription_level = 'premium' THEN
-    RETURN 100;  -- 프리미엄 사용자: 최대 100개
-  ELSE
-    RETURN 50;   -- 기본 사용자: 최대 50개
-  END IF;
+  -- subscription_limits 테이블에서 제한 가져오기
+  SELECT max_wishlist_limit INTO max_limit
+  FROM subscription_limits
+  WHERE subscription_level = user_subscription_level;
+
+  -- 값 반환
+  RETURN COALESCE(max_limit, 50); -- 기본값 설정
 END;
 $$ LANGUAGE plpgsql;
 

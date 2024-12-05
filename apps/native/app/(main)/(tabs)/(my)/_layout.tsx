@@ -40,6 +40,7 @@ export default function MyLayout() {
         options={{
           headerShown: true,
           headerTitle: '설정',
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen name="item" options={{ headerShown: true }} />

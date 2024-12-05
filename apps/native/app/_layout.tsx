@@ -122,8 +122,6 @@ function RootLayout() {
 
   const { theme } = useColorScheme();
 
-  console.log('RootLayout', theme);
-
   useEffect(() => {
     if (navigationRef) {
       reactNavigationIntegration.registerNavigationContainer(navigationRef);
