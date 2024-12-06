@@ -2,7 +2,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
 
 import Util from './util';
-import { storage } from './mmkv';
+import { storage, STORAGE_KEYS, updateTodaysNotificationStorage } from './mmkv';
 import { supabase } from './supabase';
 import Sentry from './sentry';
 import { NOTIFICATION_IDENTIFIER } from './notifications';
@@ -14,7 +14,7 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
   async ({ data, error, executionInfo }) => {
     if (Util.isPlatform('android') && !!data.notification) return;
 
-    const userId = storage.getString('userId');
+    const userId = storage.getString(STORAGE_KEYS.USER_ID);
 
     if (!userId) return;
 
@@ -24,6 +24,8 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
         userId,
         historyId: payload.id,
       });
+
+      updateTodaysNotificationStorage(items);
 
       Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_IDENTIFIER.LOCAL,

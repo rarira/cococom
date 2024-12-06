@@ -7,6 +7,7 @@ import { commentQueryKeys } from './comment';
 import { itemQueryKeys } from './item';
 import { memoQueryKeys } from './memo';
 import { wishlistQueryKeys } from './wishlist';
+import { getSimplifiedCurrentIsoTimeString } from '../date';
 
 export * from './comment';
 export * from './memo';
@@ -14,13 +15,13 @@ export * from './wishlist';
 
 export const queryKeys = {
   category: {
-    all: () => ['category', { currentTimestamp: new Date().toISOString().split('T')[0] }],
+    all: () => ['category', { currentTimestamp: getSimplifiedCurrentIsoTimeString() }],
   },
   discounts: {
     currentList: (userId?: string | null, categorySector?: CategorySectors | null) => [
       'discounts',
       'currentList',
-      { userId, currentTimestamp: new Date().toISOString().split('T')[0], categorySector },
+      { userId, currentTimestamp: getSimplifiedCurrentIsoTimeString(), categorySector },
     ],
     rankedList: ({
       channel,
@@ -39,7 +40,7 @@ export const queryKeys = {
       'rankedList',
       {
         userId,
-        currentTimestamp: new Date().toISOString().split('T')[0],
+        currentTimestamp: getSimplifiedCurrentIsoTimeString(),
         channel,
         limit,
         sortField,

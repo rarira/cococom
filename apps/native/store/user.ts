@@ -1,7 +1,7 @@
 import { Tables, User } from '@cococom/supabase/types';
 import { createWithEqualityFn as create } from 'zustand/traditional';
 
-import { storage } from '@/libs/mmkv';
+import { storage, STORAGE_KEYS } from '@/libs/mmkv';
 
 interface UserState {
   user: User | null;
@@ -22,9 +22,9 @@ export const useUserStore = create<UserState>()(set => ({
   setUser: user => {
     set({ user });
     if (user) {
-      storage.set('userId', user.id);
+      storage.set(STORAGE_KEYS.USER_ID, user.id);
     } else {
-      storage.delete('userId');
+      storage.delete(STORAGE_KEYS.USER_ID);
     }
   },
   setProfile: profile => set({ profile }),

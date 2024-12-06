@@ -32,3 +32,7 @@ export function convertDateString(dateString: string) {
   const date = new Date(dateString);
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
 }
+
+export function getSimplifiedCurrentIsoTimeString() {
+  return new Date().toISOString().split('T')[0];
+}
