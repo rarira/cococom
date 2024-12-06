@@ -320,6 +320,21 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_limits: {
+        Row: {
+          max_wishlist_limit: number
+          subscription_level: string
+        }
+        Insert: {
+          max_wishlist_limit: number
+          subscription_level: string
+        }
+        Update: {
+          max_wishlist_limit?: number
+          subscription_level?: string
+        }
+        Relationships: []
+      }
       wishlists: {
         Row: {
           created_at: string
@@ -480,7 +495,7 @@ export type Database = {
       get_wishlist_items_on_sale_start: {
         Args: {
           user_uuid: string
-          history_id: number
+          history_id_param: number
         }
         Returns: {
           wishlistId: string

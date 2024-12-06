@@ -84,7 +84,7 @@ export class WishlistsTable {
   async getWishlistItemsOnSaleStart({ userId, historyId }: { userId: string; historyId: number }) {
     const { data, error } = await this.supabaseClient.rpc('get_wishlist_items_on_sale_start', {
       user_uuid: userId,
-      history_id: historyId,
+      history_id_param: historyId,
     });
 
     if (error) {

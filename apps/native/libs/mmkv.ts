@@ -27,7 +27,9 @@ export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA['
   if (existingData) {
     const parsedData = JSON.parse(existingData) as TODAYS_NOTIFICATION_DATA;
     if (parsedData.date === today) {
-      parsedData.data.push(...data);
+      const itemIdsSet = new Set(parsedData.data.map(item => item.id));
+      const dataToPush = data.filter(item => !itemIdsSet.has(item.id));
+      parsedData.data.push(...dataToPush);
       return;
     }
   }

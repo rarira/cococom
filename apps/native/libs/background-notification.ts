@@ -5,7 +5,7 @@ import Util from './util';
 import { storage, STORAGE_KEYS, updateTodaysNotificationStorage } from './mmkv';
 import { supabase } from './supabase';
 import Sentry from './sentry';
-import { NOTIFICATION_IDENTIFIER } from './notifications';
+import { getLocalHistoryNotificationBody, NOTIFICATION_IDENTIFIER } from './notifications';
 
 const BACKGROUND_NOTIFICATION_TASK = 'BACKGROUND-NOTIFICATION-TASK';
 
@@ -25,16 +25,16 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
         historyId: payload.id,
       });
 
-      updateTodaysNotificationStorage(items);
-
       Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_IDENTIFIER.LOCAL,
         content: {
           title: '할인 정보 업데이트',
-          body: `${payload.isOnline ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. 추가된 할인: ${payload.newDiscount}, 새로운 상품: ${payload.newItems}, 관심상품 중 신규 할인 상품: ${items.length}개`,
+          body: getLocalHistoryNotificationBody(payload, items),
         },
-        trigger: { channelId: 'default', seconds: 0 },
+        trigger: Util.isPlatform('ios') ? null : { channelId: 'default', seconds: 0 },
       });
+
+      updateTodaysNotificationStorage(items);
     } catch (e) {
       e.message = `Error in background notification task: ${e.message}`;
       Sentry.captureException(e);
