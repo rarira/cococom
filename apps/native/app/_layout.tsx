@@ -16,7 +16,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { setDefaultOptions } from 'date-fns';
-import { ko, tr } from 'date-fns/locale';
+import { ko } from 'date-fns/locale';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect } from 'react';
@@ -76,7 +76,7 @@ Notifications.setNotificationHandler({
     if (trigger?.type === 'push') {
       const isDataOnly =
         trigger?.remoteMessage?.notification === null ||
-        trigger?.payload?.aps['content-available'] === 1;
+        (trigger?.payload?.aps as any)['content-available'] === 1;
 
       if (isDataOnly) {
         return {

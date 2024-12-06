@@ -20,6 +20,7 @@ export default function HomeLayout() {
     >
       <Stack.Screen name="index" options={{ title: '홈', headerShown: false }} />
       <Stack.Screen name="sales" />
+      <Stack.Screen name="noti-center" options={{ presentation: 'modal', headerShown: false }} />
       <Stack.Screen name="item" />
     </Stack>
   );
