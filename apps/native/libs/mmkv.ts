@@ -1,14 +1,18 @@
 import { MMKV } from 'react-native-mmkv';
 import { Database } from '@cococom/supabase/types';
+import { addDays, isBefore } from 'date-fns';
 
 import { getSimplifiedCurrentIsoTimeString } from './date';
 
 export type TODAYS_NOTIFICATION_DATA = {
-  date: string;
-  data: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'];
+  [key: string]: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'];
 };
 
 export const storage = new MMKV();
+
+const storageSize = storage.size;
+
+console.log('storageSize', storageSize);
 
 export const STORAGE_KEYS = {
   SEARCH_HISTORY: 'SEARCH_HISTORY',
@@ -18,7 +22,7 @@ export const STORAGE_KEYS = {
   TODAYS_NOTIFICATION: 'TODAYS_NOTIFICATION',
 } as const;
 
-export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA['data']) {
+export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA[string]) {
   if (!data.length) return;
 
   const today = getSimplifiedCurrentIsoTimeString();
@@ -26,13 +30,25 @@ export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA['
 
   if (existingData) {
     const parsedData = JSON.parse(existingData) as TODAYS_NOTIFICATION_DATA;
-    if (parsedData.date === today) {
-      const itemIdsSet = new Set(parsedData.data.map(item => item.id));
+    const sortedParsedDataKeys = Object.keys(parsedData).sort();
+
+    const dataKeysToRemove = sortedParsedDataKeys.filter(key =>
+      isBefore(new Date(key), addDays(new Date(today), -6)),
+    );
+
+    dataKeysToRemove.forEach(key => {
+      delete parsedData[key];
+    });
+
+    if (parsedData[today]) {
+      const itemIdsSet = new Set(parsedData[today].map(item => item.id));
       const dataToPush = data.filter(item => !itemIdsSet.has(item.id));
-      parsedData.data.push(...dataToPush);
+      parsedData[today].push(...dataToPush);
       return;
+    } else {
+      parsedData[today] = data;
     }
   }
 
-  storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify({ date: today, data }));
+  storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify({ [today]: data }));
 }
