@@ -18,6 +18,7 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 
 // NOTE: This is a dummy data for testing
 // const a = {
+//   unread: true,
 //   '2024-12-09': [
 //     {
 //       wishlistId: 'e0fb47ca-843a-41a7-97b0-b7a57b994d2f',
@@ -56,10 +57,11 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
   const [hasNewNoti, setHasNewNoti] = useState<boolean>(false);
 
   useEffect(() => {
+    // storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify(a));
     const todaysNotification = storage.getString(STORAGE_KEYS.TODAYS_NOTIFICATION);
     const parsedTodaysNotification = todaysNotification ? JSON.parse(todaysNotification) : null;
 
-    if (parsedTodaysNotification) {
+    if (parsedTodaysNotification?.unread) {
       console.log('todaysNotification', parsedTodaysNotification);
       setHasNewNoti(true);
     } else {

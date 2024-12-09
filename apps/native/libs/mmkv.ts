@@ -2,10 +2,13 @@ import { MMKV } from 'react-native-mmkv';
 import { Database } from '@cococom/supabase/types';
 import { addDays, isBefore } from 'date-fns';
 
-import { getSimplifiedCurrentIsoTimeString } from './date';
+import { getSimplifiedCurrentIsoTimeString, SimplifiedCurrentIsoTimeString } from './date';
 
 export type TODAYS_NOTIFICATION_DATA = {
-  [key: string]: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'];
+  unread: boolean;
+  [
+    key: SimplifiedCurrentIsoTimeString
+  ]: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'];
 };
 
 export const storage = new MMKV();
@@ -22,7 +25,9 @@ export const STORAGE_KEYS = {
   TODAYS_NOTIFICATION: 'TODAYS_NOTIFICATION',
 } as const;
 
-export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA[string]) {
+export function updateTodaysNotificationStorage(
+  data: TODAYS_NOTIFICATION_DATA[SimplifiedCurrentIsoTimeString],
+) {
   if (!data.length) return;
 
   const today = getSimplifiedCurrentIsoTimeString();
@@ -32,9 +37,9 @@ export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA[s
     const parsedData = JSON.parse(existingData) as TODAYS_NOTIFICATION_DATA;
     const sortedParsedDataKeys = Object.keys(parsedData).sort();
 
-    const dataKeysToRemove = sortedParsedDataKeys.filter(key =>
-      isBefore(new Date(key), addDays(new Date(today), -6)),
-    );
+    const dataKeysToRemove = sortedParsedDataKeys.filter(
+      key => key !== 'unread' && isBefore(new Date(key), addDays(new Date(today), -6)),
+    ) as SimplifiedCurrentIsoTimeString[];
 
     dataKeysToRemove.forEach(key => {
       delete parsedData[key];
@@ -44,11 +49,13 @@ export function updateTodaysNotificationStorage(data: TODAYS_NOTIFICATION_DATA[s
       const itemIdsSet = new Set(parsedData[today].map(item => item.id));
       const dataToPush = data.filter(item => !itemIdsSet.has(item.id));
       parsedData[today].push(...dataToPush);
-      return;
     } else {
       parsedData[today] = data;
     }
+
+    parsedData.unread = true;
+    storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify(parsedData));
   }
 
-  storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify({ [today]: data }));
+  storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify({ unread: true, [today]: data }));
 }

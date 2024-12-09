@@ -1,6 +1,8 @@
 import { JoinedItems } from '@cococom/supabase/types';
 import { format } from 'date-fns';
 
+export type SimplifiedCurrentIsoTimeString = `${number}-${number}-${number}`;
+
 export function formatDashedDate(date: string) {
   return format(date, 'yyyy-MM-dd');
 }
@@ -34,5 +36,5 @@ export function convertDateString(dateString: string) {
 }
 
 export function getSimplifiedCurrentIsoTimeString() {
-  return new Date().toISOString().split('T')[0];
+  return new Date().toISOString().split('T')[0] as SimplifiedCurrentIsoTimeString;
 }
