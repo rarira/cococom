@@ -86,11 +86,14 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-const RowMenu = {
-  Root: RowMenuWrapper,
-  Text: RowMenuText,
-  NavButton: RowMenuNavButton,
-  ToggleSwitch: RowMenuToggleSwitch,
+const RowMenu = RowMenuWrapper as typeof RowMenuWrapper & {
+  // Root: RowMenuWrapper,
+  Text: typeof RowMenuText;
+  NavButton: typeof RowMenuNavButton;
+  ToggleSwitch: typeof RowMenuToggleSwitch;
 };
+RowMenu.Text = RowMenuText;
+RowMenu.NavButton = RowMenuNavButton;
+RowMenu.ToggleSwitch = RowMenuToggleSwitch;
 
 export default RowMenu;

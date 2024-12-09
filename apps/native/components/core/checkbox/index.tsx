@@ -265,12 +265,17 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-const Checkbox = {
-  Group: CheckboxGroupWrapper,
-  Root: CheckboxWrapper,
-  Indicator: CheckboxIndicator,
-  Icon: CheckboxIcon,
-  Label: CheckboxLabel,
+const Checkbox = CheckboxWrapper as typeof CheckboxWrapper & {
+  Group: typeof CheckboxGroupWrapper;
+  // Root: CheckboxWrapper;
+  Indicator: typeof CheckboxIndicator;
+  Icon: typeof CheckboxIcon;
+  Label: typeof CheckboxLabel;
 };
+
+Checkbox.Group = CheckboxGroupWrapper;
+Checkbox.Indicator = CheckboxIndicator;
+Checkbox.Icon = CheckboxIcon;
+Checkbox.Label = CheckboxLabel;
 
 export default Checkbox;

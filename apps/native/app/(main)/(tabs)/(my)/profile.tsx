@@ -37,15 +37,15 @@ export default function ProfileScreen() {
       <SignUpConfirmForm update style={styles.form} />
       <SectionText style={styles.sectionText}>회원 관리</SectionText>
       {isEmailProvider && (
-        <RowMenu.Root type="nav" onPress={handlePressChangePassword} style={styles.menu}>
+        <RowMenu type="nav" onPress={handlePressChangePassword} style={styles.menu}>
           <RowMenu.Text>비밀번호 변경</RowMenu.Text>
           <RowMenu.NavButton />
-        </RowMenu.Root>
+        </RowMenu>
       )}
-      <RowMenu.Root type="nav" onPress={handlePressDeleteUser} style={styles.menu}>
+      <RowMenu type="nav" onPress={handlePressDeleteUser} style={styles.menu}>
         <RowMenu.Text>회원 탈퇴</RowMenu.Text>
         <RowMenu.NavButton />
-      </RowMenu.Root>
+      </RowMenu>
       <PortalHost name={PortalHostNames.PROFILE} />
       <DeleteUserDialog
         portalHostName={PortalHostNames.PROFILE}

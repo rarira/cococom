@@ -49,29 +49,29 @@ export default function SettingsScreen() {
         <SectionText style={styles.withPaddingHorizontal} isFirstSection>
           화면 테마
         </SectionText>
-        <RowMenu.Root style={styles.withPaddingHorizontal}>
+        <RowMenu style={styles.withPaddingHorizontal}>
           <RowMenu.Text>자동 (시스템 설정)</RowMenu.Text>
           <RowMenu.ToggleSwitch checked={colorTheme === null} onToggle={handleToggleAutoTheme} />
-        </RowMenu.Root>
+        </RowMenu>
         {colorTheme !== null && (
-          <RowMenu.Root style={styles.withPaddingHorizontal}>
+          <RowMenu style={styles.withPaddingHorizontal}>
             <RowMenu.Text>다크 모드</RowMenu.Text>
             <RowMenu.ToggleSwitch checked={colorTheme === 'dark'} onToggle={handleToggleTheme} />
-          </RowMenu.Root>
+          </RowMenu>
         )}
         {!!user && (
           <>
             <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
-            <RowMenu.Root style={styles.withPaddingHorizontal}>
+            <RowMenu style={styles.withPaddingHorizontal}>
               <RowMenu.Text>할인 정보 업데이트 알림 수신</RowMenu.Text>
               <RowMenu.ToggleSwitch checked={granted} onToggle={handleToggleNotification} />
-            </RowMenu.Root>
+            </RowMenu>
           </>
         )}
         <SectionText style={styles.withPaddingHorizontal} isFirstSection>
           기타 설정
         </SectionText>
-        <RowMenu.Root style={styles.withPaddingHorizontal}>
+        <RowMenu style={styles.withPaddingHorizontal}>
           <RowMenu.Text>검색 채널 표시 순서</RowMenu.Text>
           <IconButton
             onPress={handlePressDiscountChannelArrange}
@@ -83,18 +83,18 @@ export default function SettingsScreen() {
             textStyle={styles.channelText}
             text={stringifiedDiscountChannels}
           />
-        </RowMenu.Root>
+        </RowMenu>
         <SectionText style={styles.withPaddingHorizontal} isFirstSection>
           버전 정보
         </SectionText>
-        <RowMenu.Root style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
+        <RowMenu style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
           <RowMenu.Text>앱 버전</RowMenu.Text>
           <Text style={styles.channelText}>{Constants.expoConfig?.version ?? ''}</Text>
-        </RowMenu.Root>
-        <RowMenu.Root style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
+        </RowMenu>
+        <RowMenu style={[styles.withPaddingHorizontal, styles.rowWithNoInteraction]}>
           <RowMenu.Text>런타임 버전</RowMenu.Text>
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
-        </RowMenu.Root>
+        </RowMenu>
         <PortalHost name={PortalHostNames.SETTINGS} />
         <OptOutNotificationDialog
           portalHostName={PortalHostNames.SETTINGS}

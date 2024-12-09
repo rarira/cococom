@@ -69,14 +69,14 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
           return (
-            <TextInput.Root value={value} error={error?.message}>
+            <TextInput value={value} error={error?.message}>
               <TextInput.Field
                 placeholder="이메일 주소를 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 autoCapitalize="none"
               />
-            </TextInput.Root>
+            </TextInput>
           );
         }}
         name="email"
@@ -84,7 +84,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
+          <TextInput value={value} error={error?.message} style={styles.passwordInput}>
             <TextInput.Field
               placeholder="비밀번호를 입력하세요"
               onBlur={onBlur}
@@ -93,7 +93,7 @@ const SignInForm = memo(function SignInForm({ loading, setLoading }: SignInFormP
               secureTextEntry={!showPassword}
             />
             <TextInputEyeSlot show={showPassword} setShow={setShowPassword} disabled={loading} />
-          </TextInput.Root>
+          </TextInput>
         )}
         name="password"
       />

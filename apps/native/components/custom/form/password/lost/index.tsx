@@ -55,7 +55,7 @@ const LostPasswordForm = memo(function LostPasswordForm({ onCompleted }: LostPas
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput.Root value={value} error={error?.message}>
+          <TextInput value={value} error={error?.message}>
             <TextInput.Field
               placeholder="이메일 주소를 입력하세요"
               onBlur={onBlur}
@@ -63,7 +63,7 @@ const LostPasswordForm = memo(function LostPasswordForm({ onCompleted }: LostPas
               textContentType="emailAddress"
               autoCapitalize="none"
             />
-          </TextInput.Root>
+          </TextInput>
         )}
         name="email"
       />

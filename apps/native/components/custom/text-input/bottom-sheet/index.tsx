@@ -26,7 +26,7 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
   const { handleOnBlur, handleOnFocus } = useBottomSheetTextInput({ onBlur, onFocus });
 
   return (
-    <TextInput.Root
+    <TextInput
       variants="outlined"
       rowStyle={[styles.textInputRoot, rootStyle]}
       defaultValue={defaultValue}
@@ -46,7 +46,7 @@ const BottomSheetTextInput = memo(function BottomSheetTextInput({
         style={styles.textInputField}
         {...restProps}
       />
-    </TextInput.Root>
+    </TextInput>
   );
 });
 
