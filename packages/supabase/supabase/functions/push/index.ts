@@ -33,6 +33,16 @@ const ReceiverChunkSize = 100;
 
 Deno.serve(async req => {
   const payload: WebhookPayload = await req.json();
+
+  if (payload.record.new_item_count === null && payload.record.added_discount_count === null) {
+    console.log(
+      `no need to send push because no new items or discounts: ${JSON.stringify(payload.record)} `,
+    );
+    return new Response(`no need to  invoke function`, {
+      status: 400,
+    });
+  }
+
   const { data } = await supabase
     .from('profiles')
     .select('expo_push_token')
