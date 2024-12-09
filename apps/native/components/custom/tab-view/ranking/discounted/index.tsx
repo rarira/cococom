@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
-import SortWithTextButton from '@/components/custom/button/sort-with-text';
+import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 import DiscountList from '@/components/custom/list/discount';
 import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';

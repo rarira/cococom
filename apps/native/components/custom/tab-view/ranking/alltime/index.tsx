@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
-import SortWithTextButton from '@/components/custom/button/sort-with-text';
+import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 import AlltimeRankingList from '@/components/custom/list/ranking/alltime';
 import { DiscountChannels } from '@/constants';
 import { useAlltimeRankingSort } from '@/hooks/alltime-ranking/useAlltimeRankingSort';

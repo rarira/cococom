@@ -7,7 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import SortWithTextButton from '@/components/custom/button/sort-with-text';
+import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 import MyCommentListItemCard from '@/components/custom/card/list-item/my/comment';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
 import { MyCommentSortOption } from '@/libs/sort';
