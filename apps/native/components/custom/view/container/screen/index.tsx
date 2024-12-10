@@ -32,7 +32,7 @@ const stylesheet = createStyleSheet(theme => ({
     flex: 1,
     paddingHorizontal: theme.screenHorizontalPadding,
     backgroundColor: theme.colors.background,
-    paddingTop: topInset + theme.spacing.xl,
+    paddingTop: topInset + theme.spacing.md,
     paddingBottom: tabBarHeight + theme.spacing.xl,
   }),
 }));

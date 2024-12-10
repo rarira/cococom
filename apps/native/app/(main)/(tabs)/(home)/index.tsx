@@ -27,6 +27,6 @@ const stylesheet = createStyleSheet(theme => ({
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginVertical: theme.spacing.md,
+    marginBottom: theme.spacing.md,
   },
 }));

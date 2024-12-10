@@ -1,17 +1,11 @@
 import { Link } from 'expo-router';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
-import { set } from 'date-fns';
+import Animated from 'react-native-reanimated';
+import { useMMKVObject } from 'react-native-mmkv';
 
-import { storage, STORAGE_KEYS, TODAYS_NOTIFICATION_DATA } from '@/libs/mmkv';
+import { STORAGE_KEYS, TODAYS_NOTIFICATION_DATA } from '@/libs/mmkv';
 import Button from '@/components/core/button';
 import Icon from '@/components/core/icon';
 import Text from '@/components/core/text';
@@ -27,6 +21,7 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 //       itemId: '509119_online',
 //       itemName: '썬키스트 견과 ３종세트 25g x 60봉',
 //       is_online: true,
+//       unread: true,
 //     },
 //     {
 //       wishlistId: 'fb574897-9f17-47b0-bb91-3af56746b8e2',
@@ -34,6 +29,7 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 //       itemId: '670356_online',
 //       itemName: '웨버 제네시스 II 가스 그릴 패키지 EPX-335',
 //       is_online: true,
+//       unread: true,
 //     },
 //     {
 //       wishlistId: '0957355a-210e-4523-9908-a5e0d9e73ef9',
@@ -41,6 +37,7 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 //       itemId: '671578_online',
 //       itemName: '알뜨레노띠 포르마 매트리스 - 라지킹',
 //       is_online: true,
+//       unread: true,
 //     },
 //     {
 //       wishlistId: 'f1b10d48-7a9c-4ba2-8a3d-012832bc0fec',
@@ -48,6 +45,7 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 //       itemId: '674688_online',
 //       itemName: 'HTL 통가죽 리클라이너 소파 4인',
 //       is_online: true,
+//       unread: true,
 //     },
 //   ],
 // };
@@ -55,19 +53,17 @@ import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() {
   const { styles, theme } = useStyles(stylesheet);
 
-  const [hasNewNoti, setHasNewNoti] = useState<boolean>(false);
+  const [todaysNotifications, setTodaysNotifications] = useMMKVObject<TODAYS_NOTIFICATION_DATA>(
+    STORAGE_KEYS.TODAYS_NOTIFICATION,
+  );
 
-  useEffect(() => {
-    // storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify(a));
-    const todaysNotification = storage.getString(STORAGE_KEYS.TODAYS_NOTIFICATION);
-    const parsedTodaysNotification = todaysNotification
-      ? (JSON.parse(todaysNotification) as TODAYS_NOTIFICATION_DATA)
-      : null;
+  const { animatedStyle: animatedIconStyle } = useBellAnimation({
+    showAnimation: !!todaysNotifications?.unread,
+  });
 
-    setHasNewNoti(!!parsedTodaysNotification?.unread);
-  }, []);
-
-  const { animatedStyle: animatedIconStyle } = useBellAnimation({ showAnimation: hasNewNoti });
+  // useEffect(() => {
+  //   setTodaysNotifications(a);
+  // }, [setTodaysNotifications]);
 
   return (
     <Link href={'/noti-center'} asChild>
@@ -77,7 +73,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
             <Icon
               {...{
                 size: theme.fontSize.lg,
-                color: hasNewNoti ? theme.colors.tint3 : theme.colors.typography,
+                color: todaysNotifications?.unread ? theme.colors.tint3 : theme.colors.typography,
                 font: {
                   type: 'Ionicon',
                   name: 'notifications',
@@ -85,7 +81,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
               }}
             />
           </Animated.View>
-          <Text type="defaultSemiBold" style={styles.text(hasNewNoti)}>
+          <Text type="defaultSemiBold" style={styles.text(!!todaysNotifications?.unread)}>
             새로 추가된 관심 상품 할인
           </Text>
         </View>

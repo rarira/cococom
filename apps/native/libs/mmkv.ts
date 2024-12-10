@@ -8,7 +8,9 @@ export type TODAYS_NOTIFICATION_DATA = {
   unread: boolean;
   [
     key: SimplifiedCurrentIsoTimeString
-  ]: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'];
+  ]: (Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'][number] & {
+    unread?: boolean;
+  })[];
 };
 
 export const storage = new MMKV();
@@ -47,15 +49,20 @@ export function updateTodaysNotificationStorage(
 
     if (parsedData[today]) {
       const itemIdsSet = new Set(parsedData[today].map(item => item.id));
-      const dataToPush = data.filter(item => !itemIdsSet.has(item.id));
+      const dataToPush = data
+        .filter(item => !itemIdsSet.has(item.id))
+        .map(item => ({ ...item, unread: true }));
       parsedData[today].push(...dataToPush);
     } else {
-      parsedData[today] = data;
+      parsedData[today] = data.map(item => ({ ...item, unread: true }));
     }
 
     parsedData.unread = true;
     storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify(parsedData));
   }
 
-  storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify({ unread: true, [today]: data }));
+  storage.set(
+    STORAGE_KEYS.TODAYS_NOTIFICATION,
+    JSON.stringify({ unread: true, [today]: data.map(item => ({ ...item, unread: true })) }),
+  );
 }
