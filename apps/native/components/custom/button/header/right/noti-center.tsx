@@ -9,8 +9,9 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { set } from 'date-fns';
 
-import { storage, STORAGE_KEYS } from '@/libs/mmkv';
+import { storage, STORAGE_KEYS, TODAYS_NOTIFICATION_DATA } from '@/libs/mmkv';
 import Button from '@/components/core/button';
 import Icon from '@/components/core/icon';
 import Text from '@/components/core/text';
@@ -59,19 +60,15 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
   useEffect(() => {
     // storage.set(STORAGE_KEYS.TODAYS_NOTIFICATION, JSON.stringify(a));
     const todaysNotification = storage.getString(STORAGE_KEYS.TODAYS_NOTIFICATION);
-    const parsedTodaysNotification = todaysNotification ? JSON.parse(todaysNotification) : null;
+    const parsedTodaysNotification = todaysNotification
+      ? (JSON.parse(todaysNotification) as TODAYS_NOTIFICATION_DATA)
+      : null;
 
-    if (parsedTodaysNotification?.unread) {
-      console.log('todaysNotification', parsedTodaysNotification);
-      setHasNewNoti(true);
-    } else {
-      setHasNewNoti(false);
-    }
+    setHasNewNoti(!!parsedTodaysNotification?.unread);
   }, []);
 
   const { animatedStyle: animatedIconStyle } = useBellAnimation({ showAnimation: hasNewNoti });
 
-  console.log('hasNewNoti', hasNewNoti);
   return (
     <Link href={'/noti-center'} asChild>
       <Button style={state => styles.button(state.pressed)}>
