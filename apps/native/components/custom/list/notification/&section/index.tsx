@@ -17,7 +17,7 @@ const NotificationSectionList = memo(function NotificationSectionList({
   const { styles } = useStyles(stylesheet);
 
   const [currentSection, setCurrentSection] = useState<(typeof data)[number]['title'] | null>(
-    data[0].title,
+    data[0]?.title ?? null,
   );
 
   useEffect(() => {
