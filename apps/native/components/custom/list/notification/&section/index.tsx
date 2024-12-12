@@ -21,8 +21,10 @@ const NotificationSectionList = memo(function NotificationSectionList({
   );
 
   useEffect(() => {
-    setCurrentSection(data[0].title);
+    setCurrentSection(data[0]?.title ?? null);
   }, [data]);
+
+  if (!data) return null;
 
   return (
     <SectionList

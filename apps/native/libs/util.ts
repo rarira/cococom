@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
+import * as DevClient from 'expo-dev-client';
 
 const Util = {
   toWonString(value: number): string {
@@ -75,7 +76,7 @@ const Util = {
     return Platform.OS === os;
   },
   isDevClient() {
-    return Constants.executionEnvironment === ExecutionEnvironment.Bare;
+    return DevClient.isDevelopmentBuild();
   },
 };
 

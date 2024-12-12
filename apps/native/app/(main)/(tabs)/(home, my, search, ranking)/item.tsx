@@ -58,7 +58,7 @@ export default function ItemScreen() {
     headerBackButtonDisplayMode: 'minimal',
     headerRight,
     headerLeft:
-      isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : 'close',
+      isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : undefined,
   });
 
   const renderTabBar = useCallback(
