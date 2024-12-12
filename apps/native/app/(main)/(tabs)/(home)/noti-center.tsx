@@ -34,7 +34,6 @@ export default function NotiCenterScreen() {
     } as any);
   }, [navigation, setTodaysNotifications, styles.deleteText]);
 
-  console.log({ sectionedNotifications });
   return (
     <ScreenContainerView withHeader>
       <View style={styles.header}>

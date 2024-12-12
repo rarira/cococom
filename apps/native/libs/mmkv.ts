@@ -66,3 +66,42 @@ export function updateTodaysNotificationStorage(
     JSON.stringify({ unread: true, [today]: data.map(item => ({ ...item, unread: true })) }),
   );
 }
+
+export function cleanseTodaysNotificationStorage(
+  data: TODAYS_NOTIFICATION_DATA,
+  setTodaysNotifications: (data: TODAYS_NOTIFICATION_DATA) => void,
+) {
+  const copiedData = { ...data };
+  const today = getSimplifiedCurrentIsoTimeString();
+
+  const sortedParsedDataKeys = Object.keys(copiedData).sort();
+
+  const dataKeysToRemove = sortedParsedDataKeys.filter(
+    key => key !== 'unread' && isBefore(new Date(key), addDays(new Date(today), -6)),
+  ) as SimplifiedCurrentIsoTimeString[];
+
+  dataKeysToRemove.forEach(key => {
+    delete copiedData[key];
+  });
+
+  setTodaysNotifications(copiedData);
+}
+
+export function makeAllReadTodaysNotificationStorage(
+  data: TODAYS_NOTIFICATION_DATA,
+  setTodaysNotifications: (data: TODAYS_NOTIFICATION_DATA) => void,
+) {
+  const copiedData = { ...data };
+
+  copiedData.unread = false;
+
+  Object.keys(copiedData).forEach(key => {
+    if (key !== 'unread') {
+      copiedData[key as SimplifiedCurrentIsoTimeString].forEach(item => {
+        item.unread = false;
+      });
+    }
+  });
+
+  setTodaysNotifications(copiedData);
+}
