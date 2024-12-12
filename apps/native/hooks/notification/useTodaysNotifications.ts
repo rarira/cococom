@@ -14,16 +14,16 @@ export function useTodaysNotifications() {
     const tempArray = Object.entries(todaysNotifications).reduce(
       (acc, [date, notifications]) => {
         if (typeof notifications === 'boolean') return acc;
-        acc.push({ date, notifications });
+        acc.push({ title: date, data: notifications });
         return acc;
       },
       [] as {
-        date: string;
-        notifications: TODAYS_NOTIFICATION_DATA[SimplifiedCurrentIsoTimeString];
+        title: SimplifiedCurrentIsoTimeString;
+        data: TODAYS_NOTIFICATION_DATA[SimplifiedCurrentIsoTimeString];
       }[],
     );
     if (tempArray.length === 1) return tempArray;
-    return tempArray.sort((a, b) => (a.date > b.date ? -1 : 1));
+    return tempArray.sort((a, b) => (a.title > b.title ? -1 : 1));
   }, [todaysNotifications]);
 
   return { sectionedNotifications, setTodaysNotifications };

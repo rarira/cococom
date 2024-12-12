@@ -30,7 +30,7 @@ export default function HomeLayout() {
           headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
         }}
       />
-      <Stack.Screen name="item" />
+      <Stack.Screen name="item" options={{ title: '' }} />
     </Stack>
   );
 }

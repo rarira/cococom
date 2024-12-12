@@ -1,6 +1,6 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
@@ -20,6 +20,7 @@ import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 import Util from '@/libs/util';
+import CloseButton from '@/components/custom/button/close';
 
 const queryFn = (itemId: number, userId?: string) => () =>
   supabase.items.fetchItemsWithWishlistCount(itemId, userId, true);
@@ -28,7 +29,15 @@ export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
 
-  const { itemId, tab } = useLocalSearchParams<{ itemId: string; tab?: ItemDetailsTabNames }>();
+  const {
+    itemId,
+    tab,
+    isModal = 'false',
+  } = useLocalSearchParams<{
+    itemId: string;
+    tab?: ItemDetailsTabNames;
+    isModal?: string;
+  }>();
 
   const { bottom } = useSafeAreaInsets();
 
@@ -48,6 +57,8 @@ export default function ItemScreen() {
     title: data?.itemName,
     headerBackButtonDisplayMode: 'minimal',
     headerRight,
+    headerLeft:
+      isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : 'close',
   });
 
   const renderTabBar = useCallback(

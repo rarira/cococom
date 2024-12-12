@@ -38,3 +38,8 @@ export function convertDateString(dateString: string) {
 export function getSimplifiedCurrentIsoTimeString() {
   return new Date().toISOString().split('T')[0] as SimplifiedCurrentIsoTimeString;
 }
+
+export function convertSimpleIsoStringToKoreanDate(isoString: SimplifiedCurrentIsoTimeString) {
+  const [year, month, day] = isoString.split('-');
+  return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+}
