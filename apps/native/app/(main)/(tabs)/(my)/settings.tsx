@@ -51,9 +51,9 @@ export default function SettingsScreen() {
         </SectionText>
         <RowMenu style={styles.withPaddingHorizontal}>
           <RowMenu.Text>자동 (시스템 설정)</RowMenu.Text>
-          <RowMenu.ToggleSwitch checked={colorTheme === null} onToggle={handleToggleAutoTheme} />
+          <RowMenu.ToggleSwitch checked={colorTheme === 'auto'} onToggle={handleToggleAutoTheme} />
         </RowMenu>
-        {colorTheme !== null && (
+        {colorTheme !== 'auto' && (
           <RowMenu style={styles.withPaddingHorizontal}>
             <RowMenu.Text>다크 모드</RowMenu.Text>
             <RowMenu.ToggleSwitch checked={colorTheme === 'dark'} onToggle={handleToggleTheme} />
