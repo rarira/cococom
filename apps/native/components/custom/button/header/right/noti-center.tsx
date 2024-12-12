@@ -1,7 +1,7 @@
-import { Link } from 'expo-router';
-import { memo, useEffect } from 'react';
+import { router } from 'expo-router';
+import { memo, useCallback } from 'react';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useMMKVObject } from 'react-native-mmkv';
 
@@ -10,6 +10,8 @@ import Button from '@/components/core/button';
 import Icon from '@/components/core/icon';
 import Text from '@/components/core/text';
 import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
+import { useNotificationSetting } from '@/hooks/notification/useNotificationSetting';
+import { useUserStore } from '@/store/user';
 
 // NOTE: This is a dummy data for testing
 const a = {
@@ -121,6 +123,10 @@ const a = {
 const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() {
   const { styles, theme } = useStyles(stylesheet);
 
+  const user = useUserStore(state => state.user);
+
+  const { granted } = useNotificationSetting(user);
+
   const [todaysNotifications, setTodaysNotifications] = useMMKVObject<TODAYS_NOTIFICATION_DATA>(
     STORAGE_KEYS.TODAYS_NOTIFICATION,
   );
@@ -133,37 +139,53 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
   //   setTodaysNotifications(a);
   // }, [setTodaysNotifications]);
 
+  const handlePress = useCallback(() => {
+    if (granted) {
+      router.push('/noti-center');
+    } else {
+      Alert.alert(
+        '알림 수신 허용 필요',
+        '새로운 업데이트 알림을 받으실 수 없어요. 설정에서 알림 수신으로 변경해 주세요',
+        [
+          {
+            text: '취소',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: '설정 변경', onPress: () => router.navigate('/(main)/(tabs)/(my)/settings') },
+        ],
+      );
+    }
+  }, [granted]);
+
+  if (!user) return null;
+
   return (
-    <Link href={'/noti-center'} asChild>
-      <Button style={state => styles.button(state.pressed)}>
-        <View style={styles.container}>
-          <Animated.View style={animatedIconStyle}>
-            <Icon
-              {...{
-                size: theme.fontSize.lg,
-                color: todaysNotifications?.unread ? theme.colors.tint3 : theme.colors.typography,
-                font: {
-                  type: 'Ionicon',
-                  name: 'notifications',
-                },
-              }}
-            />
-          </Animated.View>
-          <Text type="defaultSemiBold" style={styles.text(!!todaysNotifications?.unread)}>
-            새로 추가된 관심 상품 할인
-          </Text>
-        </View>
-      </Button>
-    </Link>
+    <Button style={state => styles.button(state.pressed)} onPress={handlePress}>
+      <View style={styles.container}>
+        <Animated.View style={animatedIconStyle}>
+          <Icon
+            {...{
+              size: theme.fontSize.lg,
+              color: todaysNotifications?.unread ? theme.colors.tint3 : theme.colors.typography,
+              font: {
+                type: 'Ionicon',
+                name: 'notifications',
+              },
+            }}
+          />
+        </Animated.View>
+        <Text type="defaultSemiBold" style={styles.text(!!todaysNotifications?.unread)}>
+          새로 추가된 관심 상품 할인
+        </Text>
+      </View>
+    </Button>
   );
 });
 
 const stylesheet = createStyleSheet(theme => ({
   button: (pressed: boolean) => ({
     opacity: pressed ? 0.5 : 1,
-    borderColor: 'red',
-    borderWidth: 1,
-    // marginLeft: theme.spacing.md,
   }),
   container: {
     flexDirection: 'row',

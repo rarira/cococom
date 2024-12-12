@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as Notifications from 'expo-notifications';
 import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
@@ -7,6 +7,8 @@ import { registerForPushNotificationsAsync } from '@/libs/notifications';
 import { useUserStore } from '@/store/user';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { supabase } from '@/libs/supabase';
+
+import { useNotificationSetting } from './useNotificationSetting';
 
 export function useUpdateNotificationSetting() {
   const appState = useRef(AppState.currentState);
@@ -18,9 +20,6 @@ export function useUpdateNotificationSetting() {
     onPressOk: () => void;
   } | null>(null);
 
-  const [permissionStatus, setPermissionStatus] =
-    useState<Notifications.NotificationPermissionsStatus>();
-
   const { user, setProfile } = useUserStore(state => ({
     user: state.user,
     setProfile: state.setProfile,
@@ -28,13 +27,7 @@ export function useUpdateNotificationSetting() {
 
   const { reportToSentry } = useErrorHandler();
 
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
-      const settings = await Notifications.getPermissionsAsync();
-      setPermissionStatus(settings);
-    })();
-  }, [user]);
+  const { permissionStatus, setPermissionStatus, granted } = useNotificationSetting(user);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', async nextAppState => {
@@ -68,15 +61,7 @@ export function useUpdateNotificationSetting() {
     return () => {
       subscription.remove();
     };
-  }, [setProfile, user]);
-
-  const granted = useMemo(
-    () =>
-      permissionStatus?.status === 'granted' ||
-      (!!permissionStatus?.ios?.status &&
-        permissionStatus?.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL),
-    [permissionStatus],
-  );
+  }, [setPermissionStatus, setProfile, user]);
 
   const handleToggleNotification = useCallback(async () => {
     if (granted) {
@@ -117,7 +102,7 @@ export function useUpdateNotificationSetting() {
         reportToSentry(error as Error);
       }
     }
-  }, [granted, permissionStatus, reportToSentry, setProfile, user]);
+  }, [granted, permissionStatus, reportToSentry, setPermissionStatus, setProfile, user]);
 
   return {
     granted,
