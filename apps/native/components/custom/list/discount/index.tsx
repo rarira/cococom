@@ -1,4 +1,3 @@
-import React from 'react';
 import { PortalHost } from '@gorhom/portal';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { ContentStyle, FlashList } from '@shopify/flash-list';

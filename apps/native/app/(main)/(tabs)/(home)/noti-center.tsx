@@ -3,7 +3,6 @@ import { router, useNavigation } from 'expo-router';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
 
 import ScreenContainerView from '@/components/custom/view/container/screen';
 import Text from '@/components/core/text';
@@ -47,8 +46,6 @@ export default function NotiCenterScreen() {
         ) : undefined,
     } as any);
   }, [navigation, sectionedNotifications.length, setTodaysNotifications, styles.deleteText]);
-
-  console.log({ wishlistCount, sectionedNotifications });
 
   return (
     <ScreenContainerView withHeader>
