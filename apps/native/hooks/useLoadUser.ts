@@ -34,5 +34,5 @@ export function useLoadUser() {
     }
   }, [authProcessing, profile, session, setProfile, setUser]);
 
-  return user;
+  return { user, profile };
 }

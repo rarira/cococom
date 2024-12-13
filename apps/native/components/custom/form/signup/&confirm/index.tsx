@@ -119,13 +119,13 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
           return (
-            <TextInput.Root value={value} error={error?.message} label="닉네임" maxLength={8}>
+            <TextInput value={value} error={error?.message} label="닉네임" maxLength={8}>
               <TextInput.Field
                 placeholder="2 ~ 8 자로 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
               />
-            </TextInput.Root>
+            </TextInput>
           );
         }}
         name="nickname"
@@ -133,7 +133,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput.Root
+          <TextInput
             editable={!profile?.email_verified}
             value={value}
             error={error?.message}
@@ -144,7 +144,7 @@ const SignUpConfirmForm = memo(function SignUpConfirmForm({
               onBlur={onBlur}
               onChangeText={onChange}
             />
-          </TextInput.Root>
+          </TextInput>
         )}
         name="email"
       />

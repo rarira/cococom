@@ -1,11 +1,11 @@
 import { createWithEqualityFn as create } from 'zustand/traditional';
 
-interface UIState {
+interface UiState {
   tabBarVisible: boolean;
   setTabBarVisible: (visible: boolean) => void;
 }
 
-export const useUIStore = create<UIState>()(set => ({
+export const useUiStore = create<UiState>()(set => ({
   tabBarVisible: true,
   setTabBarVisible: visible => set({ tabBarVisible: visible }),
 }));

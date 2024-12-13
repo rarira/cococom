@@ -1,6 +1,8 @@
 import type { AppStateStatus } from 'react-native';
 
+import '@/libs/background-notification';
 import '@/styles/unistyles';
+
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import NetInfo from '@react-native-community/netinfo';
@@ -24,6 +26,9 @@ import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
+import * as Notifications from 'expo-notifications';
+import { StatusBar } from 'expo-status-bar';
+import { PushNotificationTrigger } from 'expo-notifications';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -31,6 +36,9 @@ import { useLoadUser } from '@/hooks/useLoadUser';
 import { useDiscountChannelsArrange } from '@/hooks/settings/useDiscountChannelArrange';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
+import { useExpoUpdate } from '@/hooks/useExpoUpdate';
+import CircularProgress from '@/components/core/progress/circular';
+import { usePushNotifications } from '@/hooks/notification/usePushNotifications';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
@@ -61,6 +69,31 @@ onlineManager.setEventListener(setOnline => {
   });
 });
 
+Notifications.setNotificationHandler({
+  handleNotification: async notification => {
+    //https://github.com/expo/expo/issues/31184
+    const trigger = notification.request.trigger as PushNotificationTrigger;
+    if (trigger?.type === 'push') {
+      const isDataOnly =
+        trigger?.remoteMessage?.notification === null ||
+        (trigger?.payload?.aps as any)['content-available'] === 1;
+
+      if (isDataOnly) {
+        return {
+          shouldShowAlert: false,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        };
+      }
+    }
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
+
 function onAppStateChange(status: AppStateStatus) {
   if (Platform.OS !== 'web') {
     focusManager.setFocused(status === 'active');
@@ -77,7 +110,11 @@ function RootLayout() {
     Inter: require('../assets/fonts/Inter_18pt-Medium.ttf'),
   });
 
+  const { isUpdating } = useExpoUpdate();
+
   useLoadUser();
+
+  usePushNotifications();
 
   useDiscountChannelsArrange();
 
@@ -103,48 +140,51 @@ function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  if (!loaded) {
-    return null;
+  if (!loaded || isUpdating) {
+    return <CircularProgress style={{ flex: 1 }} />;
   }
 
   return (
-    <ErrorBoundary onError={reportToSentry}>
-      <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView>
-          <SafeAreaProvider>
-            <PortalProvider>
-              <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-                <BottomSheetModalProvider>
-                  <Stack
-                    screenOptions={{
-                      contentStyle: {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(main)"
-                      options={{
-                        headerShown: false,
+    <>
+      <StatusBar />
+      <ErrorBoundary onError={reportToSentry}>
+        <QueryClientProvider client={queryClient}>
+          <GestureHandlerRootView>
+            <SafeAreaProvider>
+              <PortalProvider>
+                <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+                  <BottomSheetModalProvider>
+                    <Stack
+                      screenOptions={{
+                        contentStyle: {
+                          backgroundColor: 'transparent',
+                        },
                       }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                    <Stack.Screen
-                      name="auth"
-                      options={{
-                        presentation: 'modal',
-                        headerShown: false,
-                        gestureEnabled: false,
-                      }}
-                    />
-                  </Stack>
-                </BottomSheetModalProvider>
-              </ThemeProvider>
-            </PortalProvider>
-          </SafeAreaProvider>
-        </GestureHandlerRootView>
-      </QueryClientProvider>
-    </ErrorBoundary>
+                    >
+                      <Stack.Screen
+                        name="(main)"
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                      <Stack.Screen
+                        name="auth"
+                        options={{
+                          presentation: 'modal',
+                          headerShown: false,
+                          gestureEnabled: false,
+                        }}
+                      />
+                    </Stack>
+                  </BottomSheetModalProvider>
+                </ThemeProvider>
+              </PortalProvider>
+            </SafeAreaProvider>
+          </GestureHandlerRootView>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </>
   );
 }
 

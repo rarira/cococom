@@ -31,7 +31,15 @@ function DeleteUserDialog(props: DeleteUserDialogProps) {
         </Button>
       </View>
     );
-  }, []);
+  }, [
+    deleteUser,
+    props,
+    styles.buttonContainer,
+    styles.cancelButton,
+    styles.cancelButtonText,
+    styles.deleteButton,
+    styles.deleteButtonText,
+  ]);
 
   return (
     <Dialog

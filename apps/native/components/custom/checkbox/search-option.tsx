@@ -1,6 +1,7 @@
-import Checkbox from '@/components/core/checkbox';
 import { memo } from 'react';
 import { ViewProps } from 'react-native';
+
+import Checkbox from '@/components/core/checkbox';
 
 interface SearchOptionCheckboxProps {
   option: string;
@@ -17,12 +18,12 @@ const SearchOptionCheckbox = memo(function SearchOptionCheckbox({
   value,
 }: SearchOptionCheckboxProps) {
   return (
-    <Checkbox.Root key={option} value={option}>
+    <Checkbox key={option} value={option}>
       <Checkbox.Indicator style={indicatorStyle}>
         <Checkbox.Icon color={value.iconColor} />
       </Checkbox.Indicator>
       <Checkbox.Label>{value.label}</Checkbox.Label>
-    </Checkbox.Root>
+    </Checkbox>
   );
 });
 

@@ -16,7 +16,7 @@ Sentry.init({
   integrations: [reactNavigationIntegration],
   environment: Updates.channel ?? process.env.EAS_BUILD_PROFILE ?? 'development',
   release: Constants.expoConfig?.version,
-  dist: Constants.expoConfig?.version,
+  // dist: Constants.expoConfig?.version,
 });
 
 const scope = Sentry.getCurrentScope();

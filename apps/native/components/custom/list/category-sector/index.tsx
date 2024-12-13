@@ -43,7 +43,7 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
   useEffect(() => {
     const reduced = data?.reduce(
       (acc, item) => {
-        acc.totalDiscounts += item.discountsCountOnline + item.discountsCountOffline;
+        acc.totalDiscounts += (item.discountsCountOnline || 0) + (item.discountsCountOffline || 0);
         acc.categorySectorsArray.push(item.categorySector);
         return acc;
       },

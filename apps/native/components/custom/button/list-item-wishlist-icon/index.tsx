@@ -11,6 +11,7 @@ import { supabase } from '@/libs/supabase';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
 import NeedAuthDialog from '@/components/custom/dialog/need-auth';
+import WishlistLimitDialog from '@/components/custom//dialog/wishlist-limit';
 
 interface ListItemWishlistIconButtonProps<
   T extends Pick<JoinedItems, 'id' | 'totalWishlistCount' | 'isWishlistedByUser'>,
@@ -37,6 +38,8 @@ function ListItemWishlistIconButton<
 }: ListItemWishlistIconButtonProps<T>) {
   const { styles, theme } = useStyles(stylesheet);
   const [needAuthDialogVisible, setNeedAuthDialogVisible] = useState(false);
+  const [wishlistLimitDialogVisible, setWishlistLimitDialogVisible] = useState(false);
+  const [wishlistLimit, setWishlistLimit] = useState(0);
   const { user, setCallbackAfterSignIn } = useUserStore();
 
   const queryClient = useQueryClient();
@@ -50,6 +53,12 @@ function ListItemWishlistIconButton<
       return supabase.wishlists.createWishlist(newWishlist);
     },
     onMutate: onMutate?.(queryClient),
+    onError: error => {
+      if (error.code === 'P0001') {
+        setWishlistLimit(error.details);
+        setWishlistLimitDialogVisible(true);
+      }
+    },
     onSuccess: () => {
       updateWishlistInCache({ itemId: item.id, queryClient });
       queryClient.invalidateQueries({ queryKey: ['wishlists'] });
@@ -107,6 +116,12 @@ function ListItemWishlistIconButton<
           body="관심 상품 등록을 하시면 편리하게 쇼핑하실 수 있습니다. 로그인이 필요합니다"
         />
       )}
+      <WishlistLimitDialog
+        portalHostName={portalHostName}
+        visible={wishlistLimitDialogVisible}
+        setVisible={setWishlistLimitDialogVisible}
+        limit={wishlistLimit}
+      />
     </>
   );
 }

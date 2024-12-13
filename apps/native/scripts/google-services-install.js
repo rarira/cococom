@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 const fs = require('fs');
 
-console.log(process.env.EAS_BUILD_RUNNER);
-
 if (process.env.EAS_BUILD_RUNNER === 'local-build-plugin') {
   // const buildProfile = process.env.EAS_BUILD_PROFILE;
   const googleServicesJson = process.env.GOOGLE_SERVICES_JSON_STRING;

@@ -61,17 +61,17 @@ export class WishlistsTable {
     pageSize: number;
     isOnSale?: boolean;
   }) {
-    const query = this.supabaseClient.rpc('get_wishlist_items', {
-      user_id: userId,
-      channel,
-      page,
-      page_size: pageSize,
-      order_field: sortField,
-      order_direction: sortDirection,
-      is_on_sale: typeof isOnSale === 'boolean' ? isOnSale : null,
-    });
-
-    const { data, error } = await query.range(page * pageSize, (page + 1) * pageSize - 1);
+    const { data, error } = await this.supabaseClient
+      .rpc('get_wishlist_items', {
+        user_id: userId,
+        channel,
+        page,
+        page_size: pageSize,
+        order_field: sortField,
+        order_direction: sortDirection,
+        is_on_sale: typeof isOnSale === 'boolean' ? isOnSale : null,
+      })
+      .range(page * pageSize, (page + 1) * pageSize - 1);
 
     if (error) {
       console.error('Error:', error);
@@ -81,5 +81,17 @@ export class WishlistsTable {
     return data;
   }
 
-  // ... 다른 wishlists 관련 메서드들
+  async getMyWishlistItemsCount({ userId }: { userId: string }) {
+    const { data, error } = await this.supabaseClient
+      .from('wishlists')
+      .select('id', { count: 'estimated', head: true })
+      .eq('userId', userId);
+
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+
+    return data;
+  }
 }

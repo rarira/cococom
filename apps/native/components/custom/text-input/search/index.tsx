@@ -32,7 +32,7 @@ const SearchTextInput = memo(function SearchTextInput({
   }, [keyword, onPressSearch]);
 
   return (
-    <TextInput.Root variants="outlined" rowStyle={styles.textInputRoot}>
+    <TextInput variants="outlined" rowStyle={styles.textInputRoot}>
       <TextInput.Field
         value={keyword}
         placeholderTextColor={`${theme.colors.typography}99`}
@@ -42,12 +42,16 @@ const SearchTextInput = memo(function SearchTextInput({
         autoCapitalize="none"
         clearButtonMode="while-editing"
         onChangeText={setKeyword}
+        inputMode="search"
+        enterKeyHint="search"
+        returnKeyType="search"
+        onSubmitEditing={handlePress}
         {...restProps}
       />
       <TextInput.Slot style={styles.textInputSlot} onPress={handlePress} disabled={disabled}>
         <TextInput.Icon font={{ type: 'MaterialIcon', name: 'search' }} />
       </TextInput.Slot>
-    </TextInput.Root>
+    </TextInput>
   );
 });
 

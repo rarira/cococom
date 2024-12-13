@@ -1,8 +1,8 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -19,6 +19,8 @@ import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
+import Util from '@/libs/util';
+import CloseButton from '@/components/custom/button/close';
 
 const queryFn = (itemId: number, userId?: string) => () =>
   supabase.items.fetchItemsWithWishlistCount(itemId, userId, true);
@@ -27,7 +29,15 @@ export default function ItemScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const user = useUserStore(store => store.user);
 
-  const { itemId, tab } = useLocalSearchParams<{ itemId: string; tab?: ItemDetailsTabNames }>();
+  const {
+    itemId,
+    tab,
+    isModal = 'false',
+  } = useLocalSearchParams<{
+    itemId: string;
+    tab?: ItemDetailsTabNames;
+    isModal?: string;
+  }>();
 
   const { bottom } = useSafeAreaInsets();
 
@@ -44,9 +54,11 @@ export default function ItemScreen() {
   }, [data]);
 
   useTransparentHeader({
-    title: data?.itemName,
+    title: data?.itemName ?? '',
     headerBackButtonDisplayMode: 'minimal',
     headerRight,
+    headerLeft:
+      isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : undefined,
   });
 
   const renderTabBar = useCallback(
@@ -86,7 +98,7 @@ export default function ItemScreen() {
         renderTabBar={renderTabBar}
         renderHeader={renderHeader}
         allowHeaderOverscroll
-        lazy={Platform.OS === 'ios'}
+        lazy={Util.isPlatform('ios')}
         initialTabName={tab}
       >
         <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>

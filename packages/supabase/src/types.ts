@@ -66,60 +66,6 @@ export type Database = {
           },
         ]
       }
-      dalins: {
-        Row: {
-          category_id: number | null
-          category_image: string | null
-          category_name: string | null
-          created_at: string
-          discount: number | null
-          discount_condition: string | null
-          from_date: string | null
-          hash: string | null
-          id: number
-          normal_price: number | null
-          product_id: number
-          product_image: string | null
-          product_name: string | null
-          sale_price: number | null
-          to_date: string | null
-        }
-        Insert: {
-          category_id?: number | null
-          category_image?: string | null
-          category_name?: string | null
-          created_at?: string
-          discount?: number | null
-          discount_condition?: string | null
-          from_date?: string | null
-          hash?: string | null
-          id?: number
-          normal_price?: number | null
-          product_id: number
-          product_image?: string | null
-          product_name?: string | null
-          sale_price?: number | null
-          to_date?: string | null
-        }
-        Update: {
-          category_id?: number | null
-          category_image?: string | null
-          category_name?: string | null
-          created_at?: string
-          discount?: number | null
-          discount_condition?: string | null
-          from_date?: string | null
-          hash?: string | null
-          id?: number
-          normal_price?: number | null
-          product_id?: number
-          product_image?: string | null
-          product_name?: string | null
-          sale_price?: number | null
-          to_date?: string | null
-        }
-        Relationships: []
-      }
       discounts: {
         Row: {
           created_at: string | null
@@ -128,6 +74,7 @@ export type Database = {
           discountPrice: number
           discountRate: number | null
           endDate: string
+          history_id: number | null
           id: number
           is_online: boolean
           itemId: string
@@ -141,6 +88,7 @@ export type Database = {
           discountPrice: number
           discountRate?: number | null
           endDate: string
+          history_id?: number | null
           id?: number
           is_online?: boolean
           itemId: string
@@ -154,6 +102,7 @@ export type Database = {
           discountPrice?: number
           discountRate?: number | null
           endDate?: string
+          history_id?: number | null
           id?: number
           is_online?: boolean
           itemId?: string
@@ -161,6 +110,13 @@ export type Database = {
           startDate?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "discounts_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "histories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "discounts_itemId_fkey"
             columns: ["itemId"]
@@ -304,6 +260,27 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           confirmed: boolean | null
@@ -311,9 +288,11 @@ export type Database = {
           email: string | null
           email_opted_in: boolean
           email_verified: boolean | null
+          expo_push_token: string | null
           id: string
           nickname: string | null
           picture: string | null
+          subscription_level: Database["public"]["Enums"]["subscription_level_type"]
         }
         Insert: {
           confirmed?: boolean | null
@@ -321,9 +300,11 @@ export type Database = {
           email?: string | null
           email_opted_in?: boolean
           email_verified?: boolean | null
+          expo_push_token?: string | null
           id: string
           nickname?: string | null
           picture?: string | null
+          subscription_level?: Database["public"]["Enums"]["subscription_level_type"]
         }
         Update: {
           confirmed?: boolean | null
@@ -331,9 +312,26 @@ export type Database = {
           email?: string | null
           email_opted_in?: boolean
           email_verified?: boolean | null
+          expo_push_token?: string | null
           id?: string
           nickname?: string | null
           picture?: string | null
+          subscription_level?: Database["public"]["Enums"]["subscription_level_type"]
+        }
+        Relationships: []
+      }
+      subscription_limits: {
+        Row: {
+          max_wishlist_limit: number
+          subscription_level: string
+        }
+        Insert: {
+          max_wishlist_limit: number
+          subscription_level: string
+        }
+        Update: {
+          max_wishlist_limit?: number
+          subscription_level?: string
         }
         Relationships: []
       }
@@ -494,6 +492,25 @@ export type Database = {
         }
         Returns: Json
       }
+      get_wishlist_items_on_sale_start: {
+        Args: {
+          user_uuid: string
+          history_id_param: number
+        }
+        Returns: {
+          wishlistId: string
+          id: number
+          itemId: string
+          itemName: string
+          is_online: boolean
+        }[]
+      }
+      max_wishlist_limit: {
+        Args: {
+          user_id: string
+        }
+        Returns: number
+      }
       search_items_by_itemid: {
         Args: {
           item_id: string
@@ -536,6 +553,7 @@ export type Database = {
         | "식자재"
         | "냉장/냉동/가공식품"
         | "문구/사무/아동/반려"
+      subscription_level_type: "basic" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never

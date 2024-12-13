@@ -63,7 +63,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput.Root value={value} error={error?.message}>
+          <TextInput value={value} error={error?.message}>
             <TextInput.Field
               placeholder="비밀번호를 입력하세요"
               onBlur={onBlur}
@@ -75,14 +75,14 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
               }
             />
             <TextInputEyeSlot show={showPassword} setShow={setShowPassword} disabled={loading} />
-          </TextInput.Root>
+          </TextInput>
         )}
         name="password"
       />
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
+          <TextInput value={value} error={error?.message} style={styles.passwordInput}>
             <TextInput.Field
               placeholder="비밀번호를 다시 입력하세요"
               onBlur={onBlur}
@@ -95,7 +95,7 @@ const ChangePasswordForm = memo(function ChangePasswordForm({
               setShow={setShowConfirmPassword}
               disabled={loading}
             />
-          </TextInput.Root>
+          </TextInput>
         )}
         name="confirmPassword"
       />

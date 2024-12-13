@@ -69,7 +69,7 @@ const MyWishlist = memo(function MyWishlist({
   );
 
   const ListHeaderComponent = useMemo(() => {
-    if (wishlistResult.length === 0) return null;
+    // if (wishlistResult.length === 0) return null;
 
     return (
       <View style={styles.headerRowContainer}>
@@ -89,23 +89,28 @@ const MyWishlist = memo(function MyWishlist({
               indicatorStyle={styles.checkboxOnSaleIndicator}
             />
           </Checkbox.Group>
-          <HeaderRightButton
-            iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
-            onPress={onPressHeaderRightButton}
-          />
+          {wishlistResult.length > 0 && (
+            <HeaderRightButton
+              iconProps={{ font: { type: 'MaterialIcon', name: 'sort' } }}
+              onPress={onPressHeaderRightButton}
+            />
+          )}
           <DiscountChannelRotateButton onPress={handleChannelPress} channelOption={channelOption} />
         </View>
       </View>
     );
   }, [
-    channelOption,
-    handleChannelPress,
-    onPressHeaderRightButton,
-    wishlistResult.length,
-    styles,
+    styles.headerRowContainer,
+    styles.totalResultsText,
+    styles.headerRightContainer,
+    styles.checkboxOnSaleIndicator,
     totalResults,
     options,
     setOptions,
+    wishlistResult.length,
+    onPressHeaderRightButton,
+    handleChannelPress,
+    channelOption,
   ]);
 
   const ListFooterComponent = useMemo(() => {

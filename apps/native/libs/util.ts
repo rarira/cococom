@@ -1,3 +1,7 @@
+import { Platform } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
+import * as DevClient from 'expo-dev-client';
+
 const Util = {
   toWonString(value: number): string {
     return value.toLocaleString('ko-KR');
@@ -66,6 +70,13 @@ const Util = {
     }
 
     return check;
+  },
+  isPlatform(os: 'native' | 'android' | 'ios' | 'web') {
+    if (os === 'native') return ['android', 'ios'].includes(Platform.OS);
+    return Platform.OS === os;
+  },
+  isDevClient() {
+    return DevClient.isDevelopmentBuild();
   },
 };
 

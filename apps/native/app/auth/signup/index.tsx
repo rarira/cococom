@@ -2,7 +2,7 @@ import { PortalHost } from '@gorhom/portal';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useLayoutEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -20,6 +20,7 @@ export default function SignUpScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerBackVisible: false,
       headerLeft: () => {
         return from === 'signin' ? (
           <HeaderBackButton text="로그인" onPress={() => router.replace('/auth/signin')} />
@@ -30,7 +31,7 @@ export default function SignUpScreen() {
 
   return (
     <>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <StatusBar />
       <View style={styles.container(bottom)}>
         <ScreenTitleText>환영합니다.아래 정보를 입력하여 회원가입을 진행하세요</ScreenTitleText>
         <EmailSignUpForm />

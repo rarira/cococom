@@ -7,10 +7,10 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
-import SortWithTextButton from '@/components/custom/button/sort-with-text';
 import MyMemoListItemCard from '@/components/custom/card/list-item/my/memo';
 import { MyMemoToRender } from '@/hooks/memo/useMyMemos';
 import { MyMemoSortOption } from '@/libs/sort/my-memo';
+import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 
 interface MyMemoListProps extends Partial<FlashListProps<MyMemoToRender[number]>> {
   memos: MyMemoToRender;

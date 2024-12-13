@@ -23,13 +23,20 @@ import {
   updateNewlyAddedImages,
   uploadImages,
 } from '../libs/images.js';
-import { addReletedItemId, supabase, updateItemHistory, updateNoImages } from '../libs/supabase.js';
+import {
+  addReletedItemId,
+  insertTemporaryHistory,
+  supabase,
+  updateItemHistory,
+  updateNoImages,
+} from '../libs/supabase.js';
 import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
 const newItems: string[] = [];
 const newItemsWithNoImage: string[] = [];
+let nextHistoryId: number | undefined;
 let newDiscountsCount = 0;
 
 const IS_PROD_ENVIROMENT = process.env.NODE_ENV === 'PROD';
@@ -131,7 +138,9 @@ async function updateDiscounts(date?: string) {
     })),
   );
 
-  console.log(`${newlyAddedItems?.length ?? 0} new items added`);
+  nextHistoryId = await insertTemporaryHistory(false);
+
+  console.log(`${newlyAddedItems?.length ?? 0} new items added`, 'nextHistoryId', nextHistoryId);
 
   const newlyAddedDiscounts = await supabase.discounts.upsertDiscount(
     discounts.map(discount => ({
@@ -143,6 +152,7 @@ async function updateDiscounts(date?: string) {
       discountPrice: discount.discountprice,
       discountHash: `${discount.productcode}_${discount.startdate}_${discount.enddate}`,
       discountRate: discount.price ? discount.discount / discount.price : null,
+      history_id: nextHistoryId,
     })),
   );
 
@@ -182,11 +192,15 @@ async function updateDiscounts(date?: string) {
   }
 }
 
-async function createHistory() {
-  if (!newItems.length) return;
+async function updateHistory() {
+  if (!newItems.length && !newDiscountsCount) {
+    await supabase.histories.deleteHistory(nextHistoryId!);
+    return;
+  }
 
-  await supabase.histories.insertHistory({
-    new_item_count: newItems.length,
+  await supabase.histories.updateHistory({
+    id: nextHistoryId,
+    new_item_count: newItems?.length ?? 0,
     added_discount_count: newDiscountsCount,
     no_images: newItemsWithNoImage,
   });
@@ -245,5 +259,5 @@ async function downloadNoImages(info: { id: number; no_images: string[] | null }
     await getAllDiscountsData();
   }
   await updateDiscounts();
-  await createHistory();
+  await updateHistory();
 })();

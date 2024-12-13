@@ -92,14 +92,14 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
           control={control}
           render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
             return (
-              <TextInput.Root value={value} error={error?.message}>
+              <TextInput value={value} error={error?.message}>
                 <TextInput.Field
                   placeholder="이메일 주소를 입력하세요"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   autoCapitalize="none"
                 />
-              </TextInput.Root>
+              </TextInput>
             );
           }}
           name="email"
@@ -107,35 +107,35 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
         <Controller
           control={control}
           render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-            <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
+            <TextInput value={value} error={error?.message} style={styles.passwordInput}>
               <TextInput.Field
                 placeholder="비밀번호를 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
-                textContentType="password"
-                secureTextEntry
+                textContentType="newPassword"
+                secureTextEntry={!showPassword}
                 passwordRules={
                   'minlength: 8; maxlength: 20; required: lower; required: upper; required: digit; required: special;'
                 }
               />
               <TextInputEyeSlot show={showPassword} setShow={setShowPassword} />
-            </TextInput.Root>
+            </TextInput>
           )}
           name="password"
         />
         <Controller
           control={control}
           render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-            <TextInput.Root value={value} error={error?.message} style={styles.passwordInput}>
+            <TextInput value={value} error={error?.message} style={styles.passwordInput}>
               <TextInput.Field
                 placeholder="비밀번호를 다시 입력하세요"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 textContentType="password"
-                secureTextEntry
+                secureTextEntry={!showConfirmPassword}
               />
               <TextInputEyeSlot show={showConfirmPassword} setShow={setShowConfirmPassword} />
-            </TextInput.Root>
+            </TextInput>
           )}
           name="confirmPassword"
         />

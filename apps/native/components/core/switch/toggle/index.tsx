@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated, {
   interpolateColor,
@@ -26,11 +26,15 @@ const ToggleSwitch = memo(function ToggleSwitch({
   checkedColor,
   containerHeight: _containerHeight,
   style,
-
   ...restProps
 }: ToggleSwitchProps) {
   const { styles, theme } = useStyles(stylesheet);
   const checkedValue = useSharedValue(checked ? 1 : 0);
+
+  useLayoutEffect(() => {
+    checkedValue.value = withTiming(checked ? 1 : 0, { duration: 100 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked, checkedValue.value]);
 
   const containerHeight = _containerHeight || theme.fontSize.xl;
   const containerWidth = containerHeight * 1.7;
@@ -56,9 +60,8 @@ const ToggleSwitch = memo(function ToggleSwitch({
   const handlePress = useCallback(
     (_event: any) => {
       onToggle();
-      checkedValue.value = withTiming(checkedValue.value === 0 ? 1 : 0, { duration: 200 });
     },
-    [checkedValue, onToggle],
+    [onToggle],
   );
 
   return (

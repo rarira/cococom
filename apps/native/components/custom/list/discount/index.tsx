@@ -11,6 +11,7 @@ import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountedRankingListQuery } from '@/hooks/discount/useDiscountedRankingListQuery';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
+import EmptyList from '@/components/custom/list/empty';
 
 interface DiscountListProps {
   sortOption: DiscountSortOption;
@@ -78,6 +79,12 @@ export default function DiscountList({
           ...styles.flashListContainer(NumberOfColumns > 1, tabBarHeight),
           ...contentContainerStyle,
         }}
+        ListEmptyComponent={() => (
+          <EmptyList
+            text={`할인 중인 상품이 없습니다.\n다른 조건으로 검색해 보세요`}
+            style={styles.emptyList}
+          />
+        )}
         {...(refreshable && { onRefresh: handleRefresh, refreshing })}
       />
       <PortalHost name={portalHostName} />
@@ -97,6 +104,8 @@ const stylesheet = createStyleSheet(theme => ({
   loadinProgress: (tabBarHeight: number) => ({
     flex: 1,
     marginBottom: tabBarHeight,
-    borderWidth: 1,
   }),
+  emptyList: {
+    paddingTop: theme.spacing.xl * 3,
+  },
 }));

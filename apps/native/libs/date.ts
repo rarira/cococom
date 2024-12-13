@@ -1,6 +1,8 @@
 import { JoinedItems } from '@cococom/supabase/types';
 import { format } from 'date-fns';
 
+export type SimplifiedCurrentIsoTimeString = `${number}-${number}-${number}`;
+
 export function formatDashedDate(date: string) {
   return format(date, 'yyyy-MM-dd');
 }
@@ -31,4 +33,13 @@ export function isItemOnSaleNow(item: JoinedItems) {
 export function convertDateString(dateString: string) {
   const date = new Date(dateString);
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
+}
+
+export function getSimplifiedCurrentIsoTimeString() {
+  return new Date().toISOString().split('T')[0] as SimplifiedCurrentIsoTimeString;
+}
+
+export function convertSimpleIsoStringToKoreanDate(isoString: SimplifiedCurrentIsoTimeString) {
+  const [year, month, day] = isoString.split('-');
+  return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
 }

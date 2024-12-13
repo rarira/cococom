@@ -14,7 +14,7 @@ import { DiscountChannels, PortalHostNames } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
-import SortWithTextButton from '@/components/custom/button/sort-with-text';
+import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 
 interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
   searchResult: SearchResultToRender;
@@ -106,7 +106,7 @@ const SearchResultList = memo(function SearchResultList({
         ListFooterComponentStyle={styles.fetchingNextProgress}
         ListEmptyComponent={ListEmptyComponent}
         renderItem={renderItem}
-        estimatedItemSize={200}
+        estimatedItemSize={110}
         keyExtractor={item => item?.id.toString()}
         ItemSeparatorComponent={ItemSeparatorComponent}
         contentContainerStyle={styles.flashListContainer(tabBarHeight)}

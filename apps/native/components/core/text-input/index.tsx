@@ -34,7 +34,7 @@ function useTextInputContext() {
   const context = useContext(TextInputContext);
   if (!context) {
     throw new Error(
-      'TextInput compound components cannot be rendered outside the TextInpu.Root component',
+      'TextInput compound components cannot be rendered outside the TextInput component',
     );
   }
 
@@ -241,11 +241,15 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-const TextInput = {
-  Root: TextInputWrapper,
-  Field: TextInputField,
-  Slot: TextInputSlot,
-  Icon: TextInputIcon,
+const TextInput = TextInputWrapper as typeof TextInputWrapper & {
+  // Root: TextInputWrapper,
+  Field: typeof TextInputField;
+  Slot: typeof TextInputSlot;
+  Icon: typeof TextInputIcon;
 };
+
+TextInput.Field = TextInputField;
+TextInput.Slot = TextInputSlot;
+TextInput.Icon = TextInputIcon;
 
 export default TextInput;

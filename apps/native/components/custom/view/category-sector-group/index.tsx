@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { Fragment, memo, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -16,7 +16,7 @@ const CategorySectorGroupView = memo(function CategorySectorGroupView({
 
   const row = useMemo(
     () => (
-      <>
+      <Fragment>
         {group.map((disountInfo, index) => {
           return (
             <CategorySectorCard
@@ -25,7 +25,7 @@ const CategorySectorGroupView = memo(function CategorySectorGroupView({
             />
           );
         })}
-      </>
+      </Fragment>
     ),
     [group],
   );
