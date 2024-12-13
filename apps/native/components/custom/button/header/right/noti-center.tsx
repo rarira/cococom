@@ -12,6 +12,7 @@ import Text from '@/components/core/text';
 import { useBellAnimation } from '@/hooks/animation/useBellAnimation';
 import { useNotificationSetting } from '@/hooks/notification/useNotificationSetting';
 import { useUserStore } from '@/store/user';
+import Util from '@/libs/util';
 
 // NOTE: This is a dummy data for testing
 const a = {
@@ -140,7 +141,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
   // }, [setTodaysNotifications]);
 
   const handlePress = useCallback(() => {
-    if (granted) {
+    if (granted || Util.isDevClient()) {
       router.push('/noti-center');
     } else {
       Alert.alert(

@@ -81,14 +81,14 @@ export class WishlistsTable {
     return data;
   }
 
-  async getWishlistItemsOnSaleStart({ userId, historyId }: { userId: string; historyId: number }) {
-    const { data, error } = await this.supabaseClient.rpc('get_wishlist_items_on_sale_start', {
-      user_uuid: userId,
-      history_id_param: historyId,
-    });
+  async getMyWishlistItemsCount({ userId }: { userId: string }) {
+    const { data, error } = await this.supabaseClient
+      .from('wishlists')
+      .select('id', { count: 'estimated', head: true })
+      .eq('userId', userId);
 
     if (error) {
-      if (error.code === 'PGRST116') return [];
+      console.error('Error:', error);
       throw error;
     }
 

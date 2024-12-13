@@ -29,6 +29,7 @@ export const wishlistQueryKeys = {
     sortDirection: WishlistSortOption['orderDirection'];
     isOnSale?: boolean;
   }) => ['wishlists', { userId, channel, sortField, sortDirection, isOnSale }],
+  count: ({ userId }: { userId: string }) => ['wishlists', { userId }],
 };
 
 const setQueryDataForDiscounts = (

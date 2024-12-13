@@ -17,6 +17,7 @@ import Text from '@/components/core/text';
 import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notification';
 import { PortalHostNames } from '@/constants';
 import { useUpdateNotificationSetting } from '@/hooks/notification/useUpdateNotificationSetting';
+import Util from '@/libs/util';
 
 export default function SettingsScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -59,7 +60,7 @@ export default function SettingsScreen() {
             <RowMenu.ToggleSwitch checked={colorTheme === 'dark'} onToggle={handleToggleTheme} />
           </RowMenu>
         )}
-        {!!user && (
+        {!!user && !Util.isDevClient() && (
           <>
             <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
             <RowMenu style={styles.withPaddingHorizontal}>

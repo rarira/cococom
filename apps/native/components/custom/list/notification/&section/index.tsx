@@ -6,6 +6,7 @@ import { useTodaysNotifications } from '@/hooks/notification/useTodaysNotificati
 
 import NotificationSectionHeader from './header';
 import NotificationsSectionListSection from './section';
+import EmptyList from '../../empty';
 
 type NotificationSectionListProps = {
   data: ReturnType<typeof useTodaysNotifications>['sectionedNotifications'];
@@ -23,8 +24,6 @@ const NotificationSectionList = memo(function NotificationSectionList({
   useEffect(() => {
     setCurrentSection(data[0]?.title ?? null);
   }, [data]);
-
-  if (!data) return null;
 
   return (
     <SectionList
@@ -45,6 +44,9 @@ const NotificationSectionList = memo(function NotificationSectionList({
       )}
       scrollEnabled={false}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ListEmptyComponent={() => (
+        <EmptyList text={'할인 개시 알림이 없습니다'} style={styles.emptyList} />
+      )}
     />
   );
 });
@@ -52,6 +54,9 @@ const NotificationSectionList = memo(function NotificationSectionList({
 const stylesheet = createStyleSheet(theme => ({
   separator: {
     height: theme.spacing.sm,
+  },
+  emptyList: {
+    paddingTop: theme.spacing.xl * 3,
   },
 }));
 

@@ -15,10 +15,6 @@ export type TODAYS_NOTIFICATION_DATA = {
 
 export const storage = new MMKV();
 
-const storageSize = storage.size;
-
-console.log('storageSize', storageSize);
-
 export const STORAGE_KEYS = {
   SEARCH_HISTORY: 'SEARCH_HISTORY',
   COLOR_SCHEME: 'COLOR_SCHEME',
