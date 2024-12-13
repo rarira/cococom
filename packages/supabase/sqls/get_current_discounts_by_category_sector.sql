@@ -65,6 +65,6 @@ BEGIN
         distinct_discounts dd
     LEFT JOIN discount_counts_online dcon ON dd."categorySector" = dcon."categorySector"
     LEFT JOIN discount_counts_offline dcoff ON dd."categorySector" = dcoff."categorySector"
-    ORDER BY (dcon."discountsCountOnline" + dcoff."discountsCountOffline") DESC;
+ORDER BY (COALESCE(dcon."discountsCountOnline", 0) + COALESCE(dcoff."discountsCountOffline", 0)) DESC;
 END;
 $$;

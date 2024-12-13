@@ -67,10 +67,10 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
               </View>
               <View style={styles.countRow}>
                 <View style={styles.countCell}>
-                  <Text style={styles.count}>{discountInfo.discountsCountOffline}</Text>
+                  <Text style={styles.count}>{discountInfo.discountsCountOffline || 0}</Text>
                 </View>
                 <View style={styles.countCell}>
-                  <Text style={styles.count}>{discountInfo.discountsCountOnline}</Text>
+                  <Text style={styles.count}>{discountInfo.discountsCountOnline || 0}</Text>
                 </View>
               </View>
             </View>
