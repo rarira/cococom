@@ -7,7 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import Card from '@/components/core/card';
 import Chip from '@/components/core/chip';
 import Text from '@/components/core/text';
-import { ItemDetailsTabNames } from '@/constants';
+import { ITEM_DETAILS_TAB_NAMES } from '@/constants';
 import { MyMemoToRender } from '@/hooks/memo/useMyMemos';
 import { formatDashedDate } from '@/libs/date';
 import { handleMutateOfDeleteMemo, queryKeys, updateMyMemos } from '@/libs/react-query';
@@ -73,7 +73,7 @@ const MyMemoListItemCard = memo(function MyMemoListItemCard({
 
   return (
     <Link
-      href={`/(my)/item?itemId=${memo.item.id}&tab=${ItemDetailsTabNames.MEMO}` as Href<string>}
+      href={`/(my)/item?itemId=${memo.item.id}&tab=${ITEM_DETAILS_TAB_NAMES.MEMO}` as Href}
       asChild
       onLongPress={handleLongPress}
     >

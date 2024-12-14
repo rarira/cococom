@@ -21,16 +21,18 @@ export const 할인마감임박잔여일수 = 3;
 
 export const X_AXIS_HEIGHT = 40;
 
-export const enum DiscountChannels {
-  ONLINE = 'online',
-  OFFLINE = 'offline',
-  ALL = 'all',
-}
+export const DISCOUNT_CHANNELS = {
+  ONLINE: 'online',
+  OFFLINE: 'offline',
+  ALL: 'all',
+} as const;
+
+export type DiscountChannels = ObjectValues<typeof DISCOUNT_CHANNELS>;
 
 export const DiscountRotateButtonOptions: RotateButtonOption<DiscountChannels>[] = [
-  { id: 0, text: '모두', value: DiscountChannels.ALL },
-  { id: 1, text: '오프', fullText: '오프라인 매장', value: DiscountChannels.OFFLINE },
-  { id: 2, text: '온', fullText: '온라인 몰', value: DiscountChannels.ONLINE },
+  { id: 0, text: '모두', value: DISCOUNT_CHANNELS.ALL },
+  { id: 1, text: '오프', fullText: '오프라인 매장', value: DISCOUNT_CHANNELS.OFFLINE },
+  { id: 2, text: '온', fullText: '온라인 몰', value: DISCOUNT_CHANNELS.ONLINE },
 ];
 
 export const INFINITE_SEARCH_PAGE_SIZE = 10;
@@ -39,8 +41,10 @@ export const INFINITE_MEMO_PAGE_SIZE = 20;
 export const INFINITE_COMMENT_PAGE_SIZE = 10;
 export const RANKING_PAGE_SIZE = 50;
 
-export const enum ItemDetailsTabNames {
-  HISTORY = 'history',
-  MEMO = 'memo',
-  COMMENT = 'comment',
-}
+export const ITEM_DETAILS_TAB_NAMES = {
+  HISTORY: 'history',
+  MEMO: 'memo',
+  COMMENT: 'comment',
+} as const;
+
+export type ItemDetailsTabNames = ObjectValues<typeof ITEM_DETAILS_TAB_NAMES>;

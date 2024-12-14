@@ -13,7 +13,7 @@ import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discou
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
-import { ItemDetailsTabNames, PORTAL_HOST_NAMES } from '@/constants';
+import { ITEM_DETAILS_TAB_NAMES, ItemDetailsTabNames, PORTAL_HOST_NAMES } from '@/constants';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
@@ -101,19 +101,22 @@ export default function ItemScreen() {
         lazy={Util.isPlatform('ios')}
         initialTabName={tab}
       >
-        <Tabs.Tab name={ItemDetailsTabNames.HISTORY} label={`할인 이력(${data.discounts?.length})`}>
+        <Tabs.Tab
+          name={ITEM_DETAILS_TAB_NAMES.HISTORY}
+          label={`할인 이력(${data.discounts?.length})`}
+        >
           <Tabs.ScrollView>
             <ItemDiscountHistoryTabView discounts={data.discounts} />
           </Tabs.ScrollView>
         </Tabs.Tab>
         <Tabs.Tab
-          name={ItemDetailsTabNames.COMMENT}
+          name={ITEM_DETAILS_TAB_NAMES.COMMENT}
           label={`댓글${data.totalCommentCount ? `(${data.totalCommentCount})` : ''}`}
         >
           <ItemCommentTabView itemId={+itemId} totalCommentCount={data.totalCommentCount ?? 0} />
         </Tabs.Tab>
         <Tabs.Tab
-          name={ItemDetailsTabNames.MEMO}
+          name={ITEM_DETAILS_TAB_NAMES.MEMO}
           label={`메모${data.totalMemoCount ? `(${data.totalMemoCount})` : ''}`}
         >
           <ItemMemoTabView itemId={+itemId} totalMemoCount={data.totalMemoCount ?? 0} />

@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Href, Link } from 'expo-router';
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Card from '@/components/core/card';
 import Chip from '@/components/core/chip';
 import Text from '@/components/core/text';
-import { ItemDetailsTabNames } from '@/constants';
+import { ITEM_DETAILS_TAB_NAMES } from '@/constants';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
 import { formatDashedDate } from '@/libs/date';
 import { handleMutateOfDeleteComment, queryKeys, updateMyComments } from '@/libs/react-query';
@@ -74,9 +74,7 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
 
   return (
     <Link
-      href={
-        `/(my)/item?itemId=${comment.item.id}&tab=${ItemDetailsTabNames.COMMENT}` as Href<string>
-      }
+      href={`/(my)/item?itemId=${comment.item.id}&tab=${ITEM_DETAILS_TAB_NAMES.COMMENT}` as Href}
       asChild
       onLongPress={handleLongPress}
     >

@@ -4,7 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
 import { DiscountListItemCardProps } from '@/components/custom/card/list-item/discount';
-import { DiscountChannels } from '@/constants';
+import { DISCOUNT_CHANNELS, DiscountChannels } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { DiscountSortOption, updateDiscountsByCategorySectorCache } from '@/libs/sort';
 import { supabase } from '@/libs/supabase';
@@ -82,8 +82,8 @@ export function useDiscountListQuery({
   const dataToExport = useMemo(() => {
     return data
       ?.filter(item => {
-        if (channel === DiscountChannels.ONLINE) return item.is_online;
-        if (channel === DiscountChannels.OFFLINE) return !item.is_online;
+        if (channel === DISCOUNT_CHANNELS.ONLINE) return item.is_online;
+        if (channel === DISCOUNT_CHANNELS.OFFLINE) return !item.is_online;
         return true;
       })
       .slice(0, limit);

@@ -10,7 +10,7 @@ import CircularProgress from '@/components/core/progress/circular';
 import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import { ItemCommentTabViewProps } from '@/components/custom/tab-view/item/comment';
-import { ItemDetailsTabNames } from '@/constants';
+import { ITEM_DETAILS_TAB_NAMES } from '@/constants';
 import { useInfiniteComments } from '@/hooks/comment/useInfiniteComments';
 import { useRealtimeComments } from '@/hooks/comment/useRealtimeComments';
 import { useSwipeableList } from '@/hooks/swipeable/useSwipeableList';
@@ -25,7 +25,7 @@ const ItemCommentList = memo(function ItemCommentList({
   itemId,
   onAddCommentPress,
 }: ItemCommentListProps) {
-  const { previousSwipeableRef } = useSwipeableList(ItemDetailsTabNames.COMMENT);
+  const { previousSwipeableRef } = useSwipeableList(ITEM_DETAILS_TAB_NAMES.COMMENT);
 
   const tabBarHeight = useBottomTabBarHeight();
 
