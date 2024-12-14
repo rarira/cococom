@@ -10,7 +10,7 @@ import LinearProgress from '@/components/core/progress/linear';
 import Text from '@/components/core/text';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import SearchResultListItemCard from '@/components/custom/card/list-item/search-result';
-import { DiscountChannels, PortalHostNames } from '@/constants';
+import { DiscountChannels, PORTAL_HOST_NAMES } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
@@ -113,7 +113,7 @@ const SearchResultList = memo(function SearchResultList({
         onEndReachedThreshold={0.5}
         {...restProps}
       />
-      <PortalHost name={PortalHostNames.SEARCH} />
+      <PortalHost name={PORTAL_HOST_NAMES.SEARCH} />
     </>
   );
 });

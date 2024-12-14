@@ -3,12 +3,6 @@ import { IconProps as ExpoIconProps } from '@expo/vector-icons/build/createIconS
 import { memo } from 'react';
 import { useStyles } from 'react-native-unistyles';
 
-// export enum IconType {
-//   MatetrialIcon = 'MaterialIcon',
-//   FontAweomseIcon = 'FontAwesomeIcon',
-//   Ionicon = 'Ionicon',
-// }
-
 type IconType = 'MaterialIcon' | 'FontAwesomeIcon' | 'Ionicon';
 
 export interface IconProps extends Omit<ExpoIconProps<IconType>, 'name'> {

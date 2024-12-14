@@ -7,7 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import DiscountListItemCard from '@/components/custom/card/list-item/discount';
-import { DiscountChannels, PortalHostNames } from '@/constants';
+import { DiscountChannels, PORTAL_HOST_NAMES, PortalHostNames } from '@/constants';
 import { useDiscountedRankingListQuery } from '@/hooks/discount/useDiscountedRankingListQuery';
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
@@ -30,7 +30,7 @@ export default function DiscountList({
   channel,
   limit,
   contentContainerStyle,
-  portalHostName = PortalHostNames.HOME,
+  portalHostName = PORTAL_HOST_NAMES.HOME,
   refreshable,
   ranked,
 }: DiscountListProps) {

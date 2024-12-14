@@ -7,7 +7,7 @@ import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
 import DiscountChannelRotateButton from '@/components/custom/button/discount-channel-rotate';
 import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
 import DiscountList from '@/components/custom/list/discount';
-import { DiscountChannels, PortalHostNames } from '@/constants';
+import { DiscountChannels, PORTAL_HOST_NAMES } from '@/constants';
 import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButton';
 import { useDiscountsSort } from '@/hooks/discount/useDiscountsSort';
 import { DISCOUNTED_RANKING_SORT_OPTIONS } from '@/libs/sort';
@@ -37,7 +37,7 @@ const DiscountedRankingTabView = memo(function DiscountedRankingTabView() {
       <DiscountList
         sortOption={sortOption}
         limit={50}
-        portalHostName={PortalHostNames.RANKING}
+        portalHostName={PORTAL_HOST_NAMES.RANKING}
         refreshable
         contentContainerStyle={styles.container}
         channel={channelOption.value}

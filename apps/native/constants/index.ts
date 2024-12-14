@@ -1,14 +1,17 @@
 import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
+import { ObjectValues } from '@/libs/type';
 
-export const enum PortalHostNames {
-  HOME = 'HomePortalHost',
-  SEARCH = 'SearchPortalHost',
-  ITEM_DETAILS = 'ItemDetailsPortalHost',
-  RANKING = 'RankingPortalHost',
-  SIGN_UP = 'SignUpPortalHost',
-  PROFILE = 'ProfilePortalHost',
-  SETTINGS = 'SettingsPortalHost',
-}
+export const PORTAL_HOST_NAMES = {
+  HOME: 'HomePortalHost',
+  SEARCH: 'SearchPortalHost',
+  ITEM_DETAILS: 'ItemDetailsPortalHost',
+  RANKING: 'RankingPortalHost',
+  SIGN_UP: 'SignUpPortalHost',
+  PROFILE: 'ProfilePortalHost',
+  SETTINGS: 'SettingsPortalHost',
+} as const;
+
+export type PortalHostNames = ObjectValues<typeof PORTAL_HOST_NAMES>;
 
 export const MAX_MEMO_LENGTH = 140;
 

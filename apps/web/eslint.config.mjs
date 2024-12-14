@@ -10,6 +10,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  ...compat.config({ settings: { next: { rootDir: "apps/web" } } }),
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 

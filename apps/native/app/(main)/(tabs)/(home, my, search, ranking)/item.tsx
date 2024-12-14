@@ -13,7 +13,7 @@ import ItemDiscountHistoryTabView from '@/components/custom/tab-view/item/discou
 import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
-import { ItemDetailsTabNames, PortalHostNames } from '@/constants';
+import { ItemDetailsTabNames, PORTAL_HOST_NAMES } from '@/constants';
 import { useHideTabBar } from '@/hooks/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
@@ -125,7 +125,7 @@ export default function ItemScreen() {
           </Tabs.ScrollView>
         </Tabs.Tab> */}
       </Tabs.Container>
-      <PortalHost name={PortalHostNames.ITEM_DETAILS} />
+      <PortalHost name={PORTAL_HOST_NAMES.ITEM_DETAILS} />
     </View>
   );
 }

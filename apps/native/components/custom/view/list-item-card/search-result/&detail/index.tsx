@@ -6,7 +6,7 @@ import Text from '@/components/core/text';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT, PORTAL_HOST_NAMES } from '@/constants';
 import { getDiscountTypeFromResult } from '@/libs/item';
 import { InfiniteSearchResultData, SearchResultToRender } from '@/libs/search';
 import Util from '@/libs/util';
@@ -61,7 +61,7 @@ function SearchResultListItemCardDetailView({ item }: SearchResultListItemCardDe
           </View>
           <ListItemWishlistIconButton<InfiniteSearchResultData['pages'][number]['items'][number]>
             item={item}
-            portalHostName={PortalHostNames.SEARCH}
+            portalHostName={PORTAL_HOST_NAMES.SEARCH}
           />
         </View>
       </View>

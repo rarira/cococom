@@ -8,7 +8,7 @@ import DeleteUserDialog from '@/components/custom/dialog/delete-user';
 import SignUpConfirmForm from '@/components/custom/form/signup/&confirm';
 import SectionText from '@/components/custom/text/section';
 import ScreenContainerView from '@/components/custom/view/container/screen';
-import { PortalHostNames } from '@/constants';
+import { PORTAL_HOST_NAMES } from '@/constants';
 import { useUserStore } from '@/store/user';
 
 export default function ProfileScreen() {
@@ -46,9 +46,9 @@ export default function ProfileScreen() {
         <RowMenu.Text>회원 탈퇴</RowMenu.Text>
         <RowMenu.NavButton />
       </RowMenu>
-      <PortalHost name={PortalHostNames.PROFILE} />
+      <PortalHost name={PORTAL_HOST_NAMES.PROFILE} />
       <DeleteUserDialog
-        portalHostName={PortalHostNames.PROFILE}
+        portalHostName={PORTAL_HOST_NAMES.PROFILE}
         visible={visible}
         setVisible={setVisible}
       />

@@ -15,7 +15,7 @@ import { useDiscountChannels } from '@/store/discount-channels';
 import { useUserStore } from '@/store/user';
 import Text from '@/components/core/text';
 import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notification';
-import { PortalHostNames } from '@/constants';
+import { PORTAL_HOST_NAMES } from '@/constants';
 import { useUpdateNotificationSetting } from '@/hooks/notification/useUpdateNotificationSetting';
 import Util from '@/libs/util';
 
@@ -96,9 +96,9 @@ export default function SettingsScreen() {
           <RowMenu.Text>런타임 버전</RowMenu.Text>
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
         </RowMenu>
-        <PortalHost name={PortalHostNames.SETTINGS} />
+        <PortalHost name={PORTAL_HOST_NAMES.SETTINGS} />
         <OptOutNotificationDialog
-          portalHostName={PortalHostNames.SETTINGS}
+          portalHostName={PORTAL_HOST_NAMES.SETTINGS}
           visible={optOutDialogVisible}
           setVisible={setOptOutDialogVisible}
           {...dialogProps!}

@@ -11,7 +11,7 @@ import Text from '@/components/core/text';
 import ItemShareButton from '@/components/custom/button/item-share';
 import ListItemWishlistIconButton from '@/components/custom/button/list-item-wishlist-icon';
 import OpenWebButton from '@/components/custom/button/open-web';
-import { PortalHostNames } from '@/constants';
+import { PORTAL_HOST_NAMES } from '@/constants';
 import { queryKeys } from '@/libs/react-query';
 import { handleMutateOfItems } from '@/libs/react-query/item';
 import Util from '@/libs/util';
@@ -69,7 +69,7 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
             item={item}
             // noText
             iconProps={{ size: theme.fontSize.lg }}
-            portalHostName={PortalHostNames.ITEM_DETAILS}
+            portalHostName={PORTAL_HOST_NAMES.ITEM_DETAILS}
             onMutate={handleMutate}
           />
         </View>

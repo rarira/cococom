@@ -34,7 +34,7 @@ export class AuthTable {
     return await this.supabaseClient.auth.signOut();
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<{ data: unknown; error: unknown | null }> {
     const response = await this.supabaseClient.functions.invoke('delete-user', {
       body: { userId },
     });

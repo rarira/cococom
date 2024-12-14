@@ -9,7 +9,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import HeaderBackButton from '@/components/custom/button/header/back';
 import EmailSignUpForm from '@/components/custom/form/signup/email';
 import ScreenTitleText from '@/components/custom/text/screen-title';
-import { PortalHostNames } from '@/constants';
+import { PORTAL_HOST_NAMES } from '@/constants';
 
 export default function SignUpScreen() {
   const { styles } = useStyles(stylesheet);
@@ -36,7 +36,7 @@ export default function SignUpScreen() {
         <ScreenTitleText>환영합니다.아래 정보를 입력하여 회원가입을 진행하세요</ScreenTitleText>
         <EmailSignUpForm />
       </View>
-      <PortalHost name={PortalHostNames.SIGN_UP} />
+      <PortalHost name={PORTAL_HOST_NAMES.SIGN_UP} />
     </>
   );
 }

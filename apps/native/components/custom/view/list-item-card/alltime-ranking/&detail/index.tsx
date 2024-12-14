@@ -8,7 +8,7 @@ import ListItemWishlistIconButton from '@/components/custom/button/list-item-wis
 import { AlltimeRankingListItemCardProps } from '@/components/custom/card/list-item/alltime-ranking';
 import InfoIconText from '@/components/custom/text/info-icon';
 import DiscountRecordView from '@/components/custom/view/discount-record';
-import { ITEM_DETAILS_MAX_COUNT, PortalHostNames } from '@/constants';
+import { ITEM_DETAILS_MAX_COUNT, PORTAL_HOST_NAMES } from '@/constants';
 import { getDiscountTypeFromResult } from '@/libs/item';
 import Util from '@/libs/util';
 import { useUserStore } from '@/store/user';
@@ -62,7 +62,7 @@ function AlltimeRankingListItemCardDetailView({ item }: AlltimeRankingListItemCa
           </View>
           <ListItemWishlistIconButton<AlltimeRankingResultItem>
             item={item}
-            portalHostName={PortalHostNames.RANKING}
+            portalHostName={PORTAL_HOST_NAMES.RANKING}
           />
         </View>
       </View>

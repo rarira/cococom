@@ -10,7 +10,7 @@ import Dialog from '@/components/core/dialog';
 import TextInput from '@/components/core/text-input';
 import FormSubmitButton from '@/components/custom/button/form/submit';
 import TextInputEyeSlot from '@/components/custom/text-input/eye-slot';
-import { PortalHostNames } from '@/constants';
+import { PORTAL_HOST_NAMES } from '@/constants';
 import { AuthErrorCode } from '@/libs/error';
 import { signUpFormSchema } from '@/libs/form';
 import { getProfile, supabase } from '@/libs/supabase';
@@ -147,7 +147,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
         />
       </View>
       <Dialog
-        portalHostName={PortalHostNames.SIGN_UP}
+        portalHostName={PORTAL_HOST_NAMES.SIGN_UP}
         onDismiss={() => router.replace('/auth/signin')}
         visible={showDialog}
         setVisible={setShowDialog}

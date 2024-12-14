@@ -7,7 +7,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import CircularProgress from '@/components/core/progress/circular';
 import AlltimeRankingListItemCard from '@/components/custom/card/list-item/alltime-ranking';
-import { DiscountChannels, PortalHostNames } from '@/constants';
+import { DiscountChannels, PORTAL_HOST_NAMES } from '@/constants';
 import { useAlltimeRankingQuery } from '@/hooks/alltime-ranking/useAlltimeRankingQuery';
 import { AlltimeSortOption } from '@/libs/sort';
 
@@ -67,7 +67,7 @@ export default function AlltimeRankingList({
         onRefresh={handleRefresh}
         refreshing={refreshing}
       />
-      <PortalHost name={PortalHostNames.RANKING} />
+      <PortalHost name={PORTAL_HOST_NAMES.RANKING} />
     </>
   );
 }
