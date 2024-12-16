@@ -36,5 +36,3 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
-apps/web/public/.well_known/apple-app-site-association
-apps/web/public/.well_known/assetlinks.json

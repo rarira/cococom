@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.rariradev.cococom",
+      "sha256_cert_fingerprints": [
+        "C7:8E:63:36:E7:A9:23:A6:E8:F0:4F:4C:77:7F:A3:98:C4:6E:74:43:44:BF:E6:DA:E7:21:CB:A0:37:3E:61:7F"
+      ]
+    }
+  }
+]

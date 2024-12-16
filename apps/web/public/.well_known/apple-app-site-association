@@ -1,0 +1,31 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TRTH882CN9.com.rariradev.cococoom",
+        "paths": [
+          "/records/*",
+          "/*"
+        ],
+        "components": [
+          {
+            "/": "/website/*",
+            "exclude": true,
+            "comment": "Matches any URL whose path starts with /website/ except for /website/"
+          }
+        ]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": [
+      "TRTH882CN9.com.rariradev.cococoom"
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TRTH882CN9.com.rariradev.cococoom"
+    ]
+  }
+}
