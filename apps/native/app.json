@@ -2,8 +2,8 @@
   "expo": {
     "name": "cococom",
     "slug": "cococom",
-    "version": "0.1.23",
-    "runtimeVersion": "0.1.23",
+    "version": "0.1.24-alpha.cdc-19",
+    "runtimeVersion": "0.1.24",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cccom",
@@ -14,22 +14,37 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "buildNumber": "1",
+      "buildNumber": "2",
       "supportsTablet": true,
       "bundleIdentifier": "com.rariradev.cococom",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["cccom"],
         "UIBackgroundModes": ["remote-notification"]
       },
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "associatedDomains": ["applinks:cococom.kr"]
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rariradev.cococom"
+      "package": "com.rariradev.cococom",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.cococom.kr",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

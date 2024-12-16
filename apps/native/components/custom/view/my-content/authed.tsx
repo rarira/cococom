@@ -1,7 +1,7 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Route, SceneMap, TabBar, TabBarItem, TabView, TabViewProps } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 import Chip from '@/components/core/chip';
 import MyCommentTabView from '@/components/custom/tab-view/my/comment';
@@ -24,11 +24,9 @@ const AuthedMyContentView = memo(function AuthedMyContentView() {
 
   const [routes] = useState(AUTHED_MY_TABS_ROUTES);
 
-  useFocusEffect(
-    useCallback(
-      () => setIndex(tabs ? AUTHED_MY_TABS_ROUTES.findIndex(route => route.key === tabs) : 0),
-      [tabs],
-    ),
+  useEffect(
+    () => setIndex(tabs ? AUTHED_MY_TABS_ROUTES.findIndex(route => route.key === tabs) : 0),
+    [tabs],
   );
 
   const renderScene = useMemo(() => {

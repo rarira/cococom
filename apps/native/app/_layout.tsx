@@ -9,8 +9,8 @@ import NetInfo from '@react-native-community/netinfo';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import {
-  focusManager,
   onlineManager,
+  focusManager,
   QueryCache,
   QueryClient,
   QueryClientProvider,
