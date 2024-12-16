@@ -3,9 +3,9 @@
     "apps": [],
     "details": [
       {
-        "appID": "TRTH882CN9.com.rariradev.cococoom",
+        "appID": "TRTH882CN9.com.rariradev.cococom",
         "paths": [
-          "/records/*",
+          "/app/*",
           "/*"
         ],
         "components": [
@@ -20,12 +20,12 @@
   },
   "activitycontinuation": {
     "apps": [
-      "TRTH882CN9.com.rariradev.cococoom"
+      "TRTH882CN9.com.rariradev.cococom"
     ]
   },
   "webcredentials": {
     "apps": [
-      "TRTH882CN9.com.rariradev.cococoom"
+      "TRTH882CN9.com.rariradev.cococom"
     ]
   }
 }
