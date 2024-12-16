@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
+    console.log("will return headers");
     return [
       {
-        source: "/.well_known/apple-app-site-association",
+        source: "/.well-known/apple-app-site-association",
         headers: [{ key: "Content-Type", value: "application/json" }],
       },
     ];
