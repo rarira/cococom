@@ -8,7 +8,6 @@ import { STORAGE_KEYS } from '@/libs/mmkv';
 export function useColorScheme() {
   const [theme, setTheme] = useMMKVString(STORAGE_KEYS.COLOR_SCHEME);
 
-  console.log('useColorScheme', { theme });
   const handleToggleAutoTheme = useCallback(() => {
     setTheme(theme =>
       theme === 'auto' ? (UnistylesRuntime.colorScheme as keyof UnistylesThemes) : 'auto',
