@@ -22,7 +22,7 @@
         "UIBackgroundModes": ["remote-notification"]
       },
       "usesAppleSignIn": true,
-      "associatedDomains": ["applinks:cococom.kr"]
+      "associatedDomains": ["applinks:cococom.kr", "applinks:www.cococom.kr"]
     },
     "android": {
       "versionCode": 2,
@@ -39,6 +39,18 @@
             {
               "scheme": "https",
               "host": "*.cococom.kr",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "cococom.kr",
               "pathPrefix": "/"
             }
           ],
