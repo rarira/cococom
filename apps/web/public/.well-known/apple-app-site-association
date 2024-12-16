@@ -3,12 +3,14 @@
     "apps": [],
     "details": [
       {
-        "appID": "TRTH882CN9.com.rariradev.cococom",
-        "paths": [
-          "/app/*",
-          "/*"
+        "appIDs": [
+          "TRTH882CN9.com.rariradev.cococom"
         ],
         "components": [
+          {
+            "/": "/*",
+            "comment": "Matches any URL"
+          },
           {
             "/": "/website/*",
             "exclude": true,
