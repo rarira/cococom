@@ -11,10 +11,12 @@ export function useTransparentHeader(options: Record<string, any>) {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
+    console.log('useTransparentHeader', { ios: Util.isPlatform('ios'), headerHeight });
     navigation.setOptions({
       ...(Util.isPlatform('ios')
         ? {
-            headerBlurEffect: 'systemUltraThinMaterial',
+            headerStyle: { backgroudColor: 'transparent' },
+            headerBlurEffect: 'prominent',
             headerTransparent: true,
             contentStyle: { paddingTop: headerHeight },
           }

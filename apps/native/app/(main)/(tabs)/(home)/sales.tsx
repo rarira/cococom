@@ -45,9 +45,14 @@ export default function SalesScreen() {
 
   const layout = useWindowDimensions();
 
-  useTransparentHeader({
-    title: categorySectorParam,
-  });
+  useTransparentHeader(
+    useMemo(
+      () => ({
+        title: categorySectorParam,
+      }),
+      [categorySectorParam],
+    ),
+  );
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 

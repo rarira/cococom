@@ -8,6 +8,7 @@ import { STORAGE_KEYS } from '@/libs/mmkv';
 export function useColorScheme() {
   const [theme, setTheme] = useMMKVString(STORAGE_KEYS.COLOR_SCHEME);
 
+  console.log('useColorScheme', { theme });
   const handleToggleAutoTheme = useCallback(() => {
     setTheme(theme =>
       theme === 'auto' ? (UnistylesRuntime.colorScheme as keyof UnistylesThemes) : 'auto',
@@ -23,6 +24,12 @@ export function useColorScheme() {
 
   useEffect(() => {
     if (theme !== 'auto') return;
+
+    const currentTheme = Appearance.getColorScheme();
+    if (currentTheme !== UnistylesRuntime.colorScheme) {
+      UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme as keyof UnistylesThemes);
+    }
+
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
       UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
     });

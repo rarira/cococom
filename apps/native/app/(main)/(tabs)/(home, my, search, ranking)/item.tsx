@@ -1,7 +1,7 @@
 import { PortalHost } from '@gorhom/portal';
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { MaterialTabBar, TabBarProps, Tabs } from 'react-native-collapsible-tab-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -53,13 +53,18 @@ export default function ItemScreen() {
     return <HeaderRightRelatedButton item={data} />;
   }, [data]);
 
-  useTransparentHeader({
-    title: data?.itemName ?? '',
-    headerBackButtonDisplayMode: 'minimal',
-    headerRight,
-    headerLeft:
-      isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : undefined,
-  });
+  useTransparentHeader(
+    useMemo(
+      () => ({
+        title: data?.itemName ?? '',
+        headerBackButtonDisplayMode: 'minimal',
+        headerRight,
+        headerLeft:
+          isModal === 'true' ? () => <CloseButton onPress={() => router.dismiss()} /> : undefined,
+      }),
+      [data, headerRight, isModal],
+    ),
+  );
 
   const renderTabBar = useCallback(
     (props: TabBarProps) => {
