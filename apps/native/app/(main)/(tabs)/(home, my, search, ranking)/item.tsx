@@ -39,8 +39,6 @@ export default function ItemScreen() {
     isModal?: string;
   }>();
 
-  console.log('ItemScreen', { itemId, tab, isModal });
-
   const { bottom } = useSafeAreaInsets();
 
   useHideTabBar();

@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import { router } from 'expo-router';
 
@@ -13,10 +12,7 @@ import { useErrorHandler } from '../useErrorHandler';
 function redirect(notification: Notifications.Notification) {
   const url = notification.request.content.data?.url;
 
-  console.log('redirect', { url });
   if (url) {
-    // const path = url.split('cococom.kr')[1];
-    // console.log('path', { path });
     router.push(url);
   }
 }
@@ -65,7 +61,6 @@ export function usePushNotifications() {
       });
 
       responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log('response', response);
         redirect(response.notification);
       });
     }

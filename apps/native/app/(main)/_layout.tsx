@@ -3,7 +3,6 @@ import { useStyles } from 'react-native-unistyles';
 
 export default function MainLayout() {
   const { theme } = useStyles();
-  console.log('MainLayout');
   return (
     <Stack
       screenOptions={{

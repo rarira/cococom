@@ -18,7 +18,7 @@ import {
 import { setDefaultOptions } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useFonts } from 'expo-font';
-import { SplashScreen, Stack, useNavigationContainerRef, usePathname } from 'expo-router';
+import { SplashScreen, Stack, useNavigationContainerRef } from 'expo-router';
 import { useEffect } from 'react';
 import { AppState, LogBox, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -102,9 +102,6 @@ function onAppStateChange(status: AppStateStatus) {
 
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
-  const pathname = usePathname();
-
-  console.log('rootlayout', { pathname });
 
   useDevPlugins({ queryClient, navigationRef });
 

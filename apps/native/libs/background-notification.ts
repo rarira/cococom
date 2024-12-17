@@ -30,7 +30,7 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
         content: {
           title: '할인 정보 업데이트',
           body: getLocalHistoryNotificationBody(payload, items),
-          data: { url: 'https://cococom.kr/' },
+          data: { url: 'cccom:///home' },
         },
         trigger: Util.isPlatform('ios') ? null : { channelId: 'default', seconds: 0 },
       });
