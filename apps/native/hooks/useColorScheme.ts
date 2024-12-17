@@ -26,7 +26,7 @@ export function useColorScheme(loadOnly?: boolean) {
   useEffect(() => {
     if (!loadOnly) return;
     UnistylesRuntime.setTheme(
-      (theme === 'auto' ? UnistylesRuntime.colorScheme : theme) as keyof UnistylesThemes,
+      (theme === 'auto' || !theme ? UnistylesRuntime.colorScheme : theme) as keyof UnistylesThemes,
     );
   }, [theme, loadOnly]);
 
@@ -34,7 +34,8 @@ export function useColorScheme(loadOnly?: boolean) {
     if (!loadOnly) return;
 
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
-      if (theme === 'auto') UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
+      if (theme === 'auto' || !theme)
+        UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
     });
     return () => {
       listener.remove();
