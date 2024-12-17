@@ -27,7 +27,6 @@ import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-rean
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
 import * as Notifications from 'expo-notifications';
-import { StatusBar } from 'expo-status-bar';
 import { PushNotificationTrigger } from 'expo-notifications';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -39,6 +38,7 @@ import Sentry, { reactNavigationIntegration } from '@/libs/sentry';
 import { useExpoUpdate } from '@/hooks/useExpoUpdate';
 import CircularProgress from '@/components/core/progress/circular';
 import { usePushNotifications } from '@/hooks/notification/usePushNotifications';
+import StatusBar from '@/components/custom/status-bar';
 export { ErrorBoundary } from 'expo-router';
 
 LogBox.ignoreLogs(['Failed prop type']);
