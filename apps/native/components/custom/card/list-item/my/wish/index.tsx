@@ -28,7 +28,7 @@ const MyWishlistItemCard = memo(function MyWishlistItemCard({
   const { styles } = useStyles(stylesheet);
   const queryClient = useQueryClient();
 
-  const deleteWishlistMutation = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: () => supabase.wishlists.deleteWishlistById(item.wishlistId),
     onMutate: () => {
       return handleMutateOfWishlist({
@@ -46,11 +46,11 @@ const MyWishlistItemCard = memo(function MyWishlistItemCard({
 
   const handleLongPress = useCallback(async () => {
     try {
-      await deleteWishlistMutation.mutateAsync();
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-  }, [deleteWishlistMutation]);
+  }, [mutateAsync]);
 
   return (
     <Link href={`/(my)/item?itemId=${item.id}` as Href} asChild onLongPress={handleLongPress}>

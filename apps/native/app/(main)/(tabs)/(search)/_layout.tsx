@@ -1,13 +1,13 @@
 import { Stack } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: 'search',
 };
 
 export default function SearchLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
+      <Stack.Screen name="search" />
       <Stack.Screen name="item" options={{ headerShown: true }} />
     </Stack>
   );

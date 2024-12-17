@@ -32,7 +32,7 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
 
   const queryClient = useQueryClient();
 
-  const deleteCommentMutation = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: () => supabase.comments.deleteComment(comment.id),
     onMutate: () => {
       updateMyComments({
@@ -64,11 +64,11 @@ const MyCommentListItemCard = memo(function MyCommentListItemCard({
   const handleLongPress = useCallback(async () => {
     //TODO: 첫 동작시 안내 팝업 띄우기
     try {
-      await deleteCommentMutation.mutateAsync();
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-  }, [deleteCommentMutation]);
+  }, [mutateAsync]);
 
   const isOnline = comment.item.itemId.split('_')[1] === 'online';
 

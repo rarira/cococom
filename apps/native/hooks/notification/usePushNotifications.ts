@@ -12,7 +12,11 @@ import { useErrorHandler } from '../useErrorHandler';
 
 function redirect(notification: Notifications.Notification) {
   const url = notification.request.content.data?.url;
+
+  console.log('redirect', { url });
   if (url) {
+    // const path = url.split('cococom.kr')[1];
+    // console.log('path', { path });
     router.push(url);
   }
 }
@@ -58,11 +62,10 @@ export function usePushNotifications() {
           notification.request.identifier === NOTIFICATION_IDENTIFIER.LOCAL
         )
           return;
-
-        console.log('addNotificationReceivedListener', { OS: Platform.OS, notification });
       });
 
       responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('response', response);
         redirect(response.notification);
       });
     }

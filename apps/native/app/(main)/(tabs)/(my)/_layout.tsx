@@ -6,7 +6,7 @@ import Text from '@/components/core/text';
 import { useSignOut } from '@/hooks/auth/useSignOut';
 
 export const unstable_settings = {
-  initialRouteName: '(home)',
+  initialRouteName: 'my',
 };
 
 export default function MyLayout() {
@@ -21,7 +21,7 @@ export default function MyLayout() {
         headerStyle: { backgroundColor: theme.colors.modalBackground },
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen name="my" />
       <Stack.Screen
         name="profile"
         options={{

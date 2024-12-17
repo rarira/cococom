@@ -3,6 +3,7 @@ import { useStyles } from 'react-native-unistyles';
 
 export default function MainLayout() {
   const { theme } = useStyles();
+  console.log('MainLayout');
   return (
     <Stack
       screenOptions={{
@@ -12,12 +13,6 @@ export default function MainLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ title: '홈', headerShown: false }} />
-      {/* <Stack.Screen
-        name="details"
-        options={{
-          headerShown: false,
-        }}
-      /> */}
     </Stack>
   );
 }

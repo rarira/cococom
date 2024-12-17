@@ -141,7 +141,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
   // }, [setTodaysNotifications]);
 
   const handlePress = useCallback(() => {
-    if (granted || Util.isDevClient()) {
+    if (granted || Util.isDevice()) {
       router.push('/noti-center');
     } else {
       Alert.alert(
@@ -153,7 +153,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
             onPress: () => null,
             style: 'cancel',
           },
-          { text: '설정 변경', onPress: () => router.navigate('/(main)/(tabs)/(my)/settings') },
+          { text: '설정 변경', onPress: () => router.navigate('/settings') },
         ],
       );
     }

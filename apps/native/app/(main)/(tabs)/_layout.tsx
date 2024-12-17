@@ -45,6 +45,7 @@ export default function TabLayout() {
   const tabBarVisible = useUiStore(state => state.tabBarVisible);
   const { bottom } = useSafeAreaInsets();
 
+  console.log('TabLayout', { tabBarVisible });
   return (
     <Tabs
       screenOptions={({ route }: { route: RouteProp<any, any> }) => {
@@ -78,6 +79,7 @@ export default function TabLayout() {
           </Animated.View>
         );
       }}
+      initialRouteName={unstable_settings.initialRouteName}
     >
       <Tabs.Screen
         name="(home)"
