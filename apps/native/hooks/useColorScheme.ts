@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { Appearance } from 'react-native';
 import { UnistylesRuntime, UnistylesThemes } from 'react-native-unistyles';
 import { useMMKVString } from 'react-native-mmkv';
+import { set } from 'date-fns';
 
 import { STORAGE_KEYS } from '@/libs/mmkv';
 
@@ -25,10 +26,11 @@ export function useColorScheme(loadOnly?: boolean) {
 
   useEffect(() => {
     if (!loadOnly) return;
+    if (!theme) setTheme(UnistylesRuntime.colorScheme);
     UnistylesRuntime.setTheme(
       (theme === 'auto' || !theme ? UnistylesRuntime.colorScheme : theme) as keyof UnistylesThemes,
     );
-  }, [theme, loadOnly]);
+  }, [theme, loadOnly, setTheme]);
 
   useEffect(() => {
     if (!loadOnly) return;
@@ -36,11 +38,12 @@ export function useColorScheme(loadOnly?: boolean) {
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
       if (theme === 'auto' || !theme)
         UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
+      if (!theme) setTheme(UnistylesRuntime.colorScheme);
     });
     return () => {
       listener.remove();
     };
-  }, [loadOnly, theme]);
+  }, [loadOnly, setTheme, theme]);
 
   return {
     handleToggleAutoTheme,
