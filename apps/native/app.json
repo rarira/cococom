@@ -38,7 +38,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "*.cococom.kr",
+              "host": "cococom.kr",
               "pathPrefix": "/"
             }
           ],
@@ -50,7 +50,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "cococom.kr",
+              "host": "*.cococom.kr",
               "pathPrefix": "/"
             }
           ],
