@@ -120,7 +120,7 @@ function RootLayout() {
 
   const { reportToSentry } = useErrorHandler();
 
-  const { theme } = useColorScheme();
+  const { theme } = useColorScheme(true);
 
   useEffect(() => {
     if (navigationRef) {

@@ -5,37 +5,41 @@ import { useMMKVString } from 'react-native-mmkv';
 
 import { STORAGE_KEYS } from '@/libs/mmkv';
 
-export function useColorScheme() {
+export function useColorScheme(loadOnly?: boolean) {
   const [theme, setTheme] = useMMKVString(STORAGE_KEYS.COLOR_SCHEME);
 
   const handleToggleAutoTheme = useCallback(() => {
-    setTheme(theme =>
-      theme === 'auto' ? (UnistylesRuntime.colorScheme as keyof UnistylesThemes) : 'auto',
+    const newTheme =
+      theme === 'auto' ? (UnistylesRuntime.colorScheme as keyof UnistylesThemes) : 'auto';
+    setTheme(newTheme as string);
+    UnistylesRuntime.setTheme(
+      (newTheme === 'auto' ? UnistylesRuntime.colorScheme : newTheme) as keyof UnistylesThemes,
     );
-    UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme as keyof UnistylesThemes);
-  }, [setTheme]);
+  }, [setTheme, theme]);
 
   const handleToggleTheme = useCallback(() => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    UnistylesRuntime.setTheme(newTheme);
+    UnistylesRuntime.setTheme(newTheme as keyof UnistylesThemes);
   }, [setTheme, theme]);
 
   useEffect(() => {
-    if (theme !== 'auto') return;
+    if (!loadOnly) return;
+    UnistylesRuntime.setTheme(
+      (theme === 'auto' ? UnistylesRuntime.colorScheme : theme) as keyof UnistylesThemes,
+    );
+  }, [theme, loadOnly]);
 
-    const currentTheme = Appearance.getColorScheme();
-    if (currentTheme !== UnistylesRuntime.colorScheme) {
-      UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme as keyof UnistylesThemes);
-    }
+  useEffect(() => {
+    if (!loadOnly) return;
 
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
-      UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
+      if (theme === 'auto') UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
     });
     return () => {
       listener.remove();
     };
-  }, [setTheme, theme]);
+  }, [loadOnly, theme]);
 
   return {
     handleToggleAutoTheme,

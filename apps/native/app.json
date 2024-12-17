@@ -22,7 +22,7 @@
         "UIBackgroundModes": ["remote-notification"]
       },
       "usesAppleSignIn": true,
-      "associatedDomains": ["applinks:cococom.kr", "applinks:www.cococom.kr"]
+      "associatedDomains": ["applinks:www.cococom.kr", "applinks:cococom.kr"]
     },
     "android": {
       "versionCode": 3,
