@@ -28,6 +28,7 @@ export default function NotiCenterScreen() {
     queryKey: queryKeys.wishlists.count({ userId: user!.id }),
     queryFn: () => supabase.wishlists.getMyWishlistItemsCount({ userId: user!.id }),
     enabled: !!user,
+    refetchOnWindowFocus: 'always',
   });
 
   useLayoutEffect(() => {
@@ -49,7 +50,7 @@ export default function NotiCenterScreen() {
 
   return (
     <ScreenContainerView withHeader>
-      {wishlistCount !== null ? (
+      {!!wishlistCount ? (
         <>
           <View style={styles.header}>
             <Text type="subtitle" style={styles.subTitle}>

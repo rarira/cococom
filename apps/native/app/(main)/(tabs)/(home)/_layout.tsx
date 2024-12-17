@@ -28,6 +28,7 @@ export default function HomeLayout() {
           presentation: 'modal',
           headerBackButtonDisplayMode: 'minimal',
           headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
+          headerTitleStyle: styles.headerTitle,
         }}
       />
       <Stack.Screen name="item" />
@@ -42,5 +43,8 @@ const stylesheet = createStyleSheet(theme => ({
   },
   header: {
     backgroundColor: theme.colors.modalBackground,
+  },
+  headerTitle: {
+    color: theme.colors.typography,
   },
 }));

@@ -82,9 +82,9 @@ export class WishlistsTable {
   }
 
   async getMyWishlistItemsCount({ userId }: { userId: string }) {
-    const { data, error } = await this.supabaseClient
+    const { count, error } = await this.supabaseClient
       .from('wishlists')
-      .select('id', { count: 'estimated', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('userId', userId);
 
     if (error) {
@@ -92,6 +92,19 @@ export class WishlistsTable {
       throw error;
     }
 
+    return count;
+  }
+
+  async getWishlistItemsOnSaleStart({ userId, historyId }: { userId: string; historyId: number }) {
+    const { data, error } = await this.supabaseClient.rpc('get_wishlist_items_on_sale_start', {
+      user_uuid: userId,
+      history_id_param: historyId,
+    });
+
+    if (error) {
+      console.error('Error:', error);
+      throw error;
+    }
     return data;
   }
 }
