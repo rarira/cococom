@@ -26,10 +26,10 @@ export function useColorScheme(loadOnly?: boolean) {
 
   useEffect(() => {
     if (!loadOnly) return;
-    if (!theme) setTheme(UnistylesRuntime.colorScheme);
     UnistylesRuntime.setTheme(
       (theme === 'auto' || !theme ? UnistylesRuntime.colorScheme : theme) as keyof UnistylesThemes,
     );
+    if (!theme) setTheme('auto');
   }, [theme, loadOnly, setTheme]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function useColorScheme(loadOnly?: boolean) {
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
       if (theme === 'auto' || !theme)
         UnistylesRuntime.setTheme(colorScheme as keyof UnistylesThemes);
-      if (!theme) setTheme(UnistylesRuntime.colorScheme);
+      if (!theme) setTheme('auto');
     });
     return () => {
       listener.remove();
