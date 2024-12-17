@@ -110,7 +110,7 @@ function RootLayout() {
     Inter: require('../assets/fonts/Inter_18pt-Medium.ttf'),
   });
 
-  const { isUpdating } = useExpoUpdate();
+  const { isUpdating, checkUpdate } = useExpoUpdate();
 
   useLoadUser();
 
@@ -135,10 +135,13 @@ function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', onAppStateChange);
+    const subscription = AppState.addEventListener('change', status => {
+      onAppStateChange(status);
+      status === 'active' && checkUpdate();
+    });
 
     return () => subscription.remove();
-  }, []);
+  }, [checkUpdate]);
 
   if (!loaded || isUpdating) {
     return <CircularProgress style={{ flex: 1 }} />;
