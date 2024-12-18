@@ -10,6 +10,7 @@ import AlltimeRankingListItemCard from '@/components/custom/card/list-item/allti
 import { DiscountChannels, PORTAL_HOST_NAMES } from '@/constants';
 import { useAlltimeRankingQuery } from '@/hooks/alltime-ranking/useAlltimeRankingQuery';
 import { AlltimeSortOption } from '@/libs/sort';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface AlltimeRankingListProps {
   sortOption: AlltimeSortOption;
@@ -46,6 +47,8 @@ export default function AlltimeRankingList({
     [styles.seperatorStyle],
   );
 
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
+
   if (error) return null;
 
   if (isLoading) {
@@ -66,6 +69,8 @@ export default function AlltimeRankingList({
         }}
         onRefresh={handleRefresh}
         refreshing={refreshing}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <PortalHost name={PORTAL_HOST_NAMES.RANKING} />
     </>

@@ -11,6 +11,7 @@ import MyMemoListItemCard from '@/components/custom/card/list-item/my/memo';
 import { MyMemoToRender } from '@/hooks/memo/useMyMemos';
 import { MyMemoSortOption } from '@/libs/sort/my-memo';
 import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface MyMemoListProps extends Partial<FlashListProps<MyMemoToRender[number]>> {
   memos: MyMemoToRender;
@@ -71,6 +72,8 @@ const MyMemoList = memo(function MyMemoList({
     [styles.seperator],
   );
 
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
+
   return (
     <FlashList
       ref={listRef}
@@ -85,6 +88,8 @@ const MyMemoList = memo(function MyMemoList({
       ItemSeparatorComponent={ItemSeparatorComponent}
       contentContainerStyle={styles.flashListContainer(tabBarHeight)}
       onEndReachedThreshold={0.5}
+      onScroll={handleScroll}
+      onMomentumScrollEnd={handleMomentumScrollEnd}
       {...restProps}
     />
   );

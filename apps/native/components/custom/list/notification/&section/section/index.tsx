@@ -33,6 +33,7 @@ const NotificationsSectionListSection = memo(function NotificationsSectionListSe
         keyExtractor={item => `${item.id}`}
         renderItem={({ item }) => <NotificationsSectionListItem item={item} />}
         style={styles.flatList}
+        scrollEnabled={false}
       />
     </AccordionItem>
   );

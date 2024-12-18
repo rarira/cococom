@@ -17,6 +17,7 @@ import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButto
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { SearchItemsOptions } from '@/libs/search';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface MyWishlistProps extends Partial<FlashListProps<WishlistToRender[number]>> {
   wishlistResult: WishlistToRender;
@@ -69,8 +70,6 @@ const MyWishlist = memo(function MyWishlist({
   );
 
   const ListHeaderComponent = useMemo(() => {
-    // if (wishlistResult.length === 0) return null;
-
     return (
       <View style={styles.headerRowContainer}>
         {totalResults ? (
@@ -132,6 +131,8 @@ const MyWishlist = memo(function MyWishlist({
     [styles.seperator],
   );
 
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
+
   return (
     <FlashList
       ref={listRef}
@@ -146,6 +147,8 @@ const MyWishlist = memo(function MyWishlist({
       ItemSeparatorComponent={ItemSeparatorComponent}
       contentContainerStyle={styles.flashListContainer(tabBarHeight)}
       onEndReachedThreshold={0.5}
+      onScroll={handleScroll}
+      onMomentumScrollEnd={handleMomentumScrollEnd}
       {...restProps}
     />
   );
