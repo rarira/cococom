@@ -43,5 +43,4 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
   },
 );
 
-console.log('Background notification task registered');
 Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);

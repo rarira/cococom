@@ -32,7 +32,6 @@ export function useScrollAwareTabBar() {
   );
 
   const handleMomentumScrollEnd = useCallback(() => {
-    console.log('scroll stop');
     throttleedFunctionRef.current?.cancel();
     setTabBarVisible(true);
   }, [setTabBarVisible]);
