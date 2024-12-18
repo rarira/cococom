@@ -100,6 +100,7 @@ function CategorySectorList({ setTotalDiscounts }: CategorySectorListProps) {
       numColumns={1}
       ItemSeparatorComponent={() => <View style={styles.seperatorStyle} />}
       contentContainerStyle={styles.container}
+      bounces={false}
     />
   );
 }
