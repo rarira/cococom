@@ -1,13 +1,21 @@
 import { useRef, useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 import * as Device from 'expo-device';
+import { router } from 'expo-router';
 
 import { NOTIFICATION_IDENTIFIER, registerForPushNotificationsAsync } from '@/libs/notifications';
 import { supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
 
 import { useErrorHandler } from '../useErrorHandler';
+
+function redirect(notification: Notifications.Notification) {
+  const url = notification.request.content.data?.url;
+
+  if (url) {
+    router.push(url);
+  }
+}
 
 export function usePushNotifications() {
   const { user, profile, setProfile } = useUserStore(state => ({
@@ -50,12 +58,10 @@ export function usePushNotifications() {
           notification.request.identifier === NOTIFICATION_IDENTIFIER.LOCAL
         )
           return;
-
-        console.log('addNotificationReceivedListener', { OS: Platform.OS, notification });
       });
 
       responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log('open notificattion', { OS: Platform.OS, response });
+        redirect(response.notification);
       });
     }
 

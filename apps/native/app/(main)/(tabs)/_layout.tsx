@@ -78,6 +78,7 @@ export default function TabLayout() {
           </Animated.View>
         );
       }}
+      initialRouteName={unstable_settings.initialRouteName}
     >
       <Tabs.Screen
         name="(home)"

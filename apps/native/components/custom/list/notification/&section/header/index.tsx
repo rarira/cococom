@@ -65,6 +65,8 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: 0,
     borderBottomWidth: isExpanded ? 0 : 1,
     borderColor: theme.colors.lightShadow,
+    overflow: 'hidden',
+    backgroundColor: theme.colors.background,
   }),
   sectionHeaderDate: {
     fontSize: theme.fontSize.normal,

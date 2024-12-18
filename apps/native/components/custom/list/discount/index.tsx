@@ -12,6 +12,7 @@ import { useDiscountedRankingListQuery } from '@/hooks/discount/useDiscountedRan
 import { useDiscountListQuery } from '@/hooks/discount/useDiscountListQuery';
 import { DiscountSortOption } from '@/libs/sort';
 import EmptyList from '@/components/custom/list/empty';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface DiscountListProps {
   sortOption: DiscountSortOption;
@@ -45,6 +46,8 @@ export default function DiscountList({
   });
 
   const tabBarHeight = useBottomTabBarHeight();
+
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
 
   const renderItem = useCallback(
     ({ item }: { item: NonNullable<typeof data>[number] }) => {
@@ -86,6 +89,8 @@ export default function DiscountList({
           />
         )}
         {...(refreshable && { onRefresh: handleRefresh, refreshing })}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <PortalHost name={portalHostName} />
     </>

@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import CloseButton from '@/components/custom/button/close';
 
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: 'home',
 };
 
 export default function HomeLayout() {
@@ -19,7 +19,8 @@ export default function HomeLayout() {
         headerStyle: styles.header,
       }}
     >
-      <Stack.Screen name="index" options={{ title: '홈', headerShown: false }} />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="home" options={{ title: '홈', headerShown: false }} />
       <Stack.Screen name="sales" />
       <Stack.Screen
         name="noti-center"
@@ -28,6 +29,7 @@ export default function HomeLayout() {
           presentation: 'modal',
           headerBackButtonDisplayMode: 'minimal',
           headerLeft: () => <CloseButton onPress={() => router.dismiss()} />,
+          headerTitleStyle: styles.headerTitle,
         }}
       />
       <Stack.Screen name="item" />
@@ -42,5 +44,8 @@ const stylesheet = createStyleSheet(theme => ({
   },
   header: {
     backgroundColor: theme.colors.modalBackground,
+  },
+  headerTitle: {
+    color: theme.colors.typography,
   },
 }));

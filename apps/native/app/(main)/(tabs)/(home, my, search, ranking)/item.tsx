@@ -14,7 +14,7 @@ import ItemMemoTabView from '@/components/custom/tab-view/item/memo';
 import ItemDetailsHeaderInfoView from '@/components/custom/view/item-details/&header-info';
 import ItemDetailsPagerWrapperView from '@/components/custom/view/item-details/&pager/&wrapper';
 import { ITEM_DETAILS_TAB_NAMES, ItemDetailsTabNames, PORTAL_HOST_NAMES } from '@/constants';
-import { useHideTabBar } from '@/hooks/useHideTabBar';
+import { useHideTabBar } from '@/hooks/tab-bar/useHideTabBar';
 import { useTransparentHeader } from '@/hooks/useTransparentHeader';
 import { queryKeys } from '@/libs/react-query';
 import { supabase } from '@/libs/supabase';

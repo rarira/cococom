@@ -22,7 +22,7 @@ function WishlistLimitDialog({ limit, setVisible, ...restProps }: WishlistLimitD
         </Button>
         <Button
           onPress={() => {
-            router.navigate('/(main)/(tabs)/(my)?tabs=wishlist');
+            router.navigate('/my?tabs=wishlist');
             setVisible(false);
           }}
           style={styles.button}

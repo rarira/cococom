@@ -18,7 +18,7 @@ export default function ProfileScreen() {
   const [visible, setVisible] = useState(false);
 
   useLayoutEffect(() => {
-    if (!user) router.navigate('/(main)/(tabs)/(my)');
+    if (!user) router.navigate('/my');
   }, [user]);
 
   const handlePressChangePassword = useCallback(() => {

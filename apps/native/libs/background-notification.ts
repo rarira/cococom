@@ -11,7 +11,7 @@ const BACKGROUND_NOTIFICATION_TASK = 'BACKGROUND-NOTIFICATION-TASK';
 
 TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unknown>>(
   BACKGROUND_NOTIFICATION_TASK,
-  async ({ data, error, executionInfo }) => {
+  async ({ data }) => {
     if (Util.isPlatform('android') && !!data.notification) return;
 
     const userId = storage.getString(STORAGE_KEYS.USER_ID);
@@ -30,6 +30,7 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
         content: {
           title: '할인 정보 업데이트',
           body: getLocalHistoryNotificationBody(payload, items),
+          data: { url: 'cccom:///home' },
         },
         trigger: Util.isPlatform('ios') ? null : { channelId: 'default', seconds: 0 },
       });

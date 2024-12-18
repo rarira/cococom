@@ -60,7 +60,7 @@ export default function SettingsScreen() {
             <RowMenu.ToggleSwitch checked={colorTheme === 'dark'} onToggle={handleToggleTheme} />
           </RowMenu>
         )}
-        {!!user && !Util.isDevClient() && (
+        {!!user && Util.isDevice() && (
           <>
             <SectionText style={styles.withPaddingHorizontal}>푸시 알림 설정</SectionText>
             <RowMenu style={styles.withPaddingHorizontal}>

@@ -1,6 +1,5 @@
 import { PortalHost } from '@gorhom/portal';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +9,7 @@ import HeaderBackButton from '@/components/custom/button/header/back';
 import EmailSignUpForm from '@/components/custom/form/signup/email';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import { PORTAL_HOST_NAMES } from '@/constants';
+import StatusBar from '@/components/custom/status-bar';
 
 export default function SignUpScreen() {
   const { styles } = useStyles(stylesheet);
