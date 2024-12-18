@@ -9,6 +9,31 @@ import { useUserStore } from '@/store/user';
 
 import { useErrorHandler } from '../useErrorHandler';
 
+Notifications.setNotificationHandler({
+  handleNotification: async notification => {
+    //https://github.com/expo/expo/issues/31184
+    const trigger = notification.request.trigger as Notifications.PushNotificationTrigger;
+    if (trigger?.type === 'push') {
+      const isDataOnly =
+        trigger?.remoteMessage?.notification === null ||
+        (trigger?.payload?.aps as any)['content-available'] === 1;
+
+      if (isDataOnly) {
+        return {
+          shouldShowAlert: false,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        };
+      }
+    }
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
+
 function redirect(notification: Notifications.Notification) {
   const url = notification.request.content.data?.url;
 

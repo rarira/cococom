@@ -1,17 +1,21 @@
 import { useMMKVDevTools } from '@dev-plugins/react-native-mmkv';
 import { useReactNavigationDevTools } from '@dev-plugins/react-navigation';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
-import { NavigationContainerRef } from '@react-navigation/native';
+import { useNavigationContainerRef } from 'expo-router';
 import { QueryClient } from '@tanstack/react-query';
-import { RefObject } from 'react';
+import { useEffect } from 'react';
 
-export function useDevPlugins({
-  queryClient,
-  navigationRef,
-}: {
-  queryClient: QueryClient;
-  navigationRef: RefObject<NavigationContainerRef<any>>;
-}) {
+import { reactNavigationIntegration } from '@/libs/sentry';
+
+export function useDevPlugins({ queryClient }: { queryClient: QueryClient }) {
+  const navigationRef = useNavigationContainerRef();
+
+  useEffect(() => {
+    if (navigationRef) {
+      reactNavigationIntegration.registerNavigationContainer(navigationRef);
+    }
+  }, [navigationRef]);
+
   useReactQueryDevTools(queryClient);
   useReactNavigationDevTools(navigationRef);
   useMMKVDevTools();
