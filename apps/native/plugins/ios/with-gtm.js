@@ -4,7 +4,6 @@ const { isNotProdBuild } = require('../util');
 
 async function readSchemeAsync(projectRoot, scheme) {
   const allSchemePaths = IOSConfig.Paths.findSchemePaths(projectRoot);
-  console.log('allSchemePaths', allSchemePaths);
   const re = new RegExp(`/${scheme}.xcscheme`, 'i');
   const schemePath = allSchemePaths.find(i => re.exec(i));
   if (schemePath) {
@@ -27,7 +26,6 @@ async function writeSchemeAsync(projectRoot, scheme, xml) {
 
 async function updateLaunchScheme(config) {
   const schemeName = /[^a-zA-Z0-9]/.test(config.name) ? 'app' : config.name;
-  console.log({ schemeName });
   const schemeXML = await readSchemeAsync(config.modRequest.projectRoot, schemeName);
   const launchActionEntry = schemeXML.Scheme?.LaunchAction[0];
   const debugModeCLArgument1 = {
