@@ -5,6 +5,7 @@ import React, { ComponentType, useCallback, useMemo, useRef, useState } from 're
 import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabBarProps, TabView } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { th } from 'date-fns/locale';
 
 import Chip from '@/components/core/chip';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';
@@ -168,7 +169,7 @@ const stylesheet = createStyleSheet(theme => ({
   headerRightButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 0,
+    gap: theme.spacing.md,
   },
   sortButton: {
     marginLeft: 0,

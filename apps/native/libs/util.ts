@@ -81,6 +81,9 @@ const Util = {
   isDevice() {
     return Device.isDevice;
   },
+  async wait(time: number) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  },
 };
 
 export default Util;

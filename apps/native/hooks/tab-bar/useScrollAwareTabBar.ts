@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { throttle } from 'es-toolkit';
 
@@ -8,6 +8,13 @@ export function useScrollAwareTabBar() {
   const setTabBarVisible = useUiStore(state => state.setTabBarVisible);
   const currentOffsetYRef = useRef(0);
   const throttleedFunctionRef = useRef<ReturnType<typeof throttle> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      throttleedFunctionRef.current?.cancel();
+      currentOffsetYRef.current = 0;
+    };
+  }, []);
 
   const handleScroll = useCallback(
     ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
