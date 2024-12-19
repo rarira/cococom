@@ -8,7 +8,7 @@ console.log('Preventing auto hide splash screen...');
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({
-  // duration: 1000,
+  duration: 1000,
   fade: true,
 });
 
@@ -24,10 +24,8 @@ export function useSplashScreen() {
   useLayoutEffect(() => {
     if (appIsReady) {
       (async () => {
-        console.log('App is ready,wating for 12 seconds...');
-        await Util.wait(12000);
-        console.log('App is ready, hiding splash screen...');
-        await SplashScreen.hideAsync();
+        await Util.wait(5000);
+        SplashScreen.hide();
       })();
     }
   }, [appIsReady]);

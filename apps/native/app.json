@@ -8,11 +8,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "cccom",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "buildNumber": "5",
       "supportsTablet": true,

@@ -67,6 +67,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#FFFFFF',
+          image: './assets/images/splash-screen.png',
+          dark: {
+            image: './assets/images/splash-screen.png',
+            backgroundColor: '#000000',
+          },
+          imageWidth: 550,
+        },
+      ],
       '@react-native-google-signin/google-signin',
       'expo-apple-authentication',
       'expo-notifications',
