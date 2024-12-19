@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   );
   return {
     ...config,
-    name: 'cococom',
+    name: '코코컴',
     slug: 'cococom',
     newArchEnabled: true,
     plugins: [
@@ -76,7 +76,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             image: './assets/images/splash-screen.png',
             backgroundColor: '#000000',
           },
-          imageWidth: 550,
+          imageWidth: 300,
         },
       ],
       '@react-native-google-signin/google-signin',
