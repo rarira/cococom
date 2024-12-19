@@ -1,11 +1,10 @@
 import { CategorySectors } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
+import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabBarProps, TabView } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { th } from 'date-fns/locale';
 
 import Chip from '@/components/core/chip';
 import SortBottomSheet from '@/components/custom/bottom-sheet/sort';

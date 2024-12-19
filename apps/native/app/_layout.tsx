@@ -12,8 +12,8 @@ import { setDefaultOptions } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Stack } from 'expo-router';
 
-import { useCallback, useEffect } from 'react';
-import { AppState, LogBox, Platform } from 'react-native';
+import { useCallback } from 'react';
+import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
