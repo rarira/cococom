@@ -22,6 +22,8 @@ const SearchHistoryView = memo(function SearchHistoryView({
   const { styles, theme } = useStyles(stylesheet);
 
   const SearchHistoryChips = useMemo(() => {
+    console.log('searchHistory:', searchHistory);
+    if (!searchHistory) return null;
     return (
       <>
         {searchHistory.map((history, index) => {
@@ -36,7 +38,7 @@ const SearchHistoryView = memo(function SearchHistoryView({
                 style={styles.chip}
                 textProps={{ style: styles.chipText }}
                 renderSuffix={
-                  history.options.length > 0
+                  history.options?.length > 0
                     ? () => (
                         <View style={styles.chipSuffixContainer}>
                           {history.options.map(option => (
@@ -59,7 +61,7 @@ const SearchHistoryView = memo(function SearchHistoryView({
     );
   }, [onPressSearchHistory, removeSearchHistory, searchHistory, styles, theme]);
 
-  if (searchHistory.length === 0) {
+  if (!searchHistory?.length) {
     return null;
   }
 

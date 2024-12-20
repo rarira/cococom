@@ -3,8 +3,6 @@ import { Database } from '@cococom/supabase/types';
 import { addDays, isBefore } from 'date-fns';
 import { StateStorage } from 'zustand/middleware';
 
-import { DISCOUNT_CHANNELS } from '@/constants';
-
 import { getSimplifiedCurrentIsoTimeString, SimplifiedCurrentIsoTimeString } from './date';
 
 export type TODAYS_NOTIFICATION_DATA = {
@@ -21,7 +19,6 @@ export const storage = new MMKV();
 export const STORAGE_KEYS = {
   SEARCH_HISTORY: 'SEARCH_HISTORY',
   COLOR_SCHEME: 'COLOR_SCHEME',
-  // DISCOUNT_CHANNELS: 'DISCOUNT_CHANNELS',
   USER_ID: 'USER_ID',
   TODAYS_NOTIFICATION: 'TODAYS_NOTIFICATION',
   STORE: {
