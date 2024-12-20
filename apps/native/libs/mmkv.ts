@@ -1,6 +1,9 @@
 import { MMKV } from 'react-native-mmkv';
 import { Database } from '@cococom/supabase/types';
 import { addDays, isBefore } from 'date-fns';
+import { StateStorage } from 'zustand/middleware';
+
+import { DISCOUNT_CHANNELS } from '@/constants';
 
 import { getSimplifiedCurrentIsoTimeString, SimplifiedCurrentIsoTimeString } from './date';
 
@@ -18,9 +21,12 @@ export const storage = new MMKV();
 export const STORAGE_KEYS = {
   SEARCH_HISTORY: 'SEARCH_HISTORY',
   COLOR_SCHEME: 'COLOR_SCHEME',
-  DISCOUNT_CHANNELS: 'DISCOUNT_CHANNELS',
+  // DISCOUNT_CHANNELS: 'DISCOUNT_CHANNELS',
   USER_ID: 'USER_ID',
   TODAYS_NOTIFICATION: 'TODAYS_NOTIFICATION',
+  STORE: {
+    DISCOUNT_CHANNELS: 'DISCOUNT_CHANNELS_STORE',
+  },
 } as const;
 
 export function updateTodaysNotificationStorage(
@@ -101,3 +107,16 @@ export function makeAllReadTodaysNotificationStorage(
 
   setTodaysNotifications(copiedData);
 }
+
+export const zustandStorage: StateStorage = {
+  setItem: (name, value) => {
+    return storage.set(name, value);
+  },
+  getItem: name => {
+    const value = storage.getString(name);
+    return value ?? null;
+  },
+  removeItem: name => {
+    return storage.delete(name);
+  },
+};

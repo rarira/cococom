@@ -7,11 +7,9 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-
 import { setDefaultOptions } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Stack } from 'expo-router';
-
 import { useCallback } from 'react';
 import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -19,6 +17,7 @@ import 'react-native-reanimated';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from 'react-native-error-boundary';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useDevPlugins } from '@/hooks/useDevPlugins';
@@ -31,7 +30,6 @@ import CircularProgress from '@/components/core/progress/circular';
 import { usePushNotifications } from '@/hooks/notification/usePushNotifications';
 import StatusBar from '@/components/custom/status-bar';
 import { useSplashScreen } from '@/hooks/useSplashScreen';
-import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient, handleAppStateChange } from '@/libs/react-query/client';
 import { useAppState } from '@/hooks/useAppState';
 
