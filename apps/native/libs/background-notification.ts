@@ -2,8 +2,8 @@ import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
 
 import Util from './util';
-import { storage, STORAGE_KEYS, updateTodaysNotificationStorage } from './mmkv';
-import { supabase } from './supabase';
+import { updateTodaysNotificationStorage } from './mmkv';
+import { supabase, supabaseClient } from './supabase';
 import Sentry from './sentry';
 import { getLocalHistoryNotificationBody, NOTIFICATION_IDENTIFIER } from './notifications';
 
@@ -14,11 +14,17 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
   async ({ data }) => {
     if (Util.isPlatform('android') && !!data.notification) return;
 
-    const userId = storage.getString(STORAGE_KEYS.USER_ID);
-
-    if (!userId) return;
-
     try {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        throw error;
+      }
+
+      const userId = data.session?.user.id;
+
+      if (!userId) return;
+
       const payload = Util.isPlatform('ios') ? data.body : JSON.parse(data.data?.body);
       const items = await supabase.wishlists.getWishlistItemsOnSaleStart({
         userId,
