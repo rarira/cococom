@@ -41,7 +41,6 @@ export const SearchItemsOptions = (
 });
 
 export const getSearchHistoryHash = ({ keyword, options }: SearchQueryParams): string => {
-  console.log('getSearchHistoryHash', options);
   return `${keyword}${!!options?.length ? `-${options.join('-')}` : ''}`;
 };
 

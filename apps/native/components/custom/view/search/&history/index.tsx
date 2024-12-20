@@ -22,7 +22,6 @@ const SearchHistoryView = memo(function SearchHistoryView({
   const { styles, theme } = useStyles(stylesheet);
 
   const SearchHistoryChips = useMemo(() => {
-    console.log('searchHistory:', searchHistory);
     if (!searchHistory) return null;
     return (
       <>

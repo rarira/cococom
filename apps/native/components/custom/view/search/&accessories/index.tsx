@@ -21,7 +21,6 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
   const [isOpen, setIsOpen] = useState(false);
   const { styles, theme } = useStyles(stylesheet);
 
-  console.log({ searchHistoryProps });
   useLayoutEffect(() => {
     if (searchHistoryProps.searchHistory?.length === 0) {
       setIsOpen(false);
