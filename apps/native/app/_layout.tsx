@@ -94,20 +94,16 @@ function RootLayout() {
                         contentStyle: {
                           backgroundColor: 'transparent',
                         },
+                        headerShown: false,
                       }}
                     >
-                      <Stack.Screen
-                        name="(main)"
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
+                      <Stack.Screen name="index" />
+                      <Stack.Screen name="(main)" />
                       <Stack.Screen name="+not-found" />
                       <Stack.Screen
                         name="auth"
                         options={{
                           presentation: 'modal',
-                          headerShown: false,
                           gestureEnabled: false,
                         }}
                       />
