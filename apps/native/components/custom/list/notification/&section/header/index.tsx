@@ -51,7 +51,7 @@ const NotificationSectionHeader = memo(function NotificationSectionHeader({
       <Text style={styles.sectionHeaderDate}>
         {convertSimpleIsoStringToKoreanDate(section.title)}
       </Text>
-      <Text style={styles.sectionHeaderText}>할인 개시된 관심 상품</Text>
+      <Text style={styles.sectionHeaderText}>할인 개시된 관심상품</Text>
     </Button>
   );
 });

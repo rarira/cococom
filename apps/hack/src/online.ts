@@ -147,45 +147,40 @@ async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
   const apiUrl = `${process.env['3RD_API_URL']}/search?fields=FULL&query=&lang=ko&curr=KRW&pageSize=100&category=${category}`;
 
-  try {
-    const response = await axios.get<SearchApiResult>(apiUrl);
+  const response = await axios.get<SearchApiResult>(apiUrl);
 
-    const productsWithCategoryId = response.data.products.map(product => {
+  const productsWithCategoryId = response.data.products.map(product => {
+    product.categoryId = categoryId;
+    return product;
+  });
+
+  if (response.data.pagination.totalPages === 1) {
+    return {
+      totalProducts: response.data.pagination.totalResults,
+      products: productsWithCategoryId,
+    };
+  }
+
+  const products = [...productsWithCategoryId];
+  for (let i = 1; i < response.data.pagination.totalPages; i++) {
+    const paginationResponse = await axios.get<SearchApiResult>(`${apiUrl}&currentPage=${i}`);
+    const paginationProducts = paginationResponse.data.products.map(product => {
       product.categoryId = categoryId;
       return product;
     });
-
-    if (response.data.pagination.totalPages === 1) {
-      return {
-        totalProducts: response.data.pagination.totalResults,
-        products: productsWithCategoryId,
-      };
-    }
-
-    const products = [...productsWithCategoryId];
-    for (let i = 1; i < response.data.pagination.totalPages; i++) {
-      const paginationResponse = await axios.get<SearchApiResult>(`${apiUrl}&currentPage=${i}`);
-      const paginationProducts = paginationResponse.data.products.map(product => {
-        product.categoryId = categoryId;
-        return product;
-      });
-      products.push(...paginationProducts);
-    }
-
-    if (response.data.pagination.totalResults !== products.length) {
-      console.error(
-        'pagination mismatch',
-        category,
-        response.data.pagination.totalResults,
-        response.data.products.length,
-      );
-    }
-
-    return { totalProducts: response.data.pagination.totalResults, products };
-  } catch (error) {
-    console.error(error);
-    return { totalProducts: 0, products: [] };
+    products.push(...paginationProducts);
   }
+
+  if (response.data.pagination.totalResults !== products.length) {
+    console.error(
+      'pagination mismatch',
+      category,
+      response.data.pagination.totalResults,
+      response.data.products.length,
+    );
+  }
+
+  return { totalProducts: response.data.pagination.totalResults, products };
 }
 
 async function getAllItems() {
@@ -213,6 +208,7 @@ async function getAllItems() {
 
   for (const [index, result] of results.entries()) {
     if (result.status === 'rejected') {
+      console.log('rejected', updatedSubCategoryLinks[index]?.category);
       let successful = false;
       do {
         try {

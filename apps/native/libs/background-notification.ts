@@ -34,7 +34,7 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
       Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_IDENTIFIER.LOCAL,
         content: {
-          title: '할인 정보 업데이트',
+          title: '코코컴 할인 정보 업데이트',
           body: getLocalHistoryNotificationBody(payload, items),
           data: { url: 'cccom:///home' },
         },

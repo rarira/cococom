@@ -381,7 +381,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
           />
         </Animated.View>
         <Text type="defaultSemiBold" style={styles.text(!!todaysNotifications?.unread)}>
-          새로 추가된 관심 상품 할인
+          관심상품 할인 알림
         </Text>
       </View>
     </Button>

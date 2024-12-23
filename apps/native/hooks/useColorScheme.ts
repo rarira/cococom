@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Appearance } from 'react-native';
+import { Appearance, ColorSchemeName } from 'react-native';
 import { UnistylesRuntime, UnistylesThemes } from 'react-native-unistyles';
 import { useMMKVString } from 'react-native-mmkv';
 
@@ -48,5 +48,6 @@ export function useColorScheme(loadOnly?: boolean) {
     handleToggleAutoTheme,
     handleToggleTheme,
     theme,
+    currentScheme: UnistylesRuntime.colorScheme as NonNullable<ColorSchemeName>,
   };
 }

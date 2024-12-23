@@ -121,7 +121,7 @@ const MyWishlist = memo(function MyWishlist({
   const ListEmptyComponent = useMemo(() => {
     return (
       <Text style={styles.listEmptyText}>
-        {`등록된 관심 상품이 없습니다.\n상품 목록 화면에서 하트 모양 아이콘을 눌러\n관심 상품을 등록하세요.`}
+        {`등록된 관심상품이 없습니다.\n상품 목록 화면에서 하트 모양 아이콘을 눌러\n관심상품을 등록하세요.`}
       </Text>
     );
   }, [styles.listEmptyText]);
