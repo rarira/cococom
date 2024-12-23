@@ -5,7 +5,6 @@ import { usePagerView } from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
-import { th } from 'date-fns/locale';
 
 import Text from '@/components/core/text';
 import { useWalkthroughStore } from '@/store/walkthrough';
@@ -15,6 +14,8 @@ import { useUserStore } from '@/store/user';
 import FirstIntroPagerView from '@/components/custom/view/pager/intro/first';
 import { IntroPageProps } from '@/libs/type';
 import SecondIntroPagerView from '@/components/custom/view/pager/intro/second';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import StatusBar from '@/components/custom/status-bar';
 
 const INTRO_PAGES: {
   title: string;
@@ -52,6 +53,8 @@ export default function IntroScreen() {
     useShallow(state => ({ intro: state.flags.intro, setFlags: state.setFlags })),
   );
 
+  const { currentScheme, theme: colorSchemeTheme } = useColorScheme();
+
   const user = useUserStore(state => state.user);
 
   const {
@@ -83,49 +86,55 @@ export default function IntroScreen() {
   }
 
   return (
-    <View
-      style={styles.container({
-        topInset: top,
-        bottomInset: bottom,
-        backgroundColor: INTRO_PAGES[activePage].backgroundColor as keyof typeof theme.colors,
-      })}
-    >
-      <AnimatedPagerView
-        ref={pagerViewRef}
-        style={styles.pagerContainer}
-        initialPage={0}
-        overdrag={rest.overdragEnabled}
-        scrollEnabled={rest.scrollEnabled}
-        onPageScroll={rest.onPageScroll}
-        onPageSelected={rest.onPageSelected}
-        onPageScrollStateChanged={rest.onPageScrollStateChanged}
+    <>
+      <StatusBar hidden />
+      <View
+        style={styles.container({
+          topInset: top,
+          bottomInset: bottom,
+          backgroundColor: INTRO_PAGES[activePage].backgroundColor as keyof typeof theme.colors,
+        })}
       >
-        {INTRO_PAGES.map(({ title, subtitle, component }, index) => (
-          <View key={index} style={styles.pageContainer}>
-            <Text style={styles.pageTitleText}>{title}</Text>
-            <Text style={styles.pageSubtitleText}>{subtitle}</Text>
-            {component({ pageNo: index, activePageNo: activePage })}
-          </View>
-        ))}
-      </AnimatedPagerView>
-      <PageDotNavButton
-        numberOfPages={4}
-        activePage={activePage}
-        style={styles.pageNavContainer}
-        onPressDot={handlePressDot}
-      />
-      <View style={styles.navGuideContainer}>
-        {activePage === INTRO_PAGES.length - 1 ? (
-          <Button onPress={handlePressStart} style={styles.navGuideButton}>
-            <Text style={styles.navGuideButtonText}>시작하기</Text>
-          </Button>
-        ) : (
-          <Text
-            style={styles.navGuideText}
-          >{`화면을 ${activePage === 0 ? '우측으로' : '좌우로'} 스와이프하세요`}</Text>
-        )}
+        <AnimatedPagerView
+          ref={pagerViewRef}
+          style={styles.pagerContainer}
+          initialPage={0}
+          overdrag={rest.overdragEnabled}
+          scrollEnabled={rest.scrollEnabled}
+          onPageScroll={rest.onPageScroll}
+          onPageSelected={rest.onPageSelected}
+          onPageScrollStateChanged={rest.onPageScrollStateChanged}
+        >
+          {INTRO_PAGES.map(({ title, subtitle, component }, index) => (
+            <View key={index} style={styles.pageContainer}>
+              <Text style={styles.pageTitleText}>{title}</Text>
+              <Text style={styles.pageSubtitleText}>{subtitle}</Text>
+              {component({ pageNo: index, activePageNo: activePage })}
+            </View>
+          ))}
+        </AnimatedPagerView>
+        <PageDotNavButton
+          numberOfPages={4}
+          activePage={activePage}
+          style={styles.pageNavContainer}
+          onPressDot={handlePressDot}
+        />
+        <View style={styles.navGuideContainer}>
+          {activePage === INTRO_PAGES.length - 1 ? (
+            <Button onPress={handlePressStart} style={styles.navGuideButton}>
+              <Text style={styles.navGuideButtonText}>시작하기</Text>
+            </Button>
+          ) : (
+            <Text
+              style={styles.navGuideText}
+            >{`화면을 ${activePage === 0 ? '우측으로' : '좌우로'} 스와이프하세요`}</Text>
+          )}
+        </View>
+        <Text
+          style={{ textAlign: 'center' }}
+        >{`currentScheme: ${currentScheme}, theme: ${colorSchemeTheme}`}</Text>
       </View>
-    </View>
+    </>
   );
 }
 
