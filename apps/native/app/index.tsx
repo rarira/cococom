@@ -14,6 +14,7 @@ import Button from '@/components/core/button';
 import { useUserStore } from '@/store/user';
 import FirstIntroPagerView from '@/components/custom/view/pager/intro/first';
 import { IntroPageProps } from '@/libs/type';
+import SecondIntroPagerView from '@/components/custom/view/pager/intro/second';
 
 const INTRO_PAGES: {
   title: string;
@@ -30,7 +31,7 @@ const INTRO_PAGES: {
   {
     title: '온라인/오프라인 상품을\n동시에 검색할 수 있습니다',
     subtitle: '토글 버튼을 이용하세요\n토글 순서는 설정에서 변경할 수 있습니다',
-    component: (props: IntroPageProps) => <></>,
+    component: (props: IntroPageProps) => <SecondIntroPagerView {...props} />,
   },
   {
     title: '하트버튼을 눌러 관심상품을 등록하고\n관심상품 할인 개시시 알림을 받으세요',

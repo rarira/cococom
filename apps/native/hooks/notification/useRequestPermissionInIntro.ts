@@ -12,11 +12,9 @@ export function useRequestPermissionInIntro(pageNo: number, activePageNo: number
     if (isPermissionRequestedRef.current) return;
 
     if (pageNo === activePageNo) {
-      console.log('set isInFocusRef.current = true');
       isInFocusRef.current = true;
     }
     if (isInFocusRef.current && pageNo !== activePageNo) {
-      console.log('pagerView swiped, call requestPermission');
       requestPermission();
       isInFocusRef.current = false;
       isPermissionRequestedRef.current = true;

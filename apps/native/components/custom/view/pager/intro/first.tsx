@@ -33,8 +33,6 @@ const stylesheet = createStyleSheet(theme => ({
   container: {
     flex: 1,
     width: '100%',
-    borderColor: 'yellow',
-    // borderWidth: 1,
   },
   image: {
     width: '100%',
