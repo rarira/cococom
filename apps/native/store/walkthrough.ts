@@ -18,6 +18,7 @@ type WalkThroughFlags = Record<(typeof flagKeys)[number], boolean>;
 interface WalkthroughState {
   flags: WalkThroughFlags;
   setFlags: (key: (typeof flagKeys)[number], value: boolean) => void;
+  init: () => void;
 }
 
 export const useWalkthroughStore = create(
@@ -25,6 +26,7 @@ export const useWalkthroughStore = create(
     set => ({
       flags: createDefaultFlags<WalkThroughFlags>(flagKeys),
       setFlags: (key, value) => set(state => ({ flags: { ...state.flags, [key]: value } })),
+      init: () => set(_set => ({ flags: createDefaultFlags<WalkThroughFlags>(flagKeys) })),
     }),
     {
       name: STORAGE_KEYS.STORE.WALKTHROUGH,

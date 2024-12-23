@@ -179,7 +179,7 @@ const stylesheet = createStyleSheet(theme => ({
   },
   navGuideButtonText: {
     fontSize: theme.fontSize.md,
-    color: theme.colors.typography,
+    color: 'white',
     fontWeight: 'bold',
   },
   navGuideText: {
