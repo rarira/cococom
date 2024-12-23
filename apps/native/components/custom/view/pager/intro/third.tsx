@@ -14,35 +14,23 @@ const Images: Record<
 > = {
   light: {
     1: {
-      image: require('@/assets/images/intro/second-light-1.png'),
-      text: '상품 목록에서 모두 버튼\n온라인/오프라인 상품 모두 표시',
+      image: require('@/assets/images/intro/third-light-1.png'),
+      text: '검색 탭내 별표 버튼 예',
     },
-    2: {
-      image: require('@/assets/images/intro/second-light-2.png'),
-      text: '상품 목록에서 오프 버튼\n오프라인 상품만 표시',
-    },
-    3: {
-      image: require('@/assets/images/intro/second-light-3.png'),
-      text: '마이 탭 > 설정 메뉴에서 순서 변경 가능',
-    },
+    2: { image: require('@/assets/images/intro/third-light-2.png'), text: '마이 탭 > 관심상품' },
+    3: { image: require('@/assets/images/intro/third-light-3.png'), text: '홈 탭 > 알림센터' },
   },
   dark: {
     1: {
-      image: require('@/assets/images/intro/second-dark-1.png'),
-      text: '상품 목록에서 모두 버튼\n온라인/오프라인 상품 모두 표시',
+      image: require('@/assets/images/intro/third-dark-1.png'),
+      text: '검색 탭내 별표 버튼 예',
     },
-    2: {
-      image: require('@/assets/images/intro/second-dark-2.png'),
-      text: '상품 목록에서 오프 버튼\n오프라인 상품만 표시',
-    },
-    3: {
-      image: require('@/assets/images/intro/second-dark-3.png'),
-      text: '마이 탭 > 설정 메뉴에서 순서 변경 가능',
-    },
+    2: { image: require('@/assets/images/intro/third-dark-2.png'), text: '마이 탭 > 관심상품' },
+    3: { image: require('@/assets/images/intro/third-dark-3.png'), text: '홈 탭 > 알림센터' },
   },
 };
 
-const SecondIntroPagerView = memo(function SecondIntroPagerView({
+const ThirdIntroPagerView = memo(function ThirdIntroPagerView({
   pageNo,
   activePageNo,
   ...restProps
@@ -104,4 +92,4 @@ const stylesheet = createStyleSheet(theme => ({
   },
 }));
 
-export default SecondIntroPagerView;
+export default ThirdIntroPagerView;

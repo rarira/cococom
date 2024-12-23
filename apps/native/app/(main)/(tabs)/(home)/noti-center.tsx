@@ -64,7 +64,7 @@ export default function NotiCenterScreen() {
         <View style={styles.noWishlistContainer}>
           <Text
             style={styles.noWishlistText}
-          >{`상품 목록 화면, 상품 상세 화면에서\n하트 모양의 관심상품 등록 버튼을 눌러\n관심상품을 등록해 두세요\n\n추후 해당 관심상품이 할인을 개시하면\n푸시 알림과 함께 알려드릴게요`}</Text>
+          >{`상품 목록 화면, 상품 상세 화면에서\n별표 모양의 관심상품 등록 버튼을 눌러\n관심상품을 등록해 두세요\n\n추후 해당 관심상품이 할인을 개시하면\n푸시 알림과 함께 알려드릴게요`}</Text>
         </View>
       )}
     </ScreenContainerView>

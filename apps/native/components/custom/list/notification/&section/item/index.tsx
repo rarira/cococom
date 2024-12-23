@@ -36,11 +36,11 @@ const stylesheet = createStyleSheet(theme => ({
     gap: theme.spacing.sm,
   },
   itemChannelText: {
-    fontSize: theme.fontSize.xs,
+    fontSize: theme.fontSize.sm,
     color: theme.colors.tint3,
   },
   itemNameText: {
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.normal,
   },
   unreadDot: {
     width: theme.spacing.sm,

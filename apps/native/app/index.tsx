@@ -16,6 +16,7 @@ import { IntroPageProps } from '@/libs/type';
 import SecondIntroPagerView from '@/components/custom/view/pager/intro/second';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import StatusBar from '@/components/custom/status-bar';
+import ThirdIntroPagerView from '@/components/custom/view/pager/intro/third';
 
 const INTRO_PAGES: {
   title: string;
@@ -31,13 +32,12 @@ const INTRO_PAGES: {
   },
   {
     title: '온라인/오프라인 상품을\n동시에 검색할 수 있습니다',
-    subtitle: '토글 버튼을 이용하세요\n토글 순서는 설정에서 변경할 수 있습니다',
+    subtitle: '토글 버튼을 이용하세요',
     component: (props: IntroPageProps) => <SecondIntroPagerView {...props} />,
   },
   {
-    title: '하트버튼을 눌러 관심상품을 등록하고\n관심상품 할인 개시시 알림을 받으세요',
-    subtitle: '관심상품 할인 알림은 홈화면에서 확인하세요',
-    component: (props: IntroPageProps) => <></>,
+    title: '별표 버튼을 눌러 관심상품을 등록하고\n관심상품 할인 개시 시 알림을 받으세요',
+    component: (props: IntroPageProps) => <ThirdIntroPagerView {...props} />,
   },
   {
     title:

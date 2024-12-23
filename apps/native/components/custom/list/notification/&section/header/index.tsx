@@ -69,7 +69,7 @@ const stylesheet = createStyleSheet(theme => ({
     backgroundColor: theme.colors.background,
   }),
   sectionHeaderDate: {
-    fontSize: theme.fontSize.normal,
+    fontSize: theme.fontSize.md,
     fontWeight: 'semibold',
   },
   sectionHeaderText: {
