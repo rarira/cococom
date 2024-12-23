@@ -48,6 +48,8 @@ export function useColorScheme(loadOnly?: boolean) {
     handleToggleAutoTheme,
     handleToggleTheme,
     theme,
-    currentScheme: UnistylesRuntime.colorScheme as NonNullable<ColorSchemeName>,
+    currentScheme: (theme === 'auto'
+      ? UnistylesRuntime.colorScheme
+      : theme) as NonNullable<ColorSchemeName>,
   };
 }
