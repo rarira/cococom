@@ -1,4 +1,5 @@
 const { withDangerousMod, IOSConfig, XML } = require('expo/config-plugins');
+
 const { isNotProdBuild } = require('../util');
 
 async function readSchemeAsync(projectRoot, scheme) {
@@ -24,7 +25,8 @@ async function writeSchemeAsync(projectRoot, scheme, xml) {
 }
 
 async function updateLaunchScheme(config) {
-  const schemeXML = await readSchemeAsync(config.modRequest.projectRoot, 'cococom');
+  const schemeName = /[^a-zA-Z0-9]/.test(config.name) ? 'app' : config.name;
+  const schemeXML = await readSchemeAsync(config.modRequest.projectRoot, schemeName);
   const launchActionEntry = schemeXML.Scheme?.LaunchAction[0];
   const debugModeCLArgument1 = {
     CommandLineArgument: {
@@ -41,7 +43,7 @@ async function updateLaunchScheme(config) {
 
   launchActionEntry.CommandLineArguments.push(debugModeCLArgument1);
 
-  await writeSchemeAsync(config.modRequest.projectRoot, 'cococom', schemeXML);
+  await writeSchemeAsync(config.modRequest.projectRoot, schemeName, schemeXML);
 }
 
 module.exports.withIosGtm = config => {

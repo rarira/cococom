@@ -111,6 +111,7 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
+    backgroundColor: 'theme.colors.modalBackground',
   },
   categoryNameContainer: {
     position: 'absolute',
@@ -146,14 +147,14 @@ const stylesheet = createStyleSheet(theme => ({
   countHeader: {
     opacity: 1,
     fontWeight: 'bold',
-    color: theme.colors.tint3,
+    color: theme.colors.tint,
   },
   count: {
     fontSize: theme.fontSize.sm,
     lineHeight: theme.fontSize.sm * 1.5,
     textAlign: 'center',
     opacity: 0.8,
-    color: theme.colors.tint3,
+    color: theme.colors.tint,
   },
 }));
 

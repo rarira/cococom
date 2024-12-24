@@ -1,7 +1,7 @@
 import { CategorySectors } from '@cococom/supabase/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import React, { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
+import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { Route, SceneMap, TabBar, TabBarItem, TabBarProps, TabView } from 'react-native-tab-view';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -168,7 +168,7 @@ const stylesheet = createStyleSheet(theme => ({
   headerRightButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 0,
+    gap: theme.spacing.md,
   },
   sortButton: {
     marginLeft: 0,

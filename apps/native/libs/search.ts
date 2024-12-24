@@ -41,7 +41,7 @@ export const SearchItemsOptions = (
 });
 
 export const getSearchHistoryHash = ({ keyword, options }: SearchQueryParams): string => {
-  return `${keyword}${!!options?.length ? -`${options.join('-')}` : ''}`;
+  return `${keyword}${!!options?.length ? `-${options.join('-')}` : ''}`;
 };
 
 export const findIndexOfInfiniteSearchResultItem = (

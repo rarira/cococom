@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import ArrowNavButton from '@/components/custom/button/arrow-nav';
+import ArrowNavButton from '@/components/custom/button/nav/arrow';
 
 interface ItemDetailsPagerNavViewProps {
   activePage: number;

@@ -9,7 +9,7 @@ import MyMemoTabView from '@/components/custom/tab-view/my/memo';
 import MyWishlistTabView from '@/components/custom/tab-view/my/wishlist';
 
 const AUTHED_MY_TABS_ROUTES = [
-  { key: 'wishlist', title: '관심 상품' },
+  { key: 'wishlist', title: '관심상품' },
   { key: 'comment', title: '작성 댓글' },
   { key: 'memo', title: '상품 메모' },
 ];

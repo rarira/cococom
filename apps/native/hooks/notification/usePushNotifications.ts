@@ -1,13 +1,38 @@
 import { useRef, useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
 import { router } from 'expo-router';
+import { useShallow } from 'zustand/shallow';
 
-import { NOTIFICATION_IDENTIFIER, registerForPushNotificationsAsync } from '@/libs/notifications';
-import { supabase } from '@/libs/supabase';
+import { NOTIFICATION_IDENTIFIER } from '@/libs/notifications';
 import { useUserStore } from '@/store/user';
+import { useWalkthroughStore } from '@/store/walkthrough';
 
-import { useErrorHandler } from '../useErrorHandler';
+import { useRequestNotificationPermission } from './useRequestNotificationPermission';
+
+Notifications.setNotificationHandler({
+  handleNotification: async notification => {
+    //https://github.com/expo/expo/issues/31184
+    const trigger = notification.request.trigger as Notifications.PushNotificationTrigger;
+    if (trigger?.type === 'push') {
+      const isDataOnly =
+        trigger?.remoteMessage?.notification === null ||
+        (trigger?.payload?.aps as any)['content-available'] === 1;
+
+      if (isDataOnly) {
+        return {
+          shouldShowAlert: false,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        };
+      }
+    }
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
 
 function redirect(notification: Notifications.Notification) {
   const url = notification.request.content.data?.url;
@@ -18,36 +43,16 @@ function redirect(notification: Notifications.Notification) {
 }
 
 export function usePushNotifications() {
-  const { user, profile, setProfile } = useUserStore(state => ({
-    user: state.user,
+  const { profile } = useUserStore(state => ({
     profile: state.profile,
-    setProfile: state.setProfile,
   }));
 
-  const { reportToSentry } = useErrorHandler();
+  const isInIntroScreen = useWalkthroughStore(useShallow(state => state.flags.intro));
 
   const notificationListener = useRef<Notifications.EventSubscription>();
   const responseListener = useRef<Notifications.EventSubscription>();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (!Device.isDevice) return;
-
-        const result = await registerForPushNotificationsAsync();
-        if (!user || !result) return;
-
-        const profile = await supabase.profiles.updateProfile(
-          { expo_push_token: result.token },
-          user.id,
-        );
-
-        setProfile(profile[0]);
-      } catch (error) {
-        reportToSentry(error as Error);
-      }
-    })();
-  }, [reportToSentry, setProfile, user]);
+  useRequestNotificationPermission(isInIntroScreen);
 
   useEffect(() => {
     if (profile?.expo_push_token) {

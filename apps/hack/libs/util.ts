@@ -119,3 +119,7 @@ export async function deleteFolderIfEmpty(folderPath: string) {
     console.error('Error checking folder:', err);
   }
 }
+
+export async function wait(time: number) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}

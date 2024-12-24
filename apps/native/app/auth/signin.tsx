@@ -1,13 +1,9 @@
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { login } from '@react-native-kakao/user';
 import { Image } from 'expo-image';
 import { router, useNavigation } from 'expo-router';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import { fi } from 'date-fns/locale';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Button from '@/components/core/button';
 import Divider from '@/components/core/divider';
@@ -17,31 +13,18 @@ import ResetPasswordButton from '@/components/custom/button/reset-password';
 import SignInForm from '@/components/custom/form/signin';
 import ScreenTitleText from '@/components/custom/text/screen-title';
 import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
-import { useSignInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
-import { useUserStore } from '@/store/user';
-import { useErrorHandler } from '@/hooks/useErrorHandler';
 import Util from '@/libs/util';
+import { useSocialSignIn } from '@/hooks/auth/useSocialSignIn';
 
 const LOGIN_IMAGE_HEIGHT = 36;
 
 export default function SignInScreen() {
-  useEffect(() => {
-    GoogleSignin.configure({
-      scopes: ['profile', 'email'],
-      webClientId: '786330080407-3rar2ftsuidv90h6pgq7g305349on0cc.apps.googleusercontent.com',
-    });
-  }, []);
-
   const [loading, setLoading] = useState(false);
 
   const { styles } = useStyles(stylesheet);
-  const setAuthProcessing = useUserStore(store => store.setAuthProcessing);
-  const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
 
-  const { handleSignInWithIdToken } = useSignInWithIdToken();
-
-  const { reportToSentry } = useErrorHandler();
+  const navigation = useNavigation();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -59,97 +42,13 @@ export default function SignInScreen() {
     } as any);
   }, [navigation]);
 
-  const handlePressAppleLogin = useCallback(async () => {
-    setAuthProcessing(true);
-
-    try {
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-
-      if (credential.identityToken) {
-        await handleSignInWithIdToken({
-          provider: 'apple',
-          token: credential.identityToken,
-        });
-      } else {
-        throw new Error('No identityToken.');
-      }
-    } catch (error: any) {
-      if (error.code === 'ERR_REQUEST_CANCELED') {
-        // handle that the user canceled the sign-in flow
-      } else {
-        // handle other errors
-        reportToSentry(error);
-      }
-    } finally {
-      setAuthProcessing(false);
-    }
-  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
-
-  const handlePressGoogleLogin = useCallback(async () => {
-    setAuthProcessing(true);
-
-    try {
-      await GoogleSignin.hasPlayServices();
-      const { data: userInfo } = await GoogleSignin.signIn();
-      if (userInfo?.idToken) {
-        await handleSignInWithIdToken({
-          provider: 'google',
-          token: userInfo.idToken,
-        });
-      }
-    } catch (error: any) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // setAuthProcessing(false);
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // setAuthProcessing(false);
-      } else {
-        reportToSentry(error);
-        // setAuthProcessing(false);
-        // some other error happened
-      }
-    } finally {
-      setAuthProcessing(false);
-    }
-  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
-
-  const handlePressKakaoLogin = useCallback(async () => {
-    setAuthProcessing(true);
-
-    const result = await login();
-
-    await handleSignInWithIdToken({
-      provider: 'kakao',
-      token: result.idToken!,
-      access_token: result.accessToken,
-    });
-
-    setAuthProcessing(false);
-  }, [handleSignInWithIdToken, setAuthProcessing]);
-
-  const googleLogo = useMemo(
-    () =>
-      UnistylesRuntime.themeName === 'light'
-        ? require('@/assets/images/social/google_logo_light.png')
-        : require('@/assets/images/social/google_logo_dark.png'),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [UnistylesRuntime.themeName],
-  );
-
-  const appleLogo = useMemo(
-    () =>
-      UnistylesRuntime.themeName === 'light'
-        ? require('@/assets/images/social/appleid_button_light.png')
-        : require('@/assets/images/social/appleid_button_dark.png'),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [UnistylesRuntime.themeName],
-  );
+  const {
+    handlePressAppleLogin,
+    handlePressGoogleLogin,
+    handlePressKakaoLogin,
+    googleLogo,
+    appleLogo,
+  } = useSocialSignIn();
 
   return (
     <ModalScreenContainer>
@@ -249,6 +148,7 @@ const stylesheet = createStyleSheet(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    opacity: 1,
   },
   kakaoLoginImage: {
     width: '100%',
