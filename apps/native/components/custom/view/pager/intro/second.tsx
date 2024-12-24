@@ -16,7 +16,7 @@ const Images: ImagesForCommonIntroPagerView = {
     },
     3: {
       image: require('@/assets/images/intro/second-light-3.png'),
-      text: '마이 탭 > 설정 메뉴에서 순서 변경 가능',
+      text: '마이 탭 > 설정 메뉴에서\n토글 순서 변경 가능',
     },
   },
   dark: {
@@ -30,7 +30,7 @@ const Images: ImagesForCommonIntroPagerView = {
     },
     3: {
       image: require('@/assets/images/intro/second-dark-3.png'),
-      text: '마이 탭 > 설정 메뉴에서 순서 변경 가능',
+      text: '마이 탭 > 설정 메뉴에서\n토글 순서 변경 가능',
     },
   },
 };

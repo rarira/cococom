@@ -25,7 +25,7 @@ const INTRO_PAGES: {
   backgroundColor?: string;
 }[] = [
   {
-    title: '온라인 할인 정보는 주말 제외 매일,\n오프라인은 매주 2회 업데이트합니다',
+    title: '온라인 할인은 주말 제외 매일,\n오프라인은 주2회 업데이트합니다',
     subtitle: '알림 수신을 꼭 허용해 주세요',
     component: (props: IntroPageProps) => <FirstIntroPagerView {...props} />,
     // backgroundColor: 'tint',
@@ -36,7 +36,7 @@ const INTRO_PAGES: {
     component: (props: IntroPageProps) => <SecondIntroPagerView {...props} />,
   },
   {
-    title: '별표 버튼을 눌러 관심상품을 등록하고\n관심상품 할인 개시 시 알림을 받으세요',
+    title: '별표 버튼으로 관심상품을 등록하고\n관심상품 할인 개시 알림을 받으세요',
     component: (props: IntroPageProps) => <ThirdIntroPagerView {...props} />,
   },
   {
@@ -158,8 +158,8 @@ const stylesheet = createStyleSheet(theme => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: theme.screenHorizontalPadding,
-    paddingTop: theme.spacing.xl,
-    gap: theme.spacing.lg,
+    paddingTop: theme.spacing.lg * 2,
+    gap: theme.spacing.md,
   },
   navGuideContainer: {
     height: 60,
@@ -186,14 +186,14 @@ const stylesheet = createStyleSheet(theme => ({
     marginVertical: theme.spacing.md,
   },
   pageTitleText: {
-    fontSize: theme.fontSize.lg,
+    fontSize: theme.fontSize.xl,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   pageSubtitleText: {
-    fontSize: theme.fontSize.normal,
+    fontSize: theme.fontSize.md,
     color: theme.colors.tint,
-    lineHeight: theme.fontSize.normal * 1.4,
+    lineHeight: theme.fontSize.md * 1.4,
     textAlign: 'center',
   },
 }));

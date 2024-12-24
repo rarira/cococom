@@ -71,8 +71,8 @@ const stylesheet = createStyleSheet(theme => ({
     borderColor: 'red',
   },
   caption: {
-    color: theme.colors.graphStroke,
-    fontSize: theme.fontSize.normal,
+    color: theme.colors.tint,
+    fontSize: theme.fontSize.md,
     fontWeight: 'bold',
     marginTop: theme.spacing.md,
     textAlign: 'center',

@@ -13,7 +13,7 @@ export default function HomeScreen() {
   const [totalDiscounts, setTotalDiscounts] = useState<number>(0);
 
   return (
-    <ScreenContainerView withBottomTabBar>
+    <ScreenContainerView withBottomTabBar scollable>
       <View style={styles.header}>
         <HeaderRightNotiCenterButton />
       </View>
