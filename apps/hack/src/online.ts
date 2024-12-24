@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 /* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line import/order
-import { loadEnv, readJsonFile, writeJsonFile } from '../libs/util.js';
+import { loadEnv, readJsonFile, wait, writeJsonFile } from '../libs/util.js';
 
 loadEnv();
 
@@ -212,6 +212,7 @@ async function getAllItems() {
       let successful = false;
       do {
         try {
+          await wait(1000);
           await promises[index];
           console.log('retry success');
           successful = true;

@@ -1,17 +1,10 @@
-import { memo, useState } from 'react';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { ColorSchemeName, View } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
-import { Image, ImageSource } from 'expo-image';
+import { memo } from 'react';
 
 import { IntroPageProps } from '@/libs/type';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import Text from '@/components/core/text';
 
-const Images: Record<
-  NonNullable<ColorSchemeName>,
-  Record<string, { image: ImageSource; text: string }>
-> = {
+import CommonIntroPagerView, { ImagesForCommonIntroPagerView } from './common';
+
+const Images: ImagesForCommonIntroPagerView = {
   light: {
     1: {
       image: require('@/assets/images/intro/second-light-1.png'),
@@ -42,66 +35,8 @@ const Images: Record<
   },
 };
 
-const SecondIntroPagerView = memo(function SecondIntroPagerView({
-  pageNo,
-  activePageNo,
-  ...restProps
-}: IntroPageProps) {
-  const [width, setWidth] = useState(0);
-  const { styles } = useStyles(stylesheet);
-  const { currentScheme } = useColorScheme();
-
-  return (
-    <View style={styles.container} onLayout={e => setWidth(e.nativeEvent.layout.width)}>
-      {!width ? null : (
-        <Carousel
-          width={width}
-          data={Object.keys(Images[currentScheme])}
-          defaultIndex={0}
-          autoPlay={pageNo === activePageNo}
-          loop
-          enabled={false}
-          autoPlayInterval={2000}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.carouselItemContainer}>
-                <Image
-                  source={Images[currentScheme][item].image}
-                  style={styles.image}
-                  contentFit="contain"
-                />
-                <Text style={styles.caption}>{Images[currentScheme][item].text}</Text>
-              </View>
-            );
-          }}
-        />
-      )}
-    </View>
-  );
+const SecondIntroPagerView = memo(function SecondIntroPagerView(props: IntroPageProps) {
+  return <CommonIntroPagerView {...props} images={Images} />;
 });
-
-const stylesheet = createStyleSheet(theme => ({
-  container: {
-    flex: 1,
-    width: '100%',
-  },
-  carouselItemContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    aspectRatio: 1.15,
-    width: '100%',
-    borderColor: 'red',
-  },
-  caption: {
-    color: theme.colors.graphStroke,
-    fontSize: theme.fontSize.normal,
-    fontWeight: 'bold',
-    marginTop: theme.spacing.md,
-    textAlign: 'center',
-  },
-}));
 
 export default SecondIntroPagerView;

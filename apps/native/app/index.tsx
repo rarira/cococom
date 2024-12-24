@@ -14,9 +14,9 @@ import { useUserStore } from '@/store/user';
 import FirstIntroPagerView from '@/components/custom/view/pager/intro/first';
 import { IntroPageProps } from '@/libs/type';
 import SecondIntroPagerView from '@/components/custom/view/pager/intro/second';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import StatusBar from '@/components/custom/status-bar';
 import ThirdIntroPagerView from '@/components/custom/view/pager/intro/third';
+import FourthIntroPagerView from '@/components/custom/view/pager/intro/fourth';
 
 const INTRO_PAGES: {
   title: string;
@@ -42,7 +42,7 @@ const INTRO_PAGES: {
   {
     title:
       '댓글과 메모 기능을 활용하여\n다른 사용자들과 정보를 공유하고\n보다 스마트한 쇼핑을 즐기세요',
-    component: (props: IntroPageProps) => <></>,
+    component: (props: IntroPageProps) => <FourthIntroPagerView {...props} />,
   },
 ];
 
@@ -52,8 +52,6 @@ export default function IntroScreen() {
   const { intro, setFlags } = useWalkthroughStore(
     useShallow(state => ({ intro: state.flags.intro, setFlags: state.setFlags })),
   );
-
-  const { currentScheme, theme: colorSchemeTheme } = useColorScheme();
 
   const user = useUserStore(state => state.user);
 
@@ -130,9 +128,6 @@ export default function IntroScreen() {
             >{`화면을 ${activePage === 0 ? '우측으로' : '좌우로'} 스와이프하세요`}</Text>
           )}
         </View>
-        <Text
-          style={{ textAlign: 'center' }}
-        >{`currentScheme: ${currentScheme}, theme: ${colorSchemeTheme}`}</Text>
       </View>
     </>
   );
