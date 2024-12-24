@@ -18,8 +18,6 @@ import OptOutNotificationDialog from '@/components/custom/dialog/opt-out-notific
 import { PORTAL_HOST_NAMES } from '@/constants';
 import { useUpdateNotificationSetting } from '@/hooks/notification/useUpdateNotificationSetting';
 import Util from '@/libs/util';
-import Button from '@/components/core/button';
-import { useWalkthroughStore } from '@/store/walkthrough';
 
 export default function SettingsScreen() {
   const { styles, theme } = useStyles(stylesheet);
@@ -27,7 +25,6 @@ export default function SettingsScreen() {
 
   const user = useUserStore(state => state.user);
   const discountChannels = useDiscountChannels(state => state.discountChannels);
-  const init = useWalkthroughStore(state => state.init);
 
   const stringifiedDiscountChannels = useMemo(() => {
     return discountChannels.map(channel => channel.text).join('/');
@@ -99,9 +96,6 @@ export default function SettingsScreen() {
           <RowMenu.Text>런타임 버전</RowMenu.Text>
           <Text style={styles.channelText}>{Updates.runtimeVersion}</Text>
         </RowMenu>
-        <Button onPress={init} style={styles.withPaddingHorizontal}>
-          <Text>init초기화</Text>
-        </Button>
         <PortalHost name={PORTAL_HOST_NAMES.SETTINGS} />
         <OptOutNotificationDialog
           portalHostName={PORTAL_HOST_NAMES.SETTINGS}
