@@ -8,6 +8,7 @@ loadEnv();
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
+import axiosRetry from 'axios-retry';
 
 import { download } from '../libs/axios.js';
 import { minus1MS } from '../libs/date.js';
@@ -48,6 +49,7 @@ let newDiscountsCount = 0;
 
 type ItemId = { id: number; itemId: string; online_url: string };
 
+axiosRetry(axios, { retries: 10, retryDelay: axiosRetry.exponentialDelay });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createSubCategoryLink($: cheerio.CheerioAPI, element: any) {
   const fullLink = $(element).attr('href');
@@ -147,7 +149,7 @@ async function getAllItemsByCategory(category: string, categoryId: number) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
   const apiUrl = `${process.env['3RD_API_URL']}/search?fields=FULL&query=&lang=ko&curr=KRW&pageSize=100&category=${category}`;
 
-  const response = await axios.get<SearchApiResult>(apiUrl);
+  const response = await axios.get<SearchApiResult>(apiUrl, {});
 
   const productsWithCategoryId = response.data.products.map(product => {
     product.categoryId = categoryId;
@@ -212,7 +214,7 @@ async function getAllItems() {
       let successful = false;
       do {
         try {
-          await wait(1000);
+          await wait(5000);
           await promises[index];
           console.log('retry success');
           successful = true;
