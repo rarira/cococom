@@ -47,7 +47,7 @@ export function usePushNotifications() {
     profile: state.profile,
   }));
 
-  const isInIntroScreen = useWalkthroughStore(useShallow(state => state.flags.intro));
+  const isInIntroScreen = useWalkthroughStore(useShallow(state => !state.flags.intro));
 
   const notificationListener = useRef<Notifications.EventSubscription>();
   const responseListener = useRef<Notifications.EventSubscription>();
