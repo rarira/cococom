@@ -5,6 +5,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --costco-blue: #0060a9;
+  --costco-red: #e32a36;
 }
 
 @media (prefers-color-scheme: dark) {

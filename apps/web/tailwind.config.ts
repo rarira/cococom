@@ -11,6 +11,8 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        costcoBlue: "var(--costco-blue)",
+        costcoRed: "var(--costco-red)",
       },
     },
   },
