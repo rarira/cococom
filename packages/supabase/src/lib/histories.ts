@@ -58,14 +58,16 @@ export class HistoriesTable {
       throw error;
     }
 
-    const { error: rpcCallError } = await this.supabaseClient.rpc('restart_table_sequence', {
-      table_name: 'histories',
-      new_value: id,
-    });
+    console.log('deleted history with id', id);
 
-    if (rpcCallError) {
-      console.log('deleteHistory rpcCallError', rpcCallError);
-      throw rpcCallError;
-    }
+    // const { error: rpcCallError } = await this.supabaseClient.rpc('restart_table_sequence', {
+    //   table_name: 'histories',
+    //   new_value: id,
+    // });
+
+    // if (rpcCallError) {
+    //   console.log('deleteHistory rpcCallError', rpcCallError);
+    //   throw rpcCallError;
+    // }
   }
 }

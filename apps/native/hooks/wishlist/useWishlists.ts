@@ -48,7 +48,7 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
       },
       initialPageParam: 0,
       getNextPageParam: (lastPage, _, lastPageParam) => {
-        if ((lastPage.items?.length ?? 0) < PAGE_SIZE) return null;
+        if ((lastPage?.items?.length ?? 0) < PAGE_SIZE) return null;
         return lastPageParam + 1;
       },
     });
