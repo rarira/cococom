@@ -1,7 +1,3 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "next/typescript",
-    "@cococom/eslint-config/expo.js"
-  ]
+  "extends": ["next/typescript", "@cococom/eslint-config/next.js"]
 }

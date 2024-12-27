@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
-    console.log("will return headers");
     return [
       {
         source: "/.well-known/apple-app-site-association",

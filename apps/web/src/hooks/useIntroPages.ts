@@ -1,0 +1,34 @@
+import { wait } from '@/libs/util';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useMemo, useState } from 'react';
+
+export function useIntroPages(introPages: readonly { path: string }[]) {
+  const [transitionState, setTransitionState] = useState('fade-enter');
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const activePage = useMemo(
+    () => introPages.findIndex(page => page.path === pathname),
+    [introPages, pathname],
+  );
+
+  const handlePressDot = useCallback(
+    async (page: number) => {
+      setTransitionState('fade-exit');
+      await wait(500);
+      router.push(introPages[page].path);
+      await wait(500);
+      setTransitionState('fade-enter');
+    },
+    [introPages],
+  );
+
+  return {
+    pathname,
+    numberOfPages: introPages.length,
+    activePage,
+    handlePressDot,
+    transitionState,
+  };
+}

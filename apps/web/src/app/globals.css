@@ -27,3 +27,23 @@ body {
     text-wrap: balance;
   }
 }
+
+.fade-exit {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* .fade-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+} */
+
+.fade-enter {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/* .fade-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+} */
