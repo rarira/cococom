@@ -1,0 +1,26 @@
+{
+  "name": "@cococom/libs",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./constants": {
+      "types": "./src/constants.ts",
+      "default": "./dist/constants.js"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./dist/types.js"
+    }
+  },
+  "scripts": {
+    "prepare": "pnpm build",
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@cococom/eslint-config": "workspace:*",
+    "@cococom/prettier-config": "workspace:*",
+    "@cococom/typescript-config": "workspace:*",
+    "typescript": "^5.4.2"
+  }
+}

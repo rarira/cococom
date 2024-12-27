@@ -85,6 +85,9 @@ importers:
       '@cococom/imagekit':
         specifier: workspace:*
         version: link:../../packages/imagekit
+      '@cococom/libs':
+        specifier: workspace:*
+        version: link:../../packages/libs
       '@cococom/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase
@@ -305,6 +308,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@cococom/libs':
+        specifier: workspace:*
+        version: link:../../packages/libs
       embla-carousel-react:
         specifier: ^8.5.1
         version: 8.5.1(react@18.3.1)
@@ -433,6 +439,21 @@ importers:
       typescript:
         specifier: ^5.4.2
         version: 5.6.3
+
+  packages/libs:
+    devDependencies:
+      '@cococom/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@cococom/prettier-config':
+        specifier: workspace:*
+        version: link:../prettier-config
+      '@cococom/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.4.2
+        version: 5.7.2
 
   packages/prettier-config:
     devDependencies:

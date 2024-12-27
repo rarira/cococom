@@ -20,6 +20,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@cococom/libs": "workspace:*",
     "@cococom/imagekit": "workspace:*",
     "@cococom/supabase": "workspace:*",
     "@dev-plugins/react-native-mmkv": "^0.1.0",

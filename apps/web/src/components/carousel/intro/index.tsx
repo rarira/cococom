@@ -1,19 +1,35 @@
 'use client';
 
 import useEmblaCarousel from 'embla-carousel-react';
-import { memo, useEffect } from 'react';
+import Image from 'next/image';
+import { memo } from 'react';
 
-interface IntroCarouselProps {}
+import { ImagesForIntroCarousel } from '@/libs/types';
 
-const IntroCarousel = memo(function IntroCarousel({}: IntroCarouselProps) {
+interface IntroCarouselProps {
+  images: ImagesForIntroCarousel;
+}
+
+const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps) {
   const [emblaRef] = useEmblaCarousel({ loop: false });
+
+  console.log(images);
 
   return (
     <div ref={emblaRef} className="overflow-hidden">
       <div className="flex">
-        <div className="grow-0 shrink-0 basis-full  min-w-0 border border-red-500">Slide1</div>
-        <div className="grow-0 shrink-0 basis-full  min-w-0 border border-red-500">Slide2</div>
-        <div className="grow-0 shrink-0 basis-full  min-w-0 border border-red-500">Slide3</div>
+        {Object.keys(images).map(key => {
+          return (
+            <div key={key} className="grow-0 shrink-0 basis-full min-w-0">
+              <div className="flex flex-col items-center justify-center gap-8">
+                <Image src={images[key].image} alt="Intro" />
+                <div className="text-center whitespace-pre-line text-base  font-medium">
+                  {images[key].text}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

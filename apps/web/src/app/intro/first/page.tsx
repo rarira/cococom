@@ -1,10 +1,7 @@
-import IntroCarousel from '@/components/carousel/intro';
-
-export default function IntroScreen() {
+export default function FirstIntroScreen() {
   return (
     <>
       <div>first</div>
-      <IntroCarousel />
     </>
   );
 }

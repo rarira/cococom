@@ -1,9 +1,10 @@
 'use client';
+import { twMerge } from 'tailwind-merge';
+
 import PageDotNavButton from '@/components/page-dot-nav-button';
 import { useIntroPages } from '@/hooks/useIntroPages';
 import { INTRO_PAGES } from '@/libs/constants';
 // import { useEffect, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 export default function IntroLayout({
   children,
