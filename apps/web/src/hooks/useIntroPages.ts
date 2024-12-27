@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { wait } from '@/libs/utils';
 
@@ -8,6 +8,12 @@ export function useIntroPages(introPages: readonly { path: string }[]) {
 
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    introPages.forEach(page => {
+      router.prefetch(page.path);
+    });
+  }, []);
 
   const activePage = useMemo(
     () => introPages.findIndex(page => page.path === pathname),
