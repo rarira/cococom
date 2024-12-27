@@ -14,19 +14,14 @@ export default function IntroLayout({
 
   return (
     <>
-      <div className="grid grid-rows-[1fr_100px] items-center justify-center min-h-dvh p-8 pb-0 sm:p-20">
-        <main
-          className={twMerge(
-            'gap-8 row-start-1 items-center justify-items-center',
-            transitionState,
-          )}
-        >
-          <div className="flex flex-col mb-8 gap-4">
-            <div className="text-xl whitespace-pre-line text-center  font-extrabold">
+      <div className="grid grid-rows-[1fr_100px] w-full items-center justify-center min-h-dvh p-8 pb-0 sm:p-20">
+        <main className={twMerge('gap-8 row-start-1 items-center justify-center', transitionState)}>
+          <div className="flex flex-col mb-8 gap-4 sm:gap-8  sm:mb-12">
+            <div className="text-xl whitespace-pre-line text-center font-extrabold sm:text-3xl leading-relaxed sm:leading-relaxed">
               {INTRO_PAGES[activePage].title}
             </div>
             {!!INTRO_PAGES[activePage].subtitle && (
-              <div className="text-base text-tint  text-center  whitespace-pre-line">
+              <div className="text-base text-tint  text-center  whitespace-pre-line  sm:text-2xl">
                 {INTRO_PAGES[activePage].subtitle}
               </div>
             )}
