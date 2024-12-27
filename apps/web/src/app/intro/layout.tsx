@@ -4,7 +4,6 @@ import { twMerge } from 'tailwind-merge';
 import PageDotNavButton from '@/components/page-dot-nav-button';
 import { useIntroPages } from '@/hooks/useIntroPages';
 import { INTRO_PAGES } from '@/libs/constants';
-// import { useEffect, useState } from 'react';
 
 export default function IntroLayout({
   children,
@@ -22,6 +21,16 @@ export default function IntroLayout({
             transitionState,
           )}
         >
+          <div className="flex flex-col mb-8 gap-4">
+            <div className="text-xl whitespace-pre-line text-center  font-extrabold">
+              {INTRO_PAGES[activePage].title}
+            </div>
+            {!!INTRO_PAGES[activePage].subtitle && (
+              <div className="text-base text-tint  text-center  whitespace-pre-line">
+                {INTRO_PAGES[activePage].subtitle}
+              </div>
+            )}
+          </div>
           {children}
         </main>
         <div className="row-start-2">

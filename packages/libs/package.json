@@ -10,6 +10,10 @@
     "./types": {
       "types": "./src/types.ts",
       "default": "./dist/types.js"
+    },
+    "./utils": {
+      "types": "./src/utils.ts",
+      "default": "./dist/utils.js"
     }
   },
   "scripts": {

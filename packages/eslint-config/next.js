@@ -5,4 +5,8 @@ module.exports = {
     require.resolve("@vercel/style-guide/eslint/next"),
     "turbo",
   ],
+  env: {
+    browser: true,
+    node: true,
+  },
 };

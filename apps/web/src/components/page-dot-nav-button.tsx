@@ -18,7 +18,7 @@ const PageDotNavButton = memo(function PageDotNavButton({
           <button
             key={i}
             className={
-              i === activePage ? 'w-3 h-3 rounded-xl bg-lightShadow' : 'w-3 h-3 rounded-xl bg-tint'
+              i === activePage ? 'w-3 h-3 rounded-xl bg-tint' : 'w-3 h-3 rounded-xl bg-lightShadow'
             }
             onClick={() => onPressDot?.(i)}
           />

@@ -3,6 +3,7 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
 import { memo } from 'react';
+import Autoplay from 'embla-carousel-autoplay';
 
 import { ImagesForIntroCarousel } from '@/libs/types';
 
@@ -11,9 +12,9 @@ interface IntroCarouselProps {
 }
 
 const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps) {
-  const [emblaRef] = useEmblaCarousel({ loop: false });
-
-  console.log(images);
+  const [emblaRef] = useEmblaCarousel({ loop: false }, [
+    Autoplay({ playOnInit: true, delay: 2000 }),
+  ]);
 
   return (
     <div ref={emblaRef} className="overflow-hidden">
@@ -21,9 +22,9 @@ const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps
         {Object.keys(images).map(key => {
           return (
             <div key={key} className="grow-0 shrink-0 basis-full min-w-0">
-              <div className="flex flex-col items-center justify-center gap-8">
+              <div className="flex flex-col items-center justify-center gap-4">
                 <Image src={images[key].image} alt="Intro" />
-                <div className="text-center whitespace-pre-line text-base  font-medium">
+                <div className="text-center whitespace-pre-line text-base font-medium text-tint">
                   {images[key].text}
                 </div>
               </div>

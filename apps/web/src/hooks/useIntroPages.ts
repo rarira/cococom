@@ -1,6 +1,7 @@
-import { wait } from '@/libs/util';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
+
+import { wait } from '@/libs/utils';
 
 export function useIntroPages(introPages: readonly { path: string }[]) {
   const [transitionState, setTransitionState] = useState('fade-enter');

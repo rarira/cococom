@@ -22,10 +22,5 @@ const Images: ImagesForIntroCarousel = {
 };
 
 export default function ThirdIntroScreen() {
-  return (
-    <>
-      <div>third</div>
-      <IntroCarousel images={Images} />
-    </>
-  );
+  return <IntroCarousel images={Images} />;
 }
