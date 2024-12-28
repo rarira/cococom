@@ -14,8 +14,13 @@ export default function IntroLayout({
 
   return (
     <>
-      <div className="grid grid-rows-[1fr_100px] w-full items-center justify-center min-h-dvh p-8 pb-0 sm:p-20">
-        <main className={twMerge('gap-8 row-start-1 items-center justify-center', transitionState)}>
+      <div className="flex flex-1 flex-col w-full items-center justify-center p-8 pb-0 sm:p-20 ">
+        <div
+          className={twMerge(
+            'flex flex-1 flex-col gap-8 items-center justify-center',
+            transitionState,
+          )}
+        >
           <div className="flex flex-col mb-8 gap-4 sm:gap-8  sm:mb-12">
             <div className="text-xl whitespace-pre-line text-center font-extrabold sm:text-3xl leading-relaxed sm:leading-relaxed">
               {INTRO_PAGES[activePage].title}
@@ -27,8 +32,8 @@ export default function IntroLayout({
             )}
           </div>
           {children}
-        </main>
-        <div className="row-start-2">
+        </div>
+        <div className="flex items-center justify-center pb-8 sm:pb-20">
           <PageDotNavButton
             numberOfPages={numberOfPages}
             activePage={activePage}
