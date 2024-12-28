@@ -33,13 +33,11 @@ export default function IntroLayout({
           </div>
           <div className="flex flex-1">{children}</div>
         </div>
-        {/* <div className="flex items-center justify-end py-8 sm:pb-20 border border-red-500"> */}
         <PageDotNavButton
           numberOfPages={numberOfPages}
           activePage={activePage}
           onPressDot={handlePressDot}
         />
-        {/* </div> */}
       </div>
     </>
   );

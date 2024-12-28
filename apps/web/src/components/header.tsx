@@ -10,6 +10,8 @@ import LogoImage from 'public/images/logo.png';
 const Header = memo(function Header() {
   const pathname = usePathname();
 
+  if (pathname === '/') return null;
+
   return (
     <header className="flex items-center justify-between h-16 w-full mt-2 px-2">
       <nav className="flex flex-row justify-start items-center gap-4 sm:gap-12">
@@ -20,12 +22,10 @@ const Header = memo(function Header() {
           서비스 소개
         </Link>
       </nav>
-      {pathname === '/' ? null : (
-        <Link href="/download" className="flex text-base font-semibold items-center gap-2">
-          <GoDownload className="inline-block" />
-          다운로드
-        </Link>
-      )}
+      <Link href="/download" className="flex text-base font-semibold items-center gap-2">
+        <GoDownload className="inline-block" />
+        다운로드
+      </Link>
     </header>
   );
 });
