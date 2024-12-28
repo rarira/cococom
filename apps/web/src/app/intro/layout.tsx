@@ -14,10 +14,10 @@ export default function IntroLayout({
 
   return (
     <>
-      <div className="flex flex-1 flex-col w-full items-center justify-center p-8 pb-0 sm:p-20 ">
+      <div className="flex flex-col w-full items-center justify-between p-8 sm:p-20 ">
         <div
           className={twMerge(
-            'flex flex-1 flex-col gap-8 items-center justify-center',
+            'flex flex-1 flex-col gap-1 items-center justify-center',
             transitionState,
           )}
         >
@@ -31,15 +31,15 @@ export default function IntroLayout({
               </div>
             )}
           </div>
-          {children}
+          <div className="flex flex-1">{children}</div>
         </div>
-        <div className="flex items-center justify-center pb-8 sm:pb-20">
-          <PageDotNavButton
-            numberOfPages={numberOfPages}
-            activePage={activePage}
-            onPressDot={handlePressDot}
-          />
-        </div>
+        {/* <div className="flex items-center justify-end py-8 sm:pb-20 border border-red-500"> */}
+        <PageDotNavButton
+          numberOfPages={numberOfPages}
+          activePage={activePage}
+          onPressDot={handlePressDot}
+        />
+        {/* </div> */}
       </div>
     </>
   );

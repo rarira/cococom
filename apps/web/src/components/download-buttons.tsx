@@ -14,12 +14,12 @@ const DownloadButtons = memo(function DownloadButtons() {
       <Image
         src={AppleDownloadSvg}
         alt={'Download Cococom on Apple App Store'}
-        height={isMobile ? 32 : 64}
+        height={isMobile ? 48 : 64}
       />
       <Image
         src={GoogleDownloadSvg}
         alt={'Download Cococom on Google Play Store'}
-        height={isMobile ? 32 : 64}
+        height={isMobile ? 48 : 64}
       />
     </div>
   );

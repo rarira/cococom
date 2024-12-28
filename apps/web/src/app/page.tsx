@@ -7,12 +7,12 @@ import LogoImage from 'public/images/cococom.png';
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-between p-8 sm:p-20 gap-36 ">
-      <div className="flex flex-1 flex-col gap-8 items-center justify-center">
-        <div className="text-costcoBlue text-3xl sm:text-5xl font-extrabold text-center">
+    <div className="flex flex-1 flex-col items-center justify-between p-4 sm:p-12 gap-8 sm:gap-36 ">
+      <div className="flex flex-1 flex-col gap-4 items-center justify-center">
+        <div className="text-costcoBlue text-2xl sm:text-5xl font-extrabold text-center">
           코스트코 쇼핑전엔
         </div>
-        <Image src={LogoImage} alt="Logo" className="img-center sm:max-w-md" />
+        <Image src={LogoImage} alt="Logo" className="img-center max-w-[calc(70%)] sm:max-w-md" />
         <p className="text-costcoRed text-xl sm:text-2xl font-bold text-center leading-6 sm:leading-10">
           오프라인 매장 할인에
           <br />
@@ -27,7 +27,7 @@ export default function Home() {
           자세히 알아보기
         </Link>
       </div>
-      <footer className="flex items-center justify-center">
+      <footer className="flex items-center justify-center p-8">
         <DownloadButtons />
       </footer>
     </div>
