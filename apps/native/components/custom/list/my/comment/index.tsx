@@ -11,6 +11,7 @@ import SortWithTextButton from '@/components/custom/button/modal-close/sort-with
 import MyCommentListItemCard from '@/components/custom/card/list-item/my/comment';
 import { MyCommentToRender } from '@/hooks/comment/useMyComments';
 import { MyCommentSortOption } from '@/libs/sort';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface MyCommentListProps extends Partial<FlashListProps<MyCommentToRender[number]>> {
   comments: MyCommentToRender;
@@ -71,6 +72,8 @@ const MyCommentList = memo(function MyCommentList({
     [styles.seperator],
   );
 
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
+
   return (
     <FlashList
       ref={listRef}
@@ -85,6 +88,8 @@ const MyCommentList = memo(function MyCommentList({
       ItemSeparatorComponent={ItemSeparatorComponent}
       contentContainerStyle={styles.flashListContainer(tabBarHeight)}
       onEndReachedThreshold={0.5}
+      onScroll={handleScroll}
+      onMomentumScrollEnd={handleMomentumScrollEnd}
       {...restProps}
     />
   );

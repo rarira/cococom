@@ -5,11 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "start:dalin": "tsx src/dalin.ts",
-    "start:online": "tsx src/online.ts",
-    "start:prod": "NODE_ENV=PROD tsx src/index.ts",
-    "start:prod:online": "NODE_ENV=PROD tsx src/online.ts",
+    "fetch:offline": "tsx src/index && NODE_ENV=PROD tsx src/index.ts",
+    "fetch:dalin": "tsx src/dalin.ts",
+    "fetch:online": "tsx src/online.ts && NODE_ENV=PROD tsx src/online.ts",
     "update-images": "tsx src/image_arrange.ts --max-old-space-size=4096"
   },
   "keywords": [],
@@ -29,6 +27,7 @@
     "@cococom/imagekit": "workspace:*",
     "@cococom/supabase": "workspace:*",
     "axios": "^1.7.7",
+    "axios-retry": "^4.5.0",
     "cheerio": "^1.0.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",

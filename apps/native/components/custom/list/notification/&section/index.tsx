@@ -42,7 +42,7 @@ const NotificationSectionList = memo(function NotificationSectionList({
           setCurrentSection={setCurrentSection}
         />
       )}
-      scrollEnabled={false}
+      // scrollEnabled={false}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       ListEmptyComponent={() => (
         <EmptyList text={'할인 개시 알림이 없습니다'} style={styles.emptyList} />

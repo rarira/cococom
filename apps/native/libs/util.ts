@@ -1,5 +1,7 @@
 import { Platform } from 'react-native';
 import * as DevClient from 'expo-dev-client';
+import * as Device from 'expo-device';
+import * as Utils from '@cococom/libs/utils';
 
 const Util = {
   toWonString(value: number): string {
@@ -77,6 +79,10 @@ const Util = {
   isDevClient() {
     return DevClient.isDevelopmentBuild();
   },
+  isDevice() {
+    return Device.isDevice;
+  },
+  ...Utils,
 };
 
 export default Util;

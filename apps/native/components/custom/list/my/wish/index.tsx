@@ -17,6 +17,7 @@ import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButto
 import { WishlistToRender } from '@/hooks/wishlist/useWishlists';
 import { SearchItemsOptions } from '@/libs/search';
 import { WISHLIST_SORT_OPTIONS } from '@/libs/sort';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface MyWishlistProps extends Partial<FlashListProps<WishlistToRender[number]>> {
   wishlistResult: WishlistToRender;
@@ -69,8 +70,6 @@ const MyWishlist = memo(function MyWishlist({
   );
 
   const ListHeaderComponent = useMemo(() => {
-    // if (wishlistResult.length === 0) return null;
-
     return (
       <View style={styles.headerRowContainer}>
         {totalResults ? (
@@ -122,7 +121,7 @@ const MyWishlist = memo(function MyWishlist({
   const ListEmptyComponent = useMemo(() => {
     return (
       <Text style={styles.listEmptyText}>
-        {`등록된 관심 상품이 없습니다.\n상품 목록 화면에서 하트 모양 아이콘을 눌러\n관심 상품을 등록하세요.`}
+        {`등록된 관심상품이 없습니다.\n상품 목록 화면에서 별표 모양 아이콘을 눌러\n관심상품을 등록하세요.`}
       </Text>
     );
   }, [styles.listEmptyText]);
@@ -131,6 +130,8 @@ const MyWishlist = memo(function MyWishlist({
     () => <View style={styles.seperator} />,
     [styles.seperator],
   );
+
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
 
   return (
     <FlashList
@@ -146,6 +147,8 @@ const MyWishlist = memo(function MyWishlist({
       ItemSeparatorComponent={ItemSeparatorComponent}
       contentContainerStyle={styles.flashListContainer(tabBarHeight)}
       onEndReachedThreshold={0.5}
+      onScroll={handleScroll}
+      onMomentumScrollEnd={handleMomentumScrollEnd}
       {...restProps}
     />
   );

@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { BottomTabBar } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
-import React, { ComponentProps } from 'react';
+import { ComponentProps } from 'react';
 import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -110,6 +110,7 @@ export default function TabLayout() {
 const stylesheet = createStyleSheet(theme => ({
   tabBar: (bottom: number) => ({
     backgroundColor: theme.colors.cardBackground,
+    borderTopColor: theme.colors.lightShadow,
     height: 60 + bottom,
   }),
   tabBarContainer: (tabBarVisible: boolean) => ({

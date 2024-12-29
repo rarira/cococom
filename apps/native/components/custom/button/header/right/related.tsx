@@ -32,7 +32,7 @@ const stylesheet = createStyleSheet(theme => ({
     fontSize: theme.fontSize.sm,
     lineHeight: theme.fontSize.sm * 1.2,
     textAlign: 'center',
-    color: theme.colors.tint3,
+    color: theme.colors.tint,
     fontWeight: 'bold',
   },
 }));

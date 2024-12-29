@@ -511,6 +511,13 @@ export type Database = {
         }
         Returns: number
       }
+      restart_table_sequence: {
+        Args: {
+          table_name: string
+          new_value: number
+        }
+        Returns: undefined
+      }
       search_items_by_itemid: {
         Args: {
           item_id: string

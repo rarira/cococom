@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import * as Updates from 'expo-updates';
 import { Alert } from 'react-native';
 
@@ -10,7 +10,7 @@ export function useExpoUpdate() {
   const [isUpdating, setIsUpdating] = useState(false);
   const { reportToSentry } = useErrorHandler();
 
-  useLayoutEffect(() => {
+  const checkUpdate = useCallback(() => {
     (async () => {
       try {
         if (Util.isDevClient()) return;
@@ -62,5 +62,7 @@ export function useExpoUpdate() {
     })();
   }, [reportToSentry]);
 
-  return { isUpdating };
+  useLayoutEffect(checkUpdate, [checkUpdate]);
+
+  return { isUpdating, checkUpdate };
 }

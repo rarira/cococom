@@ -51,7 +51,7 @@ const NotificationSectionHeader = memo(function NotificationSectionHeader({
       <Text style={styles.sectionHeaderDate}>
         {convertSimpleIsoStringToKoreanDate(section.title)}
       </Text>
-      <Text style={styles.sectionHeaderText}>할인 개시된 관심 상품</Text>
+      <Text style={styles.sectionHeaderText}>할인 개시된 관심상품</Text>
     </Button>
   );
 });
@@ -65,9 +65,11 @@ const stylesheet = createStyleSheet(theme => ({
     paddingHorizontal: 0,
     borderBottomWidth: isExpanded ? 0 : 1,
     borderColor: theme.colors.lightShadow,
+    overflow: 'hidden',
+    backgroundColor: theme.colors.background,
   }),
   sectionHeaderDate: {
-    fontSize: theme.fontSize.normal,
+    fontSize: theme.fontSize.md,
     fontWeight: 'semibold',
   },
   sectionHeaderText: {

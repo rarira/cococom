@@ -15,6 +15,7 @@ import { useDiscountRotateButton } from '@/hooks/discount/useDiscountRotateButto
 import { SearchQueryParams, SearchResultToRender } from '@/libs/search';
 import { SEARCH_ITEM_SORT_OPTIONS } from '@/libs/sort';
 import SortWithTextButton from '@/components/custom/button/modal-close/sort-with-text';
+import { useScrollAwareTabBar } from '@/hooks/tab-bar/useScrollAwareTabBar';
 
 interface SearchResultListProps extends Partial<FlashListProps<SearchResultToRender[number]>> {
   searchResult: SearchResultToRender;
@@ -97,6 +98,8 @@ const SearchResultList = memo(function SearchResultList({
     [styles.seperator],
   );
 
+  const { handleScroll, handleMomentumScrollEnd } = useScrollAwareTabBar();
+
   return (
     <>
       <FlashList
@@ -111,6 +114,8 @@ const SearchResultList = memo(function SearchResultList({
         ItemSeparatorComponent={ItemSeparatorComponent}
         contentContainerStyle={styles.flashListContainer(tabBarHeight)}
         onEndReachedThreshold={0.5}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         {...restProps}
       />
       <PortalHost name={PORTAL_HOST_NAMES.SEARCH} />

@@ -108,7 +108,7 @@ export function getLocalHistoryNotificationBody(
   items: Database['public']['Functions']['get_wishlist_items_on_sale_start']['Returns'],
 ) {
   const newDiscountString = !!payload.newDiscount ? `추가된 할인: ${payload.newDiscount}개` : '';
-  const newItemsString = !!payload.newItem ? `새로운 상품: ${payload.newItem}` : '';
+  const newItemsString = !!payload.newItem ? `새로운 상품: ${payload.newItem}개` : '';
   const itemsString = !!items.length ? `관심상품 중 추가된 할인 상품: ${items.length}개.` : '';
 
   const finalString = `${payload.isOnline ? '온라인' : '오프라인'} 할인 정보가 새로 업데이트 되었습니다. ${newDiscountString}${

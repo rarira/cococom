@@ -23,9 +23,9 @@ const commonTheme = {
   },
   colors: {
     link: '#0a7ea4',
-    alert: '#ff0000',
+    alert: '#E32A36',
     graphStroke: '#8641f4',
-    tint3: '#4B70F5',
+    tint3: '#0060A9',
   },
   screenHorizontalPadding: 16,
 } as const;

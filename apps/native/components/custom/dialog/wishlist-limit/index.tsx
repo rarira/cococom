@@ -22,7 +22,7 @@ function WishlistLimitDialog({ limit, setVisible, ...restProps }: WishlistLimitD
         </Button>
         <Button
           onPress={() => {
-            router.navigate('/(main)/(tabs)/(my)?tabs=wishlist');
+            router.navigate('/my?tabs=wishlist');
             setVisible(false);
           }}
           style={styles.button}
@@ -42,8 +42,8 @@ function WishlistLimitDialog({ limit, setVisible, ...restProps }: WishlistLimitD
 
   return (
     <Dialog
-      title="관심 상품 등록 개수 초과"
-      body={`관심 상품은 최대 ${limit}개까지 등록할 수 있습니다. 관심 상품 목록에서 정리하시겠습니까?`}
+      title="관심상품 등록 개수 초과"
+      body={`관심상품은 최대 ${limit}개까지 등록할 수 있습니다. 관심상품 목록에서 정리하시겠습니까?`}
       renderButtons={renderButtons}
       showCloseButton
       backdropDismiss

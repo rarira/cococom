@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   );
   return {
     ...config,
-    name: 'cococom',
+    name: '코코컴',
     slug: 'cococom',
     newArchEnabled: true,
     plugins: [
@@ -64,6 +64,27 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
           ios: {
             handleKakaoOpenUrl: true,
+          },
+        },
+      ],
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#FFFFFF',
+          image: './assets/images/splash-screen.png',
+          dark: {
+            image: './assets/images/splash-screen.png',
+            backgroundColor: '#000000',
+          },
+          imageWidth: 250,
+          android: {
+            backgroundColor: '#FFFFFF',
+            image: './assets/images/adaptiveIcon-foreground.png',
+            dark: {
+              image: './assets/images/adaptiveIcon-foreground.png',
+              backgroundColor: '#000000',
+            },
+            imageWidth: 250,
           },
         },
       ],

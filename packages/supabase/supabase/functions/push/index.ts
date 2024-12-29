@@ -86,7 +86,10 @@ Deno.serve(async req => {
         Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}`,
       },
       body: compressedMessages,
-    }).then(res => res.json());
+    })
+      .then(res => res.json())
+      .then(console.log)
+      .catch(console.error);
   });
 
   const result = await Promise.allSettled(promises);

@@ -6,7 +6,8 @@ import IconButton from '@/components/core/button/icon';
 import Checkbox, { CheckboxGroupViewProps } from '@/components/core/checkbox';
 import SearchOptionCheckbox from '@/components/custom/checkbox/search-option';
 import SearchHistoryView from '@/components/custom/view/search/&history';
-import { SearchItemOptionInfo, SearchItemsOptions, SearchOptionValue } from '@/libs/search';
+import { SearchItemsOptions, SearchOptionValue } from '@/libs/search';
+import { SearchItemOptionInfo } from '@/libs/sort/search';
 
 interface SearchAccessoriesViewProps {
   checkboxGroupProps: CheckboxGroupViewProps;
@@ -21,10 +22,10 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
   const { styles, theme } = useStyles(stylesheet);
 
   useLayoutEffect(() => {
-    if (searchHistoryProps.searchHistory.length === 0) {
+    if (searchHistoryProps.searchHistory?.length === 0) {
       setIsOpen(false);
     }
-  }, [searchHistoryProps.searchHistory.length]);
+  }, [searchHistoryProps.searchHistory?.length]);
 
   const SearchItemCheckboxes = useMemo(() => {
     const searchItemsOptions = Object.entries(SearchItemsOptions(theme)) as [
@@ -56,7 +57,7 @@ const SearchAccessoriesView = memo(function SearchAccessoriesView({
         <Checkbox.Group {...checkboxGroupProps} style={styles.checkboxGroup}>
           {SearchItemCheckboxes}
         </Checkbox.Group>
-        {searchHistoryProps.searchHistory.length > 0 ? (
+        {searchHistoryProps.searchHistory?.length > 0 ? (
           <IconButton
             iconProps={{
               font: { type: 'Ionicon', name: isOpen ? 'chevron-down' : 'chevron-forward' },
