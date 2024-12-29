@@ -17,7 +17,7 @@ const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps
   ]);
 
   return (
-    <div ref={emblaRef} className="overflow-hidden">
+    <div ref={emblaRef} className="flex overflow-hidden flex-1">
       <div className="flex">
         {Object.keys(images).map(key => {
           return (
