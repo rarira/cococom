@@ -13,7 +13,12 @@ export default function Home() {
         <div className="text-costcoBlue text-2xl sm:text-5xl font-extrabold text-center">
           코스트코 쇼핑전엔
         </div>
-        <Image src={LogoImage} alt="Logo" className="img-center max-w-[calc(70%)] sm:max-w-md" />
+        <Image
+          src={LogoImage}
+          alt="Cococom Logo"
+          priority
+          className="img-center max-w-[calc(70%)] sm:max-w-md"
+        />
         <p className="text-costcoRed text-xl sm:text-2xl font-bold text-center leading-6 sm:leading-10">
           오프라인 매장 할인에
           <br />
