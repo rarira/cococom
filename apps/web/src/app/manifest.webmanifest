@@ -1,6 +1,6 @@
 {
   "name": "코코컴",
-  "short_name": "Website of Cococom Mboiel App",
+  "short_name": "코코컴 앱 홈페이지",
   "icons": [
     {
       "src": "images/manifest/web-app-manifest-192x192.png",
