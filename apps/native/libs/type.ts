@@ -1,6 +1,4 @@
-export type NullableNumber = null | number;
-
-export type ObjectValues<T> = T[keyof T];
+export * from '@cococom/libs/types';
 
 export type IntroPageProps = {
   pageNo: number;

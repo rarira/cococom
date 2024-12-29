@@ -372,8 +372,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
           <Icon
             {...{
               size: theme.fontSize.lg,
-              color:
-                true || todaysNotifications?.unread ? theme.colors.tint3 : theme.colors.typography,
+              color: todaysNotifications?.unread ? theme.colors.tint3 : theme.colors.typography,
               font: {
                 type: 'Ionicon',
                 name: 'notifications',
@@ -381,7 +380,7 @@ const HeaderRightNotiCenterButton = memo(function HeaderRightNotiCenterButton() 
             }}
           />
         </Animated.View>
-        <Text type="defaultSemiBold" style={styles.text(true || !!todaysNotifications?.unread)}>
+        <Text type="defaultSemiBold" style={styles.text(!!todaysNotifications?.unread)}>
           관심상품 할인 알림
         </Text>
       </View>

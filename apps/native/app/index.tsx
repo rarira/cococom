@@ -5,6 +5,7 @@ import { usePagerView } from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
+import { INTRO_PAGES } from '@cococom/libs/constants';
 
 import Text from '@/components/core/text';
 import { useWalkthroughStore } from '@/store/walkthrough';
@@ -18,36 +19,27 @@ import StatusBar from '@/components/custom/status-bar';
 import ThirdIntroPagerView from '@/components/custom/view/pager/intro/third';
 import FourthIntroPagerView from '@/components/custom/view/pager/intro/fourth';
 
-const INTRO_PAGES: {
+const intro_pages: {
   title: string;
   subtitle?: string;
   component: (props: IntroPageProps) => JSX.Element;
-  backgroundColor?: string;
 }[] = [
   {
-    title: '온라인 할인은 주말 제외 매일,\n오프라인은 주2회 업데이트합니다',
-    subtitle: '알림 수신을 꼭 허용해 주세요',
     component: (props: IntroPageProps) => <FirstIntroPagerView {...props} />,
-    // backgroundColor: 'tint',
   },
   {
-    title: '온라인/오프라인 상품을\n동시에 검색할 수 있습니다',
-    subtitle: '토글 버튼을 이용하세요',
     component: (props: IntroPageProps) => <SecondIntroPagerView {...props} />,
   },
   {
-    title: '별표 버튼으로 관심상품을 등록하고\n관심상품 할인 개시 알림을 받으세요',
     component: (props: IntroPageProps) => <ThirdIntroPagerView {...props} />,
   },
   {
-    title:
-      '댓글과 메모 기능을 활용하여\n다른 사용자들과 정보를 공유하고\n보다 스마트한 쇼핑을 즐기세요',
     component: (props: IntroPageProps) => <FourthIntroPagerView {...props} />,
   },
-];
+].map((page, index) => ({ ...page, ...INTRO_PAGES[index] }));
 
 export default function IntroScreen() {
-  const { styles, theme } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
   const { top, bottom } = useSafeAreaInsets();
   const { intro, setFlags } = useWalkthroughStore(
     useShallow(state => ({ intro: state.flags.intro, setFlags: state.setFlags })),
@@ -90,7 +82,6 @@ export default function IntroScreen() {
         style={styles.container({
           topInset: top,
           bottomInset: bottom,
-          backgroundColor: INTRO_PAGES[activePage].backgroundColor as keyof typeof theme.colors,
         })}
       >
         <AnimatedPagerView
@@ -103,7 +94,7 @@ export default function IntroScreen() {
           onPageSelected={rest.onPageSelected}
           onPageScrollStateChanged={rest.onPageScrollStateChanged}
         >
-          {INTRO_PAGES.map(({ title, subtitle, component }, index) => (
+          {intro_pages.map(({ title, subtitle, component }, index) => (
             <View key={index} style={styles.pageContainer}>
               <Text style={styles.pageTitleText}>{title}</Text>
               <Text style={styles.pageSubtitleText}>{subtitle}</Text>

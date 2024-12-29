@@ -15,17 +15,18 @@ TaskManager.defineTask<Notifications.FirebaseRemoteMessage | Record<string, unkn
     if (Util.isPlatform('android') && !!data.notification) return;
 
     try {
-      const { data, error } = await supabaseClient.auth.getSession();
+      const { data: sessionData, error } = await supabaseClient.auth.getSession();
 
       if (error) {
         throw error;
       }
 
-      const userId = data.session?.user.id;
+      const userId = sessionData.session?.user.id;
 
       if (!userId) return;
 
       const payload = Util.isPlatform('ios') ? data.body : JSON.parse(data.data?.body);
+
       const items = await supabase.wishlists.getWishlistItemsOnSaleStart({
         userId,
         historyId: payload.id,

@@ -1,41 +1,10 @@
 module.exports = {
   extends: [
     "expo",
-    "prettier",
+    "./react.js",
     "plugin:@tanstack/eslint-plugin-query/recommended",
   ],
-  plugins: ["prettier", "import"],
-  rules: {
-    "prettier/prettier": ["error"],
-    "import/order": [
-      "error",
-      {
-        groups: [
-          "type",
-          "builtin",
-          "external",
-          "internal",
-          ["parent", "sibling"],
-          "index",
-          "unknown",
-        ],
-        pathGroups: [
-          {
-            pattern: "@(react|react-native)",
-            group: "external",
-            position: "before",
-          },
-          {
-            pattern: "@/**/**",
-            group: "internal",
-          },
-        ],
-        "newlines-between": "always",
-        alphabetize: {
-          order: "ignore",
-          caseInsensitive: true,
-        },
-      },
-    ],
+  env: {
+    node: true,
   },
 };

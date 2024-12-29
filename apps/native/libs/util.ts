@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import * as DevClient from 'expo-dev-client';
 import * as Device from 'expo-device';
+import * as Utils from '@cococom/libs/utils';
 
 const Util = {
   toWonString(value: number): string {
@@ -81,9 +82,7 @@ const Util = {
   isDevice() {
     return Device.isDevice;
   },
-  async wait(time: number) {
-    return new Promise(resolve => setTimeout(resolve, time));
-  },
+  ...Utils,
 };
 
 export default Util;

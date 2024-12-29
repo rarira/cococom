@@ -15,7 +15,6 @@ const Images: Record<NonNullable<ColorSchemeName>, ImageSource> = {
 const FirstIntroPagerView = memo(function FirstIntroPagerView({
   pageNo,
   activePageNo,
-  ...restProps
 }: IntroPageProps) {
   const { styles } = useStyles(stylesheet);
   const { currentScheme } = useColorScheme();
