@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "apps/web/package.json",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**", ".next/**"]
+      }
+    }
+  ],
+  "scripts": {
+    "build": "turbo run build --filter=apps/web"
+  }
+}
