@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { GoMail } from 'react-icons/go';
 
 import DownloadButtons from '@/components/download-buttons';
 import { INTRO_PAGES } from '@/libs/constants';
@@ -27,8 +28,15 @@ export default function Home() {
           자세히 알아보기
         </Link>
       </div>
-      <footer className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center px-4  sm:px-2 pt-2">
         <DownloadButtons />
+      </div>
+      <footer className="flex flex-row w-full justify-between text-xs text-center text-slate-400 sm:text-base">
+        <div>©2025 Cococom.kr</div>
+        <Link href="/">Terms & Conditions</Link>
+        <Link href="mailto:admin@cococom.kr">
+          <GoMail />
+        </Link>
       </footer>
     </div>
   );
