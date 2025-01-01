@@ -14,6 +14,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 import 'katex/dist/katex.min.css';
 
 import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 const notoSansKr = Noto_Sans_KR({ subsets: ['latin'] });
 
@@ -39,10 +40,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="코코컴" />
       </head>
       <body
-        className={`${notoSansKr.className} antialiased flex flex-1 flex-col w-full sm:max-w-[1024px] justify-items-center mx-auto min-h-dvh`}
+        className={`${notoSansKr.className} antialiased flex flex-1 flex-col w-full sm:max-w-[1024px] justify-items-center mx-auto`}
       >
         <Header />
-        <main className="flex flex-1 overflow-auto">{children}</main>
+        <main className="flex flex-1 overflow-auto min-h-[calc(80dvh)]">{children}</main>
+        <Footer />
       </body>
     </html>
   );

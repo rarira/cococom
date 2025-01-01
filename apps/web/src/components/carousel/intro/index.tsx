@@ -23,7 +23,7 @@ const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps
           return (
             <div key={key} className="grow-0 shrink-0 basis-full min-w-0">
               <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
-                <Image src={images[key].image} alt="Intro" />
+                <Image src={images[key].image} alt="Intro" className="max-w-[calc(90%)]" />
                 <div className="text-center whitespace-pre-line text-base font-medium text-tint  sm:text-xl">
                   {images[key].text}
                 </div>
