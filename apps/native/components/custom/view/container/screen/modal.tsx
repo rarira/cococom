@@ -1,5 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
 import { memo } from 'react';
+
+import StatusBar from '@/components/custom/status-bar';
 
 interface ModalScreenContainerProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ const ModalScreenContainer = memo(function ModalScreenContainer({
 }: ModalScreenContainerProps) {
   return (
     <>
-      <StatusBar />
+      <StatusBar style="light" />
       {children}
     </>
   );
