@@ -1,7 +1,5 @@
-'use client';
 import { memo } from 'react';
 import Image from 'next/image';
-import { useMediaQuery } from 'react-responsive';
 import { twMerge } from 'tailwind-merge';
 
 import AppleDownloadSvg from '../../public/images/download_apple.svg';
@@ -12,8 +10,6 @@ type DownloadButtonsProps = {
 };
 
 const DownloadButtons = memo(function DownloadButtons({ col }: DownloadButtonsProps) {
-  const isMobile = useMediaQuery({ query: '(max-width: 640px)' });
-
   return (
     <div
       className={twMerge(
@@ -21,16 +17,8 @@ const DownloadButtons = memo(function DownloadButtons({ col }: DownloadButtonsPr
         col ? 'flex-col gap-8' : '',
       )}
     >
-      <Image
-        src={AppleDownloadSvg}
-        alt={'Download Cococom on Apple App Store'}
-        height={isMobile ? 48 : 64}
-      />
-      <Image
-        src={GoogleDownloadSvg}
-        alt={'Download Cococom on Google Play Store'}
-        height={isMobile ? 48 : 64}
-      />
+      <Image src={AppleDownloadSvg} alt={'Download Cococom on Apple App Store'} />
+      <Image src={GoogleDownloadSvg} alt={'Download Cococom on Google Play Store'} />
     </div>
   );
 });

@@ -17,13 +17,13 @@ const IntroCarousel = memo(function IntroCarousel({ images }: IntroCarouselProps
   ]);
 
   return (
-    <div ref={emblaRef} className="overflow-hidden">
+    <div ref={emblaRef} className="flex overflow-hidden flex-1">
       <div className="flex">
         {Object.keys(images).map(key => {
           return (
             <div key={key} className="grow-0 shrink-0 basis-full min-w-0">
               <div className="flex flex-col items-center justify-center gap-2 sm:gap-6">
-                <Image src={images[key].image} alt="Intro" />
+                <Image src={images[key].image} alt="Intro" className="max-w-[calc(90%)]" />
                 <div className="text-center whitespace-pre-line text-base font-medium text-tint  sm:text-xl">
                   {images[key].text}
                 </div>
