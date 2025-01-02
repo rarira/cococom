@@ -22,6 +22,9 @@ const config: Config = {
         graphStroke: '#8641f4',
         tint3: '#0060A9',
       },
+      transitionTimingFunction: {
+        'in-out-back': 'cubic-bezier(0.87, 0, 0.13, 1)',
+      },
     },
   },
   plugins: [],

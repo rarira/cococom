@@ -40,10 +40,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="코코컴" />
       </head>
       <body
-        className={`${notoSansKr.className} antialiased flex flex-1 flex-col w-full sm:max-w-[1024px] justify-items-center mx-auto`}
+        className={`${notoSansKr.className} antialiased flex flex-1 flex-col w-full justify-items-center`}
       >
         <Header />
-        <main className="flex flex-1 overflow-auto min-h-[calc(80dvh)]">{children}</main>
+        <main className="flex flex-1 overflow-auto min-h-[calc(80dvh)] sm:max-w-[1024px] px-4 mx-auto">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

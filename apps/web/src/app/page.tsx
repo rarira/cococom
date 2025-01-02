@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { GoMail } from 'react-icons/go';
 
 import DownloadButtons from '@/components/download-buttons';
 import { INTRO_PAGES } from '@/libs/constants';

@@ -20,7 +20,7 @@ const NotionRenderer = memo(function NotionRenderer({
       fullPage={fullPage}
       darkMode={darkMode}
       components={{ nextLink: Link }}
-      bodyClassName="bg-background"
+      bodyClassName="!w-full !px-0"
       pageTitle=""
       pageHeader=""
     />
