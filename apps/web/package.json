@@ -1,6 +1,6 @@
 {
   "name": "@cococom/web",
-  "version": "1.0.1-alpha.cdc-23",
+  "version": "1.0.1-beta",
   "private": true,
   "scripts": {
     "dev": "next dev",
