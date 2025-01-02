@@ -13,7 +13,7 @@ const Header = memo(function Header() {
   if (pathname === '/') return null;
 
   return (
-    <header className="flex items-center justify-between h-fit w-full mt-2 px-2">
+    <header className="flex items-center justify-between h-fit w-full mt-2 px-4 sm:max-w-[1024px] mx-auto">
       <nav className="flex flex-row justify-start items-center gap-4 sm:gap-12">
         <Link href="/" className="bg-white rounded-lg">
           <Image src={LogoImage} alt="cococom logo" className="h-12 w-16 sm:h-24 sm:w-32" />
