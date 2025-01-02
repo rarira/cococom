@@ -1,7 +1,7 @@
 {
   "name": "@cococom/mobile",
   "main": "index.ts",
-  "version": "0.1.29.alpha.cdc-21.1",
+  "version": "0.1.30.alpha.cdc-24",
   "scripts": {
     "start": "expo start --dev-client",
     "start:preview": "SUPABASE_ENV=PREVIEW expo start --dev-client",
@@ -20,8 +20,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@cococom/libs": "workspace:*",
     "@cococom/imagekit": "workspace:*",
+    "@cococom/libs": "workspace:*",
     "@cococom/supabase": "workspace:*",
     "@dev-plugins/react-native-mmkv": "^0.1.0",
     "@dev-plugins/react-navigation": "^0.1.0",
@@ -79,7 +79,7 @@
     "react-native-svg": "15.10.1",
     "react-native-tab-view": "^4.0.5",
     "react-native-unistyles": "^2.20.0",
-    "react-native-web": "~0.19.13",
+    "react-native-webview": "13.12.5",
     "victory-native": "^41.12.2",
     "zod": "^3.23.8",
     "zustand": "^5.0.2"

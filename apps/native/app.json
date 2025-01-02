@@ -1,13 +1,13 @@
 {
   "expo": {
-    "version": "0.1.29.alpha.cdc-21.1",
-    "runtimeVersion": "0.1.28",
+    "version": "0.1.30.alpha.cdc-24",
+    "runtimeVersion": "0.1.30",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cccom",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "buildNumber": "5",
+      "buildNumber": "6",
       "supportsTablet": true,
       "bundleIdentifier": "com.rariradev.cococom",
       "infoPlist": {
@@ -18,7 +18,7 @@
       "associatedDomains": ["applinks:www.cococom.kr", "applinks:cococom.kr"]
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptiveIcon-foreground.png",
         "monochromeImage": "./assets/images/adaptiveIcon-monochrome.png",
@@ -51,11 +51,6 @@
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
     },
     "experiments": {
       "typedRoutes": true
