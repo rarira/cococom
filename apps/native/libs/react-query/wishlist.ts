@@ -153,6 +153,7 @@ const QueryWithWishlist: { [property in keyof Partial<typeof queryKeys>]: number
   discounts: 0,
   search: INFINITE_SEARCH_PAGE_SIZE,
   alltimeRankings: 0,
+  // items: 0,
 };
 
 export const updateWishlistInCache = ({
@@ -167,8 +168,14 @@ export const updateWishlistInCache = ({
     .getQueryCache()
     .findAll({ type: 'active' })
     .forEach(query => {
-      if (!QueryWithWishlist.hasOwnProperty((query.queryKey as (keyof typeof queryKeys)[])[0]))
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          QueryWithWishlist,
+          (query.queryKey as (keyof typeof queryKeys)[])[0],
+        )
+      ) {
         return;
+      }
 
       // if (Util.compareArray(queryKey, query.queryKey)) return;
 

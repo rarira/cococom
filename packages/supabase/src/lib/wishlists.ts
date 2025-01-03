@@ -12,7 +12,7 @@ export class WishlistsTable {
   async createWishlist(newWishlist: Omit<InsertWishlist, 'wishlist_hash'>) {
     const { error } = await this.supabaseClient
       .from('wishlists')
-      .insert({ ...newWishlist, wishlist_hash: newWishlist.itemId + newWishlist.userId });
+      .insert({ ...newWishlist, wishlist_hash: newWishlist.itemId + '@' + newWishlist.userId });
 
     if (error) {
       throw error;

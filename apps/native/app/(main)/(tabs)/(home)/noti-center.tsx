@@ -50,7 +50,7 @@ export default function NotiCenterScreen() {
 
   return (
     <ScreenContainerView withHeader>
-      {!!wishlistCount ? (
+      {wishlistCount ? (
         <>
           <View style={styles.header}>
             <Text type="subtitle" style={styles.subTitle}>

@@ -69,8 +69,12 @@ BEGIN
             SELECT COUNT(*)
             FROM wishlists w
             LEFT JOIN items i ON i.id = w."itemId"
-            LEFT JOIN discounts d ON d."itemId" = i."itemId"
-                AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+            LEFT JOIN (
+                SELECT DISTINCT ON ("itemId") *
+                FROM discounts
+                WHERE CURRENT_TIMESTAMP BETWEEN "startDate" AND "endDate"
+                ORDER BY "itemId", "endDate" DESC
+            ) d ON d."itemId" = i."itemId"
             WHERE w."userId" = $1
             %s  -- Sale condition
             %s  -- Channel condition
@@ -116,8 +120,12 @@ BEGIN
                            END AS discount
                     FROM wishlists w
                     LEFT JOIN items i ON i.id = w."itemId"
-                    LEFT JOIN discounts d ON d."itemId" = i."itemId"
-                        AND CURRENT_TIMESTAMP BETWEEN d."startDate" AND d."endDate"
+                    LEFT JOIN (
+                        SELECT DISTINCT ON ("itemId") *
+                        FROM discounts
+                        WHERE CURRENT_TIMESTAMP BETWEEN "startDate" AND "endDate"
+                        ORDER BY "itemId", "endDate" DESC
+                    ) d ON d."itemId" = i."itemId"
                     WHERE w."userId" = $2
                     %s  -- Sale condition
                     %s  -- Channel condition

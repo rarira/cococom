@@ -89,8 +89,8 @@ export const sortFlatPagesBySortOption = <T extends Record<string, any>>(
   return flatPages.sort((a, b) => {
     const [prop1, prop2] = sortOption.field.split('.');
 
-    const aValue = (!!prop2 ? a[prop1][prop2] : a[prop1]) as any;
-    const bValue = (!!prop2 ? b[prop1][prop2] : b[prop1]) as any;
+    const aValue = (prop2 ? a[prop1][prop2] : a[prop1]) as any;
+    const bValue = (prop2 ? b[prop1][prop2] : b[prop1]) as any;
 
     if (aValue === bValue) {
       return 0;
@@ -258,7 +258,7 @@ export const updateTotalCountInCache = ({
     .findAll({ type: 'active' })
     .forEach(query => {
       if (
-        !QueryWithTotalCounts.hasOwnProperty(query.queryKey[0] as string) ||
+        !Object.prototype.hasOwnProperty.call(QueryWithTotalCounts, query.queryKey[0] as string) ||
         query.queryKey[0] === excludeQueryKey
       )
         return;

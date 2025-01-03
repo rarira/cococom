@@ -59,9 +59,9 @@ export function useWishlists({ channel, sortOption, isOnSale }: UseWishlistsPara
 
   const wishlistResult: WishlistToRender = useMemo(
     () =>
-      data?.pages.flatMap(
-        (page, index) => page.items?.map(item => ({ ...item, pageIndex: index })) ?? [],
-      ) ?? [],
+      data?.pages.flatMap((page, index) => {
+        return page.items?.map(item => ({ ...item, pageIndex: index })) ?? [];
+      }) ?? [],
     [data?.pages],
   );
 
