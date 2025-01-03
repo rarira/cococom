@@ -79,7 +79,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
       setLoading(false);
       router.replace('/auth/signup/confirm');
     },
-    [setAuthProcessing, setProfile],
+    [setAuthProcessing, setProfile, termsAgreed],
   );
 
   const renderButtons = useCallback(() => {
