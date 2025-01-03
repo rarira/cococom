@@ -50,4 +50,4 @@ export const ITEM_DETAILS_TAB_NAMES = {
 
 export type ItemDetailsTabNames = ObjectValues<typeof ITEM_DETAILS_TAB_NAMES>;
 
-export const HOMEPAGE_HOST = Util.isDevClient() ? 'http://localhost:3000' : 'https://cococome.kr';
+export const HOMEPAGE_HOST = Util.isDevClient() ? 'http://localhost:3000' : 'https://cococom.kr';
