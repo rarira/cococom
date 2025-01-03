@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { Suspense } from 'react';
 import { Noto_Sans_KR } from 'next/font/google';
 
 import './globals.css';
@@ -43,11 +44,15 @@ export default function RootLayout({
       <body
         className={`${notoSansKr.className} antialiased flex flex-1 flex-col w-full justify-items-center`}
       >
-        <Header />
+        <Suspense>
+          <Header />
+        </Suspense>
         <main className="flex flex-1 overflow-auto min-h-[calc(80dvh)] sm:max-w-[1024px] px-4 mx-auto">
           {children}
         </main>
-        <Footer />
+        <Suspense>
+          <Footer />
+        </Suspense>
       </body>
     </html>
   );

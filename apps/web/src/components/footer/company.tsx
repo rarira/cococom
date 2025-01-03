@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { memo } from 'react';
 
-interface CompanyFooterProps {}
-
-const CompanyFooter = memo(function CompanyFooter({}: CompanyFooterProps) {
+const CompanyFooter = memo(function CompanyFooter() {
   return (
     <div className="text-xs sm:text-sm">
       라리라스튜디오 | 대표자 : 박인성 | 개인정보보호책임자 : 박인성(

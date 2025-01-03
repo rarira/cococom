@@ -2,8 +2,6 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { memo } from 'react';
 import { GoChevronDown } from 'react-icons/go';
 
-interface AccordionTriggerProps {}
-
 const AccordionTrigger = memo(function AccordionTrigger({
   children,
 }: {

@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
 import { twMerge } from 'tailwind-merge';
+import { Suspense } from 'react';
 
-export default function StatementsLayout({
+function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -46,5 +47,17 @@ export default function StatementsLayout({
         {children}
       </div>
     </div>
+  );
+}
+
+export default function StatementsLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <Suspense>
+      <Layout>{children}</Layout>
+    </Suspense>
   );
 }

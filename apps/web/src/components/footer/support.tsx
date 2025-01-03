@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { memo } from 'react';
 
-interface SupportFooterProps {}
-
-const SupportFooter = memo(function SupportFooter({}: SupportFooterProps) {
+const SupportFooter = memo(function SupportFooter() {
   return (
     <div className="text-xs sm:text-sm">
       이메일 문의 :{' '}

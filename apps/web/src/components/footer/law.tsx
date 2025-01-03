@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { memo } from 'react';
 
-interface LawFooterProps {}
-
-const LawFooter = memo(function LawFooter({}: LawFooterProps) {
+const LawFooter = memo(function LawFooter() {
   return (
     <div className="text-xs sm:text-sm">
       <ul className="flex flex-col gap-1">
