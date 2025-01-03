@@ -1,6 +1,6 @@
 import { Tables } from '@cococom/supabase/types';
 import { Image } from 'expo-image';
-import { DimensionValue, PixelRatio, StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { getImagekitUrlFromPath } from '@cococom/imagekit/client';
 import { useMemo } from 'react';
@@ -9,14 +9,12 @@ import Text from '@/components/core/text';
 import Util from '@/libs/util';
 interface ListItemCardThumbnailImageProps {
   product: Partial<Tables<'items'>> & Record<string, any>;
-  width: DimensionValue;
-  height: DimensionValue;
+  width: number;
+  height: number;
   isOnline?: boolean;
   style?: StyleProp<ViewStyle>;
   small?: boolean;
 }
-
-const pixelRatio = PixelRatio.get();
 
 function ListItemCardThumbnailImage({
   product,
@@ -33,8 +31,10 @@ function ListItemCardThumbnailImage({
       imagePath: `products/${Util.extractItemid(product.itemId!)}.webp`,
       transformationArray: [
         {
-          height: (height ?? 0 * pixelRatio).toString(),
-          width: (width ?? 0 * pixelRatio)?.toString(),
+          height: Util.getRetinaPixel(height ?? 0).toString(),
+          width: Util.getRetinaPixel(width ?? 0)?.toString(),
+          cropMode: 'pad_resize',
+          background: 'white',
         },
       ],
     });
@@ -58,7 +58,7 @@ function ListItemCardThumbnailImage({
 }
 
 const stylesheet = createStyleSheet(theme => ({
-  container: (width: DimensionValue, height: DimensionValue) => ({
+  container: (width: number, height: number) => ({
     width,
     height,
     overflow: 'hidden',

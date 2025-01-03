@@ -26,6 +26,7 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
 }: ItemDetailsPagerImagePageViewProps) {
   const { styles, theme } = useStyles(stylesheet);
   const { itemId } = useLocalSearchParams();
+  const { width } = useWindowDimensions();
 
   const user = useUserStore(store => store.user);
 
@@ -42,10 +43,19 @@ const ItemDetailsPagerImagePageView = memo(function ItemDetailsPagerImagePageVie
 
   const itemImageUrl = useMemo(() => {
     if (!item) return '';
+
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(item.itemId)}.webp`,
+      transformationArray: [
+        {
+          width: Util.getRetinaPixel(width).toString(),
+          aspectRatio: '3-2',
+          cropMode: 'pad_resize',
+          background: 'white',
+        },
+      ],
     });
-  }, [item]);
+  }, [item, width]);
 
   return (
     <View style={styles.page} key="1" collapsable={false}>
@@ -91,7 +101,6 @@ const stylesheet = createStyleSheet(theme => ({
   },
   image: {
     flex: 1,
-    objectFit: 'contain',
   },
   nameOverlay: {
     position: 'absolute',

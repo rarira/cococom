@@ -15,8 +15,6 @@ interface CategorySectorCardProps {
   discountInfo: Awaited<DiscountsByCategorySector>[number] | null;
 }
 
-const pixelRatio = PixelRatio.get();
-
 function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -25,7 +23,7 @@ function CategorySectorCard({ discountInfo }: CategorySectorCardProps) {
     return getImagekitUrlFromPath({
       imagePath: `products/${Util.extractItemid(discountInfo.itemId)}.webp`,
       transformationArray: [
-        { height: (100 * pixelRatio).toString(), width: (100 * pixelRatio).toString() },
+        { height: Util.getRetinaPixel(100).toString(), width: Util.getRetinaPixel(100).toString() },
       ],
     });
   }, [discountInfo]);

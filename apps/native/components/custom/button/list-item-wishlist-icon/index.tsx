@@ -52,7 +52,9 @@ function ListItemWishlistIconButton<
 
       return supabase.wishlists.createWishlist(newWishlist);
     },
-    onMutate: onMutate?.(queryClient),
+    onMutate: variables => {
+      return onMutate?.(queryClient)(variables);
+    },
     onError: error => {
       if (error.code === 'P0001') {
         setWishlistLimit(error.details);

@@ -15,6 +15,7 @@ export const handleMutateOfItems = async ({
   await queryClient.cancelQueries({ queryKey });
   const previousData = queryClient.getQueryData(queryKey) as unknown as JoinedItems;
 
+  console.log('previousData', previousData);
   queryClient.setQueryData(queryKey, (old: JoinedItems) => {
     return {
       ...old,

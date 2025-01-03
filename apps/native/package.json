@@ -1,7 +1,7 @@
 {
   "name": "@cococom/mobile",
   "main": "index.ts",
-  "version": "0.1.30.alpha.cdc-24.2",
+  "version": "0.1.30.alpha.cdc-24.3",
   "scripts": {
     "start": "expo start --dev-client",
     "start:preview": "SUPABASE_ENV=PREVIEW expo start --dev-client",

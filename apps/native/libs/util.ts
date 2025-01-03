@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { PixelRatio, Platform } from 'react-native';
 import * as DevClient from 'expo-dev-client';
 import * as Device from 'expo-device';
 import * as Utils from '@cococom/libs/utils';
@@ -81,6 +81,9 @@ const Util = {
   },
   isDevice() {
     return Device.isDevice;
+  },
+  getRetinaPixel(value: number) {
+    return PixelRatio.getPixelSizeForLayoutSize(value);
   },
   ...Utils,
 };
