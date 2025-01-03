@@ -47,6 +47,7 @@ export default function AuthLayout() {
 
 const stylesheet = createStyleSheet(theme => ({
   content: {
+    flex: 1,
     backgroundColor: theme.colors.background,
   },
   header: {

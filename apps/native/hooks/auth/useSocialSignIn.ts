@@ -1,14 +1,17 @@
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { login } from '@react-native-kakao/user';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { UnistylesRuntime } from 'react-native-unistyles';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { Alert } from 'react-native';
 
 import { useSignInWithIdToken } from '@/hooks/auth/useSignInWithIdToken';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { useUserStore } from '@/store/user';
 
 export function useSocialSignIn() {
+  const [termsAgreed, setTermsAgreed] = useState(false);
+
   const { handleSignInWithIdToken } = useSignInWithIdToken();
 
   const { reportToSentry } = useErrorHandler();
@@ -22,7 +25,19 @@ export function useSocialSignIn() {
     });
   }, []);
 
+  const checkTermsAgreed = useCallback((provider: 'Apple' | 'Google' | '카카오') => {
+    Alert.alert(
+      '약관 동의 필요',
+      `이용약관 및 개인정보처리방침에 동의하셔야 ${provider} 로그인이 가능합니다.`,
+    );
+  }, []);
+
   const handlePressAppleLogin = useCallback(async () => {
+    if (!termsAgreed) {
+      checkTermsAgreed('Apple');
+      return;
+    }
+
     setAuthProcessing(true);
 
     try {
@@ -51,9 +66,14 @@ export function useSocialSignIn() {
     } finally {
       setAuthProcessing(false);
     }
-  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
+  }, [checkTermsAgreed, handleSignInWithIdToken, reportToSentry, setAuthProcessing, termsAgreed]);
 
   const handlePressGoogleLogin = useCallback(async () => {
+    if (!termsAgreed) {
+      checkTermsAgreed('Google');
+      return;
+    }
+
     setAuthProcessing(true);
 
     try {
@@ -80,9 +100,14 @@ export function useSocialSignIn() {
     } finally {
       setAuthProcessing(false);
     }
-  }, [handleSignInWithIdToken, reportToSentry, setAuthProcessing]);
+  }, [checkTermsAgreed, handleSignInWithIdToken, reportToSentry, setAuthProcessing, termsAgreed]);
 
   const handlePressKakaoLogin = useCallback(async () => {
+    if (!termsAgreed) {
+      checkTermsAgreed('카카오');
+      return;
+    }
+
     setAuthProcessing(true);
 
     const result = await login();
@@ -94,7 +119,11 @@ export function useSocialSignIn() {
     });
 
     setAuthProcessing(false);
-  }, [handleSignInWithIdToken, setAuthProcessing]);
+  }, [checkTermsAgreed, handleSignInWithIdToken, setAuthProcessing, termsAgreed]);
+
+  const handleTermsAgreedChange = useCallback(({ isChecked }: { isChecked: boolean }) => {
+    setTermsAgreed(isChecked);
+  }, []);
 
   const googleLogo = useMemo(
     () =>
@@ -120,5 +149,7 @@ export function useSocialSignIn() {
     handlePressKakaoLogin,
     googleLogo,
     appleLogo,
+    termsAgreed,
+    handleTermsAgreedChange,
   };
 }

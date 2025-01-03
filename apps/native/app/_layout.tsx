@@ -107,6 +107,13 @@ function RootLayout() {
                           gestureEnabled: false,
                         }}
                       />
+                      <Stack.Screen
+                        name="terms"
+                        options={{
+                          presentation: 'modal',
+                          gestureEnabled: true,
+                        }}
+                      />
                     </Stack>
                   </BottomSheetModalProvider>
                 </ThemeProvider>

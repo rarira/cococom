@@ -15,6 +15,11 @@ const nextConfig = {
         destination: '/intro/first',
         permanent: true,
       },
+      {
+        source: '/statements',
+        destination: '/statements/terms',
+        permanent: true,
+      },
     ];
   },
 };

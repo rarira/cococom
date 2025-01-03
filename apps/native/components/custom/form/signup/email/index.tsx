@@ -15,12 +15,14 @@ import { AuthErrorCode } from '@/libs/error';
 import { signUpFormSchema } from '@/libs/form';
 import { getProfile, supabase } from '@/libs/supabase';
 import { useUserStore } from '@/store/user';
+import TermsView from '@/components/custom/view/terms';
 
 const EmailSignUpForm = memo(function EmailSignUpForm() {
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
 
   const { styles } = useStyles(stylesheet);
   const { setAuthProcessing, setProfile } = useUserStore(store => ({
@@ -34,6 +36,13 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
 
   const onSubmit = useCallback(
     async ({ email, password }: z.infer<typeof signUpFormSchema>) => {
+      if (!termsAgreed) {
+        return Alert.alert(
+          '약관 동의 필요',
+          `이용약관 및 개인정보처리방침에 동의하셔야 이메일로 가입이 가능합니다.`,
+        );
+      }
+
       setAuthProcessing(true);
       setLoading(true);
       const {
@@ -84,6 +93,10 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
       />
     );
   }, [styles.submitButton]);
+
+  const handleTermsAgreedChange = useCallback(({ isChecked }: { isChecked: boolean }) => {
+    setTermsAgreed(isChecked);
+  }, []);
 
   return (
     <>
@@ -145,6 +158,7 @@ const EmailSignUpForm = memo(function EmailSignUpForm() {
           disabled={loading}
           style={styles.submitButton}
         />
+        <TermsView termsAgreed={termsAgreed} handleTermsAgreedChange={handleTermsAgreedChange} />
       </View>
       <Dialog
         portalHostName={PORTAL_HOST_NAMES.SIGN_UP}

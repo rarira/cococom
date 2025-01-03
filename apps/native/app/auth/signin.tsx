@@ -15,6 +15,7 @@ import ScreenTitleText from '@/components/custom/text/screen-title';
 import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
 import Util from '@/libs/util';
 import { useSocialSignIn } from '@/hooks/auth/useSocialSignIn';
+import TermsView from '@/components/custom/view/terms';
 
 const LOGIN_IMAGE_HEIGHT = 36;
 
@@ -48,6 +49,8 @@ export default function SignInScreen() {
     handlePressKakaoLogin,
     googleLogo,
     appleLogo,
+    termsAgreed,
+    handleTermsAgreedChange,
   } = useSocialSignIn();
 
   return (
@@ -85,6 +88,7 @@ export default function SignInScreen() {
             />
           </Button>
         </View>
+        <TermsView termsAgreed={termsAgreed} handleTermsAgreedChange={handleTermsAgreedChange} />
       </View>
     </ModalScreenContainer>
   );

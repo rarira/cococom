@@ -1,7 +1,7 @@
 import { PortalHost } from '@gorhom/portal';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect } from 'react';
-import { View } from 'react-native';
+import { Modal, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -13,6 +13,7 @@ import StatusBar from '@/components/custom/status-bar';
 import Button from '@/components/core/button';
 import Text from '@/components/core/text';
 import { useWalkthroughStore } from '@/store/walkthrough';
+import ModalScreenContainer from '@/components/custom/view/container/screen/modal';
 
 type SignUpScreenParams = {
   from: 'signin' | 'intro';
@@ -47,8 +48,7 @@ export default function SignUpScreen() {
   }, [setFlags]);
 
   return (
-    <>
-      <StatusBar />
+    <ModalScreenContainer>
       <View style={styles.container(bottom)}>
         <ScreenTitleText>{`환영합니다.${from === 'intro' ? '\n모든 기능을 이용하기 위해서는 회원가입이 필요합니다. ' : '\n'}아래 정보를 입력하여 회원가입을 진행하세요`}</ScreenTitleText>
         <EmailSignUpForm />
@@ -64,7 +64,7 @@ export default function SignUpScreen() {
         )}
       </View>
       <PortalHost name={PORTAL_HOST_NAMES.SIGN_UP} />
-    </>
+    </ModalScreenContainer>
   );
 }
 

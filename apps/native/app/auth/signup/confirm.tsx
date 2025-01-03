@@ -1,4 +1,3 @@
-import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
@@ -8,7 +7,6 @@ import ScreenTitleText from '@/components/custom/text/screen-title';
 
 export default function SignUpConfirmScreen() {
   const { styles } = useStyles(stylesheet);
-  const { provider } = useLocalSearchParams<{ provider: string }>();
   const { bottom } = useSafeAreaInsets();
 
   return (

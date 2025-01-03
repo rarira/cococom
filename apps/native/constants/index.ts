@@ -1,5 +1,6 @@
 import { RotateButtonOption } from '@/hooks/discount/useDiscountRotateButton';
 import { ObjectValues } from '@/libs/type';
+import Util from '@/libs/util';
 
 export const PORTAL_HOST_NAMES = {
   HOME: 'HomePortalHost',
@@ -48,3 +49,5 @@ export const ITEM_DETAILS_TAB_NAMES = {
 } as const;
 
 export type ItemDetailsTabNames = ObjectValues<typeof ITEM_DETAILS_TAB_NAMES>;
+
+export const HOMEPAGE_HOST = Util.isDevClient() ? 'http://localhost:3000' : 'https://cococome.kr';

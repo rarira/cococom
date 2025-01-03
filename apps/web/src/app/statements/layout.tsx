@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
 import { twMerge } from 'tailwind-merge';
 
@@ -11,24 +11,32 @@ export default function StatementsLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const params = useSearchParams();
   const isMobile = useMediaQuery({ query: '(max-width: 640px)' });
 
   const isTerms = pathname === '/statements/terms';
   const isPrivacy = pathname === '/statements/privacy';
 
+  const isRealMobile = params.get('webview') === 'true' || isMobile;
+
   return (
     <div
       className={twMerge(
         'flex flex-row w-full gap-4 text-sm sm:text-base pt-4 sm:pt-8',
-        isMobile && 'flex-col',
+        isRealMobile && 'flex-col',
       )}
     >
-      <ul className={twMerge('flex flex-col gap-2 min-w-fit', isMobile && 'flex-row  justify-end')}>
-        <li className={twMerge(' text-gray-400 hover:text-tint', isTerms && 'text-tint3')}>
-          <Link href="/statements/terms">이용약관</Link>
+      <ul
+        className={twMerge(
+          'flex flex-col gap-2 min-w-fit',
+          isRealMobile && 'flex-row  justify-end',
+        )}
+      >
+        <li className={isTerms ? 'text-tint3  hover:text-tint' : 'text-gray-400 hover:text-tint'}>
+          <Link href={`/statements/terms?${params.toString()}`}>이용약관</Link>
         </li>
-        <li className={twMerge(' text-gray-400  hover:text-tint', isPrivacy && 'text-tint3')}>
-          <Link href="/statements/privacy">개인정보처리방침</Link>
+        <li className={isPrivacy ? 'text-tint3  hover:text-tint' : 'text-gray-400 hover:text-tint'}>
+          <Link href={`/statements/privacy?${params.toString()}`}>개인정보처리방침</Link>
         </li>
       </ul>
       <div className="flex flex-col  gap-2 sm:gap-4">

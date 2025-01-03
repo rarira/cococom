@@ -2,15 +2,16 @@
 import { memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { GoDownload } from 'react-icons/go';
 
 import LogoImage from 'public/images/cococom.png';
 
 const Header = memo(function Header() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  if (pathname === '/') return null;
+  if (pathname === '/' || searchParams.get('webview') === 'true') return null;
 
   return (
     <header className="flex items-center justify-between h-fit w-full mt-2 px-4 sm:max-w-[1024px] mx-auto">
